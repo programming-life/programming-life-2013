@@ -71,13 +71,15 @@ describe("Graphs", function() {
 					expect( controller.removeChild.callCount ).toBe( graphCount );
 				});
 
-				it("should have created new graphs for the new data", function() {
-					expect( controller.addChild ).toHaveBeenCalled();
-				});
+				_.defer( =>
+					it("should have created new graphs for the new data", function() {
+						expect( controller.addChild ).toHaveBeenCalled();
+					});
 
-				it("should have added the new graph view to our view", function() {
-					expect( view.add ).toHaveBeenCalled();
-				});
+					it("should have added the new graph view to our view", function() {
+						expect( view.add ).toHaveBeenCalled();
+					});
+				)
 			});
 			describe("with custom parameters", function() {
 				beforeEach( function() {
