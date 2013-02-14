@@ -192,10 +192,16 @@ footer {
 #deadlines dt {
  	letter-spacing: 1px;
 	font-weight: normal;
+	margin-top: 15px;
+	margin-bottom: 5px;
+}
+
+#deadlines dt:first-of-type {
+	margin-top: 0;
 }
 
 #deadlines dd {
-	margin: 10px 30px;
+	margin-left: 30px;
 }
 
 #deadlines dd ul, #deadlines dd ul li {
