@@ -253,6 +253,12 @@ footer {
 	float: left;
 }
 
+#attribution .image-box { 
+	overflow: hidden;
+	width: 153px;
+	height: 153px;
+}
+
 @media print, screen and (max-width: 960px) {
   
   div.wrapper {
