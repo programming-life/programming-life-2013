@@ -1,4 +1,9 @@
 ProgrammingLife::Application.routes.draw do
+ 
+  get 'greetings/hello'
+  get 'greetings' => 'greetings#index'
+  get 'greetings/:name' => 'greetings#hello'
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
@@ -48,7 +53,7 @@ ProgrammingLife::Application.routes.draw do
 
   # You can have the root of your site routed with "root"
   # just remember to delete public/index.html.
-  # root :to => 'welcome#index'
+  root :to => 'greetings#hello'
 
   # See how all your routes lay out with "rake routes"
 
