@@ -1,0 +1,70 @@
+
+
+Processing GreetingsController#index (for 145.94.220.18 at 2013-02-15 17:18:12) [GET]
+Rendering greetings/index
+Completed in 3ms (View: 1, DB: 0) | 200 OK [http://life.jstfy.com/]
+
+
+Processing GreetingsController#index (for 145.94.214.37 at 2013-02-15 17:18:19) [GET]
+Rendering greetings/index
+Completed in 1ms (View: 1, DB: 0) | 200 OK [http://life.jstfy.com/]
+
+
+Processing ApplicationController#index (for 145.94.214.37 at 2013-02-15 17:18:35) [GET]
+
+ActionController::RoutingError (No route matches "/blaat" with {:method=>:get}):
+  /usr/lib/ruby/vendor_ruby/action_controller/routing/recognition_optimisation.rb:66:in `recognize_path'
+  /usr/lib/ruby/vendor_ruby/action_controller/routing/route_set.rb:442:in `recognize'
+  /usr/lib/ruby/vendor_ruby/action_controller/routing/route_set.rb:437:in `call'
+  /usr/lib/ruby/vendor_ruby/action_controller/dispatcher.rb:87:in `dispatch'
+  /usr/lib/ruby/vendor_ruby/action_controller/dispatcher.rb:121:in `_call'
+  /usr/lib/ruby/vendor_ruby/action_controller/dispatcher.rb:130:in `block in build_middleware_stack'
+  /usr/lib/ruby/vendor_ruby/active_record/query_cache.rb:29:in `call'
+  /usr/lib/ruby/vendor_ruby/active_record/query_cache.rb:29:in `block in call'
+  /usr/lib/ruby/vendor_ruby/active_record/connection_adapters/abstract/query_cache.rb:34:in `cache'
+  /usr/lib/ruby/vendor_ruby/active_record/query_cache.rb:9:in `cache'
+  /usr/lib/ruby/vendor_ruby/active_record/query_cache.rb:28:in `call'
+  /usr/lib/ruby/vendor_ruby/active_record/connection_adapters/abstract/connection_pool.rb:361:in `call'
+  /usr/lib/ruby/vendor_ruby/action_controller/string_coercion.rb:25:in `call'
+  /usr/lib/ruby/vendor_ruby/rack/head.rb:9:in `call'
+  /usr/lib/ruby/vendor_ruby/rack/methodoverride.rb:21:in `call'
+  /usr/lib/ruby/vendor_ruby/action_controller/params_parser.rb:15:in `call'
+  /usr/lib/ruby/vendor_ruby/action_controller/session/cookie_store.rb:99:in `call'
+  /usr/lib/ruby/vendor_ruby/action_controller/failsafe.rb:26:in `call'
+  /usr/lib/ruby/vendor_ruby/rack/lock.rb:15:in `call'
+  /usr/lib/ruby/vendor_ruby/action_controller/dispatcher.rb:106:in `call'
+  /usr/lib/ruby/vendor_ruby/phusion_passenger/rack/request_handler.rb:96:in `process_request'
+  /usr/lib/ruby/vendor_ruby/phusion_passenger/abstract_request_handler.rb:516:in `accept_and_process_next_request'
+  /usr/lib/ruby/vendor_ruby/phusion_passenger/abstract_request_handler.rb:274:in `main_loop'
+  /usr/lib/ruby/vendor_ruby/phusion_passenger/classic_rails/application_spawner.rb:321:in `start_request_handler'
+  /usr/lib/ruby/vendor_ruby/phusion_passenger/classic_rails/application_spawner.rb:275:in `block in handle_spawn_application'
+  /usr/lib/ruby/vendor_ruby/phusion_passenger/utils.rb:479:in `safe_fork'
+  /usr/lib/ruby/vendor_ruby/phusion_passenger/classic_rails/application_spawner.rb:270:in `handle_spawn_application'
+  /usr/lib/ruby/vendor_ruby/phusion_passenger/abstract_server.rb:357:in `server_main_loop'
+  /usr/lib/ruby/vendor_ruby/phusion_passenger/abstract_server.rb:206:in `start_synchronously'
+  /usr/lib/ruby/vendor_ruby/phusion_passenger/abstract_server.rb:180:in `start'
+  /usr/lib/ruby/vendor_ruby/phusion_passenger/classic_rails/application_spawner.rb:149:in `start'
+  /usr/lib/ruby/vendor_ruby/phusion_passenger/spawn_manager.rb:219:in `block (2 levels) in spawn_rails_application'
+  /usr/lib/ruby/vendor_ruby/phusion_passenger/abstract_server_collection.rb:132:in `lookup_or_add'
+  /usr/lib/ruby/vendor_ruby/phusion_passenger/spawn_manager.rb:214:in `block in spawn_rails_application'
+  /usr/lib/ruby/vendor_ruby/phusion_passenger/abstract_server_collection.rb:82:in `block in synchronize'
+  <internal:prelude>:10:in `synchronize'
+  /usr/lib/ruby/vendor_ruby/phusion_passenger/abstract_server_collection.rb:79:in `synchronize'
+  /usr/lib/ruby/vendor_ruby/phusion_passenger/spawn_manager.rb:213:in `spawn_rails_application'
+  /usr/lib/ruby/vendor_ruby/phusion_passenger/spawn_manager.rb:132:in `spawn_application'
+  /usr/lib/ruby/vendor_ruby/phusion_passenger/spawn_manager.rb:275:in `handle_spawn_application'
+  /usr/lib/ruby/vendor_ruby/phusion_passenger/abstract_server.rb:357:in `server_main_loop'
+  /usr/lib/ruby/vendor_ruby/phusion_passenger/abstract_server.rb:206:in `start_synchronously'
+  /usr/share/phusion-passenger/helper-scripts/passenger-spawn-server:99:in `<main>'
+
+Rendering /var/www/life/public/404.html (404 Not Found)
+
+
+Processing GreetingsController#hello (for 145.94.214.37 at 2013-02-15 17:20:44) [GET]
+Rendering greetings/hello
+Completed in 1ms (View: 1, DB: 0) | 200 OK [http://life.jstfy.com/greetings/hello]
+
+
+Processing GreetingsController#index (for 145.94.220.18 at 2013-02-15 17:21:54) [GET]
+Rendering greetings/index
+Completed in 1ms (View: 1, DB: 0) | 200 OK [http://life.jstfy.com/]
