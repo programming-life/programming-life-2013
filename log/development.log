@@ -607,3 +607,53 @@ Served asset /jquery_ujs.js - 304 Not Modified (1ms)
 
 Started GET "/assets/application.js?body=1" for 127.0.0.1 at 2013-02-16 00:07:30 +0100
 Served asset /application.js - 304 Not Modified (0ms)
+
+
+Started GET "/" for 127.0.0.1 at 2013-02-16 02:53:30 +0100
+Connecting to database specified by database.yml
+Processing by GreetingsController#hello as HTML
+  Rendered greetings/hello.html.erb within layouts/application (2.0ms)
+Completed 200 OK in 60ms (Views: 60.1ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/assets/jquery.js?body=1" for 127.0.0.1 at 2013-02-16 02:53:30 +0100
+Served asset /jquery.js - 200 OK (4ms)
+
+
+Started GET "/assets/greetings.css?body=1" for 127.0.0.1 at 2013-02-16 02:53:30 +0100
+Served asset /greetings.css - 200 OK (2ms)
+
+
+Started GET "/assets/application.css?body=1" for 127.0.0.1 at 2013-02-16 02:53:30 +0100
+Served asset /application.css - 200 OK (2ms)
+
+
+Started GET "/assets/jquery_ujs.js?body=1" for 127.0.0.1 at 2013-02-16 02:53:30 +0100
+Served asset /jquery_ujs.js - 200 OK (2ms)
+
+
+Started GET "/assets/application.js?body=1" for 127.0.0.1 at 2013-02-16 02:53:30 +0100
+Served asset /application.js - 200 OK (4ms)
+
+
+Started GET "/assets/greetings.js?body=1" for 127.0.0.1 at 2013-02-16 02:53:30 +0100
+Served asset /greetings.js - 200 OK (2ms)
+
+
+Started GET "/greetings" for 127.0.0.1 at 2013-02-16 02:53:41 +0100
+Processing by GreetingsController#index as HTML
+  Rendered greetings/index.html.erb within layouts/application (1.0ms)
+Completed 200 OK in 7ms (Views: 7.0ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/greetings/hello" for 127.0.0.1 at 2013-02-16 02:53:45 +0100
+Processing by GreetingsController#hello as HTML
+  Rendered greetings/hello.html.erb within layouts/application (0.0ms)
+Completed 200 OK in 5ms (Views: 5.0ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/greetings/Derk-Jan" for 127.0.0.1 at 2013-02-16 02:53:50 +0100
+Processing by GreetingsController#hello as HTML
+  Parameters: {"name"=>"Derk-Jan"}
+  Rendered greetings/hello.html.erb within layouts/application (0.0ms)
+Completed 200 OK in 6ms (Views: 5.0ms | ActiveRecord: 0.0ms)
