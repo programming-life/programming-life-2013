@@ -10,7 +10,9 @@
 # Ignore the default SQLite database.
 /db/*.sqlite3
 
-# Ignore all logfiles and tempfiles.
-/log/*.log
-/tmp
-/log/*.log
+# Ignore tmp and log folders
+log
+tmp
+
+# Ignore Gemfile.lock
+Gemfile.lock
