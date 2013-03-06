@@ -61,14 +61,14 @@ Say other Ruby web servers like Thin and Ebb or regular web servers like Apache 
 Lighttpd or IIS. The Ruby web servers are run through Rack and the latter can either be setup to use
 FCGI or proxy to a pack of Mongrels/Thin/Ebb servers.
 
-##Apache .htaccess example for FCGI/CGI
+````htaccess
+# Apache .htaccess example for FCGI/CGI
 
-- General Apache options
+# General Apache options
 AddHandler fastcgi-script .fcgi
 AddHandler cgi-script .cgi
 Options +FollowSymLinks +ExecCGI
 
-````htaccess
 # If you don't want Rails to look in certain directories,
 # use the following rewrite rules so that Apache won't rewrite certain requests
 # 
@@ -188,80 +188,62 @@ Finally, when you're ready to resume execution, you enter "cont"
 
 ## Console
 
-You can interact with the domain model by starting the console through <tt>script/console</tt>.
+You can interact with the domain model by starting the console through `script/console`.
 Here you'll have all parts of the application configured, just like it is when the
 application is running. You can inspect domain models, change values, and save to the
 database. Starting the script without arguments will launch it in the development environment.
-Passing an argument will specify a different environment, like <tt>script/console production</tt>.
+Passing an argument will specify a different environment, like `script/console production`.
 
-To reload your controllers and models after launching the console run <tt>reload!</tt>
+To reload your controllers and models after launching the console run `reload!`
 
 ## dbconsole
 
-You can go to the command line of your database directly through <tt>script/dbconsole</tt>.
-You would be connected to the database with the credentials defined in database.yml.
+You can go to the command line of your database directly through `script/dbconsole`.
+You would be connected to the database with the credentials defined in `database.yml`.
 Starting the script without arguments will connect you to the development database. Passing an
-argument will connect you to a different database, like <tt>script/dbconsole production</tt>.
+argument will connect you to a different database, like `script/dbconsole production`.
 Currently works for mysql, postgresql and sqlite.
 
 ## Description of Contents
 
-app
-  Holds all the code that's specific to this particular application.
+- app
+    Holds all the code that's specific to this particular application.
 
-app/controllers
-  Holds controllers that should be named like weblogs_controller.rb for
-  automated URL mapping. All controllers should descend from ApplicationController
-  which itself descends from ActionController::Base.
+- app/controllers
+    Holds controllers that should be named like `weblogs_controller.rb` for automated URL mapping. All controllers should descend from `ApplicationController` which itself descends from `ActionController::Base`.
 
-app/models
-  Holds models that should be named like post.rb.
-  Most models will descend from ActiveRecord::Base.
+- app/models
+    Holds models that should be named like `post.rb`. Most models will descend from `ActiveRecord::Base`.
 
-app/views
-  Holds the template files for the view that should be named like
-  weblogs/index.html.erb for the WeblogsController#index action. All views use eRuby
-  syntax.
+- app/views
+    Holds the template files for the view that should be named like `weblogs/index.html.erb` for the `WeblogsController#index` action. All views use eRuby syntax.
 
-app/views/layouts
-  Holds the template files for layouts to be used with views. This models the common
-  header/footer method of wrapping views. In your views, define a layout using the
-  <tt>layout :default</tt> and create a file named default.html.erb. Inside default.html.erb,
-  call <% yield %> to render the view using this layout.
+- app/views/layouts
+    Holds the template files for layouts to be used with views. This models the common `header/footer` method of wrapping views. In your views, define a layout using the `layout :default` and create a file named `default.html.erb`. Inside `default.html.erb`,  call `<% yield %>` to render the view using this layout.
 
-app/helpers
-  Holds view helpers that should be named like weblogs_helper.rb. These are generated
-  for you automatically when using script/generate for controllers. Helpers can be used to
-  wrap functionality for your views into methods.
+- app/helpers
+    Holds view helpers that should be named like `weblogs_helper.rb`. These are generated for you automatically when using `script/generate` for controllers. Helpers can be used to wrap functionality for your views into methods.
 
-config
-  Configuration files for the Rails environment, the routing map, the database, and other dependencies.
+- config
+    Configuration files for the Rails environment, the routing map, the database, and other dependencies.
 
-db
-  Contains the database schema in schema.rb.  db/migrate contains all
-  the sequence of Migrations for your schema.
+- db
+    Contains the database schema in `schema.rb`.  `db/migrate` contains all the sequence of Migrations for your schema.
 
-doc
-  This directory is where your application documentation will be stored when generated
-  using <tt>rake doc:app</tt>
+- doc
+    This directory is where your application documentation will be stored when generated using `rake doc:app`.
 
-lib
-  Application specific libraries. Basically, any kind of custom code that doesn't
-  belong under controllers, models, or helpers. This directory is in the load path.
+- lib
+    Application specific libraries. Basically, any kind of custom code that doesn't belong under controllers, models, or helpers. This directory is in the load path.
 
-public
-  The directory available for the web server. Contains subdirectories for images, stylesheets,
-  and javascripts. Also contains the dispatchers and the default HTML files. This should be
-  set as the DOCUMENT_ROOT of your web server.
+- public
+    The directory available for the web server. Contains subdirectories for images, stylesheets, and javascripts. Also contains the dispatchers and the default HTML files. This should be set as the `DOCUMENT_ROOT` of your web server.
 
-script
-  Helper scripts for automation and generation.
+- script
+    Helper scripts for automation and generation.
 
-test
-  Unit and functional tests along with fixtures. When using the script/generate scripts, template
-  test files will be generated for you and placed in this directory.
+- test
+    Unit and functional tests along with fixtures. When using the `script/generate` scripts, template test files will be generated for you and placed in this directory.
 
-vendor
-  External libraries that the application depends on. Also includes the plugins subdirectory.
-  If the app has frozen rails, those gems also go here, under vendor/rails/.
-  This directory is in the load path.
+- vendor
+  External libraries that the application depends on. Also includes the plugins subdirectory. If the app has frozen rails, those gems also go here, under `vendor/rails/`. This directory is in the load path.
