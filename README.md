@@ -11,7 +11,7 @@ Gigabaas / Gigabase
 
 Rails
 =================
-== Welcome to Rails
+## Welcome to Rails
 
 Rails is a web-application framework that includes everything needed to create 
 database-backed web applications according to the Model-View-Control pattern. 
@@ -38,7 +38,7 @@ Rails.  You can read more about Action Pack in
 link:files/vendor/rails/actionpack/README.html.
 
 
-== Getting Started
+## Getting Started
 
 1. At the command prompt, start a new Rails application using the <tt>rails</tt> command
    and your application name. Ex: rails myapp
@@ -47,7 +47,7 @@ link:files/vendor/rails/actionpack/README.html.
 4. Follow the guidelines to start developing your application
 
 
-== Web Servers
+## Web Servers
 
 By default, Rails will try to use Mongrel if it's are installed when started with script/server, otherwise Rails will use WEBrick, the webserver that ships with Ruby. But you can also use Rails
 with a variety of other web servers.
@@ -61,13 +61,14 @@ Say other Ruby web servers like Thin and Ebb or regular web servers like Apache 
 Lighttpd or IIS. The Ruby web servers are run through Rack and the latter can either be setup to use
 FCGI or proxy to a pack of Mongrels/Thin/Ebb servers.
 
-== Apache .htaccess example for FCGI/CGI
+##Apache .htaccess example for FCGI/CGI
 
-# General Apache options
+- General Apache options
 AddHandler fastcgi-script .fcgi
 AddHandler cgi-script .cgi
 Options +FollowSymLinks +ExecCGI
 
+````htaccess
 # If you don't want Rails to look in certain directories,
 # use the following rewrite rules so that Apache won't rewrite certain requests
 # 
@@ -103,9 +104,9 @@ RewriteRule ^(.*)$ dispatch.cgi [QSA,L]
 #   ErrorDocument 500 /500.html
 
 ErrorDocument 500 "<h2>Application error</h2>Rails application failed to start properly"
+````
 
-
-== Debugging Rails
+## Debugging Rails
 
 Sometimes your application goes wrong.  Fortunately there are a lot of tools that
 will help you debug it and get it back on the rails.
@@ -118,6 +119,7 @@ browser on requests from 127.0.0.1.
 You can also log your own messages directly into the log file from your code using
 the Ruby logger class from inside your controllers. Example:
 
+````Ruby
   class WeblogController < ActionController::Base
     def destroy
       @weblog = Weblog.find(params[:id])
@@ -125,10 +127,13 @@ the Ruby logger class from inside your controllers. Example:
       logger.info("#{Time.now} Destroyed Weblog ID ##{@weblog.id}!")
     end
   end
+````
 
 The result will be a message in your log file along the lines of:
 
+````
   Mon Oct 08 14:22:29 +1000 2007 Destroyed Weblog ID #1
+````
 
 More information on how to use the logger is at http://www.ruby-doc.org/core/
 
@@ -141,7 +146,7 @@ These two online (and free) books will bring you up to speed on the Ruby languag
 and also on programming in general.
 
 
-== Debugger
+## Debugger
 
 Debugger support is available through the debugger command when you start your Mongrel or
 Webrick server with --debugger. This means that you can break out of execution at any point
@@ -149,33 +154,39 @@ in the code, investigate and change the model, AND then resume execution!
 You need to install ruby-debug to run the server in debugging mode. With gems, use 'gem install ruby-debug'
 Example:
 
+````Ruby
   class WeblogController < ActionController::Base
     def index
       @posts = Post.find(:all)
       debugger
     end
   end
+````
 
 So the controller will accept the action, run the first line, then present you
 with a IRB prompt in the server window. Here you can do things like:
 
+````Ruby
   >> @posts.inspect
   => "[#<Post:0x14a6be8 @attributes={\"title\"=>nil, \"body\"=>nil, \"id\"=>\"1\"}>,
        #<Post:0x14a6620 @attributes={\"title\"=>\"Rails you know!\", \"body\"=>\"Only ten..\", \"id\"=>\"2\"}>]"
   >> @posts.first.title = "hello from a debugger"
   => "hello from a debugger"
+````
 
 ...and even better is that you can examine how your runtime objects actually work:
 
+````Ruby
   >> f = @posts.first
   => #<Post:0x13630c4 @attributes={"title"=>nil, "body"=>nil, "id"=>"1"}>
   >> f.
   Display all 152 possibilities? (y or n)
+````
 
 Finally, when you're ready to resume execution, you enter "cont"
 
 
-== Console
+## Console
 
 You can interact with the domain model by starting the console through <tt>script/console</tt>.
 Here you'll have all parts of the application configured, just like it is when the
@@ -185,7 +196,7 @@ Passing an argument will specify a different environment, like <tt>script/consol
 
 To reload your controllers and models after launching the console run <tt>reload!</tt>
 
-== dbconsole
+## dbconsole
 
 You can go to the command line of your database directly through <tt>script/dbconsole</tt>.
 You would be connected to the database with the credentials defined in database.yml.
@@ -193,7 +204,7 @@ Starting the script without arguments will connect you to the development databa
 argument will connect you to a different database, like <tt>script/dbconsole production</tt>.
 Currently works for mysql, postgresql and sqlite.
 
-== Description of Contents
+## Description of Contents
 
 app
   Holds all the code that's specific to this particular application.
