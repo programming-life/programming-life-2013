@@ -1,0 +1,2 @@
+class HookController < ApplicationController
+end
