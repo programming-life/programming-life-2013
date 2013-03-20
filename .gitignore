@@ -14,3 +14,6 @@
 /log/*.log
 /tmp
 /log/*.log
+
+# Ignore word temps
+docs\deliverables\~$* 
