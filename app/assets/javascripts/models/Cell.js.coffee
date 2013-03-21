@@ -12,8 +12,21 @@ class Cell
 		
 	# Remove module from cell
 	remove: ( module ) ->
-		@_modules.splice( @_modules.indexOf( module ), 1 ) # update to use underscore without
+		@_modules.splice( @_modules.indexOf( module ), 1 ) #TODO: update to use underscore without
 		@
+		
+	# Checks if this cell has a module
+	has: ( module ) ->
+		@_modules.indexOf( module ) #TODO: ? check module type instead of object ref
+	
+	# Step runs this cell
+	step : ( dt ) ->
+		# TODO: Foreach module calculate the values of all the substances
+	
+	# Runs this cell
+	run : ( dt, t ) ->
+		# TODO: for t time run dt steps 
+		# TODO: where to output
 	
 	# The properties
 	Object.defineProperties @prototype,
