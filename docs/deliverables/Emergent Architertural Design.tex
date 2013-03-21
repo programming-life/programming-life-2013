@@ -23,22 +23,30 @@
 	\setcounter{section}{0}
 	\renewcommand*\thesection{\arabic{section}}
 	
-	\section*{Introduction}
-		This document contains the architectural design for the application created during the Context Project `Programming Life: Synthetic Biology'. The design is explained first in terms of a subsystem decomposition, which serves to uncover the inner workings of the application. Secondly, a description of the communication between the client and server is given, seeing as it is a key part of the application. Lastly, a short summary of the application architecture is given.
+	\section{Introduction}
+		This document contains the architectural design for the application created during the Context Project `Programming Life: Synthetic Biology'. The application is targeted at synthetic biologists and its main purpose is to easily model the complex workings of a cell. \\
+		The design of this application is explained first in terms of its design goals. Then a subsystem decomposition follows, which serves to uncover the inner workings of the application, along with a description of the mapping of subsystems to processes and computers, a hardware/software mapping. After this, the management of data and shared resources is discussed. In conclusion a short summary of the system architecture is given.
+		\subsection{Design goals}
+			Because the application has a very specific use, modelling cells and the processes within, the main design goal is to make this as easy and intuitive as possible. Secondary to this goal is the possibility to access the application from every common platform, such as not only desktop and laptop, but also mobile devices. Of course, working and optimally performing software is the first goal to be strived towards.
 	\clearpage
-	\section{Subsystem Decomposition}
-		This section describes the key subsystems in the application. It is divided into two sections, one about the server-side subsystems and one about the client-side subsystems. The link between these two components will be discussed in the next section.
-		\subsection{Server side}
-			The server subsystems consist of two key parts: the server backend and the database. The server backend isn't used very much until the application is very nearly finished. It's main use is synchronisation between different client-backends and it could possibly be used to do calculations that are too complicated for the client-side of the application.\\
-			The database is used for storage of user data, modules for cell design, as well as cell models created using the application. It provides a centralized storage so the client-side application can function on any platform without first having to tranfer any user data.
-		\subsection{Client side}
-			The client side subsystems contain most of the applications functionality. These subsystems are responsible for displaying the graphical environment with all it's modules, as well as doing the basic simulating. If the simulation becomes too complex, the complicated calculations can be sent to the sever to be processed on the server side. 
-	\clearpage
-	\section{Communication between client and server}
-		The communication between client and server is a key aspect of the application. The communication done using \emph{REST} and \emph{AJAX}. This entails that the server waits for a request from the client, thus the client controls all communication. Combined with the fact that the server serves mostly to centralize the data storage and complicated calculations, this makes it so the client side of the application can be very resource efficient, so as to work on any platform.\\
-		The image below shows a high level view of the different components and the tools used for constructing them:\\
-		\includegraphics[width=16cm]{EAD.png}
+	\section{Software architecture views}
+		This section contains all the information about the software architecture of the application. The section is diveded into several subsections to group together interesting information and improve readability.
+		\subsection{Subsystem Decomposition}
+			This section describes the key subsystems in the application. It is divided into two sections, because the application is diveded this way as well. The first subsection is about the server-side subsystems and the second one is about the client-side subsystems.
+			\subsubsection{Server side}
+				The server subsystems consist of two key parts: the server backend and the database. The main use of the server backend is synchronisation between different client-backends. It can also be used to do calculations that are too complicated for the client-side of the application. It is dependent upon the database, to synchronize the appropriate data to the appropriate client-backend corresponding with a user.
+				The database is used for storage of user data, modules for cell design, as well as cell models created using the application. It provides a centralized storage so the client-side application can function on any platform without first having to manually transfer any data. It is not dependent upon anything, although every function used persistent data is dependent on it.
+			\subsubsection{Client side}
+				The client side subsystems contain most of the applications functionality. These subsystems are responsible for displaying the graphical environment with all it's modules, as well as doing the basic simulating. If the simulation becomes too complex, the complicated calculations can be sent to the sever to be processed on the server side. If used locally, the client side subsystems function independently of the server. If used on multiple machines, the client side can be made dependent on the server and the database to synchronize user data.
+		\subsection{Hardware/software mapping}
+			The hardware/software mapping is illustrated by the image below. The server is a non-client piece of hardware, and can therefore be chosen specifically to suit the clients needs. The client side hardware is required to support current webbuilding standards, which qualifies almost every machine from almost every platform to run the application.\\
+			\includegraphics[width=16cm]{EAD.png}
+		\subsection{Persistent data management}
+			The application synchronizes any persistent data with the database running on the server. This ensures availability of all user data if there is a connection to the server. The application also provides the possibility to store data locally and export simulation results to a report in multiple standardized format, such as \emph{HTML}, \emph{Excel} and \emph{PDF}.			\subsection{Concurrency}
+			Each client runs independently and used asynchronous communication with the server through \emph{REST} and \emph{AJAX}. Because of this, concurrency issues are very improbable. The client side application is web-based, and uses only one process. Shared resources are retrieved directly from and synchronized directly with the database.
 	\clearpage
 	\section{Summary}
-		The application is a lightweight, cross-platform graphical design tool with a centralized storage database. The architecture ensures it's functionality on different kinds of machines as well as the ease of simulating complex cell models.
+		The application is a lightweight, cross-platform graphical design tool with a centralized storage database. The architecture ensures it's functionality on different kinds of machines as well as the ease of simulating complex cell models. It not only offers stability, ease and intuitive design, it offers it on every machine.
+	\section{Glossary}
+		This section explains any and all terms that may be ambiguous or unclear:\\
 \end{document}
