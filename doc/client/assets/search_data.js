@@ -1,0 +1,1 @@
+window.searchData = [{"t":"Module","p":"classes/Module.html"},{"t":"#constructor","h":"Module","p":"classes/Module.html#constructor-instance"},{"t":"Module.js.coffee","p":"files/app/assets/javascripts/Module.js.coffee.html"},{"t":"README.md","p":"README.md.html"}]
