@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+<title>README - RDoc Documentation</title>
+
+<link type="text/css" media="screen" href="./rdoc.css" rel="stylesheet">
+
+<script type="text/javascript">
+  var rdoc_rel_prefix = "./";
+</script>
+
+<script type="text/javascript" charset="utf-8" src="./js/jquery.js"></script>
+<script type="text/javascript" charset="utf-8" src="./js/navigation.js"></script>
+<script type="text/javascript" charset="utf-8" src="./js/search_index.js"></script>
+<script type="text/javascript" charset="utf-8" src="./js/search.js"></script>
+<script type="text/javascript" charset="utf-8" src="./js/searcher.js"></script>
+<script type="text/javascript" charset="utf-8" src="./js/darkfish.js"></script>
+
+
+<body class="file">
+<nav id="metadata">
+  <nav id="home-section" class="section">
+  <h3 class="section-header">
+    <a href="./index.html">Home</a>
+    <a href="./table_of_contents.html#classes">Classes</a>
+    <a href="./table_of_contents.html#methods">Methods</a>
+  </h3>
+</nav>
+
+
+  <nav id="search-section" class="section project-section" class="initially-hidden">
+  <form action="#" method="get" accept-charset="utf-8">
+    <h3 class="section-header">
+      <input type="text" name="search" placeholder="Search" id="search-field"
+             title="Type to search, Up and Down to navigate, Enter to load">
+    </h3>
+  </form>
+
+  <ul id="search-results" class="initially-hidden"></ul>
+</nav>
+
+
+  
+<div id="table-of-contents">
+  <nav class="section">
+    <h3 class="section-header">Table of Contents</h3>
+    <ul>
+      <li><a href="#label-Programming+Life">Programming Life</a>
+      <li><a href="#label-Rails">Rails</a>
+      <li><a href="#label-Welcome+to+Rails">Welcome to Rails</a>
+      <li><a href="#label-Getting+Started">Getting Started</a>
+      <li><a href="#label-Web+Servers">Web Servers</a>
+      <li><a href="#label-Apache+.htaccess+example+for+FCGI%2FCGI">Apache .htaccess example for FCGI/CGI</a>
+      <li><a href="#label-General+Apache+options">General Apache options</a>
+      <li><a href="#label-If+you+don%27t+want+Rails+to+look+in+certain+directories%2C">If you don’t want Rails to look in certain directories,</a>
+      <li><a href="#label-use+the+following+rewrite+rules+so+that+Apache+won%27t+rewrite+certain+requests">use the following rewrite rules so that Apache won’t rewrite certain requests</a>
+      <li><a href="#label-Example%3A">Example:</a>
+      <li><a href="#label-RewriteCond+%25%7BREQUEST_URI%7D+%5E%2Fnotrails.%2A">RewriteCond %{REQUEST_URI} ^/notrails.*</a>
+      <li><a href="#label-RewriteRule+.%2A+-+%5BL%5D">RewriteRule .* - [L]</a>
+      <li><a href="#label-Redirect+all+requests+not+available+on+the+filesystem+to+Rails">Redirect all requests not available on the filesystem to Rails</a>
+      <li><a href="#label-By+default+the+cgi+dispatcher+is+used+which+is+very+slow">By default the cgi dispatcher is used which is very slow</a>
+      <li><a href="#label-For+better+performance+replace+the+dispatcher+with+the+fastcgi+one">For better performance replace the dispatcher with the fastcgi one</a>
+      <li><a href="#label-Example%3A">Example:</a>
+      <li><a href="#label-RewriteRule+%5E%28.%2A%29%24+dispatch.fcgi+%5BQSA%2CL%5D">RewriteRule ^(.*)$ dispatch.fcgi [QSA,L]</a>
+      <li><a href="#label-If+your+Rails+application+is+accessed+via+an+Alias+directive%2C">If your Rails application is accessed via an Alias directive,</a>
+      <li><a href="#label-then+you+MUST+also+set+the+RewriteBase+in+this+htaccess+file.">then you MUST also set the RewriteBase in this htaccess file.</a>
+      <li><a href="#label-Example%3A">Example:</a>
+      <li><a href="#label-Alias+%2Fmyrailsapp+%2Fpath%2Fto%2Fmyrailsapp%2Fpublic">Alias /myrailsapp /path/to/myrailsapp/public</a>
+      <li><a href="#label-RewriteBase+%2Fmyrailsapp">RewriteBase /myrailsapp</a>
+      <li><a href="#label-In+case+Rails+experiences+terminal+errors">In case Rails experiences terminal errors</a>
+      <li><a href="#label-Instead+of+displaying+this+message+you+can+supply+a+file+here+which+will+be+rendered+instead">Instead of displaying this message you can supply a file here which will be rendered instead</a>
+      <li><a href="#label-Example%3A">Example:</a>
+      <li><a href="#label-ErrorDocument+500+%2F500.html">ErrorDocument 500 /500.html</a>
+      <li><a href="#label-Debugging+Rails">Debugging Rails</a>
+      <li><a href="#label-Debugger">Debugger</a>
+      <li><a href="#label-Console">Console</a>
+      <li><a href="#label-dbconsole">dbconsole</a>
+      <li><a href="#label-Description+of+Contents">Description of Contents</a>
+    </ul>
+  </nav>
+</div>
+
+
+  <div id="project-metadata">
+    <nav id="fileindex-section" class="section project-section">
+  <h3 class="section-header">Pages</h3>
+
+  <ul>
+  
+    <li class="file"><a href="./Gemfile.html">Gemfile</a>
+  
+    <li class="file"><a href="./Gemfile_lock.html">Gemfile.lock</a>
+  
+    <li class="file"><a href="./README_md.html">README</a>
+  
+    <li class="file"><a href="./README_rdoc.html">README</a>
+  
+    <li class="file"><a href="./Rakefile.html">Rakefile</a>
+  
+    <li class="file"><a href="./app/assets/javascripts/Module_js_coffee.html">Module.js.coffee</a>
+  
+    <li class="file"><a href="./app/assets/javascripts/application_js.html">application.js</a>
+  
+    <li class="file"><a href="./app/assets/javascripts/hook_js_coffee.html">hook.js.coffee</a>
+  
+    <li class="file"><a href="./app/assets/javascripts/jasmine_examples/Player_js.html">Player.js</a>
+  
+    <li class="file"><a href="./app/assets/javascripts/jasmine_examples/Song_js.html">Song.js</a>
+  
+    <li class="file"><a href="./app/assets/javascripts/main_js_coffee.html">main.js.coffee</a>
+  
+    <li class="file"><a href="./app/assets/stylesheets/application_css.html">application.css</a>
+  
+    <li class="file"><a href="./app/assets/stylesheets/hook_css_scss.html">hook.css.scss</a>
+  
+    <li class="file"><a href="./app/assets/stylesheets/main_css_scss.html">main.css.scss</a>
+  
+    <li class="file"><a href="./config_ru.html">config.ru</a>
+  
+    <li class="file"><a href="./db/development_sqlite3.html">development.sqlite3</a>
+  
+    <li class="file"><a href="./doc/server/created_rid.html">created.rid</a>
+  
+    <li class="file"><a href="./docs/deliverables/Emergent Architertural Design_tex.html">Emergent Architertural Design.tex</a>
+  
+    <li class="file"><a href="./docs/deliverables/summaries/Seminar 2/Samenvatting_tex.html">Samenvatting.tex</a>
+  
+    <li class="file"><a href="./docs/deliverables/summaries/Seminar 2/samenvatting-Mathematics-of-Biology_tex.html">samenvatting-Mathematics-of-Biology.tex</a>
+  
+    <li class="file"><a href="./docs/planning samenvatten_txt.html">planning samenvatten</a>
+  
+    <li class="file"><a href="./hook_php.html">hook.php</a>
+  
+    <li class="file"><a href="./log/development_log.html">development.log</a>
+  
+    <li class="file"><a href="./public/404_html.html">404.html</a>
+  
+    <li class="file"><a href="./public/422_html.html">422.html</a>
+  
+    <li class="file"><a href="./public/500_html.html">500.html</a>
+  
+    <li class="file"><a href="./public/favicon_ico.html">favicon.ico</a>
+  
+    <li class="file"><a href="./public/robots_txt.html">robots</a>
+  
+    <li class="file"><a href="./spec/javascripts/ModuleSpec_js.html">ModuleSpec.js</a>
+  
+    <li class="file"><a href="./spec/javascripts/helpers/SpecHelper_js.html">SpecHelper.js</a>
+  
+    <li class="file"><a href="./vendor/assets/javascripts/backbone_js.html">backbone.js</a>
+  
+    <li class="file"><a href="./vendor/assets/javascripts/underscore_js.html">underscore.js</a>
+  
+  </ul>
+</nav>
+
+    <nav id="classindex-section" class="section project-section">
+  <h3 class="section-header">Class and Module Index</h3>
+
+  <ul class="link-list">
+  
+    <li><a href="./ActiveSupport.html">ActiveSupport</a>
+  
+    <li><a href="./ActiveSupport/TestCase.html">ActiveSupport::TestCase</a>
+  
+    <li><a href="./ApplicationController.html">ApplicationController</a>
+  
+    <li><a href="./ApplicationHelper.html">ApplicationHelper</a>
+  
+    <li><a href="./BrowsingTest.html">BrowsingTest</a>
+  
+    <li><a href="./GreetingsControllerTest.html">GreetingsControllerTest</a>
+  
+    <li><a href="./GreetingsHelperTest.html">GreetingsHelperTest</a>
+  
+    <li><a href="./HookController.html">HookController</a>
+  
+    <li><a href="./HookControllerTest.html">HookControllerTest</a>
+  
+    <li><a href="./HookHelper.html">HookHelper</a>
+  
+    <li><a href="./HookHelperTest.html">HookHelperTest</a>
+  
+    <li><a href="./MainController.html">MainController</a>
+  
+    <li><a href="./MainControllerTest.html">MainControllerTest</a>
+  
+    <li><a href="./MainHelper.html">MainHelper</a>
+  
+    <li><a href="./MainHelperTest.html">MainHelperTest</a>
+  
+    <li><a href="./Object.html">Object</a>
+  
+    <li><a href="./ProgrammingLife.html">ProgrammingLife</a>
+  
+    <li><a href="./ProgrammingLife/Application.html">ProgrammingLife::Application</a>
+  
+  </ul>
+</nav>
+
+  </div>
+</nav>
+
+<div id="documentation" class="description">
+  
+<h1 id="label-Programming+Life">Programming Life<span><a href="#label-Programming+Life">&para;</a> <a href="#documentation">&uarr;</a></span></h1>
+
+<p>Gigabaas / Gigabase</p>
+
+<h1 id="label-Rails">Rails<span><a href="#label-Rails">&para;</a> <a href="#documentation">&uarr;</a></span></h1>
+
+<h2 id="label-Welcome+to+Rails">Welcome to Rails<span><a href="#label-Welcome+to+Rails">&para;</a> <a href="#documentation">&uarr;</a></span></h2>
+
+<p>Rails is a web-application framework that includes everything needed to
+create
+database-backed web applications according to the Model-View-Control
+pattern.</p>
+
+<p>This pattern splits the view (also called the presentation) into “dumb”
+templates
+that are primarily responsible for inserting pre-built data in
+between HTML tags.
+The model contains the &quot;smart&quot; domain objects
+(such as Account, Product, Person,
+Post) that holds all the business logic
+and knows how to persist themselves to
+a database. The controller handles
+the incoming requests (such as Save New Account,
+Update Product, Show Post)
+by manipulating the model and directing data to the view.</p>
+
+<p>In Rails, the model is handled by what’s called an object-relational
+mapping
+layer entitled Active Record. This layer allows you to present the
+data from
+database rows as objects and embellish these data objects with
+business logic
+methods. You can read more about Active Record in
+<a
+href="files/vendor/rails/activerecord/README.html">files/vendor/rails/activerecord/README.html</a>.</p>
+
+<p>The controller and view are handled by the Action Pack, which handles
+both
+layers by its two parts: Action View and Action Controller. These two
+layers
+are bundled in a single package due to their heavy interdependence.
+This is
+unlike the relationship between the Active Record and Action Pack
+that is much
+more separate. Each of these packages can be used
+independently outside of
+Rails. You can read more about Action Pack in
+<a
+href="files/vendor/rails/actionpack/README.html">files/vendor/rails/actionpack/README.html</a>.</p>
+
+<h2 id="label-Getting+Started">Getting Started<span><a href="#label-Getting+Started">&para;</a> <a href="#documentation">&uarr;</a></span></h2>
+<ol><li>
+<p>At the command prompt, start a new Rails application using the
+<code>rails</code> command
+ and your application name. Ex: rails myapp</p>
+</li><li>
+<p>Change directory into myapp and start the web server:
+<code>script/server</code> (run with –help for options)</p>
+</li><li>
+<p>Go to <a href="http://localhost:3000">localhost:3000</a>/ and get “Welcome
+aboard: You’re riding the Rails!”</p>
+</li><li>
+<p>Follow the guidelines to start developing your application</p>
+</li></ol>
+
+<h2 id="label-Web+Servers">Web Servers<span><a href="#label-Web+Servers">&para;</a> <a href="#documentation">&uarr;</a></span></h2>
+
+<p>By default, Rails will try to use Mongrel if it’s are installed when
+started with script/server, otherwise Rails will use WEBrick, the webserver
+that ships with Ruby. But you can also use Rails
+with a variety of other
+web servers.</p>
+
+<p>Mongrel is a Ruby-based webserver with a C component (which requires
+compilation) that is
+suitable for development and deployment of Rails
+applications. If you have Ruby Gems installed,
+getting up and running with
+mongrel is as easy as: <code>gem install mongrel</code>.
+More info at: <a
+href="http://mongrel.rubyforge.org">mongrel.rubyforge.org</a></p>
+
+<p>Say other Ruby web servers like Thin and Ebb or regular web servers like
+Apache or LiteSpeed or
+Lighttpd or IIS. The Ruby web servers are run
+through Rack and the latter can either be setup to use
+FCGI or proxy to a
+pack of Mongrels/Thin/Ebb servers.</p>
+
+<p>““htaccess</p>
+
+<h1 id="label-Apache+.htaccess+example+for+FCGI%2FCGI">Apache .htaccess example for FCGI/CGI<span><a href="#label-Apache+.htaccess+example+for+FCGI%2FCGI">&para;</a> <a href="#documentation">&uarr;</a></span></h1>
+
+<h1 id="label-General+Apache+options">General Apache options<span><a href="#label-General+Apache+options">&para;</a> <a href="#documentation">&uarr;</a></span></h1>
+
+<p>AddHandler fastcgi-script .fcgi
+AddHandler cgi-script .cgi
+Options
++FollowSymLinks +ExecCGI</p>
+
+<h1 id="label-If+you+don%27t+want+Rails+to+look+in+certain+directories%2C">If you don’t want Rails to look in certain directories,<span><a href="#label-If+you+don%27t+want+Rails+to+look+in+certain+directories%2C">&para;</a> <a href="#documentation">&uarr;</a></span></h1>
+
+<h1 id="label-use+the+following+rewrite+rules+so+that+Apache+won%27t+rewrite+certain+requests">use the following rewrite rules so that Apache won’t rewrite certain requests<span><a href="#label-use+the+following+rewrite+rules+so+that+Apache+won%27t+rewrite+certain+requests">&para;</a> <a href="#documentation">&uarr;</a></span></h1>
+
+<p>#</p>
+
+<h1 id="label-Example%3A">Example:<span><a href="#label-Example%3A">&para;</a> <a href="#documentation">&uarr;</a></span></h1>
+
+<h1 id="label-RewriteCond+%25%7BREQUEST_URI%7D+%5E%2Fnotrails.%2A">RewriteCond %{REQUEST_URI} ^/notrails.*<span><a href="#label-RewriteCond+%25%7BREQUEST_URI%7D+%5E%2Fnotrails.%2A">&para;</a> <a href="#documentation">&uarr;</a></span></h1>
+
+<h1 id="label-RewriteRule+.%2A+-+%5BL%5D">RewriteRule .* - [L]<span><a href="#label-RewriteRule+.%2A+-+%5BL%5D">&para;</a> <a href="#documentation">&uarr;</a></span></h1>
+
+<h1 id="label-Redirect+all+requests+not+available+on+the+filesystem+to+Rails">Redirect all requests not available on the filesystem to Rails<span><a href="#label-Redirect+all+requests+not+available+on+the+filesystem+to+Rails">&para;</a> <a href="#documentation">&uarr;</a></span></h1>
+
+<h1 id="label-By+default+the+cgi+dispatcher+is+used+which+is+very+slow">By default the cgi dispatcher is used which is very slow<span><a href="#label-By+default+the+cgi+dispatcher+is+used+which+is+very+slow">&para;</a> <a href="#documentation">&uarr;</a></span></h1>
+
+<p>#</p>
+
+<h1 id="label-For+better+performance+replace+the+dispatcher+with+the+fastcgi+one">For better performance replace the dispatcher with the fastcgi one<span><a href="#label-For+better+performance+replace+the+dispatcher+with+the+fastcgi+one">&para;</a> <a href="#documentation">&uarr;</a></span></h1>
+
+<p>#</p>
+
+<h1 id="label-Example%3A">Example:<span><a href="#label-Example%3A">&para;</a> <a href="#documentation">&uarr;</a></span></h1>
+
+<h1 id="label-RewriteRule+%5E%28.%2A%29%24+dispatch.fcgi+%5BQSA%2CL%5D">RewriteRule ^(.*)$ dispatch.fcgi [QSA,L]<span><a href="#label-RewriteRule+%5E%28.%2A%29%24+dispatch.fcgi+%5BQSA%2CL%5D">&para;</a> <a href="#documentation">&uarr;</a></span></h1>
+
+<p>RewriteEngine On</p>
+
+<h1 id="label-If+your+Rails+application+is+accessed+via+an+Alias+directive%2C">If your Rails application is accessed via an Alias directive,<span><a href="#label-If+your+Rails+application+is+accessed+via+an+Alias+directive%2C">&para;</a> <a href="#documentation">&uarr;</a></span></h1>
+
+<h1 id="label-then+you+MUST+also+set+the+RewriteBase+in+this+htaccess+file.">then you MUST also set the RewriteBase in this htaccess file.<span><a href="#label-then+you+MUST+also+set+the+RewriteBase+in+this+htaccess+file.">&para;</a> <a href="#documentation">&uarr;</a></span></h1>
+
+<p>#</p>
+
+<h1 id="label-Example%3A">Example:<span><a href="#label-Example%3A">&para;</a> <a href="#documentation">&uarr;</a></span></h1>
+
+<h1 id="label-Alias+%2Fmyrailsapp+%2Fpath%2Fto%2Fmyrailsapp%2Fpublic">Alias /myrailsapp /path/to/myrailsapp/public<span><a href="#label-Alias+%2Fmyrailsapp+%2Fpath%2Fto%2Fmyrailsapp%2Fpublic">&para;</a> <a href="#documentation">&uarr;</a></span></h1>
+
+<h1 id="label-RewriteBase+%2Fmyrailsapp">RewriteBase /myrailsapp<span><a href="#label-RewriteBase+%2Fmyrailsapp">&para;</a> <a href="#documentation">&uarr;</a></span></h1>
+
+<p>RewriteRule ^$ index.html [QSA]
+RewriteRule ^(<a id="footmark-1"
+href="#foottext-1">*1</a> $1.html [QSA]
+RewriteCond %{REQUEST_FILENAME}
+!-f
+RewriteRule ^(.*)$ dispatch.cgi [QSA,L]</p>
+
+<h1 id="label-In+case+Rails+experiences+terminal+errors">In case Rails experiences terminal errors<span><a href="#label-In+case+Rails+experiences+terminal+errors">&para;</a> <a href="#documentation">&uarr;</a></span></h1>
+
+<h1 id="label-Instead+of+displaying+this+message+you+can+supply+a+file+here+which+will+be+rendered+instead">Instead of displaying this message you can supply a file here which will be rendered instead<span><a href="#label-Instead+of+displaying+this+message+you+can+supply+a+file+here+which+will+be+rendered+instead">&para;</a> <a href="#documentation">&uarr;</a></span></h1>
+
+<p>#</p>
+
+<h1 id="label-Example%3A">Example:<span><a href="#label-Example%3A">&para;</a> <a href="#documentation">&uarr;</a></span></h1>
+
+<h1 id="label-ErrorDocument+500+%2F500.html">ErrorDocument 500 /500.html<span><a href="#label-ErrorDocument+500+%2F500.html">&para;</a> <a href="#documentation">&uarr;</a></span></h1>
+
+<p>ErrorDocument 500 “&lt;h2&gt;Application error&lt;/h2&gt;Rails application
+failed to start properly”
+````</p>
+
+<h2 id="label-Debugging+Rails">Debugging Rails<span><a href="#label-Debugging+Rails">&para;</a> <a href="#documentation">&uarr;</a></span></h2>
+
+<p>Sometimes your application goes wrong. Fortunately there are a lot of tools
+that
+will help you debug it and get it back on the rails.</p>
+
+<p>First area to check is the application log files. Have “tail -f” commands
+running
+on the server.log and development.log. Rails will automatically
+display debugging
+and runtime information to these files. Debugging info
+will also be shown in the
+browser on requests from 127.0.0.1.</p>
+
+<p>You can also log your own messages directly into the log file from your
+code using
+the Ruby logger class from inside your controllers. Example:</p>
+
+<p>&lt;code&gt;Ruby
+  class WeblogController &lt; ActionController::Base
+   
+def destroy
+      @weblog = <a href="http://:id">Weblog.find(params</a>)
+  
+@weblog.destroy
+      logger.info(&quot;#{Time.now} Destroyed Weblog ID
+##{@weblog.id}!&quot;)
+    end
+  end
+&lt;/code&gt;</p>
+
+<p>The result will be a message in your log file along the lines of:</p>
+
+<p>&lt;code&gt;
+  Mon Oct 08 14:22:29 +1000 2007 Destroyed Weblog ID
+#1
+&lt;/code&gt;</p>
+
+<p>More information on how to use the logger is at <a
+href="http://www.ruby-doc.org/core">www.ruby-doc.org/core</a>/</p>
+
+<p>Also, Ruby documentation can be found at <a
+href="http://www.ruby-lang.org">www.ruby-lang.org</a>/ including:</p>
+<ul><li>
+<p>The Learning Ruby (Pickaxe) Book: <a
+href="http://www.ruby-doc.org/docs/ProgrammingRuby">www.ruby-doc.org/docs/ProgrammingRuby</a>/</p>
+</li><li>
+<p>Learn to Program: <a
+href="http://pine.fm/LearnToProgram">pine.fm/LearnToProgram</a>/ (a
+beginners guide)</p>
+</li></ul>
+
+<p>These two online (and free) books will bring you up to speed on the Ruby
+language
+and also on programming in general.</p>
+
+<h2 id="label-Debugger">Debugger<span><a href="#label-Debugger">&para;</a> <a href="#documentation">&uarr;</a></span></h2>
+
+<p>Debugger support is available through the debugger command when you start
+your Mongrel or
+Webrick server with --debugger. This means that you can
+break out of execution at any point
+in the code, investigate and change the
+model, AND then resume execution!
+You need to install ruby-debug to run the
+server in debugging mode. With gems, use 'gem install ruby-debug'
+Example:</p>
+
+<p>&lt;code&gt;Ruby
+  class WeblogController &lt; ActionController::Base
+   
+def index
+      @posts = Post.find(:all)
+      debugger
+    end
+ 
+end
+&lt;/code&gt;</p>
+
+<p>So the controller will accept the action, run the first line, then present
+you
+with a IRB prompt in the server window. Here you can do things like:</p>
+
+<p>&lt;code&gt;Ruby
+  &gt;&gt; @posts.inspect
+  =&gt;
+&quot;[#&lt;Post:0x14a6be8 @attributes={\&quot;title\&quot;=&gt;nil,
+\"body\&quot;=&gt;nil, \"id\&quot;=&gt;\&quot;1\&quot;}&gt;,
+      
+#&lt;Post:0x14a6620 @attributes={\&quot;title\&quot;=&gt;\&quot;Rails you
+know!\&quot;, \"body\&quot;=&gt;\&quot;Only ten..\&quot;,
+\"id\&quot;=&gt;\&quot;2\&quot;}&gt;]&quot;
+  &gt;&gt; @posts.first.title =
+&quot;hello from a debugger&quot;
+  =&gt; &quot;hello from a
+debugger&quot;
+&lt;/code&gt;</p>
+
+<p>…and even better is that you can examine how your runtime objects actually
+work:</p>
+
+<p>&lt;code&gt;Ruby
+  &gt;&gt; f = @posts.first
+  =&gt; #&lt;Post:0x13630c4
+@attributes={&quot;title&quot;=&gt;nil, &quot;body&quot;=&gt;nil,
+&quot;id&quot;=&gt;&quot;1&quot;}&gt;
+  &gt;&gt; f.
+  Display all 152
+possibilities? (y or n)
+&lt;/code&gt;</p>
+
+<p>Finally, when you’re ready to resume execution, you enter “cont”</p>
+
+<h2 id="label-Console">Console<span><a href="#label-Console">&para;</a> <a href="#documentation">&uarr;</a></span></h2>
+
+<p>You can interact with the domain model by starting the console through
+<code>script/console</code>.
+Here you'll have all parts of the application
+configured, just like it is when the
+application is running. You can
+inspect domain models, change values, and save to the
+database. Starting
+the script without arguments will launch it in the development
+environment.
+Passing an argument will specify a different environment, like
+<code>script/console production</code>.</p>
+
+<p>To reload your controllers and models after launching the console run
+<code>reload!</code></p>
+
+<h2 id="label-dbconsole">dbconsole<span><a href="#label-dbconsole">&para;</a> <a href="#documentation">&uarr;</a></span></h2>
+
+<p>You can go to the command line of your database directly through
+<code>script/dbconsole</code>.
+You would be connected to the database with
+the credentials defined in <code>database.yml</code>.
+Starting the script
+without arguments will connect you to the development database. Passing
+an
+argument will connect you to a different database, like
+<code>script/dbconsole production</code>.
+Currently works for mysql,
+postgresql and sqlite.</p>
+
+<h2 id="label-Description+of+Contents">Description of Contents<span><a href="#label-Description+of+Contents">&para;</a> <a href="#documentation">&uarr;</a></span></h2>
+<ul><li>
+<p><strong>app</strong> Holds all the code that's specific to this particular
+application.</p>
+</li><li>
+<p><strong>app/controllers</strong> Holds controllers that should be named
+like <code>weblogs_controller.rb</code> for automated URL mapping. All
+controllers should descend from <code>ApplicationController</code> which
+itself descends from <code>ActionController::Base</code>.</p>
+</li><li>
+<p><strong>app/models</strong> Holds models that should be named like
+<code>post.rb</code>. Most models will descend from
+<code>ActiveRecord::Base</code>.</p>
+</li><li>
+<p><strong>app/views</strong> Holds the template files for the view that
+should be named like <code>weblogs/index.html.erb</code> for the
+<code>WeblogsController#index</code> action. All views use eRuby syntax.</p>
+</li><li>
+<p><strong>app/views/layouts</strong> Holds the template files for layouts to
+be used with views. This models the common <code>header/footer</code>
+method of wrapping views. In your views, define a layout using the
+<code>layout :default</code> and create a file named
+<code>default.html.erb</code>. Inside <code>default.html.erb</code>, call
+<code>&lt;% yield %&gt;</code> to render the view using this layout.</p>
+</li><li>
+<p><strong>app/helpers</strong> Holds view helpers that should be named like
+<code>weblogs_helper.rb</code>. These are generated for you automatically
+when using <code>script/generate</code> for controllers. Helpers can be
+used to wrap functionality for your views into methods.</p>
+</li><li>
+<p><strong>config</strong> Configuration files for the Rails environment, the
+routing map, the database, and other dependencies.</p>
+</li><li>
+<p><strong>db</strong> Contains the database schema in <code>schema.rb</code>.
+<code>db/migrate</code> contains all the sequence of Migrations for your
+schema.</p>
+</li><li>
+<p><strong>doc</strong> This directory is where your application documentation
+will be stored when generated using <code>rake doc:app</code>.</p>
+</li><li>
+<p><strong>lib</strong> Application specific libraries. Basically, any kind of
+custom code that doesn't belong under controllers, models, or helpers. This
+directory is in the load path.</p>
+</li><li>
+<p><strong>public</strong> The directory available for the web server.
+Contains subdirectories for images, stylesheets, and javascripts. Also
+contains the dispatchers and the default HTML files. This should be set as
+the <code>DOCUMENT_ROOT</code> of your web server.</p>
+</li><li>
+<p><strong>script</strong> Helper scripts for automation and generation.</p>
+</li><li>
+<p><strong>test</strong> Unit and functional tests along with fixtures. When
+using the <code>script/generate</code> scripts, template test files will be
+generated for you and placed in this directory.</p>
+</li><li>
+<p><strong>vendor</strong> External libraries that the application depends on.
+Also includes the plugins subdirectory. If the app has frozen rails, those
+gems also go here, under <code>vendor/rails/</code>. This directory is in
+the load path.</p>
+</li></ul>
+
+</div>
+
+
+
+<footer id="validator-badges">
+  <p><a href="http://validator.w3.org/check/referer">[Validate]</a>
+  <p>Generated by <a href="https://github.com/rdoc/rdoc">RDoc</a> 4.0.0.
+  <p>Generated with the <a href="http://deveiate.org/projects/Darkfish-Rdoc/">Darkfish Rdoc Generator</a> 3.
+</footer>
+
