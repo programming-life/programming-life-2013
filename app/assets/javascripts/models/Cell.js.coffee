@@ -17,7 +17,7 @@ class Cell
 		
 	# Checks if this cell has a module
 	has: ( module ) ->
-		@_modules.indexOf( module ) #TODO: ? check module type instead of object ref
+		@_modules.indexOf( module ) isnt -1 #TODO: ? check module type instead of object ref
 	
 	# Step runs this cell
 	step : ( dt ) ->
@@ -30,7 +30,9 @@ class Cell
 	
 	# The properties
 	Object.defineProperties @prototype,
-		creation: get : -> @_creation;
+		creation: 
+			get : -> @_creation
+		
 
 # Makes this available globally. Use require later, but this will work for now.
 (exports ? this).Cell = Cell
