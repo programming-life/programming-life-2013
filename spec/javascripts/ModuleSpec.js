@@ -1,11 +1,8 @@
 describe("Module", function() {
     var module;
-    var args = new Array();
-    args['type'] = 'DNA';
-    args['equation'] = '1*2*3*4*3';
     
     beforeEach(function() {
-        module = new Module(args);
+        module = new Module('DNA', '1*2*3*4*3');
     });
     
     it("should be able to store the module type", function() {
