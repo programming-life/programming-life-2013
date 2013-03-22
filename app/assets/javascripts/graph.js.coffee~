@@ -28,7 +28,7 @@ class Graph
 	
 	# Clear all data from the Graph
 	#
-	# @return [Graph] returns this Graph for chaining
+	
 	#
 	clear: ->
 		@_datasets = []
