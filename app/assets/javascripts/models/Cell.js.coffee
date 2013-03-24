@@ -71,7 +71,7 @@ class Cell
 		while t <= timespan - dt
 			t += dt
 			@step dt
-			callback { time: t, delta: dt  } if callback?
+			callback { time: t, delta: dt, cell: @  } if callback?
 		@
 			
 	
