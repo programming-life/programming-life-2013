@@ -70,8 +70,8 @@ class Cell
 		t = 0
 		while t <= timespan - dt
 			t += dt
-			this.step dt
-			callback { time: t, delta: dt } if callback?
+			@step dt
+			callback { time: t, delta: dt  } if callback?
 		@
 			
 	
