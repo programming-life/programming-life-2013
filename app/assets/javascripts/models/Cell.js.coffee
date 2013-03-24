@@ -1,42 +1,54 @@
 class Cell
 
 	# The constructor for the cell
+	#
 	constructor: ( ) ->
 		@_creation = Date.now()
 		@_modules = []
 		@_substances = {}
 	
 	# Add module to cell
-	# @param Module module module to add to this cell
-	# @returns self chainable instance
+	#
+	# @param [Module] module module to add to this cell
+	# @returns [self] chainable instance
+	#
 	add: ( module ) ->
 		@_modules.push module
 		@
 		
 	# Add substance to cell
-	# @param string substance substance to add
-	# @param int amount amount of substance to add
+	#
+	# @param [String] substance substance to add
+	# @param [Integer] amount amount of substance to add
+	# @returns [self] chainable instance
+	#
 	add_substance: ( substance, amount ) ->
 		@_substances[ substance ] = amount
 		@
 		
 	# Remove module from cell
-	# @param Module module module to remove from this cell
-	# @returns self chainable instance
+	#
+	# @param [Module] module module to remove from this cell
+	# @returns [self] chainable instance
+	#
 	remove: ( module ) ->
 		@_modules.splice( @_modules.indexOf module, 1 ) #TODO: update to use underscore without
 		@
 		
 	# Removes this substance from cell
-	# @param string substance substance to remove from this cell
-	# @returns self chainable instance
+	#
+	# @param [String] substance substance to remove from this cell
+	# @returns [self] chainable instance
+	#
 	remove_substance: ( substance ) ->
 		delete @_substances[ substance ]
 		@
 		
 	# Checks if this cell has a module
-	# @param Module module the module to check
-	# @returns Boolean true if the module is included
+	#
+	# @param [Module] module the module to check
+	# @returns [Boolean] true if the module is included
+	#
 	has: ( module ) ->
 		# TODO: ? check module type instead of object ref
 		@_modules.indexOf( module ) isnt -1
@@ -48,6 +60,10 @@ class Cell
 		@_substances[ substance ]
 	
 	# Step runs this cell
+	#
+	# @param [Integer] dt the step time it should take
+	# @returns [self] chainable instance
+	#
 	step : ( dt ) ->
 		substances_diff = {};
 		for module in @_modules
@@ -65,6 +81,12 @@ class Cell
 		@
 	
 	# Runs this cell
+	#
+	# @param [Integer] dt the step size
+	# @param [Integer] timespan the time it should run for
+	# @param [Function] callback optional callback
+	# @returns [self] chainable instance
+	#
 	run : ( dt, timespan, callback ) ->
 		# TODO: where to output
 		t = 0
