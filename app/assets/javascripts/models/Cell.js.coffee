@@ -5,7 +5,7 @@ class Cell
 	constructor: ( ) ->
 		@_creation = Date.now()
 		@_modules = []
-		@_substances = {}
+		@_substrates = {}
 	
 	# Add module to cell
 	#
@@ -16,14 +16,14 @@ class Cell
 		@_modules.push module
 		@
 		
-	# Add substance to cell
+	# Add substrate to cell
 	#
-	# @param [String] substance substance to add
-	# @param [Integer] amount amount of substance to add
+	# @param [String] substrate substrate to add
+	# @param [Integer] amount amount of substrate to add
 	# @returns [self] chainable instance
 	#
-	add_substance: ( substance, amount ) ->
-		@_substances[ substance ] = amount
+	add_substrate: ( substrate, amount ) ->
+		@_substrates[ substrate ] = amount
 		@
 		
 	# Remove module from cell
@@ -35,13 +35,13 @@ class Cell
 		@_modules.splice( @_modules.indexOf module, 1 ) #TODO: update to use underscore without
 		@
 		
-	# Removes this substance from cell
+	# Removes this substrate from cell
 	#
-	# @param [String] substance substance to remove from this cell
+	# @param [String] substrate substrate to remove from this cell
 	# @returns [self] chainable instance
 	#
-	remove_substance: ( substance ) ->
-		delete @_substances[ substance ]
+	remove_substrate: ( substrate ) ->
+		delete @_substrates[ substrate ]
 		@
 		
 	# Checks if this cell has a module
@@ -53,11 +53,11 @@ class Cell
 		# TODO: ? check module type instead of object ref
 		@_modules.indexOf( module ) isnt -1
 	
-	# Returns the amount of substance in this cell
-	# @param string substance substance to check
-	# @returns int amount of substance
-	amount_of: ( substance ) ->
-		@_substances[ substance ]
+	# Returns the amount of substrate in this cell
+	# @param string substrate substrate to check
+	# @returns int amount of substrate
+	amount_of: ( substrate ) ->
+		@_substrates[ substrate ]
 	
 	# Step runs this cell
 	#
@@ -65,19 +65,19 @@ class Cell
 	# @returns [self] chainable instance
 	#
 	step : ( dt ) ->
-		substances_diff = {};
+		substrates_diff = {};
 		for module in @_modules
-			# Each module should iterate with beforeStep values of all the substances
-			substances_clone = {};
-			for substance of @_substances 
-				substances_clone[substance] = @_substances[substance]
+			# Each module should iterate with beforeStep values of all the substrates
+			substrates_clone = {};
+			for substrate of @_substrates 
+				substrates_clone[substrate] = @_substrates[substrate]
 			# Step this module with these values
-			module_substances = module.step( dt, substances_clone )
+			module_substrates = module.step( dt, substrates_clone )
 			# Save the delta results
-			for substance of module_substances
-				substances_diff[substance] = module_substances[substance] - @_substances[substance]
-		for substance of substances_diff
-			@_substances[substance] += substances_diff[substance]
+			for substrate of module_substrates
+				substrates_diff[substrate] = module_substrates[substrate] - @_substrates[substrate]
+		for substrate of substrates_diff
+			@_substrates[substrate] += substrates_diff[substrate]
 		@
 	
 	# Runs this cell
