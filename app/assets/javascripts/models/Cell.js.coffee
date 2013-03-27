@@ -59,27 +59,7 @@ class Cell
 	amount_of: ( substrate ) ->
 		@_substrates[ substrate ]
 	
-	# Step runs this cell
-	#
-	# @param [Integer] dt the step time it should take
-	# @returns [self] chainable instance
-	#
-	step : ( dt ) ->
-		substrates_diff = {};
-		for module in @_modules
-			# Each module should iterate with beforeStep values of all the substrates
-			substrates_clone = {};
-			for substrate of @_substrates 
-				substrates_clone[substrate] = @_substrates[substrate]
-			# Step this module with these values
-			module_substrates = module.step( dt, substrates_clone )
-			# Save the delta results
-			for substrate of module_substrates
-				substrates_diff[substrate] = module_substrates[substrate] - @_substrates[substrate]
-		for substrate of substrates_diff
-			@_substrates[substrate] += substrates_diff[substrate]
-		@
-	
+		
 	# Runs this cell
 	#
 	# @param [Integer] dt the step size
@@ -92,7 +72,7 @@ class Cell
 		t = 0
 		while t <= timespan - dt
 			t += dt
-			@step dt
+			
 			callback { time: t, delta: dt, cell: @  } if callback?
 		@
 			
