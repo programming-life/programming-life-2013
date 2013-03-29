@@ -6,9 +6,6 @@ class Graph
 		bezierCurve: false
 		scaleShowLabels: false
 		scaleOverride: true
-		scaleSteps: t / dt
-		scaleStepsWidth: dt
-		scaleStartValue: 0
 	
 	# Construct a new Graph
 	#
@@ -16,7 +13,7 @@ class Graph
 	#
 	constructor: ( name ) ->
 		@_canvas = $("<canvas></canvas>")
-		@_element = $("<div class='graph'>#{name}<br /></div>")
+		@_element = $("<div class='graph'></div>")
 		@_element.append(@_canvas)
 		
 		@_datasets = []
@@ -49,8 +46,8 @@ class Graph
 	render: ( elem ) ->
 		ctx = @_canvas.get(0).getContext("2d")
 		new Chart(ctx).Line
-			#labels: 
-			#	t.toFixed(1) for t in [0 .. dt * (@_nPoints - 1)] by dt
+			labels: 
+				t.toFixed(1) for t in [0 .. dt * (@_nPoints - 1)] by dt
 			datasets:
 				for data in @_datasets
 					data: data
@@ -72,7 +69,11 @@ class Graph
 	#
 	getCanvas: ->		
 		@_canvas
-		
+	
+	# Return the parent object
+	#
+	# @return [Object] the Graph's parent object
+	#
 	getElement: ->
 		@_element
 	
