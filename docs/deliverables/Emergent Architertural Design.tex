@@ -15,14 +15,16 @@
 \begin{document}
 	\maketitle
 
+	\setcounter{section}{0}
+	\setcounter{secnumdepth}{3}
+	\setcounter{tocdepth}{5}
+	\renewcommand*\thesection{\arabic{section}}
+	
 	\pdfbookmark{\contentsname}{toc}
 	\tableofcontents
 
 	\clearpage
 
-	\setcounter{section}{0}
-	\renewcommand*\thesection{\arabic{section}}
-	
 	\section{Introduction}
 		This document contains the architectural design for the application created during the Context Project `Programming Life: Synthetic Biology'. The application is targeted at synthetic biologists and its main purpose is to easily model the complex workings of a cell. \\
 		The design of this application is explained first in terms of its design goals. Then a subsystem decomposition follows, which serves to uncover the inner workings of the application, along with a description of the mapping of subsystems to processes and computers, a hardware/software mapping. After this, the management of data and shared resources is discussed. In conclusion a short summary of the system architecture is given.
@@ -39,23 +41,23 @@
 				The server subsystems consist of two key parts: the server backend and the database. The server keeps an up to date copy of the database and sychronises with the client side when possible. It can also be used to do calculations that are too complicated for the client-side of the application. It is dependent upon the database, to synchronize the appropriate data to the appropriate client-backend corresponding with a user.
 				The database is used for storage of user data, modules for cell design, as well as cell models created using the application. It provides a centralized storage so the client-side application can function on any platform without a persistent internet connection. It is not dependent upon anything, although every function used persistent data is dependent on it. 
 				A certain number of technologies are involved in the serverside.
-				\subsubsubsection{Rails}
+				\paragraph{Rails}
 					The server runs on Ruby on Rails. This is a fairly new but very stable platform that is not only free but also open source. This means active development by a lot of people. Problems are easily fixed and this should ease the use of the application that is being designed. The language itself is written from a standpoint where you should just be able to write code and not worry about breaking the interpreter. This makes it easy to write complex code.
-				\subsubsubsection{MVC}
+				\paragraph{MVC}
 					The pages served are HTML5 for markup with CSS3 for styling and Javascript for interaction. Pages are built by a comprehensive and solid Model-Viewer-Controller system. This keeps data separated from the representation, further increasing maintainability. 
-				\subsubsubsection{Models and Database}
+				\paragraph{Models and Database}
 					Ruby models are mapped to any SQL enabled language such as SQLLite, MySQL and PostgreSQL. By not restricting the server database technology, switching systems, servers or extending  their capacity should be fairly simple and easy.
-				\subsubsubsection{Views and ERB}
+				\paragraph{Views and ERB}
 					The views are in ERB which is an HTML template system. It is provided with the default Ruby library, so it does not require any extra software. Ruby controllers can expose data to these views. New views are easily added this way, so new ways of data representation are quickly devised.
-				\subsubsubsection{Coffeescript and Javascript}
+				\paragraph{Coffeescript and Javascript}
 					Interaction assets are written in Coffeescript, which is a language specially designed to make Javascript more maintainable, readable and cleaner alltogether. Coffedoc is used to document this code and Jasmine is used to test the javascript output. In production a script called uglifier minifies and bundles all the scripts.
-				\subsubsubsection{SASS and CSS}
+				\paragraph{SASS and CSS}
 					Styling assets are written in a language called Syntactically Awesome Stylesheets. Similar to CoffeeScript, SASS makes it easier and cleaner to create extensive CSS. 
 			\subsubsection{Client side}
 				The client side subsystems contain most of the applications functionality. These subsystems are responsible for displaying the graphical environment with all it's modules, as well as doing the basic simulating. If the simulation becomes too complex, the complicated calculations can be sent to the sever to be processed on the server side. If used locally, the client side subsystems function independently of the server. If used on multiple machines, the client side can be made dependent on the server and the database to synchronize user data.
-				\subsubsubsection{Localstorage}
+				\paragraph{Localstorage}
 					Javascript determines the local storage engine that is avaialbe and uses that to maintain an offline copy of the application. This makes it very easy to design new cells. 
-				\subsubsubsection{Interaction by Javascript}
+				\paragraph{Interaction by Javascript}
 					Javascript facilitates interaction and processes all the differential equations. It generates the graphs and the reports. 
 		\subsection{Hardware/software mapping}
 			The hardware/software mapping is illustrated by the image below. The server is a non-client piece of hardware, and can therefore be chosen specifically to suit the clients needs. The client side hardware is required to support current webbuilding standards, which qualifies almost every machine from almost every platform to run the application.\\
