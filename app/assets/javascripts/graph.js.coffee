@@ -58,14 +58,19 @@ class Graph
 		if elem instanceof jQuery
 			elem.append(@_canvas)
 		
-		return @_canvas
+		@_canvas
 	
 	# Return the canvas object
 	#
 	# @return [Object] the Graph's canvas
 	#
 	getCanvas: ->		
-		return @_canvas
+		@_canvas
+		
+	setDimensions: ( width, height ) ->
+		@_canvas.attr('width', width)
+		@_canvas.attr('height', height)
+		@
 
 
 (exports ? this).Graph = Graph		
