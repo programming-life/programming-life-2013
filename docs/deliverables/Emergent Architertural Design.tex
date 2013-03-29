@@ -36,7 +36,7 @@
 		\subsection{Subsystem Decomposition}
 			This section describes the key subsystems in the application. It is divided into two sections, because the application is diveded this way as well. The first subsection is about the server-side subsystems and the second one is about the client-side subsystems.
 			\subsubsection{Server side}
-				The server subsystems consist of two key parts: the server backend and the database. The main use of the server backend is synchronisation between different client-backends. It can also be used to do calculations that are too complicated for the client-side of the application. It is dependent upon the database, to synchronize the appropriate data to the appropriate client-backend corresponding with a user.
+				The server subsystems consist of two key parts: the server backend and the database. The server keeps an up to date copy of the database and sychronises with the client side when possible. It can also be used to do calculations that are too complicated for the client-side of the application. It is dependent upon the database, to synchronize the appropriate data to the appropriate client-backend corresponding with a user.
 				The database is used for storage of user data, modules for cell design, as well as cell models created using the application. It provides a centralized storage so the client-side application can function on any platform without a persistent internet connection. It is not dependent upon anything, although every function used persistent data is dependent on it. 
 				A certain number of technologies are involved in the serverside.
 				\subsubsubsection{Rails}
