@@ -44,7 +44,7 @@ class Graph
 		ctx = @_canvas.get(0).getContext("2d")
 		new Chart(ctx).Line
 			labels: 
-				t.toFixed(1) for t in [0 .. dt * (@nPoints - 1)] by dt
+				t.toFixed(1) for t in [0 .. dt * (@_nPoints - 1)] by dt
 			datasets:
 				for data in @_datasets
 					data: data
