@@ -15,3 +15,9 @@
 //= require_tree .
 //= require underscore
 //= require backbone
+//
+//= require bootstrap
+//= require chart
+//= require graph
+
+
