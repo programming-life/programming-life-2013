@@ -95,8 +95,28 @@ class Cell
 			@step dt
 			callback { time: t, delta: dt, cell: @  } if callback?
 		@
-			
 	
+	# Gets the simulation data for the module
+	#
+	# @param [Object] module The module.
+	# @return [Array] The array with simulation data points for a graph
+	getData: ( module ) ->
+		#TODO Implement
+	
+	#Visualizes this cell
+	#
+	# @param [Object] A container for the graphs.
+	# @returns [Object] Returns the canvas object with graph of the cell's modules
+	visualize: ( container ) ->
+		for module in @_modules
+			data = cell.getData(module)
+			graph = new Graph(module._type)
+				.addData(data)
+				.render()
+			container.appendChild(graph)
+		container
+
+			
 	# The properties
 	Object.defineProperties @prototype,
 		creation: 
