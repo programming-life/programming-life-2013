@@ -4,22 +4,28 @@ class Graph
 	_chartOptions:
 		pointDot: false
 		bezierCurve: false
+		scaleShowLabels: false
+		scaleOverride: true
+		scaleSteps: t / dt
+		scaleStepsWidth: dt
+		scaleStartValue: 0
 	
 	# Construct a new Graph
 	#
-	# @param [Array] an array with data points
+	# @param [String] the name of this graph
 	#
-	constructor: ( data ) ->
-		@_canvas = $("<canvas height='400' width='600'></canvas>")
+	constructor: ( name ) ->
+		@_canvas = $("<canvas></canvas>")
+		@_element = $("<div class='graph'>#{name}<br /></div>")
+		@_element.append(@_canvas)
+		
 		@_datasets = []
 		@_nPoints = 0		
-		
-		@addData(data)
 		
 	# Add a data set to the Graph
 	#
 	# @param [Array] an array with data points
-	# @return [Graph] returns this Graph for chaining
+	# @return [self] returns self for chaining
 	#
 	addData: ( data ) ->
 		@_datasets.push(data)
@@ -28,7 +34,7 @@ class Graph
 	
 	# Clear all data from the Graph
 	#
-	# @return [Graph] returns this Graph for chaining
+	# @return [self] returns self for chaining
 	#
 	clear: ->
 		@_datasets = []
@@ -43,8 +49,8 @@ class Graph
 	render: ( elem ) ->
 		ctx = @_canvas.get(0).getContext("2d")
 		new Chart(ctx).Line
-			labels: 
-				t.toFixed(1) for t in [0 .. dt * (@_nPoints - 1)] by dt
+			#labels: 
+			#	t.toFixed(1) for t in [0 .. dt * (@_nPoints - 1)] by dt
 			datasets:
 				for data in @_datasets
 					data: data
@@ -56,9 +62,9 @@ class Graph
 				@_chartOptions
 		
 		if elem instanceof jQuery
-			elem.append(@_canvas)
+			elem.append(@_elem)
 		
-		@_canvas
+		@_element
 	
 	# Return the canvas object
 	#
@@ -67,9 +73,16 @@ class Graph
 	getCanvas: ->		
 		@_canvas
 		
+	getElement: ->
+		@_element
+	
+	# Set the width en height of the graph
+	#
+	# @return [self] returns self for chaining
+	#
 	setDimensions: ( width, height ) ->
-		@_canvas.attr('width', width)
-		@_canvas.attr('height', height)
+		$(@_canvas, @_element).attr('width', width)
+		$(@_canvas, @_element).attr('height', height)
 		@
 
 
