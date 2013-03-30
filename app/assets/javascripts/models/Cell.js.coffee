@@ -67,14 +67,50 @@ class Cell
 	# @param [Function] callback optional callback
 	# @returns [self] chainable instance
 	#
-	run : ( dt, timespan, callback ) ->
+	run : ( dt, timespan ) ->
 		# TODO: where to output
-		t = 0
-		while t <= timespan - dt
-			t += dt
+		values = [ 1, 0, 0, 10, 0 ]
+		
+		kDNA = 1
+		Sint = 1
+		Lipid = 1
+		
+		module = ( v ) ->
+			a = 0
+			b = 1
+			kDNA * v[ a ] * 1 * Sint * Lipid * 1 * v[ b ] 
 			
-			callback { time: t, delta: dt, cell: @  } if callback?
-		@
+		# equations = ( t, v ) -> { DNA : ( kDNA * t.DNA * 1 ) * ( Sint * Lipid * 1 ) * t.DNA }
+		equations = ( t, v ) -> 
+		
+			DNA = v[0];
+			Lipid = v[1];
+			Prod = v[2];
+			Protein = v[3];
+			Sint = v[4];
+		
+			kDNA = 1
+			kLipid = 1
+			kProtein = 1
+
+			vDNASynth = kDNA * DNA * Prod	
+			vLipid = 0
+			#vTransport = kTransport * Transporter * Sext / (Sext + kM )
+			vTransport = 1
+			mu = Sint * Lipid * Protein
+			
+			dDNA = vDNASynth * mu * DNA
+			dLipid = kLipid * DNA * Sint - mu * Lipid
+			dProd = 1
+			dProtein = kProtein * DNA - mu * Protein
+			dSint = vTransport - 0 - vLipid
+			
+			[ dDNA, dLipid, dProd, dProtein, dSint ]
+			
+		sol = numeric.dopri( 0, timespan / dt, values, equations )
+		console.info( sol );
+		sol
+		
 			
 	
 	# The properties
