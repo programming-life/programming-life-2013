@@ -2,6 +2,32 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
+body {
+	overflow: hidden;
+}
+
+.bottom {
+	position: absolute;
+	bottom: 0px;
+}
+
+.left {
+	position: absolute;
+	left: 0px;
+}
+
+.right {
+	position: absolute;
+	right: 0px;
+}
+
 .graph {
 	padding: 0px;
+}
+
+.graph-title {
+	display: block;
+	width:50px;
+	margin: 0 auto;
+	margin-top:-40px;
 }
