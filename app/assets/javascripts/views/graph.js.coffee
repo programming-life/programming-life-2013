@@ -60,7 +60,7 @@ class Graph
 				@_chartOptions
 		
 		if elem instanceof jQuery
-			elem.append(@_elem)
+			elem.append(@_element)
 		
 		@_element
 	
