@@ -5,7 +5,6 @@ class Graph
 		pointDot: false
 		bezierCurve: false
 		scaleShowLabels: false
-		scaleOverride: true
 	
 	# Construct a new Graph
 	#
