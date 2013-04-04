@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.4-1.40.13 (TeX Live 2012/Debian) (format=pdflatex 2013.3.29)  4 APR 2013 14:28
+This is pdfTeX, Version 3.1415926-2.4-1.40.13 (TeX Live 2012/Debian) (format=pdflatex 2013.3.29)  4 APR 2013 15:12
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -517,22 +517,34 @@ Package pdftex.def Info: VR.jpeg used on input line 21.
  [1
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map} <./DJ.png> <./Yoloost.png> 
-<./SS.jpeg> <./TP.jpeg> <./VR.jpeg>] [1] [2] [3] [4] [5]
-Underfull \hbox (badness 10000) in paragraph at lines 242--247
+<./SS.jpeg> <./TP.jpeg> <./VR.jpeg>]
+Underfull \hbox (badness 10000) in paragraph at lines 24--29
+
+ []
+
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 30.
+(/usr/share/texlive/texmf-dist/tex/latex/base/omscmr.fd
+File: omscmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
+)
+LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 30.
+ [1] [2] [3] [4]
+[5]
+Underfull \hbox (badness 10000) in paragraph at lines 254--259
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 248--252
+Underfull \hbox (badness 10000) in paragraph at lines 260--264
 
  []
 
 [6] [7] (./Context Seminar Report.aux) ) 
 Here is how much of TeX's memory you used:
- 3100 strings out of 495059
- 40546 string characters out of 3182030
+ 3117 strings out of 495059
+ 40838 string characters out of 3182030
  109963 words of memory out of 3000000
- 6226 multiletter control sequences out of 15000+200000
+ 6240 multiletter control sequences out of 15000+200000
  11849 words of font info for 46 fonts, out of 3000000 for 9000
  14 hyphenation exceptions out of 8191
  38i,17n,23p,735b,365s stack positions out of 5000i,500n,10000p,200000b,50000s
@@ -553,7 +565,7 @@ sfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts
 /cm/cmsy5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cms
 y7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb
 >
-Output written on "Context Seminar Report.pdf" (8 pages, 499076 bytes).
+Output written on "Context Seminar Report.pdf" (8 pages, 499643 bytes).
 PDF statistics:
  107 PDF objects out of 1000 (max. 8388607)
  72 compressed objects within 1 object stream
