@@ -1,4 +1,4 @@
-\documentclass[10pt,a4paper]{report}
+\documentclass[10pt,a4paper]{article}
 \usepackage[utf8]{inputenc}
 \usepackage{amsmath}
 \usepackage{amsfonts}
@@ -20,9 +20,13 @@ Vincent Robbemond & 4174097 & \includegraphics[scale=0.2]{VR.jpeg}\\
 \begin{document}
 \maketitle
 
-\section*{Introduction}
+\newpage
+\tableofcontents
+
+\newpage
+\section{Introduction}
 The purpose of this report is to survey the context seminars and to briefly discuss our vision on the project and product itself.
-The main focus of these seminars was to expand the domain knowledge necessary to make sure the target system will fully function in it's environment.
+The main focus of these seminars was to expand the domain knowledge necessary to make sure the target system will fully function in its environment.
 \\
 \\
 The report includes:
@@ -32,11 +36,9 @@ The report includes:
 \item Our vision on the product
 \end{itemize}
 
-
-
 \newpage
-\section*{Introduction to molecular biology}
-\subsection*{Chemical Structure}
+\section{What is molecular biology?}
+\subsection{Chemical Structure}
 \textbf{Deoxyribonucleic acid} ( DNA ) contains \textbf{genetic information}. 
 All DNA in an organism is called the \textbf{genome}. 
 DNA encodes for all \textbf{proteins} needed to live. 
@@ -49,7 +51,7 @@ The opposite sides of DNA are therefore \textbf{complements}.
 The non-covalent hydrogen bonds can be broken, resulting into two DNA strands, which is necessary for DNA \textbf{replication}. 
 DNA strands can be paired with RNA strands. This is called \textbf{hybridization}. 
 
-\subsection*{RNA, Transcription and Translation}
+\subsection{RNA, Transcription and Translation}
 RNA is usually single stranded and is therefore more flexible, making interactions with itself possible. 
 Some parts of DNA encode for RNA, instead of proteins. 
 A \textbf{gene} consists of the region encoding for the protein plus all surrounding control regions. 
@@ -68,7 +70,7 @@ Three codons infer a stop signal – or \textbf{terminator signal}, which ends o
 The enzymatic activity that joins amino acids is due to \textbf{ribosomal RNA} ( rRNA ). 
 The process of mRNA - with the aid of tRNA and rRNA - to proteins is called \textbf{translation}.
 
-\subsection*{Gene control}
+\subsection{Gene control}
 Some regions of DNA are \textbf{regulatory elements}: control sequences. 
 The control regions where RNA polymerase\footnote{Enzyme that unbinds DNA so mRNA can be created from DNA}  binds to start transcription are called \textbf{promotors}. 
 Other controls are \textbf{activators} which improve binding of RNA polymerase and \textbf{repressors} which do the opposite. 
@@ -79,12 +81,12 @@ These are necessary to regulate \textbf{gene expression}. Over- and under expres
 In bacteria gene organization allows for \textbf{operons}: sequential encoding for proteins without a stop signal, meaning only one control region for several proteins, that are transcribed to a single piece of mRNA. 
 Operons are rarely found in eukaryotes.
 
-\subsection*{Evolution and mutation}
+\subsection{Evolution and mutation}
 Genes may be changed, added, or destroyed because of \textbf{mutations}. 
 Change causes \textbf{evolution}. 
 Molecular biologist can transfer individual genes between organisms to produce proteins that some humans are missing because of defects.
 
-\subsection*{Synthetic gene networks}
+\subsection{Synthetic gene networks}
 By combining \textbf{naturally occurring genetic components} in unique ways, it has become possible to \textbf{artificially} engineer \textbf{genetic networks} that possess sophisticated functional capabilities.
 
 \textbf{Transcriptional control} operates at the level of \textbf{mRNA synthesis} through the use of \textbf{inducible transcriptional activators} and \textbf{repressors} that are capable of binding naturally occurring or specifically engineered \textbf{promoters}.
@@ -113,7 +115,7 @@ The key requirements for a \textbf{band-detection network} (responding to an ind
 The \textbf{pulse-generating network} produces output when a \textbf{threshold} concentration is reached, and then through a \textbf{feedforward mechanism} shuts down reporter expression regardless of whether the concentration continues to rise or fall.
 Like the \textbf{band-detection network} the \textbf{pulse-generating network} provides important insights into how pulse-generating behavior could occur in \textbf{natural systems}.
 
-\subsection*{Mathematics of chemical reactions}
+\subsection{Mathematics of chemical reactions}
 The \textbf{equilibrium position} of a reversible reaction, the point at which the rate of formation equals the rate of dissociation, is determined by a combination of the forward and reverse \textbf{rate constants}.
 
 \textbf{For unidirectional reactions ($A + B \rightarrow X + Y$):} If $X$ is the number of molecules of any reactant, the \textbf{rate of disappearance} equals that of any other reactant and is decribed by $\frac{dX}{dt}$. 
@@ -136,7 +138,7 @@ If the forward and backward reactions are independent, the rate of change is the
 If the forward and reverse constants are distinct, the equation describing the stationary points is quadratic and thus easily factorized, with real roots if $x_0 \leq y_0$. 
 The progression of the reaction can be found in a similar way as that of a unidirectional reaction.
 
-\subsection*{Enzyme Kinetics}
+\subsection{Enzyme Kinetics}
 The reaction from substrate $S$ in combination with enzyme $E$ to product $P$ is performed by forming an \textbf{enzyme-substrate complex} $C$ which decomposes into product and enzyme. 
 Due to the typically small amount of enzyme compared to subtrate, the conversion rate is limited when the enzyme becomes saturated with substrate (\textbf{enzyme saturation}). 
 No enzyme is destroyed or produced, so $e_0$ is the initial and total amount of enzyme. 
@@ -145,7 +147,7 @@ The combination $k_M = \frac{k_{-1} + k_2}{k_1}$ of rate constants is known as t
 The velocity $v$ of the reaction is the appearance rate of the product and so at high substrate levels $v_{max} = k_2e_0$. The initial velocity is found by substituting $v_{max}$ into the \emph{Law of Mass action} for $t = $. 
 By expirimentally measuring the reaction rate for various substrate concentrations a sketch of the graph can be made and working from the graph $k_M$ can be determined, being the substrate concentration where the reaction rate is half maximal.
 
-\subsection*{Synthetic biology and minimal cell}
+\subsection{Synthetic biology and minimal cell}
 The field of synthetic biology has three enablers that helped it emerge and develop rapidly: \textbf{computational modelling}, \textbf{DNA sequencing} and \textbf{DNA synthesis}.
 
 \textbf{Synthetic biology}, not unlike systems biology, relies heavily on computational modelling. 
@@ -201,7 +203,8 @@ Another method entirely is a \textbf{cell free approach}.
 In this strategy, only biochemical extracts containing the components necessary to operate the synthetic DNA circuit are employed. 
 This method offers more control of the synthetic device as the normal processes of the cell won’t interfere with the intended processes.
 
-\subsection*{What is Bioinformatics?}
+\newpage
+\section{What is bioinformatics?}
 
 Bioinformatics is conceptualising biology in terms of molecules and applying \textbf{informatics techniques} to \textbf{understand} and \textbf{organise} the \textbf{information} associated with these molecules, on a \textbf{large scale}. There are \textbf{three} aims of bioinformatics: First, bioinformatics organises \textbf{data} in a way that allows researchers to access existing information and to submit new entries as they are produced. The second aim is to develop \textbf{tools} and \textbf{resources} that aid in the analysis of said data. The third aim is to use these tools to \textbf{analyse} the data and \textbf{interpret} the results in a biologically meaningful manner.
 
@@ -217,7 +220,7 @@ The most profitable research in bioinformatics often results from integrating mu
 
 In the end, two principal approaches form the basis of all studies in bioinformatics \textbf{(the three aims)}: \textbf{comparing} and \textbf{grouping} the data according to \textbf{biologically meaningful similarities} and \textbf{analysing} one type of data to infer and understand the observations for another type of data, so we can \textbf{understand} and \textbf{organise} the \textbf{information} associated with biological molecules on a \textbf{large scale}.
 
-\subsection*{Bioinformatics Challenges for Personalized Medicine}
+\subsection{Bioinformatics Challenges for Personalized Medicine}
 \textbf{Single Nucleotide Polymorphisms (SNPs)} are now recognized as the main cause of human genetic variability.
 By combining these genetic associations with phenotypes and drug response, \textbf{personalized medicine} will tailor treatments to the patients’ specific genotype.
 In the coming years, the bioinformatics world will be inundated with \textbf{individual genomic data}. 
@@ -250,7 +253,7 @@ Most pharmaceutical development addresses medical problems with a “one drug fi
 Bioinformatics also translates discoveries to the clinic by \textbf{disseminating discoveries} through curated, searchable databases.
 Ultimately, bioinformatics needs to develop methods that \textbf{interrogate the genome} in the clinic and allow physicians to use personalized medicine in their daily practice.
 
-\subsection*{Trends in computational biology}
+\subsection{Trends in computational biology}
 \hspace*{0.5cm}\textbf{Next-generation sequence analysis}\\
 Computational biology has risen in prominence in recent years largely because of the increase in the data-generation capacity of high-throughput technology.\\
 \textbf{The advance:} Two methods for de novo transcriptome assembly of short reads were published.\\
@@ -267,9 +270,14 @@ In biological research, one advantage of computational analysis is automation an
 \textbf{The advance:} Machine-learning algorithms that could accurately classify whether a pattern of fluorescent staining represents localization to one subcellular organelle or to a mixture of locations.\\
 \textbf{What it means:} This represents the first step toward a new way of thinking about interpreting images that is generative rather than descriptive.
 Whereas descriptive approach may take an image of a cell and tell you that the protein is in the nucleus, a generative approach builds a model for other images.
+
 \newpage
-\section*{Vision on bioinformatics}
-\section*{Productvision}
-\section*{Conclusion}
-This report identified critical parts of information for our project. 
+\section{Vision on bioinformatics}
+Bioinformatics will play a large role in understanding the structures and roles of molecules and will help us work with the huge amount of data we get from researching these molecules. By utilising the tools and working methods of computer science, we can organise and standardise the data in a way like mechanical engineers did with nuts and bolts. This will significantly boost the efficiency of our research as it makes it easier to compare results and find similarities in different structures in a large scale.
+
+\section{Productvision}
+
+\section{Conclusion}
+
+
 \end{document}
