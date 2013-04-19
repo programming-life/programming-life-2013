@@ -1,11 +1,12 @@
 describe("Graph", function() {
     var graph;
+	var name = "test_graph";
     var data = [1, 3, 5, 5,4, 8, 6, 3, 4, 1, 2, 6, 3];
     var data2 = [2, 5, 2, 3,1, 8, 5, 7, 6, 3, 2, 4, 3];
     window.dt = 0.1;
     
     beforeEach(function() {
-        graph = new Graph(data);
+        graph = new Graph(name, data);
     });
     
     it("should have one initial dataset when one is provided", function() {

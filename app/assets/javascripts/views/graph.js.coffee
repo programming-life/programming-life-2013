@@ -10,13 +10,15 @@ class Graph
 	#
 	# @param [String] the name of this graph
 	#
-	constructor: ( name ) ->
+	constructor: ( name, data ) ->
 		@_canvas = $("<canvas></canvas>")
 		@_element = $("<div class='graph'></div>")
 		@_element.append(@_canvas)
 		
 		@_datasets = []
 		@_nPoints = 0		
+
+		@addData( data ) if data
 		
 	# Add a data set to the Graph
 	#

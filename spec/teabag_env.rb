@@ -28,6 +28,6 @@ Teabag.setup do |config|
   #config.color            = true
 
   # Coverage (requires istanbul -- https://github.com/gotwarlost/istanbul)
-  #config.coverage         = true
-  #config.coverage_reports = "text,html,cobertura"
+  config.coverage         = true
+  config.coverage_reports = "text,html,cobertura"
 end
