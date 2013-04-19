@@ -1,47 +1,78 @@
-# Describes the module with its type (DNA, transporter, etc),
-# and the right equation.
-#
-# @example Creating a new module
-#	Module dna = new Module('DNA', 'x+y-z*k')
+# Baseclass of all modules. Defines basic behaviour like undo and redo 
+# mechanisms and solving of differential equations
 class Module
-	# Constructs a new module, accepting a type and its equation
+	# Constructor for module
+	#
+	# @param [Object] params, parameters for this module
+	#
+	constructor: ( params ) -> 
+		@_creation = Date.now()
+		@_history = []
+		@_future = []
 
-	# @param [String] type the type of module
-	# @param [String] the equation of this type of module
-	constructor: (type, equation) ->
-			@_type = type
-			@_equation = equation
+		for key, value of params
+			((key) => 
+				Object.defineProperty(this, "_#{key}",
+					value: value
+					configurable: false
+					enumerable: false
+					writable: true
+				)
 
-		# Getters and setters
-		Object.defineProperties @prototype,
-				type:
-					get : -> @_type
-					set : (value) -> @_type = value
-				equation:
-					get : -> @_equation
-					set : (value) -> @_equation = value
+				Object.defineProperty(this, key,
+					set: ( param ) ->
+						@_clearFuture()
+						@_pushHistory(key, this["_#{key}"])
+						this["_#{key}"] = param
+					get: ->
+						return this["_#{key}"]
+					enumerable: true
+					configurable: false
+				)
+			) key
 
-# Makes this globally available
+		Object.seal(this)
+
+	# Pushes a move onto the history stack, and notifies Main of this move.
+	#
+	# @param [String] key, the changed property
+	# @param [val] value, the value of the changed property 
+	_pushHistory: ( key, value ) ->
+		@_history.push([key, value])
+		Main.pushHistory('modify', this)
+
+	# Pops a move of the history stack and applies it. Calls _pushFuture on the 
+	# changed values.
+	#
+	popHistory: ( ) ->
+		[key, value] = @_history.pop()
+		if key
+			@_pushFuture(key, this[key])
+			this["_#{key}"] = value
+
+	# Pushes a move onto the future stack, and notifies Main of this move.
+	#
+	# @param [String] key, the changed property
+	# @param [val] value, the value of the changed property 
+	_pushFuture: ( key, value ) ->
+		@_future.push([key, value])
+		Main.pushFuture('modify', this)
+
+	# Pops a move of the future stack and applies it. Calls _pushHistory on the 
+	# changed values.
+	#
+	popFuture: ( ) ->
+		[key, value] = @_future.pop()
+		if key
+			@_pushHistory(key, this[key])
+			this["_#{key}"] = value
+
+	# Clears the future stack. Should be called when a move is actually done.
+	#
+	_clearFuture: ( ) ->
+		@_future.length = 0
+
 (exports ? this).Module = Module
 
-# Default modules
-#
-#	@example Cell
-#		new Module('Cell', [S_int * Lipid * Protein] * [DNA, Lipid, Protein] * Cell)
-# @example DNA
-#		new Module('DNA', k_DNA * DNA * Prod * S_int * Lipid * Protein * DNA)
-# @example Lipid
-#		new Module('Lipid', k_L * DNA * S_int - [S_int * Lipid * Protein * Lipid])
-# @example Transporter
-#		new Module('Transporter', k_Tr * DNA * S_int - [S_int * Lipid * Protein * Transporter])
-#	@example Proteine
-#		new Module('Protein', k_p * DNA - [S_int * Lipid * Protein * Protein] - [k^p_d * Protein])
-@_defaults = 
-{
-	cell : new Module('Cell', '(0.5 * 0.3 * 0.6) * (0.3 * 0.1 * 0.2) * 0.5')
-	DNA: new Module('DNA', '0.7 * 0.3 * 0.6 * 0.5 * 0.3 * 0.6 * 0.3'),
-	lipid: new Module('Lipid', '0.4 * 0.3 * 0.6 - (0.5 * 0.3 * 0.6 * 0.1)')
-	transporter: new Module('Transporter', '0.3 * 0.3 * 0.6 - (0.5 * 0.3 * 0.6 * 0.6)')
-	protein: new Module('Protein', '0.2 * 0.3 - (0.5 * 0.3 * 0.6 * 0.6) - (0.1 * 0.6)')
-}
-(exports ? this).defaults = @_defaults
+
+
