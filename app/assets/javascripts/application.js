@@ -18,6 +18,8 @@
 //
 //= require bootstrap
 //= require chart
-//= require graph
+//= require views/graph
+//= require models/cell
+//= require models/module
 
 
