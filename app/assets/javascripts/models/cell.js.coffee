@@ -14,7 +14,7 @@ class Cell
 	#
 	add: ( module ) ->
 		@_modules.push module
-		@
+		return this
 		
 	# Add substrate to cell
 	#
@@ -24,7 +24,7 @@ class Cell
 	#
 	add_substrate: ( substrate, amount ) ->
 		@_substrates[ substrate ] = amount
-		@
+		return this
 		
 	# Remove module from cell
 	#
@@ -33,7 +33,7 @@ class Cell
 	#
 	remove: ( module ) ->
 		@_modules.splice( @_modules.indexOf module, 1 ) #TODO: update to use underscore without
-		@
+		return this
 		
 	# Removes this substrate from cell
 	#
@@ -42,7 +42,7 @@ class Cell
 	#
 	remove_substrate: ( substrate ) ->
 		delete @_substrates[ substrate ]
-		@
+		return this
 		
 	# Checks if this cell has a module
 	#
@@ -51,13 +51,13 @@ class Cell
 	#
 	has: ( module ) ->
 		# TODO: ? check module type instead of object ref
-		@_modules.indexOf( module ) isnt -1
+		return @_modules.indexOf( module ) isnt -1
 	
 	# Returns the amount of substrate in this cell
 	# @param string substrate substrate to check
 	# @returns int amount of substrate
 	amount_of: ( substrate ) ->
-		@_substrates[ substrate ]
+		return @_substrates[ substrate ]
 	
 		
 	# Runs this cell
@@ -86,7 +86,7 @@ class Cell
 			variables = { }
 			for variable, i of mapping
 				variables[ variable ] = values[ i ]
-			variables
+			return variables
 			
 		# The step function for this module
 		#
@@ -113,15 +113,15 @@ class Cell
 					current = results[ mapping[ variable ] ] ? 0
 					results[ mapping[ variable ] ] = current + result
 								
-			results
+			return results
 			
 		# Run the ODE from 0...timespan with starting values and step function
 		sol = numeric.dopri( 0, timespan, values, step )
 		
 		# Return the system results
-		sol
+		return { results: sol, map: mapping }
 	
-	#Visualizes this cell
+	# Visualizes this cell
 	#
 	# @param [Object] A container for the graphs.
 	# @returns [Object] Returns the canvas object with graph of the cell's modules
@@ -132,7 +132,7 @@ class Cell
 				.addData(data)
 				.render()
 			container.appendChild(graph)
-		container
+		return container
 
 
 	# The properties
