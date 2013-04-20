@@ -24,3 +24,4 @@
 //= require models/module
 
 
+//= require numeric-1.2.6
