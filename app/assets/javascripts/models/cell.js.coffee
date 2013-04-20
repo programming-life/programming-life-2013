@@ -132,13 +132,13 @@ class Cell
 		mapping = ran.map
 		
 		interpolation = []
-		for i in [ 0 ... duration ] by dt
+		for i in [ 0 .. duration ] by dt
 			interpolation[ i ] = results.at( i );
 
 		for key, value of mapping
 			graph = new Graph( key )
 			dataset = []
-			for i in [ 0 ... duration ] by dt
+			for i in [ 0 .. duration ] by dt
 				dataset.push( interpolation[ i ][ value ] )
 			graph.addData(dataset)
 				.render(container)

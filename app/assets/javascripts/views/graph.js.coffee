@@ -54,7 +54,7 @@ class Graph
 				[ '', '' ]
 			labels: 
 				for t in [0 ... duration] by dt
-					if ( 0 < t < duration - dt ) then '' else t 
+					if ( 0 < t < duration - dt ) then '' else t.toFixed 1
 			datasets:
 				for data in @_datasets
 					data: data
