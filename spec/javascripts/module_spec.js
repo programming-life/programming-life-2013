@@ -1,9 +1,10 @@
 describe("Module", function() {
-	var module;
+	var module, step;
 	
 	beforeEach(function() {
-		params = {k: 3, b: 5}
-		module = new Module(params)
+		params = { k: 3, b: 5 };
+		step = function( t, substrates ) { return { 'a' : this.k + this.b } };
+		module = new Module( params, step );
 	});
 
 	it("should be able to set its properties to its params", function() {
@@ -25,7 +26,7 @@ describe("Module", function() {
 		expect(module.k).toEqual(8)
 	});
 
-	it("it should clear all redo moves when a property changes", function() {
+	it("should clear all redo moves when a property changes", function() {
 		module.k = 8
 		module.popHistory()
 		module.k = 5
@@ -37,4 +38,12 @@ describe("Module", function() {
 		module.c = 10
 		expect(module.c).toEqual(undefined)
 	});	
+	
+	it("should be able to access the step function property", function() {
+		expect( module.step ).toEqual( step );
+	});
+	
+	it("should be able to run the step property in context", function() {
+		expect( module.step( 0, {} ).a ).toEqual( module.k + module.b );
+	});
 }); 
