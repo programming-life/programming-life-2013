@@ -30,9 +30,10 @@ class Main
 	# Pops the last move of the history stack and calls popHistory on the right module.
 	#
 	_popHistory: ( ) ->
-		[type, module] = @_history.pop()
-		switch type
-			when 'modify' then module.popHistory()
+		if @_history.length > 0
+			[type, module] = @_history.pop()
+			switch type
+				when 'modify' then module.popHistory()
 
 	# Pushes a move onto the Future stack
 	#
@@ -45,9 +46,10 @@ class Main
 	# Pops the last move of the future stack and calls popFuture on the right module.
 	#
 	_popFuture: ( ) ->
-		[type, module] = @_future.pop()
-		switch type
-			when 'modify' then module.popFuture()
+		if @_future.length > 0
+			[type, module] = @_future.pop()
+			switch type
+				when 'modify' then module.popFuture()
 
 $(document).ready ->
 	(exports ? window).Main = new Main
