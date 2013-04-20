@@ -45,20 +45,19 @@ describe("Cell", function() {
 	});
 	
 	describe("when the cell has ran", function() {
-		var run_t = 13;
-		var run_dt = 5;
+		var run_t = 10;
+		var result = null;
 		
 		beforeEach(function() {
-			spyOn( cell, 'step' );
-			module = jasmine.createSpy('ModuleStub');
-			cell.add( module );
-			cell.run( run_dt, run_t );
+			result = cell.run( run_t );
 		});
 		
-		it("should have a fixed time run with dt steps", function() {
+		it("should have run with t runtime", function() {
 			
-			expect( cell.step ).toHaveBeenCalledWith( run_dt );
-			expect( cell.step.callCount).toBe( ( run_t - ( run_t % run_dt ) ) / run_dt );
+			expect( result ).toBeDefined();
+			expect( result.x ).toBeDefined();
+			expect( result.x[ 0 ] ).toBe( 0 );
+			expect( result.x[ result.x.length - 1 ] ).toBe( run_t );
 			
 		});
 	});
