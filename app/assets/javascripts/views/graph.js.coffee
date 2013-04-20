@@ -42,7 +42,7 @@ class Graph
 	# Render the Graph into a canvas
 	#
 	# @param [Object] optional: an element to append the Graph's canvas to
-	# @return [Object] returns a canvas object
+	# @return [Object] returns contained canvas object
 	#
 	render: ( elem ) ->
 		ctx = @_canvas.get(0).getContext("2d")

@@ -164,6 +164,31 @@ describe("Cell", function() {
 			
 		});
 		
+		describe( "when visualized over 2 second" , function() {
+			var container;
+
+			beforeEach(function() {
+				container = $("<div class='container'></div>");
+				dt = 0.1;
+				cell.visualize(2, container);
+			});
+
+			it("the container should have as many graphs as the cell has substrates", function() {
+				expect( container.children().length ).toBe( Object.keys(cell._substrates).length );
+			});
+
+			xit("", function() {
+				expect( 1 ).toBe( 1 );
+			});
+			
+			xit("", function() {
+				expect( 1 ).toBe( 1 );
+			});
+			
+			xit("", function() {
+				expect( 1 ).toBe( 1 );
+			});
+
+		});
 	});
-	
 });

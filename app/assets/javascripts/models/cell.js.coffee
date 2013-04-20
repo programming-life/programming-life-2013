@@ -123,13 +123,20 @@ class Cell
 	
 	# Visualizes this cell
 	#
-	# @param [Object] A container for the graphs.
-	# @returns [Object] Returns the canvas object with graph of the cell's modules
-	visualize: ( time, container ) ->
-		dopri = @run(time)
-		graph = new Graph(module._type, data)
-			.render()
-			container.appendChild(graph)
+	# @param [Integer] duration A duration for the simulation.
+	# @param [Object] container A container for the graphs.
+	# @returns [Object] Returns the container object with graph of the cell's modules
+	visualize: ( duration, container ) ->
+		ran = @run(duration)
+		results = ran.results
+		mapping = ran.map
+
+		for key, value of mapping
+			graph = new Graph(key)
+			for data in results.y
+				graph.addData(data[value])
+			graph.render(container)
+
 		return container
 
 
