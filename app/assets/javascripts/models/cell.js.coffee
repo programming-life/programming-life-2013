@@ -133,9 +133,11 @@ class Cell
 
 		for key, value of mapping
 			graph = new Graph(key)
+			dataset = []
 			for data in results.y
-				graph.addData(data[value])
-			graph.render(container)
+				dataset.push(data[value])
+			graph.addData(dataset)
+				.render(container)
 
 		return container
 
