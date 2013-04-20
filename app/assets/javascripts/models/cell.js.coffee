@@ -5,7 +5,7 @@ class Cell
 	constructor: ( ) ->
 		@_creation = Date.now()
 		@_modules = []
-		@_substances = {}
+		@_substrates = {}
 	
 	# Add module to cell
 	#
@@ -16,14 +16,14 @@ class Cell
 		@_modules.push module
 		@
 		
-	# Add substance to cell
+	# Add substrate to cell
 	#
-	# @param [String] substance substance to add
-	# @param [Integer] amount amount of substance to add
+	# @param [String] substrate substrate to add
+	# @param [Integer] amount amount of substrate to add
 	# @returns [self] chainable instance
 	#
-	add_substance: ( substance, amount ) ->
-		@_substances[ substance ] = amount
+	add_substrate: ( substrate, amount ) ->
+		@_substrates[ substrate ] = amount
 		@
 		
 	# Remove module from cell
@@ -35,13 +35,13 @@ class Cell
 		@_modules.splice( @_modules.indexOf module, 1 ) #TODO: update to use underscore without
 		@
 		
-	# Removes this substance from cell
+	# Removes this substrate from cell
 	#
-	# @param [String] substance substance to remove from this cell
+	# @param [String] substrate substrate to remove from this cell
 	# @returns [self] chainable instance
 	#
-	remove_substance: ( substance ) ->
-		delete @_substances[ substance ]
+	remove_substrate: ( substrate ) ->
+		delete @_substrates[ substrate ]
 		@
 		
 	# Checks if this cell has a module
@@ -53,49 +53,73 @@ class Cell
 		# TODO: ? check module type instead of object ref
 		@_modules.indexOf( module ) isnt -1
 	
-	# Returns the amount of substance in this cell
-	# @param string substance substance to check
-	# @returns int amount of substance
-	amount_of: ( substance ) ->
-		@_substances[ substance ]
+	# Returns the amount of substrate in this cell
+	# @param string substrate substrate to check
+	# @returns int amount of substrate
+	amount_of: ( substrate ) ->
+		@_substrates[ substrate ]
 	
-	# Step runs this cell
-	#
-	# @param [Integer] dt the step time it should take
-	# @returns [self] chainable instance
-	#
-	step : ( dt ) ->
-		substances_diff = {};
-		for module in @_modules
-			# Each module should iterate with beforeStep values of all the substances
-			substances_clone = {};
-			for substance of @_substances 
-				substances_clone[substance] = @_substances[substance]
-			# Step this module with these values
-			module_substances = module.step( dt, substances_clone )
-			# Save the delta results
-			for substance of module_substances
-				substances_diff[substance] = module_substances[substance] - @_substances[substance]
-		for substance of substances_diff
-			@_substances[substance] += substances_diff[substance]
-		@
-	
+		
 	# Runs this cell
 	#
-	# @param [Integer] dt the step size
 	# @param [Integer] timespan the time it should run for
-	# @param [Function] callback optional callback
 	# @returns [self] chainable instance
 	#
-	run : ( dt, timespan, callback ) ->
-		# TODO: where to output
-		t = 0
-		while t <= timespan - dt
-			t += dt
-			@step dt
-			callback { time: t, delta: dt, cell: @  } if callback?
-		@
+	run : ( timespan ) ->
+		
+		variables = [ ]
+		values = [ ]
+						
+		# We would like to get all the variables in all the equations, so
+		# that's what we are going to do. Then we can insert the value indices
+		# into the equations.
+		for substrate, value of @_substrates
+			variables.push substrate
+			values.push value
+	
+		# Create the mapping from variable to value index
+		mapping = { }
+		for i, variable of variables
+			mapping[variable] = parseInt i
 			
+		map = ( values ) => 
+			variables = { }
+			for variable, i of mapping
+				variables[ variable ] = values[ i ]
+			variables
+			
+		# The step function for this module
+		#
+		# @param [Integer] t the current time
+		# @param [Array] v the current value array
+		# @returns [Array] the delta values
+		step = ( t, v ) =>
+		
+			results = [ ]
+			variables = [ ]
+			
+			# All dt are 0, so that when a variable was NOT processed, the
+			# value remains the same
+			for variable, index of mapping
+				results[ index ] = 0
+				
+			# Get those substrates named
+			mapped = map v
+				
+			# Run all the equations
+			for module in @_modules
+				module_results = module.step( t, mapped )
+				for variable, result of module_results
+					current = results[ mapping[ variable ] ] ? 0
+					results[ mapping[ variable ] ] = current + result
+								
+			results
+			
+		# Run the ODE from 0...timespan with starting values and step function
+		sol = numeric.dopri( 0, timespan, values, step )
+		
+		# Return the system results
+		sol
 	
 	# The properties
 	Object.defineProperties @prototype,
