@@ -55,9 +55,9 @@ describe("Cell", function() {
 		it("should have run with t runtime", function() {
 			
 			expect( result ).toBeDefined();
-			expect( result.x ).toBeDefined();
-			expect( result.x[ 0 ] ).toBe( 0 );
-			expect( result.x[ result.x.length - 1 ] ).toBe( run_t );
+			expect( result.results.x ).toBeDefined();
+			expect( result.results.x[ 0 ] ).toBe( 0 );
+			expect( result.results.x[ result.results.x.length - 1 ] ).toBe( run_t );
 			
 		});
 	});
@@ -115,46 +115,50 @@ describe("Cell", function() {
 		});
 
 		describe( "when ran for 0 seconds", function() {
-			var result;
+			var results, result, mapping;
 			
 			beforeEach(function() {
-				result = cell.run( 0 );
+				results = cell.run( 0 );
+				result = results.results;
+				mapping = results.map;
 			});
 			
 			it("should have input values", function() {
 				expect( result ).toBeDefined();
-				expect( result.y[ result.y.length - 1 ][0] ).toBe( enzym );
-				expect( result.y[ result.y.length - 1 ][1] ).toBe( food );
-				expect( result.y[ result.y.length - 1 ][2] ).toBe( 0 );
-				expect( result.y[ result.y.length - 1 ][3] ).toBe( 0 );
+				expect( result.y[ result.y.length - 1 ][ mapping.enzym ] ).toBe( enzym );
+				expect( result.y[ result.y.length - 1 ][ mapping.food_out ] ).toBe( food );
+				expect( result.y[ result.y.length - 1 ][ mapping.food_in ] ).toBe( 0 );
+				expect( result.y[ result.y.length - 1 ][ mapping.transp ] ).toBe( 0 );
 			});
 			
 		});
 		
 		describe( "when ran for 2 seconds", function() {
-			var result;
+			var result, mapping;
 			
 			beforeEach(function() {
-				result = cell.run( 2 );
+				results = cell.run( 2 );
+				result = results.results;
+				mapping = results.map;
 			});
 			
 			it("should have kept all the enzym", function() {
-				expect( result.y[ result.y.length - 1 ][0] ).toBe( enzym );
+				expect( result.y[ result.y.length - 1 ][ mapping.enzym ] ).toBe( enzym );
 			});
 			
 			it("should have created transporters", function() {
-				expect( result.y[ result.y.length - 1 ][3] ).toBe( create_transport.rate * 2 );
+				expect( result.y[ result.y.length - 1 ][ mapping.transp ] ).toBe( create_transport.rate * 2 );
 			});
 			
 			it("should have transported food", function() {
-				expect( result.y[ result.y.length - 1 ][2] ).toBeGreaterThan( 0 );
-				expect( result.y[ result.y.length - 1 ][1] ).toBeLessThan( food );
+				expect( result.y[ result.y.length - 1 ][ mapping.food_in ] ).toBeGreaterThan( 0 );
+				expect( result.y[ result.y.length - 1 ][ mapping.food_out ] ).toBeLessThan( food );
 			});
 			
 			it("should have consumed food", function() {
 				expect( 
-					result.y[ result.y.length - 1 ][2] + 
-					result.y[ result.y.length - 1 ][1] 
+					result.y[ result.y.length - 1 ][ mapping.food_in ] + 
+					result.y[ result.y.length - 1 ][ mapping.food_out ] 
 				).toBeLessThan( food );
 			});
 			
