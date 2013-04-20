@@ -31,7 +31,7 @@ class Module
 				)
 			) key
 
-		Object.defineProperty( @, 'step',
+		Object.defineProperty( @, '_step',
 			get: ->
 				return step
 		)
@@ -44,7 +44,7 @@ class Module
 	# @param [Array] substrates the substrate values
 	# @returns [any] returns the value step function is returning
 	step : ( t, substrates ) ->
-		@step.apply( @, t, substrates )
+		@_step.call( @, t, substrates )
 
 	# Pushes a move onto the history stack, and notifies Main of this move.
 	#
