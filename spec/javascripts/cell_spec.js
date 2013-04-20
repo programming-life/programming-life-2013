@@ -26,21 +26,21 @@ describe("Cell", function() {
 		});
 	});
 	
-	describe("when a substance has been added", function() {
-		var substance_name = 'mock';
-		var substance_amount = 42;
+	describe("when a substrate has been added", function() {
+		var substrate_name = 'mock';
+		var substrate_amount = 42;
 		
 		beforeEach(function() {
-			cell.add_substance( substance_name, substance_amount );
+			cell.add_substrate( substrate_name, substrate_amount );
 		});
 		
-		it("should have that substance", function() {
-			expect( cell.amount_of( substance_name ) ).toBe( substance_amount );
+		it("should have that substrate", function() {
+			expect( cell.amount_of( substrate_name ) ).toBe( substrate_amount );
 		});
 		
-		it("should be able to remove that substance", function() {
-			cell.remove_substance( substance_name );
-			expect( cell.amount_of( substance_name ) ).not.toBeDefined();
+		it("should be able to remove that substrate", function() {
+			cell.remove_substrate( substrate_name );
+			expect( cell.amount_of( substrate_name ) ).not.toBeDefined();
 		});
 	});
 	
