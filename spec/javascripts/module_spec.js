@@ -1,27 +1,40 @@
 describe("Module", function() {
-    var module;
-    
-    beforeEach(function() {
-        module = new Module('DNA', '1*2*3*4*3');
-    });
-    
-    it("should be able to store the module type", function() {
-        expect(module.type).toEqual('DNA');
-    });
-    
-    it("should be able to store the module equation", function() {
-        expect(module.equation).toEqual('1*2*3*4*3');
-    });
+	var module;
+	
+	beforeEach(function() {
+		params = {k: 3, b: 5}
+		module = new Module(params)
+	});
 
-    it("should be able to set a new module type", function() {
-        module.type = 'Lipid';
-        expect(module.type).toNotEqual('DNA');
-        expect(module.type).toEqual('Lipid');
-    });
+	it("should be able to set its properties to its params", function() {
+		expect(module.k).toEqual(3);
+		expect(module.b).toEqual(5);
+	});
 
-    it("should be able to set a new module equation", function() {
-        module.equation = '3*2-1';
-        expect(module.equation).toNotEqual('1*2*3*4*3');
-        expect(module.equation).toEqual('3*2-1');
-    });
-});
+	it("should be able to alter its stored properties", function() {
+		module.k = 8
+		expect(module.k).toEqual(8)
+	});
+
+	it("should be able undo and redo its property changes", function() {
+		module.k = 8
+		expect(module.k).toEqual(8)
+		module.popHistory()
+		expect(module.k).toEqual(3)
+		module.popFuture()
+		expect(module.k).toEqual(8)
+	});
+
+	it("it should clear all redo moves when a property changes", function() {
+		module.k = 8
+		module.popHistory()
+		module.k = 5
+		module.popFuture()
+		expect(module.k).toEqual(5)
+	});
+
+	it("should not store properties not present at creation", function() {
+		module.c = 10
+		expect(module.c).toEqual(undefined)
+	});	
+}); 
