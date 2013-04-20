@@ -45,8 +45,8 @@ class Module
 	# changed values.
 	#
 	popHistory: ( ) ->
-		[key, value] = @_history.pop()
-		if key
+		if @_history.length > 0
+			[key, value] = @_history.pop()
 			@_pushFuture(key, this[key])
 			this["_#{key}"] = value
 
@@ -62,8 +62,8 @@ class Module
 	# changed values.
 	#
 	popFuture: ( ) ->
-		[key, value] = @_future.pop()
-		if key
+		if @_future.length > 0
+			[key, value] = @_future.pop()		
 			@_pushHistory(key, this[key])
 			this["_#{key}"] = value
 
