@@ -46,9 +46,14 @@ class Graph
 	#
 	render: ( elem ) ->
 		ctx = @_canvas.get(0).getContext("2d")
+		
+		xsize = dt * ( @_nPoints )
+		xnum = Math.min( xsize / dt, 8 )
+		xstep = xsize / xnum
+		
 		new Chart(ctx).Line
 			labels: 
-				t.toFixed(1) for t in [0 .. dt * (@_nPoints - 1)] by dt
+				 t.toFixed 1 for t in [0 .. xsize] by xstep #TODO change this to maximum number
 			datasets:
 				for data in @_datasets
 					data: data
