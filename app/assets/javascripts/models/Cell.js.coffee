@@ -62,84 +62,64 @@ class Cell
 		
 	# Runs this cell
 	#
-	# @param [Integer] dt the step size
 	# @param [Integer] timespan the time it should run for
-	# @param [Function] callback optional callback
 	# @returns [self] chainable instance
 	#
-	run : ( dt, timespan ) ->
-		# TODO: where to output
-		# 1: DNA
-		# 2: Lipid
-		# 3: Transporter
-		# 4: Ei
-		# 5: Protein
-		# 6: Sint
-		# 7: Sext
-		# 8: Prod
-		# 9: Cell
-		values = [ 
-			20, 
-			1, 
-			1, 
-			1, 
-			100, 
-			1, 
-			1000, 
-			1, 
-			1 
-		]
-			
-		equations = ( t, v ) -> 
+	run : ( timespan ) ->
 		
-			DNA = v[0]
-			Lipid = v[1]
-			#Transporter = v[2]
-			#Ei = v[3]
-			#Protein = v[4]
-			#Sint = v[5]
-			#Sext = v[6]
-			#Prod = v[7]
-			#Cell = v[8]
+		variables = [ ]
+		values = [ ]
+						
+		# We would like to get all the variables in all the equations, so
+		# that's what we are going to do. Then we can insert the value indices
+		# into the equations.
+		for substrate, value of @_substrates
+			variables.push substrate
+			values.push value
+	
+		# Create the mapping from variable to value index
+		mapping = { }
+		for i, variable of variables
+			mapping[variable] = parseInt i
+			
+		map = ( values ) => 
+			variables = { }
+			for variable, i of mapping
+				variables[ variable ] = values[ i ]
+			variables
+			
+		# The step function for this module
+		#
+		# @param [Integer] t the current time
+		# @param [Array] v the current value array
+		# @returns [Array] the delta values
+		step = ( t, v ) =>
 		
-			kDNA = 5
-			kLipid = 5
-			kProtein = 1
-			kTransporter = 1
-			kEi = 1
-			kM = 1
-			kD = 1
-
-			vMax = 1
-			vLipid = 1
+			results = [ ]
+			variables = [ ]
 			
-			# Speed of DNA synthesize
-			vDNASynth = kDNA * DNA * 1 #prod	
+			# All dt are 0, so that when a variable was NOT processed, the
+			# value remains the same
+			for variable, index of mapping
+				results[ index ] = 0
+				
+			# Get those substrates named
+			mapped = map v
+				
+			# Run all the equations
+			for module in @_modules
+				module_results = module.step( t, mapped )
+				for variable, result of module_results
+					current = results[ mapping[ variable ] ] ? 0
+					results[ mapping[ variable ] ] = current + result
+								
+			results
 			
-			#vProtSynth = kProtein * DNA * Prod
-			#vTransportIn = kTransporter * Transporter * ( Sext / ( Sext + kM ) )
-			#vTransportOut = kTransporter * Transporter * Prod
-			#vEi = vMax * Ei * ( Sint / ( Sint + kM ) )
-			mu = 1 * Lipid * 1 #Sint * Lipid * Protein
-			
-			dDNA = vDNASynth * mu * DNA
-			
-			dLipid = kLipid * DNA * 1 - mu * Lipid #sint
-			dTransporter = 0 #kTransporter * DNA * Sint - mu * Transporter
-			dEi = 0 #kEi * DNA - mu * Ei - kD * Ei
-			dProtein = 0 #kProtein * DNA - mu * Protein - 0 # Kpd * P 
-			dSint = 0 #vTransportIn - vEi - vLipid
-			dSext = 0 #Sext - vTransportIn * Cell
-			dProd = 0 #vEi - vTransportOut - vDNASynth - vProtSynth
-			dCell = 0 #DNA * Lipid * Protein * Cell
-			
-			[ dDNA ,dLipid ] #, dTransporter, dEi, dProtein, dSint, dSext, dProd, dCell ]
-			
-		sol = numeric.dopri( 0, timespan / dt, values, equations )
-		console.info( sol );
+		# Run the ODE from 0...timespan with starting values and step function
+		sol = numeric.dopri( 0, timespan, values, step )
+		
+		# Return the system results
 		sol
-		
-			
 	
 	# The properties
 	Object.defineProperties @prototype,
