@@ -47,13 +47,14 @@ class Graph
 	render: ( elem ) ->
 		ctx = @_canvas.get(0).getContext("2d")
 		
-		xsize = dt * ( @_nPoints )
-		xnum = Math.min( xsize / dt, 8 )
-		xstep = xsize / xnum
-		
+		duration = @_nPoints * dt
+
 		new Chart(ctx).Line
+			scaleLabels:
+				[ '', '' ]
 			labels: 
-				 t.toFixed 1 for t in [0 .. xsize] by xstep #TODO change this to maximum number
+				for t in [0 ... duration] by dt
+					if ( 0 < t < duration - dt ) then '' else t 
 			datasets:
 				for data in @_datasets
 					data: data
