@@ -130,12 +130,16 @@ class Cell
 		ran = @run(duration)
 		results = ran.results
 		mapping = ran.map
+		
+		interpolation = []
+		for i in [0...duration] by dt
+			interpolation[i] = results.at( i );
 
 		for key, value of mapping
-			graph = new Graph(key)
+			graph = new Graph( key )
 			dataset = []
-			for data in results.y
-				dataset.push(data[value])
+			for i in [0...duration] by dt
+				dataset.push( interpolation[ i ][ value ] )
 			graph.addData(dataset)
 				.render(container)
 
