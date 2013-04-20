@@ -28,7 +28,7 @@ class Graph
 	addData: ( data ) ->
 		@_datasets.push(data)
 		@_nPoints = data.length if @_nPoints < data.length		
-		@	
+		return this
 	
 	# Clear all data from the Graph
 	#
@@ -37,7 +37,7 @@ class Graph
 	clear: ->
 		@_datasets = []
 		@_nPoints = 0
-		@
+		return this
 
 	# Render the Graph into a canvas
 	#
@@ -67,21 +67,21 @@ class Graph
 		if elem instanceof jQuery
 			elem.append(@_element)
 		
-		@_element
+		return @_element
 	
 	# Return the canvas object
 	#
 	# @return [Object] the Graph's canvas
 	#
 	getCanvas: ->		
-		@_canvas
+		return @_canvas
 	
 	# Return the parent object
 	#
 	# @return [Object] the Graph's parent object
 	#
 	getElement: ->
-		@_element
+		return @_element
 	
 	# Set the width en height of the graph
 	#
@@ -90,7 +90,7 @@ class Graph
 	setDimensions: ( width, height ) ->
 		$(@_canvas, @_element).attr('width', width)
 		$(@_canvas, @_element).attr('height', height)
-		@
+		return this
 
 
 (exports ? this).Graph = Graph		
