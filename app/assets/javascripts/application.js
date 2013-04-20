@@ -17,6 +17,7 @@
 //= require backbone
 //
 //= require bootstrap
+//= require raphael.min
 //= require chart
 //= require views/graph
 //= require models/cell
