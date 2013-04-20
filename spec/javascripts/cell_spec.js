@@ -26,41 +26,144 @@ describe("Cell", function() {
 		});
 	});
 	
-	describe("when a substance has been added", function() {
-		var substance_name = 'mock';
-		var substance_amount = 42;
+	describe("when a substrate has been added", function() {
+		var substrate_name = 'mock';
+		var substrate_amount = 42;
 		
 		beforeEach(function() {
-			cell.add_substance( substance_name, substance_amount );
+			cell.add_substrate( substrate_name, substrate_amount );
 		});
 		
-		it("should have that substance", function() {
-			expect( cell.amount_of( substance_name ) ).toBe( substance_amount );
+		it("should have that substrate", function() {
+			expect( cell.amount_of( substrate_name ) ).toBe( substrate_amount );
 		});
 		
-		it("should be able to remove that substance", function() {
-			cell.remove_substance( substance_name );
-			expect( cell.amount_of( substance_name ) ).not.toBeDefined();
+		it("should be able to remove that substrate", function() {
+			cell.remove_substrate( substrate_name );
+			expect( cell.amount_of( substrate_name ) ).not.toBeDefined();
 		});
 	});
 	
 	describe("when the cell has ran", function() {
-		var run_t = 13;
-		var run_dt = 5;
+		var run_t = 10;
+		var result = null;
 		
 		beforeEach(function() {
-			spyOn( cell, 'step' );
-			module = jasmine.createSpy('ModuleStub');
-			cell.add( module );
-			cell.run( run_dt, run_t );
+			result = cell.run( run_t );
 		});
 		
-		it("should have a fixed time run with dt steps", function() {
+		it("should have run with t runtime", function() {
 			
-			expect( cell.step ).toHaveBeenCalledWith( run_dt );
-			expect( cell.step.callCount).toBe( ( run_t - ( run_t % run_dt ) ) / run_dt );
+			expect( result ).toBeDefined();
+			expect( result.results.x ).toBeDefined();
+			expect( result.results.x[ 0 ] ).toBe( 0 );
+			expect( result.results.x[ result.results.x.length - 1 ] ).toBe( run_t );
 			
 		});
+	});
+	
+	describe( "and Module Integration", function() {
+		var cell;
+		var create_transport, transport_food, food_enzym;
+		
+		var enzym = 1;
+		var food = 100;
+
+		beforeEach(function() {
+			cell = new Cell();
+			cell.add_substrate( 'enzym', enzym )
+				.add_substrate( 'food_out', food )
+				.add_substrate( 'food_in', 0 )
+				.add_substrate( 'transp', 0 );
+			
+			create_transport = new Module(
+				{ rate: 2 }, 
+				function ( t, substrates ) {
+					return { 'transp' : this.rate }
+				}
+			);
+
+			transport_food = new Module(
+				{ rate: 1 },
+				function ( t, substrates ) {
+					transporters = substrates.transp
+					food_out = substrates.food_out
+					transport = Math.min( transporters * this.rate, Math.max( 0, food_out ) )
+					return { 
+						'food_out' : -transport, 
+						'food_in' : transport 
+					}
+				}
+			);
+
+			food_enzym = new Module(
+				{},
+				function ( t, substrates ) {
+
+					food_in = substrates.food_in
+					enzym = substrates.enzym
+					processed = Math.min( enzym, Math.max( 0, food_in ) )
+					return { 
+						'food_in' : -processed 
+					}
+				}
+			);
+
+			cell.add( create_transport )
+				.add( transport_food )
+				.add( food_enzym )
+		});
+
+		describe( "when ran for 0 seconds", function() {
+			var results, result, mapping;
+			
+			beforeEach(function() {
+				results = cell.run( 0 );
+				result = results.results;
+				mapping = results.map;
+			});
+			
+			it("should have input values", function() {
+				expect( result ).toBeDefined();
+				expect( result.y[ result.y.length - 1 ][ mapping.enzym ] ).toBe( enzym );
+				expect( result.y[ result.y.length - 1 ][ mapping.food_out ] ).toBe( food );
+				expect( result.y[ result.y.length - 1 ][ mapping.food_in ] ).toBe( 0 );
+				expect( result.y[ result.y.length - 1 ][ mapping.transp ] ).toBe( 0 );
+			});
+			
+		});
+		
+		describe( "when ran for 2 seconds", function() {
+			var result, mapping;
+			
+			beforeEach(function() {
+				results = cell.run( 2 );
+				result = results.results;
+				mapping = results.map;
+			});
+			
+			it("should have kept all the enzym", function() {
+				expect( result.y[ result.y.length - 1 ][ mapping.enzym ] ).toBe( enzym );
+			});
+			
+			it("should have created transporters", function() {
+				expect( result.y[ result.y.length - 1 ][ mapping.transp ] ).toBe( create_transport.rate * 2 );
+			});
+			
+			it("should have transported food", function() {
+				expect( result.y[ result.y.length - 1 ][ mapping.food_in ] ).toBeGreaterThan( 0 );
+				expect( result.y[ result.y.length - 1 ][ mapping.food_out ] ).toBeLessThan( food );
+			});
+			
+			it("should have consumed food", function() {
+				expect( 
+					result.y[ result.y.length - 1 ][ mapping.food_in ] + 
+					result.y[ result.y.length - 1 ][ mapping.food_out ] 
+				).toBeLessThan( food );
+			});
+			
+		});
+		
 	});
 	
 });
