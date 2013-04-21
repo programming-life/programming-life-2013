@@ -182,3 +182,14 @@ Gemfile.lock
 
 # Ignore word temps
 docs\deliverables\~$* 
+
+# LaTeX: log, aux, out, toc, pdf and synctex.gz
+*.log
+*.aux
+*.out
+*.toc
+*.pdf
+*.synctex.gz
+
+/coverage
+/coverage/*
