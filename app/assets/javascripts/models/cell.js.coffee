@@ -127,12 +127,16 @@ class Cell
 	# @param [Integer] duration A duration for the simulation.
 	# @param [Object] container A container for the graphs.
 	# @param [Integer] dt the step value
-	# @returns [Object] Returns the container object with graph of the cell's modules
+	# @returns [Object] Returns the graphs
 	#
-	visualize: ( duration, container, dt = 1, decimals = 6 ) ->
-		ran = @run duration
-		results = ran.results
-		mapping = ran.map
+	visualize: ( duration, container, options = { } ) ->
+		
+		cell_run = @run duration
+		results = cell_run.results
+		mapping = cell_run.map
+		
+		dt = options.dt ? 1
+		decimals = options.decimals ? 5
 		rounder = Math.pow( 10, decimals )
 		
 		# Get the interpolation for a fixed timestep instead of the adaptive timestep
@@ -141,21 +145,23 @@ class Cell
 		interpolation = []
 		for time in [ 0 .. duration ] by dt
 			interpolation[ time ] = results.at time;
-
+ 
+		graphs = { }
+			
 		# Draw all the substrates
 		for key, value of mapping
 			dataset = []
-			graph = new Graph( key, dt )
+			graphs[ key ] = new Graph( key, { dt: dt } )
 			
 			# Push all the values, but round for float rounding errors
 			for time in [ 0 .. duration ] by dt
 				dataset.push( Math.round( interpolation[ time ][ value ] * rounder ) / rounder )
 			
-			graph.addData(dataset)
+			graphs[ key ].addData(dataset)
 				.render(container)
 
-		# Return self
-		return this
+		# Return graphs
+		return graphs
 
 	# The properties
 	Object.defineProperties @prototype,
