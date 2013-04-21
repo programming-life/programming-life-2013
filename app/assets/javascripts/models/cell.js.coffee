@@ -104,6 +104,12 @@ class Cell
 			for variable, index of mapping
 				results[ index ] = 0
 				
+			# All the substrates are at LEAST 0, so here we lower bound the
+			# values. Because of interpolation and float precision, substrates
+			# might deteriorate to extreme values when they don't change anymore.
+			v = _(v).map (value) -> 
+				return if value < 0 then 0 else value
+				
 			# Get those substrates named
 			mapped = map v
 				
