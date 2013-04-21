@@ -10,17 +10,19 @@ class Graph
 	# Construct a new Graph
 	#
 	# @param [String] name the name of this graph
+	# @param [Array] options the options for the graph
 	# @param [Array] data the data for the graph
 	# @param [Integer] dt the timestep
 	#
-	constructor: ( name, dt = 1, data) ->
-		@_canvas = $("<canvas></canvas>")
+	constructor: ( name, options = {}, data ) ->
+		@_canvas = $("<canvas width='#{ options.width ? 400 }' height='#{ options.height ? 200 }'></canvas>")
 		@_element = $("<div class='graph'></div>")
-		@_element.append(@_canvas)
+		@_element.append $("<h1>#{name}</h1>")
+		@_element.append @_canvas
 		
 		@_datasets = []
 		@_nPoints = 0		
-		@_dt = dt
+		@_dt = options.dt ? 1
 			
 		@addData( data ) if data
 		
