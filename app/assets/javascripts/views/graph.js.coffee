@@ -15,7 +15,7 @@ class Graph
 	# @param [Integer] dt the timestep
 	#
 	constructor: ( name, options = {}, data ) ->
-		@_canvas = $("<canvas width='#{ options.width ? 400 }' height='#{ options.height ? 200 }'></canvas>")
+		@_canvas = $("<canvas width='#{ options.width ? 450 }' height='#{ options.height ? 200 }'></canvas>")
 		@_element = $("<div class='graph'></div>")
 		@_element.append $("<h1>#{name}</h1>")
 		@_element.append @_canvas
@@ -33,7 +33,6 @@ class Graph
 	# @returns [self] returns self for chaining
 	#
 	addData: ( data, options = {} ) ->
-		console.info( data )
 		@_datasets.push
 			data: data,
 			fill: options.fill ? "rgba(220,220,220,0.5)",
