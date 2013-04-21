@@ -6,13 +6,14 @@ class ModuleGenerator
 	# @param [Object] params the options
 	# @returns [Array] the modules
 	#
-	infrastructure : ( params = {}, lipid_food = "s_in", protein_food = "p_in", own_dna_food = false ) -> 
+	infrastructure : ( params = {}, cell_food = "s_int", lipid_food = "s_int", protein_food = "p_int", own_dna_food = false ) -> 
 		results = []
 		
 		if ( !own_dna_food )
 			results = results.concat @dna( false, own_dna_food, params )
 			
 		results = results.concat(
+			@cell( params, cell_food )
 			@lipid( params, lipid_food, own_dna_food )
 			@protein( params, protein_food, own_dna_food )
 		)
@@ -25,7 +26,7 @@ class ModuleGenerator
 	# @param [Object] params the options
 	# @returns [Array] the modules
 	#
-	dna : ( name, food = "p_in", params = {} ) ->
+	dna : ( name, food = "p_int", params = {} ) ->
 		return [ 
 			new Module(
 				{ 
@@ -49,7 +50,7 @@ class ModuleGenerator
 	# @param [Boolean] own_dna_food creates own dna for module
 	# @returns [Array] the modules
 	#
-	lipid : ( params = {}, food = "s_in", own_dna_food = false ) ->
+	lipid : ( params = {}, food = "s_int", own_dna_food = false ) ->
 		modules = []
 		dna = "dna"
 		
@@ -83,7 +84,7 @@ class ModuleGenerator
 	# @returns [Array] the modules
 	#
 	transporter_in : ( params = {}, substrate = "s", own_dna_food = false ) ->
-		return @transporter( params, "transport_#{substrate}_in", "#{substrate}_ext", "#{substrate}_in", own_dna_food )
+		return @transporter( params, "transport_#{substrate}_in", "#{substrate}_ext", "#{substrate}_int", own_dna_food )
 		
 	# Creates Transporter out of the cell
 	#
@@ -93,7 +94,7 @@ class ModuleGenerator
 	# @returns [Array] the modules
 	#
 	transporter_out : ( params = {}, product = "p", own_dna_food = false ) ->
-		return @transporter( params, "transport_#{product}_out", "#{product}_in", "#{product}_ext", own_dna_food )
+		return @transporter( params, "transport_#{product}_out", "#{product}_int", "#{product}_ext", own_dna_food )
 		
 	# Creates Transporter
 	#
@@ -155,8 +156,8 @@ class ModuleGenerator
 				k: params.k_ei ? 1
 				k_met: params.k_met ? 1 
 				v_max: params.v_max ? 1
-				substrate: substrate ? "s_in"
-				product: product ? "p_in"
+				substrate: substrate ? "s_int"
+				product: product ? "p_int"
 				dna: dna
 			},
 			( t, substrates ) -> 
@@ -178,7 +179,7 @@ class ModuleGenerator
 	# @param [Boolean] own_dna_food creates own dna for module
 	# @returns [Array] the modules
 	#		
-	protein : ( params = {}, food = "p_in", own_dna_food = false ) ->
+	protein : ( params = {}, food = "p_int", own_dna_food = false ) ->
 		modules = []
 		dna = "dna"
 		
@@ -194,7 +195,7 @@ class ModuleGenerator
 			},
 			( t, substrates ) -> 
 				
-				vprotsynth = this.k * substrates[this.dna] * substrates[this.product];
+				vprotsynth = this.k * substrates[this.dna] * substrates[this.product]
 				result = {}
 				result["protein"] = vprotsynth
 				result[this.product] = -vprotsynth
@@ -202,5 +203,26 @@ class ModuleGenerator
 		)
 		
 		return modules
+		
+	cell : ( params = {}, food = "s_int" ) ->
+		modules = @dna()
+		
+		modules.push new Module( 
+			{ 
+				k: params.k_p ? 1
+				growth: food
+			},
+			( t, substrates ) -> 
+				mu = substrates[this.growth] * substrates.lipid * substrates.protein
+				results = {}
+				results["cell"] = mu * substrates.cell
+				results["lipid"] = -mu * substrates.lipid 
+				results["protein"] = -mu * substrates.protein
+				results[this.growth] = -mu * substrates[this.growth]
+				return results
+		)
+		
+		return modules
+		
 		
 (exports ? this).ModuleGenerator = new ModuleGenerator
