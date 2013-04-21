@@ -13,7 +13,7 @@ describe("Module", function() {
 	});
 
 	it("should be able to access the step function property", function() {
-		expect( module.step ).toEqual( step );
+		expect( module._step ).toEqual( step );
 	});
 	
 	it("should be able to run the step property in context", function() {

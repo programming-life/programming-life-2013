@@ -190,3 +190,6 @@ docs\deliverables\~$*
 *.toc
 *.pdf
 *.synctex.gz
+
+/coverage
+/coverage/*
