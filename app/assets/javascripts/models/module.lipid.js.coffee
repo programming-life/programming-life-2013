@@ -3,14 +3,14 @@ class Model.Lipid extends Model.Module
 	# Constructor for lipids
 	#
 	# @param params [Object] parameters for this module
-	# @param start [Integer] the initial value of lipid
-	# @param food [String] the substrate converted to lipid
+	# @param start [Integer] the initial value of lipid, defaults to 1
+	# @param food [String] the substrate converted to lipid, defaults to "s_int"
 	# @option k [Integer] the subscription rate, defaults to 1
 	# @option dna [String] the dna to use, defaults to "dna"
 	# @option consume [String] the consume substrate, overides the food parameter, defaults to "s_int"
 	# @option name [String] the name, defaults to "lipid"
 	#
-	constructor: ( params = {}, start = 0, food = "s_int" ) ->
+	constructor: ( params = {}, start = 1, food = "s_int" ) ->
 	
 		# Step function for lipids
 		step = ( t, substrates ) ->
@@ -18,10 +18,10 @@ class Model.Lipid extends Model.Module
 			results = {}
 			
 			# Only calculate vlipid if the components are available
-			if ( @test( substrates, @dna, @consume ) )
+			if ( @_test( substrates, @dna, @consume ) )
 				vlipid = @k * substrates[@dna] * substrates[@consume]
 			
-			if ( vlipid )
+			if ( vlipid? and vlipid > 0 )
 				results[@name] = vlipid # todo mu
 				results[@consume] = -vlipid	
 			

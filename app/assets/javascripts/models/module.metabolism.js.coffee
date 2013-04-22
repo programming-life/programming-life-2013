@@ -23,13 +23,12 @@ class Model.Metabolism extends Model.Module
 			if ( @_test( substrates, @name, @orig ) )
 				vmetabolism = @v * substrates[@name] * ( substrates[@orig] / ( substrates[@orig] + @k_met ) )
 
-			results = {}
 			if ( @_test( substrates, @dna ) )
 				results[@name] = @k * substrates[@dna]
-					
+				
 			if ( vmetabolism? and vmetabolism > 0 )
-				results[@name] = -vmetabolism
-				results[@orig] = vmetabolism
+				results[@orig] = -vmetabolism
+				results[@dest] = vmetabolism
 					
 			return results
 		
@@ -48,6 +47,7 @@ class Model.Metabolism extends Model.Module
 		
 		starts = {};
 		starts[params.name] = start
+		starts[params.dest] = 0
 		super params, step, starts
 
 (exports ? this).Model.Metabolism = Model.Metabolism

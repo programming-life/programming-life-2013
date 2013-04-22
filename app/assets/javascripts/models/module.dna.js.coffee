@@ -18,10 +18,10 @@ class Model.DNA extends Model.Module
 			results = {}
 			
 			# Only calculate vlipid if the components are available
-			if ( @test( substrates, @name, @consume ) )
+			if ( @_test( substrates, @name, @consume ) )
 				vdnasynth = @k * substrates[@name] * substrates[@consume]
 			
-			if ( vdnasynth )
+			if ( vdnasynth? and vdnasynth > 0 )
 				results[@name] = vdnasynth # todo mu
 				results[@consume] = -vdnasynth	
 			

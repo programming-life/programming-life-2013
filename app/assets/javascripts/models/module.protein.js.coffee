@@ -21,7 +21,7 @@ class Model.Protein extends Model.Module
 			if ( @_test( substrates, @dna, @substrate ) )
 				vprotsynth = @k * substrates[@dna] * substrates[@substrate]
 			
-			if ( vprotsynth and vprotsynth > 0 )
+			if ( vprotsynth? and vprotsynth > 0 )
 				results[@name] = vprotsynth
 				results[@substrate] = -vprotsynth
 				

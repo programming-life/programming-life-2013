@@ -10,10 +10,9 @@ class Model.CellGrowth extends Model.Module
 				consume = substrates[@consume] ? 1
 				lipid = substrates[@lipid] ? 1
 				protein = substrates[@lipid] ? 1
-				mu = substrates[@consume] * substrates[@lipid] * substrates[@protein]
+				mu = consume * lipid * protein
 			
 			if ( mu and @_test( substrates, @name ) )
-				
 				results[@name] = mu * substrates[@name]
 				results[@consume] = -mu * substrates[@consume]
 				

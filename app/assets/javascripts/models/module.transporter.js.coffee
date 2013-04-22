@@ -48,6 +48,7 @@ class Model.Transporter extends Model.Module
 		
 		starts = {};
 		starts[params.name] = start
+		starts[params.dest] = 0
 		super params, step, starts
 		
 	# Generator for transporter to internal cell
