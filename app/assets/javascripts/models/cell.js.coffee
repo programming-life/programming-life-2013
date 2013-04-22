@@ -1,4 +1,4 @@
-class Cell
+class Model.Cell
 
 	# Constructor for cell
 	#
@@ -15,7 +15,7 @@ class Cell
 		@_substrates = {}
 		
 		# The cell growth module
-		module = new CellGrowth(  params, start )
+		module = new Model.CellGrowth(  params, start )
 		Object.defineProperty( @, 'module',
 			get: ->
 				return module
@@ -211,4 +211,5 @@ class Cell
 		
 
 # Makes this available globally. Use require later, but this will work for now.
-(exports ? this).Cell = Cell
+
+(exports ? this).Model.Cell = Model.Cell

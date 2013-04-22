@@ -1,4 +1,4 @@
-class Metabolism extends Module
+class Model.Metabolism extends Model.Module
 
 	# Constructor for Metabolism
 	#
@@ -49,4 +49,4 @@ class Metabolism extends Module
 		starts[params.name] = start
 		super params, step, starts
 
-(exports ? this).Metabolism = Metabolism
+(exports ? this).Model.Metabolism = Model.Metabolism

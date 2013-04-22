@@ -14,14 +14,12 @@
 //= require jquery_ujs
 //= require underscore
 //
+//= require MVC
+//= require_tree .
+//
 //= require bootstrap
 //= require raphael.min
 //= require chart
-//= require views/graph
-//= require models/cell
-//= require models/module._
-//
-//= require_tree .
 
 
 //= require numeric-1.2.6

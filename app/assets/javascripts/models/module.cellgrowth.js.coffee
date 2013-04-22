@@ -1,4 +1,4 @@
-class CellGrowth extends Module
+class Model.CellGrowth extends Model.Module
 	constructor : ( params = { }, start = 1 ) ->	
 
 		step = ( t, substrates ) -> 
@@ -38,6 +38,6 @@ class CellGrowth extends Module
 		super params, step, starts
 
 # Makes this available globally.
-(exports ? this).CellGrowth = CellGrowth
+(exports ? this).Model.CellGrowth = Model.CellGrowth
 
 			

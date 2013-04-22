@@ -1,4 +1,4 @@
-class Lipid extends Module
+class Model.Lipid extends Model.Module
 
 	# Constructor for lipids
 	#
@@ -41,4 +41,4 @@ class Lipid extends Module
 		starts[params.name] = start
 		super params, step, starts
 
-(exports ? this).Lipid = Lipid
+(exports ? this).Model.Lipid = Model.Lipid

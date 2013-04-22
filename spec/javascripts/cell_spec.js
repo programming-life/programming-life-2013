@@ -3,7 +3,7 @@ describe("Cell", function() {
 	var module;
 
 	beforeEach(function() {
-		cell = new Cell();
+		cell = new Model.Cell();
 	});
 
 	it("should have a creation date", function() {
@@ -70,12 +70,12 @@ describe("Cell", function() {
 		var food = 100;
 
 		beforeEach(function() {
-			cell = new Cell();
+			cell = new Model.Cell();
 			cell.add_substrate( 'enzym', enzym )
 				.add_substrate( 'food_out', food )
 				.add_substrate( 'food_in', 0 )
 				
-			create_transport = new Module(
+			create_transport = new Model.Module(
 				{ rate: 2 }, 
 				function ( t, substrates ) {
 					return { 'transp' : this.rate }
@@ -83,7 +83,7 @@ describe("Cell", function() {
 				{ 'transp' : 0 }
 			);
 
-			transport_food = new Module(
+			transport_food = new Model.Module(
 				{ rate: 1 },
 				function ( t, substrates ) {
 					transporters = substrates.transp
@@ -97,7 +97,7 @@ describe("Cell", function() {
 				{ }
 			);
 
-			food_enzym = new Module(
+			food_enzym = new Model.Module(
 				{},
 				function ( t, substrates ) {
 

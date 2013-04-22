@@ -1,4 +1,4 @@
-class Transporter extends Module
+class Model.Transporter extends Model.Module
 
 	# Constructor for transporters
 	#
@@ -66,7 +66,7 @@ class Transporter extends Module
 	# @option name [String] the name of the transporter, defaults to "transporter_#{substrate}_in"
 	#
 	@int : ( params = { }, substrate = "s", start = 0, orig_post = "_ext", dest_post = "_int" ) ->
-		return new Transporter( params, "#{substrate}#{orig_post}", "#{substrate}#{dest_post}", start, "transporter_#{substrate}_in" )
+		return new Model.Transporter( params, "#{substrate}#{orig_post}", "#{substrate}#{dest_post}", start, "transporter_#{substrate}_in" )
 	
 	# Generator for transporter from internal cell
 	#
@@ -84,6 +84,6 @@ class Transporter extends Module
 	# @option name [String] the name of the transporter, defaults to "transporter_#{substrate}_out"
 	#
 	@ext : ( params = { }, substrate = "p", start = 0, orig_post = "_int", dest_post = "_ext" ) ->
-		return new Transporter( params, "#{substrate}#{orig_post}", "#{substrate}#{dest_post}", start, "transporter_#{substrate}_out" )
+		return new Model.Transporter( params, "#{substrate}#{orig_post}", "#{substrate}#{dest_post}", start, "transporter_#{substrate}_out" )
 		
-(exports ? this).Transporter = Transporter
+(exports ? this).Model.Transporter = Model.Transporter

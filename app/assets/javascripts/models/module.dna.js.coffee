@@ -1,4 +1,4 @@
-class DNA extends Module
+class Model.DNA extends Model.Module
 
 	# Constructor for DNA
 	#
@@ -40,4 +40,4 @@ class DNA extends Module
 		starts[params.name] = start
 		super params, step, starts
 
-(exports ? this).DNA = DNA
+(exports ? this).Model.DNA = Model.DNA

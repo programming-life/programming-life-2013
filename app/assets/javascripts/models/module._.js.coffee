@@ -1,6 +1,6 @@
 # Baseclass of all modules. Defines basic behaviour like undo and redo 
 # mechanisms and solving of differential equations
-class Module
+class Model.Module
 
 	# Constructor for module
 	#
@@ -123,7 +123,7 @@ class Module
 	_clearFuture: ( ) ->
 		@_future.length = 0
 
-(exports ? this).Module = Module
+(exports ? this).Model.Module = Model.Module
 
 
 

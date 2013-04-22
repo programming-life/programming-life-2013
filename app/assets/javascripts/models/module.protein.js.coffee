@@ -1,4 +1,4 @@
-class Protein extends Module
+class Model.Protein extends Model.Module
 
 	# Constructor for Metabolism
 	#
@@ -41,4 +41,4 @@ class Protein extends Module
 		starts[params.name] = start
 		super params, step, starts
 
-(exports ? this).Protein = Protein
+(exports ? this).Model.Protein = Model.Protein
