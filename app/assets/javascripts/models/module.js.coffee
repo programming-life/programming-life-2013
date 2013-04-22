@@ -40,21 +40,21 @@ class Module
 		
 	# Runs the step function in the correct context
 	# 
-	# @param [Integer] t the current time
-	# @param [Array] substrates the substrate values
-	# @returns [any] returns the value step function is returning
+	# @param t [Integer] the current time
+	# @param substrates [Array] the substrate values
+	# @return [any] returns the value step function is returning
 	step : ( t, substrates ) ->
-		@_step.call( @, t, substrates )
+		return @_step.call( @, t, substrates )
 		
-	#
-	#
-	#
+	# Tests if substrates are available
+	# @param substrates [Object] the available subs
+	# @param tests... [String] comma delimited list of strings to test
+	# @return [Boolean] true if all are available
 	_test : ( substrates, tests... ) ->
 		
 		# TODO notification if fails
-		
-		return _( tests ).every( 
-			( anon ) -> return substrates[anon] ? 
+		return not _( tests ).some( 
+			( anon ) -> return not substrates[anon]? 
 		)
 
 	# Pushes a move onto the history stack, and notifies Main of this move.
