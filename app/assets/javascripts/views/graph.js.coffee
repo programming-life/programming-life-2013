@@ -24,7 +24,7 @@ class Graph
 		@_nPoints = 0		
 		@_dt = options.dt ? 1
 			
-		@addData( data ) if data
+		@addData( data, options ) if data
 		
 	# Add a data set to the Graph
 	#
@@ -33,6 +33,7 @@ class Graph
 	# @returns [self] returns self for chaining
 	#
 	addData: ( data, options = {} ) ->
+	
 		@_datasets.push
 			data: data,
 			fill: options.fill ? "rgba(220,220,220,0.5)",

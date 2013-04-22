@@ -135,6 +135,8 @@ class Cell
 	# @param [Integer] dt the step value
 	# @returns [Object] Returns the graphs
 	#
+	# options { dt: 1, decimals: 5, 
+	#
 	visualize: ( duration, container, options = { } ) ->
 		
 		cell_run = @run duration
@@ -152,18 +154,23 @@ class Cell
 		for time in [ 0 .. duration ] by dt
 			interpolation[ time ] = results.at time;
  
-		graphs = { }
+		graphs = options.graphs ? { }
+		graph_options = { dt : dt }
+		if ( options.graph )
+			graph_options = _( options.graph[ key ] ? options.graph ).extend( graph_options  ) 
 			
 		# Draw all the substrates
 		for key, value of mapping
+		
 			dataset = []
-			graphs[ key ] = new Graph( key, _(options).extend( { dt : dt } ) )
+			if ( !graphs[ key ] )
+				graphs[ key ] = new Graph( key, graph_options ) 
 			
 			# Push all the values, but round for float rounding errors
 			for time in [ 0 .. duration ] by dt
 				dataset.push( Math.round( interpolation[ time ][ value ] * rounder ) / rounder )
 			
-			graphs[ key ].addData(dataset)
+			graphs[ key ].addData( dataset, graph_options )
 				.render(container)
 
 		# Return graphs
