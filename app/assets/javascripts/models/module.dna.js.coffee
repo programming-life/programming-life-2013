@@ -13,23 +13,17 @@ class Model.DNA extends Model.Module
 	constructor: ( params = {}, start = 1, prefix, food = "p_int" ) ->
 			
 		# Step function for lipids
-		step = ( t, substrates ) ->
+		step = ( t, substrates, mu ) ->
 		
 			results = {}
-			
-			if ( @_test( substrates, @grow.consume ) or @_test( substrates, @grow.lipid ) or @_test( substrates, @grow.protein ) or @_test( substrates, @grow.metabolism ) )
-					
-				consume = substrates[@grow.consume] ? 1
-				lipid = substrates[@grow.lipid] ? 1
-				protein = substrates[@grow.protein] ? 1
-				mu = consume * lipid * protein * substrates[@grow.cell]
-			
+						
 			# Only calculate vlipid if the components are available
-			if ( mu? and @_test( substrates, @name, @consume ) )
-				vdnasynth = @k * substrates[@name] * substrates[@consume] * mu
-			
+			if ( @_test( substrates, @name, @consume ) )
+				vdnasynth = @k * substrates[@name] * substrates[@consume]
+				growth = mu * substrates[@name]
+				
 			if ( vdnasynth? and vdnasynth > 0 )
-				results[@name] = vdnasynth 
+				results[@name] = vdnasynth * growth
 				results[@consume] = -vdnasynth	
 			
 			return results
@@ -39,12 +33,6 @@ class Model.DNA extends Model.Module
 			k : 1
 			name : if prefix then "#{prefix}_dna" else "dna"
 			consume: food
-			grow : 
-				cell : "cell"
-				lipid : "lipid"
-				consume : "s_int"
-				protein : "protein"
-				metabolism : "enzym"
 		}
 		
 		params = _( defaults ).extend( params )

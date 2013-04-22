@@ -21,7 +21,7 @@ class Model.Protein extends Model.Module
 			if ( @_test( substrates, @dna, @substrate ) )
 				vprotsynth = @k * substrates[@dna] * substrates[@substrate]
 				degrade = @k_d * ( substrates[@name] ? 0 )
-				growth = mu( substrates ) * ( substrates[@name] ? 0 )
+				growth = mu * ( substrates[@name] ? 0 )
 			
 			if ( vprotsynth? and vprotsynth > 0 )
 				results[@name] = vprotsynth - growth - degrade

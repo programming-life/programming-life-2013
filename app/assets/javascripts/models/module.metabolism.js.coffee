@@ -28,7 +28,7 @@ class Model.Metabolism extends Model.Module
 
 			if ( @_test( substrates, @dna ) )
 				current = ( substrates[@name] ? 0 )
-				growth = mu( substrates ) * current
+				growth = mu * current
 				results[@name] = @k * substrates[@dna] - @k_d * current - growth
 				
 			if ( vmetabolism? and vmetabolism > 0 )

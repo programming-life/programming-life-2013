@@ -67,8 +67,8 @@ class Model.Module
 	# @param substrates [Array] the substrate values
 	# @return [any] returns the value step function is returning
 	#
-	step : ( t, substrates ) ->
-		return @_step.call( @, t, substrates )
+	step : ( t, substrates, mu ) ->
+		return @_step.call( @, t, substrates, mu )
 		
 	# Tests if substrates are available
 	# @param substrates [Object] the available subs

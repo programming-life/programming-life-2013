@@ -13,16 +13,17 @@ class Model.Lipid extends Model.Module
 	constructor: ( params = {}, start = 1, food = "s_int" ) ->
 	
 		# Step function for lipids
-		step = ( t, substrates ) ->
+		step = ( t, substrates, mu ) ->
 		
 			results = {}
 			
 			# Only calculate vlipid if the components are available
 			if ( @_test( substrates, @dna, @consume ) )
 				vlipid = @k * substrates[@dna] * substrates[@consume]
+				growth = mu * ( results[@name] ? 0 )
 			
 			if ( vlipid? and vlipid > 0 )
-				results[@name] = vlipid # todo mu
+				results[@name] = vlipid - growth # todo mu
 				results[@consume] = -vlipid	
 			
 			return results

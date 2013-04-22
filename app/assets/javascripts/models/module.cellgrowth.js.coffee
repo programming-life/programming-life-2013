@@ -15,11 +15,10 @@ class Model.CellGrowth extends Model.Module
 			
 			# Gracefull fallback if props are not apparent
 			if ( @_test( substrates, @name ) )
-				growth = mu( substrates ) * substrates[@name]
+				growth = mu * substrates[@name]
 				
-				if ( growth_rate? )
-					results[@name] = growth
-					#results[@consume] = -growth_rate * substrates[@consume] # TODO SHOULD THIS BE HERE???
+				results[@name] = growth
+				results[@consume] = -growth * substrates[@consume] # TODO SHOULD THIS BE HERE???
 				
 			return results
 		

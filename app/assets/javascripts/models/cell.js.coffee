@@ -141,7 +141,7 @@ class Model.Cell
 			# Get those substrates named
 			mapped = map v
 			
-			mu = @module.mu
+			mu = @module.mu( mapped )
 			
 			# Run all the equations
 			for module in @_modules
