@@ -71,13 +71,13 @@ class Model.Transporter extends Model.Module
 	# @param orig_post [String] the substrate name postfix before transport
 	# @param dest_post [String] the substrate name postfix after transport
 	# @param start [Integer] the initial value of transporters, defaults to 1
-	# @option k [Integer] the subscription rate, defaults to 1
-	# @option k_tr [Integer] the transportation rate, defaults to 1
-	# @option v [Integer] the speed scaler (vmax), defaults to 1
-	# @option dna [String] the dna to use, defaults to "dna"
-	# @option orig [String] the substrate to be transported, overrides substrate + orig_post
-	# @option dest [String] the substrate after transported, overrides substrate + dest_post
-	# @option name [String] the name of the transporter, defaults to "transporter_#{substrate}_in"
+	# @option params [Integer] k the subscription rate, defaults to 1
+	# @option params [Integer] k_tr the transportation rate, defaults to 1
+	# @option params [Integer] v the speed scaler (vmax), defaults to 1
+	# @option params [String] dna the dna to use, defaults to "dna"
+	# @option params [String] orig the substrate to be transported, overrides substrate + orig_post
+	# @option params [String] dest the substrate after transported, overrides substrate + dest_post
+	# @option params [String] name the name of the transporter, defaults to "transporter_#{substrate}_in"
 	#
 	@int : ( params = { }, start = 1, substrate = "s", orig_post = "_ext", dest_post = "_int" ) ->
 		return new Model.Transporter( params, start, "#{substrate}#{orig_post}", "#{substrate}#{dest_post}", "transporter_#{substrate}_in", 1 )
@@ -89,13 +89,13 @@ class Model.Transporter extends Model.Module
 	# @param orig_post [String] the substrate name postfix before transport
 	# @param dest_post [String] the substrate name postfix after transport
 	# @param start [Integer] the initial value of transporters, defaults to 0
-	# @option k [Integer] the subscription rate, defaults to 1
-	# @option k_tr [Integer] the transportation rate, defaults to 1
-	# @option v [Integer] the speed scaler (vmax), defaults to 1
-	# @option dna [String] the dna to use, defaults to "dna"
-	# @option orig [String] the substrate to be transported, overrides substrate + orig_post
-	# @option dest [String] the substrate after transported, overrides substrate + dest_post
-	# @option name [String] the name of the transporter, defaults to "transporter_#{substrate}_out"
+	# @option params [Integer] k the subscription rate, defaults to 1
+	# @option params [Integer] k_tr the transportation rate, defaults to 0
+	# @option params [Integer] v the speed scaler (vmax), defaults to 1
+	# @option params [String] dna the dna to use, defaults to "dna"
+	# @option params [String] orig the substrate to be transported, overrides substrate + orig_post
+	# @option params [String] dest the substrate after transported, overrides substrate + dest_post
+	# @option params [String] name the name of the transporter, defaults to "transporter_#{substrate}_out"
 	#
 	@ext : ( params = { k_tr: 0 }, start = 0, substrate = "p", orig_post = "_int", dest_post = "_ext" ) ->
 		return new Model.Transporter( params, start, "#{substrate}#{orig_post}", "#{substrate}#{dest_post}", "transporter_#{substrate}_out", -1 )
