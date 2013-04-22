@@ -10,6 +10,7 @@ class Node
 		@_object = object
 		@_parent = parent
 		@_children = children
+		@_branch = null
 
 		@_parent._children.push(this) if @_parent
 

@@ -1,11 +1,11 @@
 # Basic tree class
 class Tree
-
 	# Constructor for tree
 	#
 	# @param [Node] root The root node of the tree
-	constructor: ( root ) -> 
+	constructor: ( root = new Node( null, null) ) -> 
 		@_root = root
+		@_current = @_root
 	
 	# Add an object to the tree
 	#
@@ -13,6 +13,11 @@ class Tree
 	# @param [Node] parent The future parent
 	add: ( object, parent = @_root ) ->
 		node = new Node(object, parent)
+		current = node
+		while parent isnt null
+			parent._branch = current
+			parent = parent._parent
+		return node
 	
 	# Find an objects location in the tree
 	#

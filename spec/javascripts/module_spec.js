@@ -25,41 +25,63 @@ describe("Module", function() {
 			module.k = 8;
 		});
 		
-		it( "should have stored that change", function() {
+		it( "should have applied that change", function() {
 			expect( module.k ).toEqual(8)
 		});
+
+		it( "should have stored that change", function() {
+			expect( module._tree._current._object ).toEqual( ["k",3, 8] );
+		});
 		
-		it("should not store if not present at creation", function() {
+		it("should not apply if not present at creation", function() {
 			module.c = 10
 			expect(module.c).toEqual(undefined)
 		});	
-		
-		it( "should be able undo that change", function() {
-			module.popHistory();
-			expect(module.k).toEqual(3);
+
+		it( "should not have stored that change", function() {
+			expect( module._tree._current._object ).toEqual( ["k",3, 8] );
 		});
-		
-		describe( "and when that change is undone", function() { 
+
+		describe("when having undone the most recent change", function() {
+			
 			beforeEach( function() {
 				module.popHistory();
 			});
-		
-			it( "should be able redo that change", function() {
-				module.popFuture();
-				expect( module.k ).toEqual(8);
+
+			it( "should be able undo the most recent change", function() {
+				expect(module.k).toEqual(3);
 			});
-			
-			describe( "and when that property is changed again", function() { 
+
+			it( "should have updated the most recent change", function() {
+				expect( module._tree._current ).toEqual( module._tree._root);
+			});
+
+			describe( "when redoing that change", function() {
+				
+				beforeEach( function() {
+					module.popFuture();
+				});
+
+				it( "should have redone the change", function() {
+					expect( module.k ).toEqual(8);
+				});
+
+				it( "should have updated the most recent change", function() {
+				});
+
+			});
+				
+			describe( "when that property is changed again", function() { 
 				beforeEach( function() {
 					module.k = 5;
 				});
 				
-				it( "should clear all redo moves", function() {
-					module.popFuture();
-					expect( module.k ).toEqual(5)
+				it( "should have updated the most recent change", function() {
+				});
+
+				it( "should have kept the old change in a different branch", function() {
 				});
 			});
 		});
-
 	});
 }); 
