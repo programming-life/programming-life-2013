@@ -1,6 +1,13 @@
 class Cell
 
-	# The constructor for the cell
+	# Constructor for cell
+	#
+	# @param params [Object] parameters for this cell
+	# @param start [Integer] the initial value of cell
+	# @option lipid [String] the name of lipid to consume
+	# @option protein [String] the name of protein to consume
+	# @option consume [String] the consume substrate to consume
+	# @option name [String] the name, defaults to "cell"
 	#
 	constructor: ( params = {}, start = 0 ) ->
 		@_creation = Date.now()
@@ -11,7 +18,6 @@ class Cell
 		starts[ params.name ? "cell" ] = start
 		module = new Module( 
 			{ 
-				k: params.k ? 1
 				consume: params.consume ? "p_int"
 				lipid: params.lipid ? "lipid"
 				protein: params.protein ? "protein"
@@ -22,7 +28,8 @@ class Cell
 				results = {}
 								
 				# Gracefull fallback if props are not apparent
-				if ( @_test( substrates, @consume ) )
+				if ( @_test( substrates, @consume ) or @_test( substrates, @lipid ) or @_test( substrates, @protein ) )
+					consume = substrates[@consume] ? 1
 					lipid = substrates[@lipid] ? 1
 					protein = substrates[@lipid] ? 1
 					mu = substrates[@consume] * substrates[@lipid] * substrates[@protein]
