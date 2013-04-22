@@ -1,11 +1,28 @@
-class Cell
+class Model.Cell
 
-	# The constructor for the cell
+	# Constructor for cell
 	#
-	constructor: ( ) ->
+	# @param params [Object] parameters for this cell
+	# @param start [Integer] the initial value of cell
+	# @option lipid [String] the name of lipid to consume
+	# @option protein [String] the name of protein to consume
+	# @option consume [String] the consume substrate to consume
+	# @option name [String] the name, defaults to "cell"
+	#
+	constructor: ( params = {}, start = 1 ) ->
 		@_creation = Date.now()
 		@_modules = []
 		@_substrates = {}
+		
+		# The cell growth module
+		module = new Model.CellGrowth(  params, start )
+		Object.defineProperty( @, 'module',
+			get: ->
+				return module
+		)
+		
+		Object.seal @
+		@add module
 	
 	# Add module to cell
 	#
@@ -67,15 +84,26 @@ class Cell
 	#
 	run : ( timespan ) ->
 		
+		substrates = {}
 		variables = [ ]
 		values = [ ]
 						
 		# We would like to get all the variables in all the equations, so
 		# that's what we are going to do. Then we can insert the value indices
 		# into the equations.
+			
+		for module in @_modules
+			for substrate, value of module.substrates
+				variables.push substrate
+				values.push value
+			
 		for substrate, value of @_substrates
-			variables.push substrate
-			values.push value
+			index = _(variables).indexOf( substrate ) 
+			if ( index is -1 )
+				variables.push substrate
+				values.push value
+			else
+				values[index] += value
 	
 		# Create the mapping from variable to value index
 		mapping = { }
@@ -87,7 +115,7 @@ class Cell
 			for variable, i of mapping
 				variables[ variable ] = values[ i ]
 			return variables
-			
+					
 		# The step function for this module
 		#
 		# @param [Integer] t the current time
@@ -112,13 +140,14 @@ class Cell
 				
 			# Get those substrates named
 			mapped = map v
-				
+			
+			mu = @module.mu( mapped )
+			
 			# Run all the equations
 			for module in @_modules
-				module_results = module.step( t, mapped )
+				module_results = module.step( t, mapped, mu )
 				for variable, result of module_results
-					current = results[ mapping[ variable ] ] ? 0
-					results[ mapping[ variable ] ] = current + result
+					results[ mapping[ variable ] ] += result
 								
 			return results
 			
@@ -183,4 +212,5 @@ class Cell
 		
 
 # Makes this available globally. Use require later, but this will work for now.
-(exports ? this).Cell = Cell
+
+(exports ? this).Model.Cell = Model.Cell

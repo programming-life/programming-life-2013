@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset='UTF-8'>
+  <title>CoffeeScript API Documentation</title>
+  <link rel='stylesheet' href='../../assets/codo.css' type='text/css'>
+  <script src='../../assets/codo.js'></script>
+  <script src='../../assets/search_data.js'></script>
+</head>
+  <body>
+    <div id='base' data-path='../../'></div>
+<div id='header'>
+  <div id='menu'>
+    <a href='../../README.md.html' title='Programming Life'>Programming Life</a>
+    &raquo;
+    <a href='../../class_index.html' title='Index'>Index</a>
+    &raquo;
+    <span class='title'>Model</span>
+    &raquo;
+    <span class='title'>Cell</span>
+    <nav>
+      <ul>
+        <li class='noframes'>
+          (<a class='noframes' href='#'>no frames</a>)
+        </li>
+      </ul>
+    </nav>
+    <div id='search'>
+      <a id='class_list_link' href='../../class_list.html'>Classes</a>
+      <a id='file_list_link' href='../../file_list.html'>Files</a>
+      <a id='method_list_link' href='../../method_list.html'>Methods</a>
+      <a id='extra_list_link' href='../../extra_list.html'>Extras</a>
+    </div>
+  </div>
+  <iframe id='search_frame'></iframe>
+  <div id='fuzzySearch'>
+    <input type='text'>
+    <ol></ol>
+  </div>
+  <div id='help'>
+    <p>
+      Quickly fuzzy find classes, mixins, methods, file:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-T</span>
+        Open fuzzy finder dialog
+      </li>
+    </ul>
+    <p>
+      In frame mode you can toggle the list naviation frame on the left side:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-L</span>
+        Toggle list view
+      </li>
+    </ul>
+    <p>
+      You can focus a list in frame mode or toggle a tab in frameless mode:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-C</span>
+        Class list
+      </li>
+      <li>
+        <span>Ctrl-I</span>
+        Mixin list
+      </li>
+      <li>
+        <span>Ctrl-F</span>
+        File list
+      </li>
+      <li>
+        <span>Ctrl-M</span>
+        Method list
+      </li>
+      <li>
+        <span>Ctrl-E</span>
+        Extras list
+      </li>
+    </ul>
+    <p>
+      You can focus and blur the search input:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-S</span>
+        Focus search input
+      </li>
+      <li>
+        <span>Esc</span>
+        Blur search input
+      </li>
+    </ul>
+    <p>
+      In frameless mode you can close the list tab:
+    </p>
+    <ul>
+      <li>
+        <span>Esc</span>
+        Close list tab
+      </li>
+    </ul>
+  </div>
+</div>
+    <div id='content'>
+      <h1>
+        Class:
+        Model.Cell
+      </h1>
+      <table class='box'>
+        <tr>
+          <td>Defined in:</td>
+          <td>app&#47;assets&#47;javascripts&#47;models&#47;cell.js.coffee</td>
+        </tr>
+      </table>
+      <h2>Instance Method Summary</h2>
+      <ul class='summary'>
+  <li>
+    <span class='signature'>
+      <a href='#constructor-instance'>
+        - (void) <strong>constructor</strong>(params = {}, start = 1)
+      </a>
+    </span>
+    <span class='constructor note title'>Constructor</span>
+    <span class='desc'>
+      Constructor for cell
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#add-instance'>
+        - (void) <strong>add</strong>(module)
+      </a>
+    </span>
+    <span class='desc'>
+      Add module to cell @returns [self] chainable instance
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#add_substrate-instance'>
+        - (void) <strong>add_substrate</strong>(substrate, amount)
+      </a>
+    </span>
+    <span class='desc'>
+      Add substrate to cell @returns [self] chainable instance
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#remove-instance'>
+        - (void) <strong>remove</strong>(module)
+      </a>
+    </span>
+    <span class='desc'>
+      Remove module from cell @returns [self] chainable instance
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#remove_substrate-instance'>
+        - (void) <strong>remove_substrate</strong>(substrate)
+      </a>
+    </span>
+    <span class='desc'>
+      Removes this substrate from cell @returns [self] chainable instance
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#has-instance'>
+        - (void) <strong>has</strong>(module)
+      </a>
+    </span>
+    <span class='desc'>
+      Checks if this cell has a module @returns [Boolean] true if the module is included
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#amount_of-instance'>
+        - (void) <strong>amount_of</strong>(substrate)
+      </a>
+    </span>
+    <span class='desc'>
+      Returns the amount of substrate in this cell @param string substrate substrate to check @returns int amount of substrate
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#run-instance'>
+        - (void) <strong>run</strong>(timespan)
+      </a>
+    </span>
+    <span class='desc'>
+      Runs this cell @returns [self] chainable instance
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#visualize-instance'>
+        - (void) <strong>visualize</strong>(duration, container, options = {})
+      </a>
+    </span>
+    <span class='desc'>
+      Visualizes this cell @returns [Object] Returns the graphs options { dt: 1, decimals: 5,
+    </span>
+  </li>
+</ul>
+      <h2>Constructor Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='constructor-instance'>
+      - (void) <strong>constructor</strong>(params = {}, start = 1)
+    </p>
+    <div class='docstring'>
+  <p>Constructor for cell</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>params</span>
+      <span class='type'>
+        (<tt>Object</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>parameters for this cell</span>
+    </li>
+    <li>
+      <span class='name'>start</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the initial value of cell</span>
+    </li>
+  </ul>
+  <h3>
+    Options Hash:
+    (lipid):
+  </h3>
+  <ul class='options'>
+    <li>
+      <span class='name'>the</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>name of lipid to consume</span>
+    </li>
+  </ul>
+  <h3>
+    Options Hash:
+    (protein):
+  </h3>
+  <ul class='options'>
+    <li>
+      <span class='name'>the</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>name of protein to consume</span>
+    </li>
+  </ul>
+  <h3>
+    Options Hash:
+    (consume):
+  </h3>
+  <ul class='options'>
+    <li>
+      <span class='name'>the</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>consume substrate to consume</span>
+    </li>
+  </ul>
+  <h3>
+    Options Hash:
+    (name):
+  </h3>
+  <ul class='options'>
+    <li>
+      <span class='name'>the</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>name, defaults to &quot;cell&quot;</span>
+    </li>
+  </ul>
+</div>
+  </div>
+</div>
+      <h2>Instance Method Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='add-instance'>
+      - (void) <strong>add</strong>(module)
+    </p>
+    <div class='docstring'>
+  <p>Add module to cell</p><p>@returns [self] chainable instance</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>module</span>
+      <span class='type'>
+        (<tt>Module</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>module to add to this cell</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='add_substrate-instance'>
+      - (void) <strong>add_substrate</strong>(substrate, amount)
+    </p>
+    <div class='docstring'>
+  <p>Add substrate to cell</p><p>@returns [self] chainable instance</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>substrate</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>substrate to add</span>
+    </li>
+    <li>
+      <span class='name'>amount</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>amount of substrate to add</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='remove-instance'>
+      - (void) <strong>remove</strong>(module)
+    </p>
+    <div class='docstring'>
+  <p>Remove module from cell</p><p>@returns [self] chainable instance</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>module</span>
+      <span class='type'>
+        (<tt>Module</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>module to remove from this cell</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='remove_substrate-instance'>
+      - (void) <strong>remove_substrate</strong>(substrate)
+    </p>
+    <div class='docstring'>
+  <p>Removes this substrate from cell</p><p>@returns [self] chainable instance</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>substrate</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>substrate to remove from this cell</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='has-instance'>
+      - (void) <strong>has</strong>(module)
+    </p>
+    <div class='docstring'>
+  <p>Checks if this cell has a module</p><p>@returns [Boolean] true if the module is included</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>module</span>
+      <span class='type'>
+        (<tt>Module</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the module to check</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='amount_of-instance'>
+      - (void) <strong>amount_of</strong>(substrate)
+    </p>
+    <div class='docstring'>
+  <p>Returns the amount of substrate in this cell
+@param string substrate substrate to check
+@returns int amount of substrate</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='run-instance'>
+      - (void) <strong>run</strong>(timespan)
+    </p>
+    <div class='docstring'>
+  <p>Runs this cell</p><p>@returns [self] chainable instance</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>timespan</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the time it should run for</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='visualize-instance'>
+      - (void) <strong>visualize</strong>(duration, container, options = {})
+    </p>
+    <div class='docstring'>
+  <p>Visualizes this cell</p><p>@returns [Object] Returns the graphs</p><p>options { dt: 1, decimals: 5, </p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>duration</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>A duration for the simulation.</span>
+    </li>
+    <li>
+      <span class='name'>container</span>
+      <span class='type'>
+        (<tt>Object</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>A container for the graphs.</span>
+    </li>
+    <li>
+      <span class='name'>dt</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the step value</span>
+    </li>
+  </ul>
+</div>
+  </div>
+</div>
+    </div>
+    <div id='footer'>
+  Generated on
+  Mon Apr 22 2013 23:38:07 GMT+0200 (W. Europe Daylight Time)
+  by
+  <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
+  v1.5.6
+  (Node.js v0.10.4).
+  &#10034;
+  Press Ctrl-h to see the keyboard shortcuts
+  &#10034;
+  <a href='http://twitter.com/#!/netzpirat'>@netzpirat</a>
+  &#10034;
+  <a href='https://mksoft.ch'>mksoft.ch</a>
+</div>
+  </body>
+</html>

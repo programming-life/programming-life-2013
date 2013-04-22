@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset='UTF-8'>
+  <title>CoffeeScript API Documentation</title>
+  <link rel='stylesheet' href='assets/codo.css' type='text/css'>
+  <script src='assets/codo.js'></script>
+  <script src='assets/search_data.js'></script>
+</head>
+  <body>
+    <div id='base' data-path=''></div>
+<div id='header'>
+  <div id='menu'>
+    <a href='README.md.html' title='Programming Life'>Programming Life</a>
+    &raquo;
+    <a href='class_index.html' title='Index'>Index</a>
+    &raquo;
+    <span class='title'>README.md</span>
+    <nav>
+      <ul>
+        <li class='noframes'>
+          (<a class='noframes' href='#'>no frames</a>)
+        </li>
+      </ul>
+    </nav>
+    <div id='search'>
+      <a id='class_list_link' href='class_list.html'>Classes</a>
+      <a id='file_list_link' href='file_list.html'>Files</a>
+      <a id='method_list_link' href='method_list.html'>Methods</a>
+      <a id='extra_list_link' href='extra_list.html'>Extras</a>
+    </div>
+  </div>
+  <iframe id='search_frame'></iframe>
+  <div id='fuzzySearch'>
+    <input type='text'>
+    <ol></ol>
+  </div>
+  <div id='help'>
+    <p>
+      Quickly fuzzy find classes, mixins, methods, file:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-T</span>
+        Open fuzzy finder dialog
+      </li>
+    </ul>
+    <p>
+      In frame mode you can toggle the list naviation frame on the left side:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-L</span>
+        Toggle list view
+      </li>
+    </ul>
+    <p>
+      You can focus a list in frame mode or toggle a tab in frameless mode:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-C</span>
+        Class list
+      </li>
+      <li>
+        <span>Ctrl-I</span>
+        Mixin list
+      </li>
+      <li>
+        <span>Ctrl-F</span>
+        File list
+      </li>
+      <li>
+        <span>Ctrl-M</span>
+        Method list
+      </li>
+      <li>
+        <span>Ctrl-E</span>
+        Extras list
+      </li>
+    </ul>
+    <p>
+      You can focus and blur the search input:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-S</span>
+        Focus search input
+      </li>
+      <li>
+        <span>Esc</span>
+        Blur search input
+      </li>
+    </ul>
+    <p>
+      In frameless mode you can close the list tab:
+    </p>
+    <ul>
+      <li>
+        <span>Esc</span>
+        Close list tab
+      </li>
+    </ul>
+  </div>
+</div>
+    <div id='content'>
+      <nav class='toc'>
+        <p class='title'>
+          <a class='hide_toc' href='#'>
+            <strong>Table of Contents</strong>
+          </a>
+          <small>
+            (<a class='float_toc' href='#'>left</a>)
+          </small>
+        </p>
+      </nav>
+      <div id='filecontents'>
+        <h1>Programming Life</h1><p>Gigabaas / Gigabase</p><h1>Rails</h1>
+<h2>Welcome to Rails</h2><p>Rails is a web-application framework that includes everything needed to create 
+database-backed web applications according to the Model-View-Control pattern. </p><p>This pattern splits the view (also called the presentation) into &quot;dumb&quot; templates
+that are primarily responsible for inserting pre-built data in between HTML tags.
+The model contains the &quot;smart&quot; domain objects (such as Account, Product, Person,
+Post) that holds all the business logic and knows how to persist themselves to
+a database. The controller handles the incoming requests (such as Save New Account,
+Update Product, Show Post) by manipulating the model and directing data to the view.</p><p>In Rails, the model is handled by what&#39;s called an object-relational mapping
+layer entitled Active Record. This layer allows you to present the data from
+database rows as objects and embellish these data objects with business logic
+methods. You can read more about Active Record in
+link:files/vendor/rails/activerecord/README.html.</p><p>The controller and view are handled by the Action Pack, which handles both
+layers by its two parts: Action View and Action Controller. These two layers
+are bundled in a single package due to their heavy interdependence. This is
+unlike the relationship between the Active Record and Action Pack that is much
+more separate. Each of these packages can be used independently outside of
+Rails.  You can read more about Action Pack in
+link:files/vendor/rails/actionpack/README.html.</p><h2>Getting Started</h2>
+<ol>
+<li>At the command prompt, start a new Rails application using the <tt>rails</tt> command
+and your application name. Ex: rails myapp</li>
+<li>Change directory into myapp and start the web server: <tt>script/server</tt> (run with --help for options)</li>
+<li>Go to <a href="http://localhost:3000/">http://localhost:3000/</a> and get &quot;Welcome aboard: You&#39;re riding the Rails!&quot;</li>
+<li>Follow the guidelines to start developing your application</li>
+</ol>
+<h2>Web Servers</h2><p>By default, Rails will try to use Mongrel if it&#39;s are installed when started with script/server, otherwise Rails will use WEBrick, the webserver that ships with Ruby. But you can also use Rails
+with a variety of other web servers.</p><p>Mongrel is a Ruby-based webserver with a C component (which requires compilation) that is
+suitable for development and deployment of Rails applications. If you have Ruby Gems installed,
+getting up and running with mongrel is as easy as: <tt>gem install mongrel</tt>.
+More info at: <a href="http://mongrel.rubyforge.org">http://mongrel.rubyforge.org</a></p><p>Say other Ruby web servers like Thin and Ebb or regular web servers like Apache or LiteSpeed or
+Lighttpd or IIS. The Ruby web servers are run through Rack and the latter can either be setup to use
+FCGI or proxy to a pack of Mongrels/Thin/Ebb servers.</p><pre><code class="lang-htaccess"># Apache .htaccess example for FCGI/CGI
+
+# General Apache options
+AddHandler fastcgi-script .fcgi
+AddHandler cgi-script .cgi
+Options +FollowSymLinks +ExecCGI
+
+# If you don&#39;t want Rails to look in certain directories,
+# use the following rewrite rules so that Apache won&#39;t rewrite certain requests
+# 
+# Example:
+#   RewriteCond %{REQUEST_URI} ^/notrails.*
+#   RewriteRule .* - [L]
+
+# Redirect all requests not available on the filesystem to Rails
+# By default the cgi dispatcher is used which is very slow
+# 
+# For better performance replace the dispatcher with the fastcgi one
+#
+# Example:
+#   RewriteRule ^(.*)$ dispatch.fcgi [QSA,L]
+RewriteEngine On
+
+# If your Rails application is accessed via an Alias directive,
+# then you MUST also set the RewriteBase in this htaccess file.
+#
+# Example:
+#   Alias /myrailsapp /path/to/myrailsapp/public
+#   RewriteBase /myrailsapp
+
+RewriteRule ^$ index.html [QSA]
+RewriteRule ^([^.]+)$ $1.html [QSA]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(.*)$ dispatch.cgi [QSA,L]
+
+# In case Rails experiences terminal errors
+# Instead of displaying this message you can supply a file here which will be rendered instead
+# 
+# Example:
+#   ErrorDocument 500 /500.html
+
+ErrorDocument 500 &quot;&lt;h2&gt;Application error&lt;/h2&gt;Rails application failed to start properly&quot;</code></pre>
+<h2>Debugging Rails</h2><p>Sometimes your application goes wrong.  Fortunately there are a lot of tools that
+will help you debug it and get it back on the rails.</p><p>First area to check is the application log files.  Have &quot;tail -f&quot; commands running
+on the server.log and development.log. Rails will automatically display debugging
+and runtime information to these files. Debugging info will also be shown in the
+browser on requests from 127.0.0.1.</p><p>You can also log your own messages directly into the log file from your code using
+the Ruby logger class from inside your controllers. Example:</p><pre><code class="lang-Ruby">  class WeblogController &lt; ActionController::Base
+    def destroy
+      @weblog = Weblog.find(params[:id])
+      @weblog.destroy
+      logger.info(&quot;#{Time.now} Destroyed Weblog ID ##{@weblog.id}!&quot;)
+    end
+  end</code></pre><p>The result will be a message in your log file along the lines of:</p><pre><code>  Mon Oct 08 14:22:29 +1000 2007 Destroyed Weblog ID #1</code></pre><p>More information on how to use the logger is at <a href="http://www.ruby-doc.org/core/">http://www.ruby-doc.org/core/</a></p><p>Also, Ruby documentation can be found at <a href="http://www.ruby-lang.org/">http://www.ruby-lang.org/</a> including:</p><ul>
+<li>The Learning Ruby (Pickaxe) Book: <a href="http://www.ruby-doc.org/docs/ProgrammingRuby/">http://www.ruby-doc.org/docs/ProgrammingRuby/</a></li>
+<li>Learn to Program: <a href="http://pine.fm/LearnToProgram/">http://pine.fm/LearnToProgram/</a>  (a beginners guide)</li>
+</ul><p>These two online (and free) books will bring you up to speed on the Ruby language
+and also on programming in general.</p><h2>Debugger</h2><p>Debugger support is available through the debugger command when you start your Mongrel or
+Webrick server with --debugger. This means that you can break out of execution at any point
+in the code, investigate and change the model, AND then resume execution! 
+You need to install ruby-debug to run the server in debugging mode. With gems, use &#39;gem install ruby-debug&#39;
+Example:</p><pre><code class="lang-Ruby">  class WeblogController &lt; ActionController::Base
+    def index
+      @posts = Post.find(:all)
+      debugger
+    end
+  end</code></pre><p>So the controller will accept the action, run the first line, then present you
+with a IRB prompt in the server window. Here you can do things like:</p><pre><code class="lang-Ruby">  &gt;&gt; @posts.inspect
+  =&gt; &quot;[#&lt;Post:0x14a6be8 @attributes={\&quot;title\&quot;=&gt;nil, \&quot;body\&quot;=&gt;nil, \&quot;id\&quot;=&gt;\&quot;1\&quot;}&gt;,
+       #&lt;Post:0x14a6620 @attributes={\&quot;title\&quot;=&gt;\&quot;Rails you know!\&quot;, \&quot;body\&quot;=&gt;\&quot;Only ten..\&quot;, \&quot;id\&quot;=&gt;\&quot;2\&quot;}&gt;]&quot;
+  &gt;&gt; @posts.first.title = &quot;hello from a debugger&quot;
+  =&gt; &quot;hello from a debugger&quot;</code></pre><p>...and even better is that you can examine how your runtime objects actually work:</p><pre><code class="lang-Ruby">  &gt;&gt; f = @posts.first
+  =&gt; #&lt;Post:0x13630c4 @attributes={&quot;title&quot;=&gt;nil, &quot;body&quot;=&gt;nil, &quot;id&quot;=&gt;&quot;1&quot;}&gt;
+  &gt;&gt; f.
+  Display all 152 possibilities? (y or n)</code></pre><p>Finally, when you&#39;re ready to resume execution, you enter &quot;cont&quot;</p><h2>Console</h2><p>You can interact with the domain model by starting the console through <code>script/console</code>.
+Here you&#39;ll have all parts of the application configured, just like it is when the
+application is running. You can inspect domain models, change values, and save to the
+database. Starting the script without arguments will launch it in the development environment.
+Passing an argument will specify a different environment, like <code>script/console production</code>.</p><p>To reload your controllers and models after launching the console run <code>reload!</code></p><h2>dbconsole</h2><p>You can go to the command line of your database directly through <code>script/dbconsole</code>.
+You would be connected to the database with the credentials defined in <code>database.yml</code>.
+Starting the script without arguments will connect you to the development database. Passing an
+argument will connect you to a different database, like <code>script/dbconsole production</code>.
+Currently works for mysql, postgresql and sqlite.</p><h2>Description of Contents</h2>
+<ul>
+<li><strong>app</strong> Holds all the code that&#39;s specific to this particular application.</li>
+<li><strong>app/controllers</strong> Holds controllers that should be named like <code>weblogs_controller.rb</code> for automated URL mapping. All controllers should descend from <code>ApplicationController</code> which itself descends from <code>ActionController::Base</code>.</li>
+<li><strong>app/models</strong> Holds models that should be named like <code>post.rb</code>. Most models will descend from <code>ActiveRecord::Base</code>.</li>
+<li><strong>app/views</strong> Holds the template files for the view that should be named like <code>weblogs/index.html.erb</code> for the <code>WeblogsController#index</code> action. All views use eRuby syntax.</li>
+<li><strong>app/views/layouts</strong> Holds the template files for layouts to be used with views. This models the common <code>header/footer</code> method of wrapping views. In your views, define a layout using the <code>layout :default</code> and create a file named <code>default.html.erb</code>. Inside <code>default.html.erb</code>,  call <code>&lt;% yield %&gt;</code> to render the view using this layout.</li>
+<li><strong>app/helpers</strong> Holds view helpers that should be named like <code>weblogs_helper.rb</code>. These are generated for you automatically when using <code>script/generate</code> for controllers. Helpers can be used to wrap functionality for your views into methods.</li>
+<li><strong>config</strong> Configuration files for the Rails environment, the routing map, the database, and other dependencies.</li>
+<li><strong>db</strong> Contains the database schema in <code>schema.rb</code>.  <code>db/migrate</code> contains all the sequence of Migrations for your schema.</li>
+<li><strong>doc</strong> This directory is where your application documentation will be stored when generated using <code>rake doc:app</code>.</li>
+<li><strong>lib</strong> Application specific libraries. Basically, any kind of custom code that doesn&#39;t belong under controllers, models, or helpers. This directory is in the load path.</li>
+<li><strong>public</strong> The directory available for the web server. Contains subdirectories for images, stylesheets, and javascripts. Also contains the dispatchers and the default HTML files. This should be set as the <code>DOCUMENT_ROOT</code> of your web server.</li>
+<li><strong>script</strong> Helper scripts for automation and generation.</li>
+<li><strong>test</strong> Unit and functional tests along with fixtures. When using the <code>script/generate</code> scripts, template test files will be generated for you and placed in this directory.</li>
+<li><strong>vendor</strong> External libraries that the application depends on. Also includes the plugins subdirectory. If the app has frozen rails, those gems also go here, under <code>vendor/rails/</code>. This directory is in the load path.</li>
+</ul>
+
+      </div>
+    </div>
+    <div id='footer'>
+  Generated on
+  Mon Apr 22 2013 23:38:07 GMT+0200 (W. Europe Daylight Time)
+  by
+  <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
+  v1.5.6
+  (Node.js v0.10.4).
+  &#10034;
+  Press Ctrl-h to see the keyboard shortcuts
+  &#10034;
+  <a href='http://twitter.com/#!/netzpirat'>@netzpirat</a>
+  &#10034;
+  <a href='https://mksoft.ch'>mksoft.ch</a>
+</div>
+  </body>
+</html>
