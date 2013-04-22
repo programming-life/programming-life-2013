@@ -10,9 +10,8 @@ class Model.Module
 	#
 	constructor: ( params, step, substrates = {} ) -> 
 		@_creation = Date.now()
-		@_history = []
-		@_future = []
 		@_substrates = substrates
+		@_tree = new UndoTree()
 
 		for key, value of params
 			((key) => 
@@ -25,8 +24,7 @@ class Model.Module
 
 				Object.defineProperty( @ , key,
 					set: ( param ) ->
-						@_clearFuture()
-						@_pushHistory(key, @["_#{key}"])
+						@_pushHistory(key, @["_#{key}"], param)
 						@["_#{key}"] = param
 					get: ->
 						return @["_#{key}"]
@@ -88,40 +86,23 @@ class Model.Module
 	#
 	# @param [String] key, the changed property
 	# @param [val] value, the value of the changed property 
-	_pushHistory: ( key, value ) ->
-		@_history.push [key, value]
-		Main.pushHistory('modify', @)
+	_pushHistory: ( key, value, param ) ->
+		object = [key, value, param]
+		@_tree.add(object)
 
 	# Pops a move of the history stack and applies it. Calls _pushFuture on the 
 	# changed values.
 	#
 	popHistory: ( ) ->
-		if @_history.length > 0
-			[key, value] = @_history.pop()
-			@_pushFuture(key, @[key])
-			@["_#{key}"] = value
-
-	# Pushes a move onto the future stack, and notifies Main of this move.
-	#
-	# @param [String] key, the changed property
-	# @param [val] value, the value of the changed property 
-	_pushFuture: ( key, value ) ->
-		@_future.push [key, value]
-		Main.pushFuture('modify', @)
+		[key, value, param] = @_tree.undo()
+		@["_#{key}"] = value
 
 	# Pops a move of the future stack and applies it. Calls _pushHistory on the 
 	# changed values.
 	#
 	popFuture: ( ) ->
-		if @_future.length > 0
-			[key, value] = @_future.pop()		
-			@_pushHistory(key, @[key])
-			@["_#{key}"] = value
-
-	# Clears the future stack. Should be called when a move is actually done.
-	#
-	_clearFuture: ( ) ->
-		@_future.length = 0
+		[key, value, param] = @_tree.redo()
+		@["_#{key}"] = param
 
 (exports ? this).Model.Module = Model.Module
 

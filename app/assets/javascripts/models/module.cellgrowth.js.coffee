@@ -1,34 +1,52 @@
 class Model.CellGrowth extends Model.Module
+
+	# Constructor for Cell Growth
+	#
+	# @param params [Object] parameters for this module
+	# @param start [Integer] the initial value of metabolism, defaults to 0
+	# @option params [String] consume the substrate to use for cell growth
+	# @option params [String] name the name of the cell
+	#
 	constructor : ( params = { }, start = 1 ) ->	
 
 		step = ( t, substrates ) -> 
 			
 			results = {}
-							
+				
 			# Gracefull fallback if props are not apparent
-			if ( @_test( substrates, @consume ) or @_test( substrates, @lipid ) or @_test( substrates, @protein ) )
-				consume = substrates[@consume] ? 1
-				lipid = substrates[@lipid] ? 1
-				protein = substrates[@lipid] ? 1
-				mu = substrates[@consume] * substrates[@lipid] * substrates[@protein]
-			
-			if ( mu and @_test( substrates, @name ) )
+			if ( @_test( substrates, @name ) )
+				if ( @_test( substrates, @consume ) or @_test( substrates, @lipid ) or @_test( substrates, @protein ) )
+					consume = substrates[@consume] ? 1
+					lipid = substrates[@lipid] ? 1
+					protein = substrates[@protein] ? 1
+					mu = consume * lipid * protein * substrates[@name]
 				
-				results[@name] = mu * substrates[@name]
-				results[@consume] = -mu * substrates[@consume]
-				
-				if ( @_test( substrates, @lipid ) )
-					results[@lipid] = -mu * substrates[@lipid]
-				if ( @_test( substrates, @lipid ) )
-					results[@protein] = -mu * substrates[@protein]
+				if ( mu? )
+					results[@name] = mu * substrates[@name]
+					results[@consume] = -mu * substrates[@consume]
+					
+					#if ( @_test( substrates, @lipid ) )
+					#	results[@lipid] = -mu * substrates[@lipid]
+					#if ( @_test( substrates, @protein ) )
+					#	results[@protein] = -mu * substrates[@protein]
+					#if ( @_test( substrates, @metabolism ) )
+					#	results[@metabolism] = -mu * substrates[@metabolism]
+						
+					#for transporter in @transporters
+					#	if ( @_test( substrates, transporter ) )
+					#		results[transporter] = -mu * substrates[transporter]
 				
 			return results
 		
 		defaults = { 
-			consume: "p_int"
+		
+			consume: "s_int"
 			lipid: "lipid"
 			protein: "protein"
 			name: "cell"
+			
+			#metabolism: "enzym"
+			#transporters: [ "transporter_s_in", "transporter_p_out" ]
 		}
 		
 		params = _( defaults ).extend( params )

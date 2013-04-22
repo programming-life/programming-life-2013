@@ -9,7 +9,7 @@ class Model.Cell
 	# @option consume [String] the consume substrate to consume
 	# @option name [String] the name, defaults to "cell"
 	#
-	constructor: ( params = {}, start = 0 ) ->
+	constructor: ( params = {}, start = 1 ) ->
 		@_creation = Date.now()
 		@_modules = []
 		@_substrates = {}
@@ -104,7 +104,7 @@ class Model.Cell
 				values.push value
 			else
 				values[index] += value
-
+	
 		# Create the mapping from variable to value index
 		mapping = { }
 		for i, variable of variables
