@@ -1,14 +1,18 @@
 # Baseclass of all modules. Defines basic behaviour like undo and redo 
 # mechanisms and solving of differential equations
 class Module
+
 	# Constructor for module
 	#
-	# @param [Object] params, parameters for this module
-	# @param [Function] step the step function
-	constructor: ( params, step ) -> 
+	# @param params [Object] parameters for this module
+	# @param step [Function] the step function
+	# @param substrates [Object] the substrates for this module
+	#
+	constructor: ( params, step, substrates = {} ) -> 
 		@_creation = Date.now()
 		@_history = []
 		@_future = []
+		@_substrates = substrates
 
 		for key, value of params
 			((key) => 
@@ -36,13 +40,35 @@ class Module
 				return step
 		)
 		
+		Object.defineProperty( @, 'substrates',
+			get: ->
+				return @_substrates
+		)
+		
 		Object.seal( @ )
+		
+	# Gets the substrate start value
+	#
+	# @param substrate [String] the substrate name
+	# @return [Integer] the value
+	#
+	getSubstrate: ( substrate, value ) ->
+		return @_substrates[ substrate ] ? false	
+		
+	# Adds the substrate to the start values
+	#
+	# @param substrate [String] the substrate name
+	# @param value [Integer] the value
+	#
+	setSubstrate: ( substrate, value ) ->
+		@_substrates[ substrate ] = value
 		
 	# Runs the step function in the correct context
 	# 
 	# @param t [Integer] the current time
 	# @param substrates [Array] the substrate values
 	# @return [any] returns the value step function is returning
+	#
 	step : ( t, substrates ) ->
 		return @_step.call( @, t, substrates )
 		
@@ -50,6 +76,7 @@ class Module
 	# @param substrates [Object] the available subs
 	# @param tests... [String] comma delimited list of strings to test
 	# @return [Boolean] true if all are available
+	#
 	_test : ( substrates, tests... ) ->
 		
 		# TODO notification if fails
