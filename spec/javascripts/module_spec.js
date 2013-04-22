@@ -4,7 +4,7 @@ describe("Module", function() {
 	beforeEach(function() {
 		params = { k: 3, b: 5 };
 		step = function( t, substrates ) { return { 'a' : this.k + this.b } };
-		module = new Module( params, step );
+		module = new Model.Module( params, step );
 	});
 
 	it("should be able to set its properties to its params", function() {
