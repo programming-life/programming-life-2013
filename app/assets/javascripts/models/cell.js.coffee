@@ -2,10 +2,53 @@ class Cell
 
 	# The constructor for the cell
 	#
-	constructor: ( ) ->
+	constructor: ( params = {}, start = 0 ) ->
 		@_creation = Date.now()
 		@_modules = []
 		@_substrates = {}
+		
+		starts = {}
+		starts[ params.name ? "cell" ] = start
+		module = new Module( 
+			{ 
+				k: params.k ? 1
+				consume: params.consume ? "p_int"
+				lipid: params.lipid ? "lipid"
+				protein: params.protein ? "protein"
+				name: params.name ? "cell"
+			},
+			( t, substrates ) -> 
+			
+				results = {}
+								
+				# Gracefull fallback if props are not apparent
+				if ( @_test( substrates, @consume ) )
+					lipid = substrates[@lipid] ? 1
+					protein = substrates[@lipid] ? 1
+					mu = substrates[@consume] * substrates[@lipid] * substrates[@protein]
+				
+				if ( mu and @_test( substrates, @name ) )
+					
+					results[@name] = mu * substrates[@name]
+					results[@consume] = -mu * substrates[@consume]
+					
+					if ( @_test( substrates, @lipid ) )
+						results[@lipid] = -mu * substrates[@lipid]
+					if ( @_test( substrates, @lipid ) )
+						results[@protein] = -mu * substrates[@protein]
+					
+				return results
+				
+			, starts
+		)
+		
+		Object.defineProperty( @, 'module',
+			get: ->
+				return module
+		)
+		
+		Object.seal @
+		@add module
 	
 	# Add module to cell
 	#
@@ -67,16 +110,27 @@ class Cell
 	#
 	run : ( timespan ) ->
 		
+		substrates = {}
 		variables = [ ]
 		values = [ ]
 						
 		# We would like to get all the variables in all the equations, so
 		# that's what we are going to do. Then we can insert the value indices
 		# into the equations.
+			
+		for module in @_modules
+			for substrate, value of module.substrates
+				variables.push substrate
+				values.push value
+			
 		for substrate, value of @_substrates
-			variables.push substrate
-			values.push value
-	
+			index = _(variables).indexOf( substrate ) 
+			if ( index is -1 )
+				variables.push substrate
+				values.push value
+			else
+				values[index] += value
+
 		# Create the mapping from variable to value index
 		mapping = { }
 		for i, variable of variables
@@ -88,6 +142,9 @@ class Cell
 				variables[ variable ] = values[ i ]
 			return variables
 			
+		console.log mapping
+		return
+		
 		# The step function for this module
 		#
 		# @param [Integer] t the current time
