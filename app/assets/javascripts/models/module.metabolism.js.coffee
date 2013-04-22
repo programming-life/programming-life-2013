@@ -19,6 +19,7 @@ class Model.Metabolism extends Model.Module
 	
 		# Step function for lipids
 		step = ( t, substrates ) ->
+			results = {}
 			if ( @_test( substrates, @name, @orig ) )
 				vmetabolism = @v * substrates[@name] * ( substrates[@orig] / ( substrates[@orig] + @k_met ) )
 
@@ -30,7 +31,7 @@ class Model.Metabolism extends Model.Module
 				results[@name] = -vmetabolism
 				results[@orig] = vmetabolism
 					
-			return result
+			return results
 		
 		# Default parameters set here
 		defaults = { 
