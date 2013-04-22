@@ -17,7 +17,7 @@ class Model.Transporter extends Model.Module
 	# @option name [String] the name of the transporter, overrides name
 	# @option consume [String[ the substrate to be consumed, overides food
 	#
-	constructor: ( params = {}, start = 1, origin, destination, name, food = "s_int", dir = 0 ) ->
+	constructor: ( params = {}, start = 1, origin, destination, name,  dir = 0, food = "s_int" ) ->
 
 		# Step function for lipids
 		step = ( t, substrates ) ->
