@@ -36,6 +36,9 @@ class Lipid extends Module
 		}
 		
 		params = _( defaults ).extend( params )
-		super params, step, { 'lipid' : start }
+		
+		starts = {}
+		starts[params.name] = start
+		super params, step, starts
 
 (exports ? this).Lipid = Lipid
