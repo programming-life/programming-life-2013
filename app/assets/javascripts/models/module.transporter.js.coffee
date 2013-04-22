@@ -17,7 +17,7 @@ class Model.Transporter extends Model.Module
 	# @option name [String] the name of the transporter, overrides name
 	# @option consume [String[ the substrate to be consumed, overides food
 	#
-	constructor: ( params = {}, start = 1, origin, destination, name, food = "s_int" ) ->
+	constructor: ( params = {}, start = 1, origin, destination, name, food = "s_int", dir = 0 ) ->
 
 		# Step function for lipids
 		step = ( t, substrates ) ->
@@ -47,6 +47,11 @@ class Model.Transporter extends Model.Module
 			consume: food
 		}
 		
+		Object.defineProperty( @, 'direction',
+			get: ->
+				return dir
+		)
+		
 		params = _( defaults ).extend( params )
 		
 		starts = {};
@@ -70,7 +75,7 @@ class Model.Transporter extends Model.Module
 	# @option name [String] the name of the transporter, defaults to "transporter_#{substrate}_in"
 	#
 	@int : ( params = { }, start = 1, substrate = "s", orig_post = "_ext", dest_post = "_int" ) ->
-		return new Model.Transporter( params, start, "#{substrate}#{orig_post}", "#{substrate}#{dest_post}", "transporter_#{substrate}_in" )
+		return new Model.Transporter( params, start, "#{substrate}#{orig_post}", "#{substrate}#{dest_post}", "transporter_#{substrate}_in", 1 )
 	
 	# Generator for transporter from internal cell
 	#
@@ -88,6 +93,6 @@ class Model.Transporter extends Model.Module
 	# @option name [String] the name of the transporter, defaults to "transporter_#{substrate}_out"
 	#
 	@ext : ( params = { }, start = 0, substrate = "p", orig_post = "_int", dest_post = "_ext" ) ->
-		return new Model.Transporter( params, start, "#{substrate}#{orig_post}", "#{substrate}#{dest_post}", "transporter_#{substrate}_out" )
+		return new Model.Transporter( params, start, "#{substrate}#{orig_post}", "#{substrate}#{dest_post}", "transporter_#{substrate}_out", -1 )
 		
 (exports ? this).Model.Transporter = Model.Transporter
