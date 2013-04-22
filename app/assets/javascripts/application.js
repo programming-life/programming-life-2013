@@ -19,12 +19,7 @@
 //= require chart
 //= require views/graph
 //= require models/cell
-//= require models/module
-//= require models/dna
-//= require models/lipid
-//= require models/metabolism
-//= require models/protein
-//= require models/transporter
+//= require models/module._
 //
 //= require_tree .
 
