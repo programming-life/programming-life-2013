@@ -14,16 +14,17 @@ class Model.Protein extends Model.Module
 	# @option params [String] name the name of the protein, overrides name
 	#
 	constructor: ( params = {}, start = 0, food = "p_int", name = "protein" ) ->			
-	
 		# Step function for lipids
-		step = ( t, substrates ) ->
+		step = ( t, substrates, mu ) ->
 		
 			results = {}
 			if ( @_test( substrates, @dna, @substrate ) )
-				vprotsynth = @k * substrates[@dna] * substrates[@substrate] - @k_d * ( substrates[@name] ? 0 )
+				vprotsynth = @k * substrates[@dna] * substrates[@substrate]
+				degrade = @k_d * ( substrates[@name] ? 0 )
+				growth = mu * ( substrates[@name] ? 0 )
 			
 			if ( vprotsynth? and vprotsynth > 0 )
-				results[@name] = vprotsynth
+				results[@name] = vprotsynth - growth - degrade
 				results[@substrate] = -vprotsynth
 				
 			return results

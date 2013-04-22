@@ -20,18 +20,22 @@ class Model.Transporter extends Model.Module
 	constructor: ( params = {}, start = 1, origin, destination, name,  dir = 0, food = "s_int" ) ->
 
 		# Step function for lipids
-		step = ( t, substrates ) ->
+		step = ( t, substrates, mu ) ->
 		
 			if ( @_test( substrates, @name, @orig ) )
-				vtransport = @v * substrates[@name] * ( substrates[@orig] / ( substrates[@orig] + @k_tr ) )
+				rate = if @k_tr isnt 0 then ( substrates[@orig] / ( substrates[@orig] + @k_tr ) ) else substrates[@orig]
+				vtransport = @v * substrates[@name] * rate
 			
 			results = {}		
 			if ( @_test( substrates, @dna, @consume ) )
-				results[@name] = @k * substrates[@dna] * substrates[@consume]
+				vtransportsynth = @k * substrates[@dna] * substrates[@consume]
+				results[@name] = vtransportsynth - mu * ( substrates[@name] ? 0 )
 			
-			if ( vtransport? and vtransport > 0 )	
+			# todo: difference between vtrans in and out?
+			if ( vtransport? and vtransport > 0 )
+				m = if dir is 1 then substrates[@cell] else 1 
 				results[@dest] = vtransport
-				results[@orig] = -vtransport
+				results[@orig] = -vtransport * m
 				
 			return results
 		
@@ -45,6 +49,7 @@ class Model.Transporter extends Model.Module
 			dest: destination
 			dna: "dna"
 			consume: food
+			cell: "cell"
 		}
 		
 		Object.defineProperty( @, 'direction',
@@ -92,7 +97,7 @@ class Model.Transporter extends Model.Module
 	# @option dest [String] the substrate after transported, overrides substrate + dest_post
 	# @option name [String] the name of the transporter, defaults to "transporter_#{substrate}_out"
 	#
-	@ext : ( params = { }, start = 0, substrate = "p", orig_post = "_int", dest_post = "_ext" ) ->
+	@ext : ( params = { k_tr: 0 }, start = 0, substrate = "p", orig_post = "_int", dest_post = "_ext" ) ->
 		return new Model.Transporter( params, start, "#{substrate}#{orig_post}", "#{substrate}#{dest_post}", "transporter_#{substrate}_out", -1 )
 		
 (exports ? this).Model.Transporter = Model.Transporter

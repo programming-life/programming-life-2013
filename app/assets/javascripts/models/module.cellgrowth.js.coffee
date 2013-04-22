@@ -9,51 +9,48 @@ class Model.CellGrowth extends Model.Module
 	#
 	constructor : ( params = { }, start = 1 ) ->	
 
-		step = ( t, substrates ) -> 
+		step = ( t, substrates, mu ) -> 
 			
 			results = {}
-				
-			# Gracefull fallback if props are not apparent
+			
 			if ( @_test( substrates, @name ) )
-				if ( @_test( substrates, @consume ) or @_test( substrates, @lipid ) or @_test( substrates, @protein ) )
-					consume = substrates[@consume] ? 1
-					lipid = substrates[@lipid] ? 1
-					protein = substrates[@protein] ? 1
-					mu = consume * lipid * protein * substrates[@name]
+				growth = mu * substrates[@name]
 				
-				if ( mu? )
-					results[@name] = mu * substrates[@name]
-					results[@consume] = -mu * substrates[@consume]
-					
-					#if ( @_test( substrates, @lipid ) )
-					#	results[@lipid] = -mu * substrates[@lipid]
-					#if ( @_test( substrates, @protein ) )
-					#	results[@protein] = -mu * substrates[@protein]
-					#if ( @_test( substrates, @metabolism ) )
-					#	results[@metabolism] = -mu * substrates[@metabolism]
-						
-					#for transporter in @transporters
-					#	if ( @_test( substrates, transporter ) )
-					#		results[transporter] = -mu * substrates[transporter]
+				results[@name] = growth
+				results[@consume] = -growth * substrates[@consume] # TODO SHOULD THIS BE HERE???
 				
 			return results
 		
 		defaults = { 
-		
 			consume: "s_int"
-			lipid: "lipid"
-			protein: "protein"
+			infrastructure : [ "lipid", "protein" ]
 			name: "cell"
-			
-			#metabolism: "enzym"
-			#transporters: [ "transporter_s_in", "transporter_p_out" ]
 		}
 		
 		params = _( defaults ).extend( params )
 				
 		starts = {}
 		starts[params.name] = start
-		super params, step, starts
+				
+		# I need this reference
+		cell_growth = @
+		
+		Object.defineProperty( @, 'mu',
+			get: =>
+				# This returns the cell growth, but according to this module,
+				# meaning that this property can be used for all modules to
+				# get a result in the context of cell growth
+				return ( substrates ) =>
+					
+					if ( _( cell_growth.infrastructure ).some( ( substrate ) -> cell_growth._test( substrates, substrate ) ) and cell_growth._test( substrates, cell_growth.name ) )
+						base = substrates[cell_growth.name] * ( substrates[cell_growth.consume] ? 1 )
+						for substrate in cell_growth.infrastructure
+							base *= ( substrates[substrate] ? 1 )
+						return base
+					return 0
+		)
+		
+		super params, step, starts		
 
 # Makes this available globally.
 (exports ? this).Model.CellGrowth = Model.CellGrowth

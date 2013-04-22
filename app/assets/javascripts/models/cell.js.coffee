@@ -140,13 +140,14 @@ class Model.Cell
 				
 			# Get those substrates named
 			mapped = map v
-				
+			
+			mu = @module.mu( mapped )
+			
 			# Run all the equations
 			for module in @_modules
-				module_results = module.step( t, mapped )
+				module_results = module.step( t, mapped, mu )
 				for variable, result of module_results
-					current = results[ mapping[ variable ] ] ? 0
-					results[ mapping[ variable ] ] = current + result
+					results[ mapping[ variable ] ] += result
 								
 			return results
 			
