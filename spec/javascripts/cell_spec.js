@@ -74,13 +74,13 @@ describe("Cell", function() {
 			cell.add_substrate( 'enzym', enzym )
 				.add_substrate( 'food_out', food )
 				.add_substrate( 'food_in', 0 )
-				.add_substrate( 'transp', 0 );
-			
+				
 			create_transport = new Module(
 				{ rate: 2 }, 
 				function ( t, substrates ) {
 					return { 'transp' : this.rate }
-				}
+				},
+				{ 'transp' : 0 }
 			);
 
 			transport_food = new Module(
@@ -93,7 +93,8 @@ describe("Cell", function() {
 						'food_out' : -transport, 
 						'food_in' : transport 
 					}
-				}
+				},
+				{ }
 			);
 
 			food_enzym = new Module(
@@ -106,7 +107,8 @@ describe("Cell", function() {
 					return { 
 						'food_in' : -processed 
 					}
-				}
+				},
+				{ }
 			);
 
 			cell.add( create_transport )
@@ -119,12 +121,15 @@ describe("Cell", function() {
 			
 			beforeEach(function() {
 				results = cell.run( 0 );
+				console.info( results );
 				result = results.results;
 				mapping = results.map;
 			});
 			
 			it("should have input values", function() {
 				expect( result ).toBeDefined();
+				console.info(result.y[ result.y.length - 1 ]);
+				console.info(mapping);
 				expect( result.y[ result.y.length - 1 ][ mapping.enzym ] ).toBe( enzym );
 				expect( result.y[ result.y.length - 1 ][ mapping.food_out ] ).toBe( food );
 				expect( result.y[ result.y.length - 1 ][ mapping.food_in ] ).toBe( 0 );
@@ -174,7 +179,7 @@ describe("Cell", function() {
 			});
 
 			it("the container should have as many graphs as the cell has substrates", function() {
-				expect( container.children().length ).toBe( Object.keys(cell._substrates).length );
+				expect( container.children().length ).toBe( 5 );
 			});
 
 			xit("", function() {

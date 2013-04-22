@@ -115,10 +115,7 @@ class Cell
 			for variable, i of mapping
 				variables[ variable ] = values[ i ]
 			return variables
-			
-		console.log mapping
-		return
-		
+					
 		# The step function for this module
 		#
 		# @param [Integer] t the current time
