@@ -19,13 +19,17 @@ class Model.Metabolism extends Model.Module
 	constructor: ( params = {}, start = 0, substrate = "s_int", product = "p_int", name = "enzym" ) ->
 	
 		# Step function for lipids
-		step = ( t, substrates ) ->
+		step = ( t, substrates, mu ) ->
+		
 			results = {}
+			
 			if ( @_test( substrates, @name, @orig ) )
 				vmetabolism = @v * substrates[@name] * ( substrates[@orig] / ( substrates[@orig] + @k_met ) )
 
 			if ( @_test( substrates, @dna ) )
-				results[@name] = @k * substrates[@dna] - @k_d * ( substrates[@name] ? 0 )
+				current = ( substrates[@name] ? 0 )
+				growth = mu( substrates ) * current
+				results[@name] = @k * substrates[@dna] - @k_d * current - growth
 				
 			if ( vmetabolism? and vmetabolism > 0 )
 				results[@orig] = -vmetabolism
