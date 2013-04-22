@@ -12,7 +12,6 @@
 //
 //= require jquery
 //= require jquery_ujs
-//= require_tree .
 //= require underscore
 //
 //= require bootstrap
@@ -21,6 +20,9 @@
 //= require views/graph
 //= require models/cell
 //= require models/module
+//= require models/lipid
+//
+//= require_tree .
 
 
 //= require numeric-1.2.6

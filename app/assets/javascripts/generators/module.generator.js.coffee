@@ -44,38 +44,6 @@ class ModuleGenerator
 			)
 		]
 		
-	# Creates Lipid modules
-	#
-	# @param [Object] params the options
-	# @param [Boolean] own_dna_food creates own dna for module
-	# @returns [Array] the modules
-	#
-	lipid : ( params = {}, food = "s_int", own_dna_food = false ) ->
-		modules = []
-		dna = "dna"
-		
-		if ( own_dna_food )
-			modules = modules.concat @dna( 'lipid', own_dna_food, params )
-			dna = "lipid_dna"
-		
-		modules.push new Module( 
-			{ 
-				k: params.k_l ? 1 
-				dna: dna
-				substrate: food
-			},
-			( t, substrates ) ->
-				vlipid = this.k * substrates[this.dna] * substrates[this.substrate]
-				
-				results = {}
-				results["lipid"] = vlipid # todo mu
-				results[this.substrate] = -vlipid	
-				
-				return results
-		)
-		
-		return modules
-		
 	# Creates Transporter into the cell
 	#
 	# @param [Object] params the options
