@@ -5,8 +5,9 @@ class Model.Transporter extends Model.Module
 	# @param params [Object] parameters for this module
 	# @param origin [String] the substrate to be transported
 	# @param destination [String] the substrate after transported
-	# @param start [Integer] the initial value of transporters, defaults to 0
+	# @param start [Integer] the initial value of transporters, defaults to 1
 	# @param name [String] the name of the transport, defaults to "transporter_#{origin}_to_#{destination}"
+	# @param food [String] the substrate to consume, defauls to "s_int"
 	# @option k [Integer] the subscription rate, defaults to 1
 	# @option k_tr [Integer] the transportation rate, defaults to 1
 	# @option v [Integer] the speed scaler (vmax), defaults to 1
@@ -14,8 +15,9 @@ class Model.Transporter extends Model.Module
 	# @option orig [String] the substrate to be transported, overrides origin
 	# @option dest [String] the substrate after transported, overrides destination
 	# @option name [String] the name of the transporter, overrides name
+	# @option consume [String[ the substrate to be consumed, overides food
 	#
-	constructor: ( params = {}, origin, destination, start = 0, name ) ->
+	constructor: ( params = {}, start = 1, origin, destination, name, food = "s_int" ) ->
 
 		# Step function for lipids
 		step = ( t, substrates ) ->
@@ -24,8 +26,8 @@ class Model.Transporter extends Model.Module
 				vtransport = @v * substrates[@name] * ( substrates[@orig] / ( substrates[@orig] + @k_tr ) )
 			
 			results = {}		
-			if ( @_test( substrates, @dna ) )
-				results[@name] = @k * substrates[@dna]
+			if ( @_test( substrates, @dna, @consume ) )
+				results[@name] = @k * substrates[@dna] * substrates[@consume]
 			
 			if ( vtransport? and vtransport > 0 )	
 				results[@dest] = vtransport
@@ -42,6 +44,7 @@ class Model.Transporter extends Model.Module
 			orig: origin
 			dest: destination
 			dna: "dna"
+			consume: food
 		}
 		
 		params = _( defaults ).extend( params )
@@ -57,7 +60,7 @@ class Model.Transporter extends Model.Module
 	# @param substrate [String] the substrate to be transported, defaults to "s"
 	# @param orig_post [String] the substrate name postfix before transport
 	# @param dest_post [String] the substrate name postfix after transport
-	# @param start [Integer] the initial value of transporters, defaults to 0
+	# @param start [Integer] the initial value of transporters, defaults to 1
 	# @option k [Integer] the subscription rate, defaults to 1
 	# @option k_tr [Integer] the transportation rate, defaults to 1
 	# @option v [Integer] the speed scaler (vmax), defaults to 1
@@ -66,8 +69,8 @@ class Model.Transporter extends Model.Module
 	# @option dest [String] the substrate after transported, overrides substrate + dest_post
 	# @option name [String] the name of the transporter, defaults to "transporter_#{substrate}_in"
 	#
-	@int : ( params = { }, substrate = "s", start = 0, orig_post = "_ext", dest_post = "_int" ) ->
-		return new Model.Transporter( params, "#{substrate}#{orig_post}", "#{substrate}#{dest_post}", start, "transporter_#{substrate}_in" )
+	@int : ( params = { }, start = 1, substrate = "s", orig_post = "_ext", dest_post = "_int" ) ->
+		return new Model.Transporter( params, start, "#{substrate}#{orig_post}", "#{substrate}#{dest_post}", "transporter_#{substrate}_in" )
 	
 	# Generator for transporter from internal cell
 	#
@@ -84,7 +87,7 @@ class Model.Transporter extends Model.Module
 	# @option dest [String] the substrate after transported, overrides substrate + dest_post
 	# @option name [String] the name of the transporter, defaults to "transporter_#{substrate}_out"
 	#
-	@ext : ( params = { }, substrate = "p", start = 0, orig_post = "_int", dest_post = "_ext" ) ->
-		return new Model.Transporter( params, "#{substrate}#{orig_post}", "#{substrate}#{dest_post}", start, "transporter_#{substrate}_out" )
+	@ext : ( params = { }, start = 0, substrate = "p", orig_post = "_int", dest_post = "_ext" ) ->
+		return new Model.Transporter( params, start, "#{substrate}#{orig_post}", "#{substrate}#{dest_post}", "transporter_#{substrate}_out" )
 		
 (exports ? this).Model.Transporter = Model.Transporter

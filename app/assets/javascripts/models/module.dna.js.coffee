@@ -17,12 +17,19 @@ class Model.DNA extends Model.Module
 		
 			results = {}
 			
+			if ( @_test( substrates, @grow.consume ) or @_test( substrates, @grow.lipid ) or @_test( substrates, @grow.protein ) or @_test( substrates, @grow.metabolism ) )
+					
+				consume = substrates[@grow.consume] ? 1
+				lipid = substrates[@grow.lipid] ? 1
+				protein = substrates[@grow.protein] ? 1
+				mu = consume * lipid * protein * substrates[@grow.cell]
+			
 			# Only calculate vlipid if the components are available
-			if ( @_test( substrates, @name, @consume ) )
-				vdnasynth = @k * substrates[@name] * substrates[@consume]
+			if ( mu? and @_test( substrates, @name, @consume ) )
+				vdnasynth = @k * substrates[@name] * substrates[@consume] * mu
 			
 			if ( vdnasynth? and vdnasynth > 0 )
-				results[@name] = vdnasynth # todo mu
+				results[@name] = vdnasynth 
 				results[@consume] = -vdnasynth	
 			
 			return results
@@ -32,6 +39,12 @@ class Model.DNA extends Model.Module
 			k : 1
 			name : if prefix then "#{prefix}_dna" else "dna"
 			consume: food
+			grow : 
+				cell : "cell"
+				lipid : "lipid"
+				consume : "s_int"
+				protein : "protein"
+				metabolism : "enzym"
 		}
 		
 		params = _( defaults ).extend( params )

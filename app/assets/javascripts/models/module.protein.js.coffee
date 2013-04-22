@@ -8,18 +8,19 @@ class Model.Protein extends Model.Module
 	# @param start [Integer] the initial value of metabolism, defaults to 0
 	# @param name [String] the name of the metabolism, defaults to "enzym"
 	# @option k [Integer] the subscription rate, defaults to 1
+	# @option k_d [Integer] the degration rate, defaults to 1
 	# @option dna [String] the dna to use, defaults to "dna"
 	# @option substrate [String] the substrate to be converted, overrides food
 	# @option name [String] the name of the protein, overrides name
 	#
-	constructor: ( params = {}, food = "p_int", start = 0, name = "protein" ) ->			
+	constructor: ( params = {}, start = 0, food = "p_int", name = "protein" ) ->			
 	
 		# Step function for lipids
 		step = ( t, substrates ) ->
 		
 			results = {}
 			if ( @_test( substrates, @dna, @substrate ) )
-				vprotsynth = @k * substrates[@dna] * substrates[@substrate]
+				vprotsynth = @k * substrates[@dna] * substrates[@substrate] - @k_d * ( substrates[@name] ? 0 )
 			
 			if ( vprotsynth? and vprotsynth > 0 )
 				results[@name] = vprotsynth
@@ -30,6 +31,7 @@ class Model.Protein extends Model.Module
 		# Default parameters set here
 		defaults = { 
 			k : 1
+			k_d : 1
 			dna: "dna"
 			substrate: food
 			name : name
