@@ -81,7 +81,7 @@ class Module
 		
 		# TODO notification if fails
 		return not _( tests ).some( 
-			( anon ) -> return not substrates[anon]? 
+			( anon ) -> return not ( substrates[anon]? and substrates[anon] >= 0 )
 		)
 
 	# Pushes a move onto the history stack, and notifies Main of this move.
