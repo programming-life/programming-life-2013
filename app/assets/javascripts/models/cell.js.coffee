@@ -14,41 +14,8 @@ class Cell
 		@_modules = []
 		@_substrates = {}
 		
-		starts = {}
-		starts[ params.name ? "cell" ] = start
-		module = new Module( 
-			{ 
-				consume: params.consume ? "p_int"
-				lipid: params.lipid ? "lipid"
-				protein: params.protein ? "protein"
-				name: params.name ? "cell"
-			},
-			( t, substrates ) -> 
-			
-				results = {}
-								
-				# Gracefull fallback if props are not apparent
-				if ( @_test( substrates, @consume ) or @_test( substrates, @lipid ) or @_test( substrates, @protein ) )
-					consume = substrates[@consume] ? 1
-					lipid = substrates[@lipid] ? 1
-					protein = substrates[@lipid] ? 1
-					mu = substrates[@consume] * substrates[@lipid] * substrates[@protein]
-				
-				if ( mu and @_test( substrates, @name ) )
-					
-					results[@name] = mu * substrates[@name]
-					results[@consume] = -mu * substrates[@consume]
-					
-					if ( @_test( substrates, @lipid ) )
-						results[@lipid] = -mu * substrates[@lipid]
-					if ( @_test( substrates, @lipid ) )
-						results[@protein] = -mu * substrates[@protein]
-					
-				return results
-				
-			, starts
-		)
-		
+		# The cell growth module
+		module = new CellGrowth(  params, start )
 		Object.defineProperty( @, 'module',
 			get: ->
 				return module
