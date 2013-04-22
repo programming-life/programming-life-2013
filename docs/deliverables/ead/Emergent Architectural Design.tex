@@ -64,10 +64,17 @@
 				\paragraph{Local storage}
 					Javascript determines the local storage engine that is availabe and uses that to maintain an offline copy of the application. This makes it very easy to design new cells. 
 				\paragraph{Interaction by Javascript}
-					Javascript facilitates interaction and processes all the differential equations. It generates the graphs and the reports with the help of Canvas. 
+					Javascript facilitates interaction and processes all the differential equations. It generates the graphs and the reports with the help of the canvas element, part of HTML5.
+
 		\subsection{Hardware/software mapping}
-			The hardware/software mapping is illustrated by the image below. The server is a non-client piece of hardware, and can therefore be chosen specifically to suit the clients needs. The client-side hardware is required to support current webbuilding standards, which qualifies almost every machine from almost every platform to run the application.\\
-			\includegraphics[width=16cm]{EAD.png}
+			The hardware/software mapping is illustrated by \hyperref[fig:csillustration]{figure \ref*{fig:csillustration}}. The server-side is a non-client piece of hardware, and can therefore be chosen specifically to suit the clients needs. Tasks of the server-side include, but are not limited to the compilation of source files and providing a SQL enabled database. The client-side hardware is required to support current webbuilding standards, which qualifies almost every machine from almost every platform to run the application. It's also possible for the client to work locally without internet connection, using the local storage.\\
+			\begin{figure}
+			\centering
+				\includegraphics[scale=0.8]{EAD.png}
+			\caption{Server and client illustrated}
+			\label{fig:csillustration}
+			\end{figure}
+\clearpage
 		\subsection{Persistent data management}
 			The application synchronises any persistent data with the database running on the server. This ensures availability of all user data if there is a connection to the server. The application also provides the possibility to store data locally and export simulation results to a report in multiple standardised format, such as \emph{HTML}, \emph{Excel} and \emph{PDF}.			
 		\subsection{Concurrency}
@@ -76,5 +83,8 @@
 	\section{Summary}
 		The application is a lightweight, cross-platform graphical design tool with a centralised storage database. The architecture ensures its functionality on different kinds of machines as well as the ease of simulating complex cell models. It not only offers stability, ease and intuitive design, it offers it on every machine.
 	\section{Glossary}
-		This section explains any and all terms that may be ambiguous or unclear:\\
+		This section explains any and all terms that may be ambiguous or unclear:
+		\paragraph{REST} 
+			Representational State Transfer, or REST, is an architectural style of large-scale networked software that takes advantage of the technologies and protocols of the World Wide Web. \\
+See \href{http://goo.gl/Lfwhs}{http://goo.gl/Lfwhs} for more information.
 \end{document}
