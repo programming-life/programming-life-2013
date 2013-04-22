@@ -6,7 +6,7 @@ class Lipid extends Module
 		step = ( t, substrates ) ->
 		
 			results = {}
-			if ( @test( @dna, @substrate ) )
+			if ( @test( substrates, @dna, @substrate ) )
 				vlipid = @k * substrates[@dna] * substrates[@substrate]
 			if ( vlipid )
 				results["lipid"] = vlipid # todo mu

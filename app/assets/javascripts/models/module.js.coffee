@@ -45,6 +45,17 @@ class Module
 	# @returns [any] returns the value step function is returning
 	step : ( t, substrates ) ->
 		@_step.call( @, t, substrates )
+		
+	#
+	#
+	#
+	_test : ( substrates, tests... ) ->
+		
+		# TODO notification if fails
+		
+		return _( tests ).every( 
+			( anon ) -> return substrates[anon] ? 
+		)
 
 	# Pushes a move onto the history stack, and notifies Main of this move.
 	#
