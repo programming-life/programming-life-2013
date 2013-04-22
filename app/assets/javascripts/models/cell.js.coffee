@@ -157,7 +157,7 @@ class Cell
 		# Draw all the substrates
 		for key, value of mapping
 			dataset = []
-			graphs[ key ] = new Graph( key, { dt: dt } )
+			graphs[ key ] = new Graph( key, _(options).extend( { dt : dt } ) )
 			
 			# Push all the values, but round for float rounding errors
 			for time in [ 0 .. duration ] by dt
