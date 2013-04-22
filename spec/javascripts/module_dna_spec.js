@@ -173,6 +173,10 @@ describe("Module DNA", function() {
 				it( "should decrease food", function() {
 					expect( results[module.consume] ).toBeLessThan( 0 );
 				});
+				
+				it( "should have dna = -food", function() {
+					expect( results[module.name] + results[module.consume] ).toBe( 0 );
+				});
 			});
 			
 			describe( "with growth_rate = 0", function() {
