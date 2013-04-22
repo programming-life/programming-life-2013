@@ -20,11 +20,11 @@ class Transporter extends Module
 		# Step function for lipids
 		step = ( t, substrates ) ->
 		
-			if ( @test( substrates, @name, @orig ) )
+			if ( @_test( substrates, @name, @orig ) )
 				vtransport = @v * substrates[@name] * ( substrates[@orig] / ( substrates[@orig] + @k_tr ) )
 			
 			results = {}		
-			if ( @test( substrates, @dna ) )
+			if ( @_test( substrates, @dna ) )
 				results[@name] = @k * substrates[@dna]
 			
 			if ( vtransport? and vtransport > 0 )	
