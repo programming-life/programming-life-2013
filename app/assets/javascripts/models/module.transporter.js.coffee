@@ -23,7 +23,8 @@ class Model.Transporter extends Model.Module
 		step = ( t, substrates, mu ) ->
 		
 			if ( @_test( substrates, @name, @orig ) )
-				vtransport = @v * substrates[@name] * ( substrates[@orig] / ( substrates[@orig] + @k_tr ) )
+				rate = if @k_tr isnt 0 then ( substrates[@orig] / ( substrates[@orig] + @k_tr ) ) else substrates[@orig]
+				vtransport = @v * substrates[@name] * rate
 			
 			results = {}		
 			if ( @_test( substrates, @dna, @consume ) )

@@ -13,7 +13,6 @@ class Model.CellGrowth extends Model.Module
 			
 			results = {}
 			
-			# Gracefull fallback if props are not apparent
 			if ( @_test( substrates, @name ) )
 				growth = mu * substrates[@name]
 				
@@ -38,11 +37,11 @@ class Model.CellGrowth extends Model.Module
 		
 		Object.defineProperty( @, 'mu',
 			get: =>
-			
 				# This returns the cell growth, but according to this module,
 				# meaning that this property can be used for all modules to
 				# get a result in the context of cell growth
 				return ( substrates ) =>
+					
 					if ( _( cell_growth.infrastructure ).some( ( substrate ) -> cell_growth._test( substrates, substrate ) ) and cell_growth._test( substrates, cell_growth.name ) )
 						base = substrates[cell_growth.name] * ( substrates[cell_growth.consume] ? 1 )
 						for substrate in cell_growth.infrastructure
