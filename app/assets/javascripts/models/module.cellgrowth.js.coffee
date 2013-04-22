@@ -1,4 +1,12 @@
 class Model.CellGrowth extends Model.Module
+
+	# Constructor for Cell Growth
+	#
+	# @param params [Object] parameters for this module
+	# @param start [Integer] the initial value of metabolism, defaults to 0
+	# @option params [String] consume the substrate to use for cell growth
+	# @option params [String] name the name of the cell
+	#
 	constructor : ( params = { }, start = 1 ) ->	
 
 		step = ( t, substrates ) -> 

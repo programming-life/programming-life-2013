@@ -1,17 +1,17 @@
 class Model.Protein extends Model.Module
 
-	# Constructor for Metabolism
+	# Constructor for Protein
 	#
 	# @param params [Object] parameters for this module
 	# @param substrate [String] the substrate to be converted
 	# @param product [String] the product after conversion
 	# @param start [Integer] the initial value of metabolism, defaults to 0
 	# @param name [String] the name of the metabolism, defaults to "enzym"
-	# @option k [Integer] the subscription rate, defaults to 1
-	# @option k_d [Integer] the degration rate, defaults to 1
-	# @option dna [String] the dna to use, defaults to "dna"
-	# @option substrate [String] the substrate to be converted, overrides food
-	# @option name [String] the name of the protein, overrides name
+	# @option params [Integer] k the subscription rate, defaults to 1
+	# @option params [Integer] k_d the degration rate, defaults to 1
+	# @option params [String] dna the dna to use, defaults to "dna"
+	# @option params [String] substrate the substrate to convert, overrides food
+	# @option params [String] name the name of the protein, overrides name
 	#
 	constructor: ( params = {}, start = 0, food = "p_int", name = "protein" ) ->			
 	

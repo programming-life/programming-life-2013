@@ -5,10 +5,10 @@ class Model.Lipid extends Model.Module
 	# @param params [Object] parameters for this module
 	# @param start [Integer] the initial value of lipid, defaults to 1
 	# @param food [String] the substrate converted to lipid, defaults to "s_int"
-	# @option k [Integer] the subscription rate, defaults to 1
-	# @option dna [String] the dna to use, defaults to "dna"
-	# @option consume [String] the consume substrate, overides the food parameter, defaults to "s_int"
-	# @option name [String] the name, defaults to "lipid"
+	# @option params [Integer] k the subscription rate, defaults to 1
+	# @option params [String] dna the dna to use, defaults to "dna"
+	# @option params [String] consume the consume substrate, overides the food parameter, defaults to "s_int"
+	# @option params [String] name the name, defaults to "lipid"
 	#
 	constructor: ( params = {}, start = 1, food = "s_int" ) ->
 	

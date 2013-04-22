@@ -7,14 +7,14 @@ class Model.Metabolism extends Model.Module
 	# @param product [String] the product after conversion
 	# @param start [Integer] the initial value of metabolism, defaults to 0
 	# @param name [String] the name of the metabolism, defaults to "enzym"
-	# @option k [Integer] the subscription rate, defaults to 1
-	# @option k_met [Integer] the conversion rate, defaults to 1
-	# @option k_d [Integer] the conversion rate, defaults to 1
-	# @option v [Integer] the speed scaler (vmax), defaults to 1
-	# @option dna [String] the dna to use, defaults to "dna"
-	# @option orig [String] the substrate to be converted, overrides substrate
-	# @option dest [String] the product after conversion, overrides product
-	# @option name [String] the name of the metabolism, overrides name
+	# @option params [Integer] k the subscription rate, defaults to 1
+	# @option params [Integer] k_met the conversion rate, defaults to 1
+	# @option params [Integer] k_d the degredation rate, defaults to 1
+	# @option params [Integer] v the speed scaler (vmax), defaults to 1
+	# @option params [String] dna the dna to use, defaults to "dna"
+	# @option params [String] orig the substrate to be converted, overrides substrate
+	# @option params [String] dest the product after conversion, overrides product
+	# @option params [String] name the name of the metabolism, overrides name
 	#
 	constructor: ( params = {}, start = 0, substrate = "s_int", product = "p_int", name = "enzym" ) ->
 	

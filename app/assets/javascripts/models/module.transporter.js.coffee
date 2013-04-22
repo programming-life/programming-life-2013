@@ -8,14 +8,14 @@ class Model.Transporter extends Model.Module
 	# @param start [Integer] the initial value of transporters, defaults to 1
 	# @param name [String] the name of the transport, defaults to "transporter_#{origin}_to_#{destination}"
 	# @param food [String] the substrate to consume, defauls to "s_int"
-	# @option k [Integer] the subscription rate, defaults to 1
-	# @option k_tr [Integer] the transportation rate, defaults to 1
-	# @option v [Integer] the speed scaler (vmax), defaults to 1
-	# @option dna [String] the dna to use, defaults to "dna"
-	# @option orig [String] the substrate to be transported, overrides origin
-	# @option dest [String] the substrate after transported, overrides destination
-	# @option name [String] the name of the transporter, overrides name
-	# @option consume [String[ the substrate to be consumed, overides food
+	# @option params [Integer] k the subscription rate, defaults to 1
+	# @option params [Integer] k_tr the transportation rate, defaults to 1
+	# @option params [Integer] v the speed scaler (vmax), defaults to 1
+	# @option params [String] dna the dna to use, defaults to "dna"
+	# @option params [String] orig the substrate to be transported, overrides origin
+	# @option params [String] dest the substrate after transported, overrides destination
+	# @option params [String] name the name of the transporter, overrides name
+	# @option params [String] consume the substrate to be consumed, overides food
 	#
 	constructor: ( params = {}, start = 1, origin, destination, name,  dir = 0, food = "s_int" ) ->
 
