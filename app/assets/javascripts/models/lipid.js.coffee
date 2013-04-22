@@ -7,7 +7,7 @@ class Lipid extends Module
 	# @param food [String] the substrate converted to lipid
 	# @option k [Integer] the subscription rate, defaults to 1
 	# @option dna [String] the dna to use, defaults to "dna"
-	# @option substrate [String] the food, overides the food parameter, defaults to "s_int"
+	# @option consume [String] the food, overides the food parameter, defaults to "s_int"
 	#
 	constructor: ( params = {}, start = 0, food = "s_int" ) ->
 	
@@ -17,12 +17,12 @@ class Lipid extends Module
 			results = {}
 			
 			# Only calculate vlipid if the components are available
-			if ( @test( substrates, @dna, @substrate ) )
-				vlipid = @k * substrates[@dna] * substrates[@substrate]
+			if ( @test( substrates, @dna, @consume ) )
+				vlipid = @k * substrates[@dna] * substrates[@consume]
 			
 			if ( vlipid )
 				results["lipid"] = vlipid # todo mu
-				results[@substrate] = -vlipid	
+				results[@consume] = -vlipid	
 			
 			return results
 		
@@ -30,7 +30,7 @@ class Lipid extends Module
 		defaults = { 
 			k : 1
 			dna : 'dna'
-			substrate: food
+			consume: food
 		}
 		
 		params = _( defaults ).extend( params )
