@@ -72,12 +72,13 @@ class Model.Module
 			unless caller isnt context
 				@_addMove key, value, param
 						
-		Model.EventManager.on( 'module.set.property', @, addmove )
+		#Model.EventManager.on( 'module.set.property', @, addmove )
 		#Model.EventManager.on( 'module.set.amount', @, addmove )
 		Model.EventManager.on( 'module.set.substrate', @, addmove )
 		Model.EventManager.trigger( 'module.creation', @, [ creation ] )	
 		
 		Object.seal( @ )
+		
 	# Gets the substrate start value
 	#
 	# @param substrate [String] the substrate name
@@ -93,8 +94,8 @@ class Model.Module
 	# @returns [self] for chaining
 	#
 	setSubstrate: ( substrate, value ) ->
-		Model.EventManager.trigger( 'module.set.substrate', @, [ "_starts.#{substrate}", @starts[ substrate ] ? 0, value ] )	
-		@_starts[ substrate ] = value
+		Model.EventManager.trigger( 'module.set.substrate', @, [ "starts.#{substrate}", @starts[ substrate ] ? 0, value ] )	
+		@starts[ substrate ] = value
 		return this
 		
 	# Runs the step function in the correct context
