@@ -66,7 +66,7 @@ describe("Module Protein", function() {
 		describe( "and using named option in the constructor, also as params", function() {
 			
 			beforeEach( function() {
-				module = new Model.DNA( { a: 'new', substrate: 'winner' }, undefined, "loser" );
+				module = new Model.Protein( { a: 'new', substrate: 'winner' }, undefined, "loser" );
 			});
 			
 			it( "should not override given params ", function() {
@@ -186,8 +186,28 @@ describe("Module Protein", function() {
 					expect( results[module.name] + results[module.substrate] ).toBe( 0 );
 				});
 				
-				xdescribe( "and protein > 0", function() {
+				describe( "and protein > 0", function() {
+					
+					beforeEach( function() {
+						substrates[module.name] = 1;
+						results = module.step( 0, substrates, 1 );
+					});
+					
+					it( "should have results", function() {
+						expect( _(results).isEmpty() ).toBeFalsy();
+					});
 				
+					it( "should increase protein less than 1", function() {
+						expect( results[module.name] ).toBeLessThan( 1 );
+					});
+					
+					it( "should decrease protein", function() {
+						expect( results[module.name] ).toBeLessThan( 0 );
+					});
+					
+					it( "should decrease substrate", function() {
+						expect( results[module.substrate] ).toBeLessThan( 0 );
+					});					
 				});
 			});
 			
@@ -213,8 +233,28 @@ describe("Module Protein", function() {
 					expect( results[module.name] + results[module.substrate] ).toBe( 0 );
 				});
 				
-				xdescribe( "and protein > 0", function() {
+				describe( "and protein > 0", function() {
+					
+					beforeEach( function() {
+						substrates[module.name] = 1;
+						results = module.step( 0, substrates, 0 );
+					});
+					
+					it( "should have results", function() {
+						expect( _(results).isEmpty() ).toBeFalsy();
+					});
 				
+					it( "should increase protein less than 1", function() {
+						expect( results[module.name] ).toBeLessThan( 1 );
+					});
+					
+					it( "should increase protein more than when mu > 0", function() {
+						expect( results[module.name] ).toBeGreaterThan( 0 );
+					});
+					
+					it( "should decrease substrate", function() {
+						expect( results[module.substrate] ).toBeLessThan( 0 );
+					});					
 				});
 			});
 			
