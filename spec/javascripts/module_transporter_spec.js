@@ -403,4 +403,141 @@ describe("Module Transporter", function() {
 		});
 	});
 		
+	describe( "when using generator int helper function", function() {
+		
+		describe( "and defaults", function() {
+			var module;
+			beforeEach( function() {
+				module = new Model.Transporter.int();
+			});
+			
+			it( "should have 2 substrate: name with value 1, dest with 0", function() {
+				expect( _(module.substrates).size() ).toBe( 2 );
+				expect( module.substrates[module.name] ).toBeDefined();
+				expect( module.substrates[module.name] ).toBe( 1 );
+				expect( module.substrates[module.dest] ).toBeDefined();
+				expect( module.substrates[module.dest] ).toBe( 0 );
+			});
+			
+			it( "should have 's_ext' as orig", function() {
+				expect( module.orig ).toBe( "s_ext" );
+			});
+			
+			it( "should have 's_int' as dest", function() {
+				expect( module.dest ).toBe( "s_int" );
+			});
+			
+			it( "should have 1 as direction", function() {
+				expect( module.direction ).toBe( 1 );
+			});
+			
+			it( "should have 'transporter_s_in' as name", function() {
+				expect( module.name ).toBe( 'transporter_s_in' );
+			});
+		
+		});
+		
+		describe( "and parameters set", function() {
+			var module;
+			beforeEach( function() {
+				module = new Model.Transporter.int(
+					{ 'a' : 1 }, 0, 'f', '_a', '_b' 
+				);
+			});
+			
+			it( "should have 2 substrate: name with value set, dest with 0", function() {
+				expect( _(module.substrates).size() ).toBe( 2 );
+				expect( module.substrates[module.name] ).toBeDefined();
+				expect( module.substrates[module.name] ).toBe( 0 );
+				expect( module.substrates[module.dest] ).toBeDefined();
+				expect( module.substrates[module.dest] ).toBe( 0 );
+			});
+			
+			it( "should have '#{substrate}_#{orig_post}' as orig", function() {
+				expect( module.orig ).toBe( "f_a" );
+			});
+			
+			it( "should have '#{substrate}_#{dest_post}' as dest", function() {
+				expect( module.dest ).toBe( "f_b" );
+			});
+			
+			it( "should have 1 as direction", function() {
+				expect( module.direction ).toBe( 1 );
+			});
+			
+			it( "should have 'transporter_#{substrate}_in' as name", function() {
+				expect( module.name ).toBe( 'transporter_f_in' );
+			});
+		});
+	});
+	
+	describe( "when using generator ext helper function", function() {
+		
+		describe( "and defaults", function() {
+			var module;
+			beforeEach( function() {
+				module = new Model.Transporter.ext();
+			});
+			
+			it( "should have 2 substrate: name with value 0, dest with 0", function() {
+				expect( _(module.substrates).size() ).toBe( 2 );
+				expect( module.substrates[module.name] ).toBeDefined();
+				expect( module.substrates[module.name] ).toBe( 0 );
+				expect( module.substrates[module.dest] ).toBeDefined();
+				expect( module.substrates[module.dest] ).toBe( 0 );
+			});
+			
+			it( "should have 'p_int' as orig", function() {
+				expect( module.orig ).toBe( "p_int" );
+			});
+			
+			it( "should have 'p_ext' as dest", function() {
+				expect( module.dest ).toBe( "p_ext" );
+			});
+			
+			it( "should have -1 as direction", function() {
+				expect( module.direction ).toBe( -1 );
+			});
+			
+			it( "should have 'transporter_p_out' as name", function() {
+				expect( module.name ).toBe( 'transporter_p_out' );
+			});
+			
+		});
+		
+		describe( "and parameters set", function() {
+			var module;
+			beforeEach( function() {
+				module = new Model.Transporter.ext(
+					{ 'a' : 1 }, 1, 'f', '_b', '_a' 
+				);
+			});
+			
+			it( "should have 2 substrate: name with value set, dest with 0", function() {
+				expect( _(module.substrates).size() ).toBe( 2 );
+				expect( module.substrates[module.name] ).toBeDefined();
+				expect( module.substrates[module.name] ).toBe( 1 );
+				expect( module.substrates[module.dest] ).toBeDefined();
+				expect( module.substrates[module.dest] ).toBe( 0 );
+			});
+			
+			it( "should have '#{substrate}_#{orig_post}' as orig", function() {
+				expect( module.orig ).toBe( "f_b" );
+			});
+			
+			it( "should have '#{substrate}_#{dest_post}' as dest", function() {
+				expect( module.dest ).toBe( "f_a" );
+			});
+			
+			it( "should have -1 as direction", function() {
+				expect( module.direction ).toBe( -1 );
+			});
+			
+			it( "should have 'transporter_#{substrate}_out' as name", function() {
+				expect( module.name ).toBe( 'transporter_f_out' );
+			});
+		});
+	});
+	
+	
 }); 
