@@ -121,15 +121,12 @@ describe("Cell", function() {
 			
 			beforeEach(function() {
 				results = cell.run( 0 );
-				console.info( results );
 				result = results.results;
 				mapping = results.map;
 			});
 			
 			it("should have input values", function() {
 				expect( result ).toBeDefined();
-				console.info(result.y[ result.y.length - 1 ]);
-				console.info(mapping);
 				expect( result.y[ result.y.length - 1 ][ mapping.enzym ] ).toBe( enzym );
 				expect( result.y[ result.y.length - 1 ][ mapping.food_out ] ).toBe( food );
 				expect( result.y[ result.y.length - 1 ][ mapping.food_in ] ).toBe( 0 );

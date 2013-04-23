@@ -33,7 +33,7 @@ class Model.Transporter extends Model.Module
 			
 			# todo: difference between vtrans in and out?
 			if ( vtransport? and vtransport > 0 )
-				m = if dir is 1 then substrates[@cell] else 1 
+				m = if @direction is 1 then substrates[@cell] else 1 
 				results[@dest] = vtransport
 				results[@orig] = -vtransport * m
 				
@@ -52,9 +52,12 @@ class Model.Transporter extends Model.Module
 			cell: "cell"
 		}
 		
+		@_dir = dir
 		Object.defineProperty( @, 'direction',
 			get: ->
-				return dir
+				return @_dir
+			set: (value) ->
+				@_dir = value
 		)
 		
 		params = _( defaults ).extend( params )
