@@ -131,13 +131,7 @@ class Model.Cell
 			# value remains the same
 			for variable, index of mapping
 				results[ index ] = 0
-				
-			# All the substrates are at LEAST 0, so here we lower bound the
-			# values. Because of interpolation and float precision, substrates
-			# might deteriorate to extreme values when they don't change anymore.
-			v = _(v).map (value) -> 
-				return if value < 0 then 0 else value
-				
+								
 			# Get those substrates named
 			mapped = map v
 			
@@ -150,9 +144,13 @@ class Model.Cell
 					results[ mapping[ variable ] ] += result
 								
 			return results
-			
+		
+		stop = ( x, y ) -> 
+			#console.log ( 2 * _( y ).some( ( y ) -> y < -1 ) - 1 )
+			return 2 * _( y ).some( ( y ) -> y < 1 ) - 1
+		
 		# Run the ODE from 0...timespan with starting values and step function
-		sol = numeric.dopri( 0, timespan, values, step )
+		sol = numeric.dopri( 0, timespan, values, step ) #, undefined, 100000, stop  )
 		
 		# Return the system results
 		return { results: sol, map: mapping }
