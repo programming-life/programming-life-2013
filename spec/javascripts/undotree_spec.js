@@ -7,19 +7,43 @@ describe("UndoTree", function() {
 	});
 
 	describe("when constructed with only a root node", function() {
-		var undo, redo;
 		beforeEach( function() {
-			undo = tree.undo();
-			redo = tree.redo();
 		});
 
-		it("should return null on undo", function() {
-			expect( undo ).toBe( null );
+		describe("when undo is called", function() {
+			var undo;
+			beforeEach( function() {
+				undo = tree.undo();
+			});
+
+			it("should return null on undo", function() {
+				expect( undo ).toBe( null );
+			});
 		});
 
-		it("should return null on redo", function() {
-			expect( redo ).toBe( null );
+		describe("when redo is called", function() {
+			var redo;
+			beforeEach( function() {
+				redo = tree.redo();
+			});
+
+			it("should return null on redo", function() {
+				expect( redo ).toBe( null );
+			});
 		});
+
+		describe("when rebasing the tree to a new node", function() {
+			var newNode;
+			beforeEach( function() {
+				newNode = new Node({base: "base"},null);
+				tree.rebase(tree._root, newNode);
+			});
+
+			it("should have replaced the root node with the new node", function() {
+				expect( tree._root ).toBe( newNode );
+			});
+		});
+
 	});
 
 	describe("when constructed with specific objects", function() {
@@ -124,10 +148,28 @@ describe("UndoTree", function() {
 				});
 
 				it("should have returned the next action", function() {
-					console.log( tree._current );
 					expect( redone ).toBe( object[5] );
 				});
 			});
+		});
+
+		describe("when rebasing a branch", function() {
+			
+			beforeEach( function() {
+				branch = node[2];
+				base = new Node({rebase: "base"});
+				oldParent = branch._parent;
+				tree.rebase( branch, base );
+			});
+
+			it("should have a branch with the new parent", function() {
+				expect( branch._parent ).toBe( base );
+			});
+
+			it("should have differing old and new parents", function() {
+				expect( branch._parent).not.toBe( oldParent );
+			});
+
 		});
 	});
 });
