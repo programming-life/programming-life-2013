@@ -39,5 +39,14 @@ class UndoTree extends Tree
 			return object
 		else
 			return null
-
+	
+	# Rebase a branch on a different node than it's current parent.
+	#
+	# @param [Node] branch The branch to rebase.
+	# @param [Node] new The new parent for the branch.
+	rebase: ( branch, parent) ->
+		branch.rebase(parent)
+		if branch is @_root
+			@_root = parent
+			
 (exports ? this).UndoTree = UndoTree
