@@ -46,6 +46,19 @@ describe("UndoTree", function() {
 				it("should have returned the second last action", function() {
 					expect( undone ).toBe( object[4] );
 				});
+
+				describe("when a new node is added to the tree", function() {
+					var newNode;
+					beforeEach( function() {
+						newNode = tree.add({test: "new"});
+					});
+
+					it("should have switched the branch", function() {
+						expect( tree._current ).toBe( newNode );
+						expect( tree._current._parent._children.length ).toBe( 2 );
+					});
+
+				});
 			});
 
 			describe("when redo has been called", function() {

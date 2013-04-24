@@ -24,8 +24,8 @@ class Model.Module
 
 				Object.defineProperty( @ , key,
 					set: ( param ) ->
-						@_pushHistory(key, @["_#{key}"], param)
-						@["_#{key}"] = param
+						@_addMove(key, @["_#{key}"], param)
+						@_do(key, param)
 					get: ->
 						return @["_#{key}"]
 					enumerable: true
@@ -82,30 +82,29 @@ class Model.Module
 			( anon ) -> return not ( substrates[anon]? ) 
 			# TODO what to do when it goes below 0
 		)
+	# Applies a change to the parameters of the module
+	#
+	# @param [String] key The changed property
+	# @param [val] value The value of the changed property
+	_do : ( key, value ) ->
+		@["_#{key}"] = value
 
-	# Pushes a move onto the history stack, and notifies Main of this move.
+	# Adds a move to the undotree
 	#
 	# @param [String] key, the changed property
 	# @param [val] value, the value of the changed property 
-	_pushHistory: ( key, value, param ) ->
+	_addMove: ( key, value, param ) ->
 		object = [key, value, param]
 		@_tree.add(object)
 
-	# Pops a move of the history stack and applies it. Calls _pushFuture on the 
-	# changed values.
-	#
-	popHistory: ( ) ->
+	# Undoes the most recent move
+	undo: ( ) ->
 		[key, value, param] = @_tree.undo()
-		@["_#{key}"] = value
+		@_do(key, value)
 
-	# Pops a move of the future stack and applies it. Calls _pushHistory on the 
-	# changed values.
-	#
-	popFuture: ( ) ->
+	# Redoes the most recently undone move
+	redo : ( ) ->
 		[key, value, param] = @_tree.redo()
-		@["_#{key}"] = param
+		@_do(key, param)
 
 (exports ? this).Model.Module = Model.Module
-
-
-
