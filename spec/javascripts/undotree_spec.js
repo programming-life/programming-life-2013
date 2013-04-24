@@ -1,11 +1,32 @@
 describe("UndoTree", function() {
+	var tree, root;
+	
+	beforeEach( function() {
+		root = new Node({root: "test"}, null);
+		tree = new UndoTree(root);
+	});
+
+	describe("when constructed with only a root node", function() {
+		var undo, redo;
+		beforeEach( function() {
+			undo = tree.undo();
+			redo = tree.redo();
+		});
+
+		it("should return null on undo", function() {
+			expect( undo ).toBe( null );
+		});
+
+		it("should return null on redo", function() {
+			expect( redo ).toBe( null );
+		});
+	});
+
 	describe("when constructed with specific objects", function() {
-		var tree, root ,test;
+		var test;
 		var node, object;
 
 		beforeEach( function() {
-			root = new Node({root: "test"}, null);
-			tree = new UndoTree(root);
 			node = [root];
 			object = [null];
 			for(i=1; i<6; i++) {
@@ -56,6 +77,37 @@ describe("UndoTree", function() {
 					it("should have switched the branch", function() {
 						expect( tree._current ).toBe( newNode );
 						expect( tree._current._parent._children.length ).toBe( 2 );
+					});
+
+					describe("when undoing", function() {
+						beforeEach( function() {
+							tree.undo();
+						});
+
+						describe("and then redoing", function() {
+							beforeEach( function() {
+								tree.redo();
+							});
+
+							it("should have the same tree", function() {
+								expect( tree._current ).toBe( newNode );
+								expect( tree._current._parent._children.length ).toBe( 2 );
+							});
+						});
+
+						describe("and the old branch node is added again to the tree", function() {
+							beforeEach( function() {
+								oldBranchNode = tree.add( object[4] );
+							});
+
+							it("should have switched the branch to the old branch", function() {
+								expect( tree._current ).toBe( oldBranchNode );
+							});
+
+							it("should not have added a node", function() {
+								expect( tree._current._parent._children.length ).toBe( 2 );
+							});
+						});
 					});
 
 				});

@@ -27,7 +27,7 @@ class UndoTree extends Tree
 			@_current = @_current._parent
 			return object
 		else
-			return [null,null]
+			return null
 	
 	# Move the pointer to the active node of the current branch forward a step.
 	#
@@ -38,6 +38,6 @@ class UndoTree extends Tree
 			object = @_current._object
 			return object
 		else
-			return [null,null]
+			return null
 
 (exports ? this).UndoTree = UndoTree
