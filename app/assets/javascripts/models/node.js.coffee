@@ -14,7 +14,7 @@ class Node
 
 		@_parent._children.push(this) if @_parent
 
-	# Rebase this branch on a different node than its current parent.
+	# Rebase this branch on a different node than it's current parent.
 	#
 	# @param [Node] parent The new parent for the branch.
 	rebase: ( parent ) ->
@@ -26,7 +26,7 @@ class Node
 			@_parent._children.splice(index, 1);
 
 		@_parent = parent
-	
+
 	# Remove unnecessary nodes on a the branch starting from this node
 	#
 	# @returns [Node] The starting node of the node branch.
