@@ -26,22 +26,5 @@ class Node
 			@_parent._children.splice(index, 1);
 
 		@_parent = parent
-	
-	# Remove unnecessary nodes on a the branch starting from this node
-	#
-	# @returns [Node] The starting node of the node branch.
-	# TODO: actually implement
-	minimize: ( ) ->
-		return this
 
-<<<<<<< HEAD
-	# Remove unnecessary nodes on a the branch starting from this node
-	#
-	# @returns [Node] The starting node of the node branch.
-	# TODO: actually implement
-	minimize: ( ) ->
-		return this
-
-=======
->>>>>>> f228358f2a13da282e681c21039dd907b00784b7
 (exports ? this).Node = Node
