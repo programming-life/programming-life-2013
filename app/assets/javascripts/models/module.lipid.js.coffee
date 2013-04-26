@@ -23,7 +23,7 @@ class Model.Lipid extends Model.Module
 				growth = mu * ( substrates[@name] ? 0 )
 			
 			if ( vlipid? and vlipid > 0 )
-				results[@name] = vlipid - growth # todo mu
+				results[@name] = vlipid - growth
 				results[@consume] = -vlipid	
 			
 			return results
