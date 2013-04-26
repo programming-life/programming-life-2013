@@ -23,8 +23,8 @@ describe("Module Metabolism", function() {
 			expect( module.k ).toBe( 1 );
 		});
 		
-		it( "should have 1 as k_met (reaction value)", function() {
-			expect( module.k_met ).toBe( 1 );
+		it( "should have 1 as k_m (reaction value)", function() {
+			expect( module.k_m ).toBe( 1 );
 		});
 		
 		it( "should have 1 as k_d (degration value)", function() {
