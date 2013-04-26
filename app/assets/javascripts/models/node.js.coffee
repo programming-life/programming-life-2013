@@ -34,6 +34,7 @@ class Node
 	minimize: ( ) ->
 		return this
 
+<<<<<<< HEAD
 	# Remove unnecessary nodes on a the branch starting from this node
 	#
 	# @returns [Node] The starting node of the node branch.
@@ -41,4 +42,6 @@ class Node
 	minimize: ( ) ->
 		return this
 
+=======
+>>>>>>> f228358f2a13da282e681c21039dd907b00784b7
 (exports ? this).Node = Node
