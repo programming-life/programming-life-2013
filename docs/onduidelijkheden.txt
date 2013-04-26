@@ -1,0 +1,3 @@
+Moet er bij de synthese van lipide/proteine 1 of meer substraten worden geconsumeerd?
+Wanneer deelt de cel? 
+Moeten we van tijdstip 0 tot de tijdstip van celdeling simuleren?
