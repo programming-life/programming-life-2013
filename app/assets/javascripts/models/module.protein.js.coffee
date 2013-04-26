@@ -36,12 +36,10 @@ class Model.Protein extends Model.Module
 			dna: "dna"
 			substrate: food
 			name : name
+			starts: { name : start }
 		}
 		
 		params = _( defaults ).extend( params )
-		
-		starts = {}
-		starts[params.name] = start
-		super params, step, starts
+		super params, step
 
 (exports ? this).Model.Protein = Model.Protein

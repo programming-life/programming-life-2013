@@ -47,13 +47,10 @@ class Model.Metabolism extends Model.Module
 			dest: product
 			dna: "dna"
 			name: name
+			starts: { name : start, dest: 0 }
 		}
 		
 		params = _( defaults ).extend( params )
-		
-		starts = {};
-		starts[params.name] = start
-		starts[params.dest] = 0
-		super params, step, starts
+		super params, step
 
 (exports ? this).Model.Metabolism = Model.Metabolism

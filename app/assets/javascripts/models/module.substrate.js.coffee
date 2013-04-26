@@ -17,7 +17,7 @@ class Model.Substrate extends Model.Module
 
 		# Default parameters set here
 		defaults = { 
-			substrates : { name: start }
+			starts : { name: start }
 			name : name
 			placement: if inside_cell then 1 else -1
 		}

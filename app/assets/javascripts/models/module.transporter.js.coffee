@@ -50,6 +50,7 @@ class Model.Transporter extends Model.Module
 			dna: "dna"
 			consume: food
 			cell: "cell"
+			starts: { name : start, dest : 0 }
 		}
 		
 		@_dir = dir
@@ -61,11 +62,7 @@ class Model.Transporter extends Model.Module
 		)
 		
 		params = _( defaults ).extend( params )
-		
-		starts = {};
-		starts[params.name] = start
-		starts[params.dest] = 0
-		super params, step, starts
+		super params, step
 		
 	# Generator for transporter to internal cell
 	#
