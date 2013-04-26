@@ -8,9 +8,8 @@ class Model.Module
 	# @param step [Function] the step function
 	# @param substrates [Object] the substrates for this module
 	#
-	constructor: ( params, step, substrates = {} ) -> 
+	constructor: ( params, step ) -> 
 		@_creation = Date.now()
-		@_substrates = substrates
 		@_tree = new UndoTree()
 
 		for key, value of params
@@ -38,9 +37,11 @@ class Model.Module
 				return step
 		)
 		
-		Object.defineProperty( @, 'substrates',
+		Object.defineProperty( @, 'amount',
 			get: ->
-				return @_substrates
+				return @starts.name
+			set: (value) ->
+				@starts.name = value
 		)
 		
 		Object.seal( @ )
