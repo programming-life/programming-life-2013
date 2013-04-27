@@ -76,11 +76,16 @@ describe("Cell", function() {
 				.add_substrate( 'food_in', 0 )
 				
 			create_transport = new Model.Module(
-				{ rate: 2 }, 
+				{ 
+					rate: 2, 
+					name : 'transp' ,
+					starts : { 
+						name : 0 
+					}
+				}, 
 				function ( t, substrates ) {
 					return { 'transp' : this.rate }
-				},
-				{ 'transp' : 0 }
+				}
 			);
 
 			transport_food = new Model.Module(
@@ -93,8 +98,7 @@ describe("Cell", function() {
 						'food_out' : -transport, 
 						'food_in' : transport 
 					}
-				},
-				{ }
+				}
 			);
 
 			food_enzym = new Model.Module(
@@ -107,8 +111,7 @@ describe("Cell", function() {
 					return { 
 						'food_in' : -processed 
 					}
-				},
-				{ }
+				}
 			);
 
 			cell.add( create_transport )
@@ -177,18 +180,6 @@ describe("Cell", function() {
 
 			it("the container should have as many graphs as the cell has substrates", function() {
 				expect( container.children().length ).toBe( 5 );
-			});
-
-			xit("", function() {
-				expect( 1 ).toBe( 1 );
-			});
-			
-			xit("", function() {
-				expect( 1 ).toBe( 1 );
-			});
-			
-			xit("", function() {
-				expect( 1 ).toBe( 1 );
 			});
 
 		});

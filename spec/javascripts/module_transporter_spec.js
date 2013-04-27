@@ -48,11 +48,12 @@ describe("Module Transporter", function() {
 		});
 		
 		it( "should have 2 substrate: name with value 1, dest with 0", function() {
-			expect( _(module.substrates).size() ).toBe( 2 );
-			expect( module.substrates[module.name] ).toBeDefined();
-			expect( module.substrates[module.name] ).toBe( 1 );
-			expect( module.substrates[module.dest] ).toBeDefined();
-			expect( module.substrates[module.dest] ).toBe( 0 );
+			expect( _(module.starts).size() ).toBe( 2 );
+			expect( module.starts.name ).toBeDefined();
+			expect( module.starts.name ).toBe( 1 );
+			expect( module.amount ).toBe( 1 );
+			expect( module.starts.dest ).toBeDefined();
+			expect( module.starts.dest ).toBe( 0 );
 		});
 		
 	});
@@ -106,7 +107,8 @@ describe("Module Transporter", function() {
 		});		
 		
 		it( "should overide the default start value", function() {
-			expect( module.substrates[module.name] ).toBe( 2 );
+			expect( module.starts.name ).toBe( 2 );
+			expect( module.amount ).toBe( 2 );
 		});
 	});
 	
@@ -412,11 +414,12 @@ describe("Module Transporter", function() {
 			});
 			
 			it( "should have 2 substrate: name with value 1, dest with 0", function() {
-				expect( _(module.substrates).size() ).toBe( 2 );
-				expect( module.substrates[module.name] ).toBeDefined();
-				expect( module.substrates[module.name] ).toBe( 1 );
-				expect( module.substrates[module.dest] ).toBeDefined();
-				expect( module.substrates[module.dest] ).toBe( 0 );
+				expect( _(module.starts).size() ).toBe( 2 );
+				expect( module.starts.name ).toBeDefined();
+				expect( module.starts.name ).toBe( 1 );
+				expect( module.amount ).toBe( 1 );
+				expect( module.starts.dest ).toBeDefined();
+				expect( module.starts.dest ).toBe( 0 );
 			});
 			
 			it( "should have 's_ext' as orig", function() {
@@ -446,11 +449,12 @@ describe("Module Transporter", function() {
 			});
 			
 			it( "should have 2 substrate: name with value set, dest with 0", function() {
-				expect( _(module.substrates).size() ).toBe( 2 );
-				expect( module.substrates[module.name] ).toBeDefined();
-				expect( module.substrates[module.name] ).toBe( 0 );
-				expect( module.substrates[module.dest] ).toBeDefined();
-				expect( module.substrates[module.dest] ).toBe( 0 );
+				expect( _(module.starts).size() ).toBe( 2 );
+				expect( module.starts.name ).toBeDefined();
+				expect( module.starts.name ).toBe( 0 );
+				expect( module.amount ).toBe( 0 );
+				expect( module.starts.dest ).toBeDefined();
+				expect( module.starts.dest ).toBe( 0 );
 			});
 			
 			it( "should have '#{substrate}_#{orig_post}' as orig", function() {
@@ -480,11 +484,12 @@ describe("Module Transporter", function() {
 			});
 			
 			it( "should have 2 substrate: name with value 0, dest with 0", function() {
-				expect( _(module.substrates).size() ).toBe( 2 );
-				expect( module.substrates[module.name] ).toBeDefined();
-				expect( module.substrates[module.name] ).toBe( 0 );
-				expect( module.substrates[module.dest] ).toBeDefined();
-				expect( module.substrates[module.dest] ).toBe( 0 );
+				expect( _(module.starts).size() ).toBe( 2 );
+				expect( module.starts.name ).toBeDefined();
+				expect( module.starts.name ).toBe( 0 );
+				expect( module.amount ).toBe( 0 );
+				expect( module.starts.dest ).toBeDefined();
+				expect( module.starts.dest ).toBe( 0 );
 			});
 			
 			it( "should have 'p_int' as orig", function() {
@@ -514,11 +519,12 @@ describe("Module Transporter", function() {
 			});
 			
 			it( "should have 2 substrate: name with value set, dest with 0", function() {
-				expect( _(module.substrates).size() ).toBe( 2 );
-				expect( module.substrates[module.name] ).toBeDefined();
-				expect( module.substrates[module.name] ).toBe( 1 );
-				expect( module.substrates[module.dest] ).toBeDefined();
-				expect( module.substrates[module.dest] ).toBe( 0 );
+				expect( _(module.starts).size() ).toBe( 2 );
+				expect( module.starts.name ).toBeDefined();
+				expect( module.starts.name ).toBe( 1 );
+				expect( module.amount ).toBe( 1 );
+				expect( module.starts.dest ).toBeDefined();
+				expect( module.starts.dest ).toBe( 0 );
 			});
 			
 			it( "should have '#{substrate}_#{orig_post}' as orig", function() {

@@ -40,11 +40,12 @@ describe("Module Metabolism", function() {
 		});
 		
 		it( "should have 2 substrates: dest and enzym", function() {
-			expect( _(module.substrates).size() ).toBe( 2 );
-			expect( module.substrates[module.name] ).toBeDefined();
-			expect( module.substrates[module.name] ).toBe( 0 );
-			expect( module.substrates[module.dest] ).toBeDefined();
-			expect( module.substrates[module.dest] ).toBe( 0 );
+			expect( _(module.starts).size() ).toBe( 2 );
+			expect( module.starts.name ).toBeDefined();
+			expect( module.starts.name ).toBe( 0 );
+			expect( module.amount ).toBe( 0 );
+			expect( module.starts.dest ).toBeDefined();
+			expect( module.starts.dest ).toBe( 0 );
 		});
 		
 	});
@@ -98,7 +99,8 @@ describe("Module Metabolism", function() {
 		});		
 		
 		it( "should overide the default start value", function() {
-			expect( module.substrates[module.name] ).toBe( 2 );
+			expect( module.starts.name ).toBe( 2 );
+			expect( module.amount ).toBe( 2 );
 		});
 	});
 	
