@@ -31,8 +31,8 @@ describe("Module Transporter", function() {
 			expect( module.k_tr ).toBe( 1 );
 		});
 		
-		it( "should have 1 as v (speed scale vmax)", function() {
-			expect( module.v ).toBe( 1 );
+		it( "should have 1 as k_m (reaction value)", function() {
+			expect( module.k_m ).toBe( 1 );
 		});
 		
 		it( "should have 'dna' as dna", function() {

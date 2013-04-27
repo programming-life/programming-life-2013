@@ -39,8 +39,11 @@ class Model.Cell
 	# @param [Integer] amount amount of substrate to add
 	# @returns [self] chainable instance
 	#
-	add_substrate: ( substrate, amount ) ->
-		@_substrates[ substrate ] = amount
+	add_substrate: ( substrate, amount, inside_cell = on ) ->
+		if ( @_substrates[ substrate ]? )
+			@_substrates[ substrate ].amount = amount
+		else
+			@_substrates[ substrate ] = new Model.Substrate( {}, amount, substrate, inside_cell )
 		return this
 		
 	# Remove module from cell
@@ -91,19 +94,16 @@ class Model.Cell
 		# We would like to get all the variables in all the equations, so
 		# that's what we are going to do. Then we can insert the value indices
 		# into the equations.
-			
-		for module in @_modules
-			for substrate, value of module.substrates
-				variables.push substrate
-				values.push value
-			
-		for substrate, value of @_substrates
-			index = _(variables).indexOf( substrate ) 
-			if ( index is -1 )
-				variables.push substrate
-				values.push value
-			else
-				values[index] += value
+		modules = _( @_modules ).concat( _.values( @_substrates ) )
+		for module in modules
+			for substrate, value of module.starts
+				name = module[substrate]
+				index = _(variables).indexOf( name ) 
+				if ( index is -1 )
+					variables.push name
+					values.push value
+				else
+					values[index] += value
 	
 		# Create the mapping from variable to value index
 		mapping = { }
