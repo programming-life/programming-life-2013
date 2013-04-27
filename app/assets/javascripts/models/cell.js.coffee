@@ -77,7 +77,7 @@ class Model.Cell
 	# @param string substrate substrate to check
 	# @returns int amount of substrate
 	amount_of: ( substrate ) ->
-		return @_substrates[ substrate ]
+		return @_substrates[ substrate ]?.amount
 	
 		
 	# Runs this cell
