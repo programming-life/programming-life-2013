@@ -1,3 +1,5 @@
+# Simulates transporters in the cell.
+#
 class Model.Transporter extends Model.Module
 
 	# Constructor for transporters

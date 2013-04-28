@@ -1,3 +1,5 @@
+# Simulates substrates in the cell
+#
 class Model.Substrate extends Model.Module
 
 	# Constructor for Substrate

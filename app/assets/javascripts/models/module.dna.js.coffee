@@ -1,3 +1,5 @@
+# Simulates DNA existance and synthesisis in the Cell
+#
 class Model.DNA extends Model.Module
 
 	# Constructor for DNA
