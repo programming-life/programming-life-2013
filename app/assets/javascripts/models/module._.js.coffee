@@ -1,16 +1,15 @@
 # Baseclass of all modules. Defines basic behaviour like undo and redo 
 # mechanisms and solving of differential equations
+#
 class Model.Module
 
 	# Constructor for module
 	#
 	# @param params [Object] parameters for this module
 	# @param step [Function] the step function
-	# @param substrates [Object] the substrates for this module
 	#
-	constructor: ( params, step, substrates = {} ) -> 
+	constructor: ( params, step ) -> 
 		@_creation = Date.now()
-		@_substrates = substrates
 		@_tree = new UndoTree()
 
 		for key, value of params
@@ -24,8 +23,8 @@ class Model.Module
 
 				Object.defineProperty( @ , key,
 					set: ( param ) ->
-						@_pushHistory(key, @["_#{key}"], param)
-						@["_#{key}"] = param
+						@_addMove(key, @["_#{key}"], param)
+						@_do(key, param)
 					get: ->
 						return @["_#{key}"]
 					enumerable: true
@@ -34,13 +33,17 @@ class Model.Module
 			) key
 
 		Object.defineProperty( @, '_step',
+			# @property [Function] the step function
 			get: ->
 				return step
 		)
 		
-		Object.defineProperty( @, 'substrates',
+		Object.defineProperty( @, 'amount',
+			# @property [Integer] the amount of this substrate at start
 			get: ->
-				return @_substrates
+				return @starts.name
+			set: (value) ->
+				@starts.name = value
 		)
 		
 		Object.seal( @ )
@@ -50,16 +53,18 @@ class Model.Module
 	# @param substrate [String] the substrate name
 	# @return [Integer] the value
 	#
-	getSubstrate: ( substrate, value ) ->
-		return @_substrates[ substrate ] ? false	
+	getSubstrate: ( substrate ) ->
+		return @starts[ substrate ] ? false	
 		
 	# Adds the substrate to the start values
 	#
 	# @param substrate [String] the substrate name
 	# @param value [Integer] the value
+	# @returns [self] for chaining
 	#
 	setSubstrate: ( substrate, value ) ->
-		@_substrates[ substrate ] = value
+		@starts[ substrate ] = value
+		return this
 		
 	# Runs the step function in the correct context
 	# 
@@ -79,32 +84,47 @@ class Model.Module
 		
 		# TODO notification if fails
 		return not _( tests ).some( 
-			( anon ) -> return not ( substrates[anon]? and substrates[anon] >= 0 )
+			( anon ) -> return not ( substrates[anon]? ) 
+			# TODO what to do when it goes below 0
 		)
+		
+	# Applies a change to the parameters of the module
+	#
+	# @param [String] key The changed property
+	# @param [val] value The value of the changed property
+	# @returns [self] for chaining
+	#
+	_do : ( key, value ) ->
+		@["_#{key}"] = value
+		return this
 
-	# Pushes a move onto the history stack, and notifies Main of this move.
+	# Adds a move to the undotree
 	#
 	# @param [String] key, the changed property
 	# @param [val] value, the value of the changed property 
-	_pushHistory: ( key, value, param ) ->
+	# @returns [self] for chaining
+	#
+	_addMove: ( key, value, param ) ->
 		object = [key, value, param]
 		@_tree.add(object)
+		return this
 
-	# Pops a move of the history stack and applies it. Calls _pushFuture on the 
-	# changed values.
+	# Undoes the most recent move
 	#
-	popHistory: ( ) ->
+	# @returns [self] for chaining
+	#
+	undo: ( ) ->
 		[key, value, param] = @_tree.undo()
-		@["_#{key}"] = value
+		@_do(key, value)
+		return this
 
-	# Pops a move of the future stack and applies it. Calls _pushHistory on the 
-	# changed values.
+	# Redoes the most recently undone move
 	#
-	popFuture: ( ) ->
+	# @returns [self] for chaining
+	#
+	redo : ( ) ->
 		[key, value, param] = @_tree.redo()
-		@["_#{key}"] = param
+		@_do(key, param)
+		return this
 
 (exports ? this).Model.Module = Model.Module
-
-
-

@@ -14,4 +14,17 @@ class Node
 
 		@_parent._children.push(this) if @_parent
 
+	# Rebase this branch on a different node than its current parent.
+	#
+	# @param [Node] parent The new parent for the branch.
+	rebase: ( parent ) ->
+		parent._children.push this
+		parent._branch = this if not parent._branch
+
+		if @_parent is not null
+			index = @_parent._children.indexOf(this)
+			@_parent._children.splice(index, 1);
+
+		@_parent = parent
+
 (exports ? this).Node = Node
