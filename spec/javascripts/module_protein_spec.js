@@ -28,9 +28,10 @@ describe("Module Protein", function() {
 		});
 		
 		it( "should have 1 substrate: name with value 0", function() {
-			expect( _(module.substrates).size() ).toBe( 1 );
-			expect( module.substrates[module.name] ).toBeDefined();
-			expect( module.substrates[module.name] ).toBe( 0 );
+			expect( _(module.starts).size() ).toBe( 1 );
+			expect( module.starts.name ).toBeDefined();
+			expect( module.starts.name ).toBe( 0 );
+			expect( module.amount ).toBe( 0 );
 		});
 		
 	});
@@ -84,7 +85,8 @@ describe("Module Protein", function() {
 		});		
 		
 		it( "should overide the default start value", function() {
-			expect( module.substrates[module.name] ).toBe( 2 );
+			expect( module.starts.name ).toBe( 2 );
+			expect( module.amount ).toBe( 2 );
 		});
 	});
 	

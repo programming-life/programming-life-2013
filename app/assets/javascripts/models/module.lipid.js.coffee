@@ -1,3 +1,5 @@
+# Simulates a cell border from lipids
+#
 class Model.Lipid extends Model.Module
 
 	# Constructor for lipids
@@ -23,7 +25,7 @@ class Model.Lipid extends Model.Module
 				growth = mu * ( substrates[@name] ? 0 )
 			
 			if ( vlipid? and vlipid > 0 )
-				results[@name] = vlipid - growth # todo mu
+				results[@name] = vlipid - growth
 				results[@consume] = -vlipid	
 			
 			return results
@@ -34,12 +36,10 @@ class Model.Lipid extends Model.Module
 			dna : 'dna'
 			consume: food
 			name : "lipid"
+			starts: { name : start }
 		}
 		
 		params = _( defaults ).extend( params )
-		
-		starts = {}
-		starts[params.name] = start
-		super params, step, starts
+		super params, step
 
 (exports ? this).Model.Lipid = Model.Lipid

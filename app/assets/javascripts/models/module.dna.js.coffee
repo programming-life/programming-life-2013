@@ -1,3 +1,5 @@
+# Simulates DNA existance and synthesisis in the Cell
+#
 class Model.DNA extends Model.Module
 
 	# Constructor for DNA
@@ -33,12 +35,10 @@ class Model.DNA extends Model.Module
 			k : 1
 			name : if prefix then "#{prefix}_dna" else "dna"
 			consume: food
+			starts: { name : start }
 		}
 		
 		params = _( defaults ).extend( params )
-		
-		starts = {};
-		starts[params.name] = start
-		super params, step, starts
+		super params, step
 
 (exports ? this).Model.DNA = Model.DNA

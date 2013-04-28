@@ -1,20 +1,27 @@
 # Baseclass of all modules. Defines basic behaviour like undo and redo 
-# mechanisms and solving of differential equations
+# mechanisms and solving of differential equations. 
+#
 class Model.Module
 
 	# Constructor for module
 	#
 	# @param params [Object] parameters for this module
 	# @param step [Function] the step function
-	# @param substrates [Object] the substrates for this module
 	#
-	constructor: ( params, step, substrates = {} ) -> 
-		@_creation = Date.now()
-		@_substrates = substrates
+	constructor: ( params, step ) -> 
+		
 		@_tree = new UndoTree()
+		creation = Date.now()
 
 		for key, value of params
-			((key) => 
+		
+			# The function to create a property out of param
+			#
+			# @param key [String] the property name
+			#
+			( ( key ) => 
+			
+				# This defines the private value.
 				Object.defineProperty( @ , "_#{key}",
 					value: value
 					configurable: false
@@ -22,6 +29,8 @@ class Model.Module
 					writable: true
 				)
 
+				# This defines the public functions to change
+				# those values.
 				Object.defineProperty( @ , key,
 					set: ( param ) ->
 						@_addMove(key, @["_#{key}"], param)
@@ -31,16 +40,27 @@ class Model.Module
 					enumerable: true
 					configurable: false
 				)
+				
 			) key
 
 		Object.defineProperty( @, '_step',
+			# @property [Function] the step function
 			get: ->
 				return step
 		)
 		
-		Object.defineProperty( @, 'substrates',
+		Object.defineProperty( @, 'amount',
+			# @property [Integer] the amount of this substrate at start
 			get: ->
-				return @_substrates
+				return @starts.name
+			set: (value) ->
+				@starts.name = value
+		)
+		
+		Object.defineProperty( @, 'creation',
+			# @property [Date] the creation date
+			get: ->
+				return creation
 		)
 		
 		Object.seal( @ )
@@ -50,16 +70,18 @@ class Model.Module
 	# @param substrate [String] the substrate name
 	# @return [Integer] the value
 	#
-	getSubstrate: ( substrate, value ) ->
-		return @_substrates[ substrate ] ? false	
+	getSubstrate: ( substrate ) ->
+		return @starts[ substrate ] ? false	
 		
 	# Adds the substrate to the start values
 	#
 	# @param substrate [String] the substrate name
 	# @param value [Integer] the value
+	# @returns [self] for chaining
 	#
 	setSubstrate: ( substrate, value ) ->
-		@_substrates[ substrate ] = value
+		@starts[ substrate ] = value
+		return this
 		
 	# Runs the step function in the correct context
 	# 
@@ -82,29 +104,44 @@ class Model.Module
 			( anon ) -> return not ( substrates[anon]? ) 
 			# TODO what to do when it goes below 0
 		)
+		
 	# Applies a change to the parameters of the module
 	#
 	# @param [String] key The changed property
 	# @param [val] value The value of the changed property
+	# @returns [self] for chaining
+	#
 	_do : ( key, value ) ->
 		@["_#{key}"] = value
+		return this
 
 	# Adds a move to the undotree
 	#
 	# @param [String] key, the changed property
 	# @param [val] value, the value of the changed property 
+	# @returns [self] for chaining
+	#
 	_addMove: ( key, value, param ) ->
 		object = [key, value, param]
 		@_tree.add(object)
+		return this
 
 	# Undoes the most recent move
+	#
+	# @returns [self] for chaining
+	#
 	undo: ( ) ->
 		[key, value, param] = @_tree.undo()
 		@_do(key, value)
+		return this
 
 	# Redoes the most recently undone move
+	#
+	# @returns [self] for chaining
+	#
 	redo : ( ) ->
 		[key, value, param] = @_tree.redo()
 		@_do(key, param)
+		return this
 
 (exports ? this).Model.Module = Model.Module

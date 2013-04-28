@@ -9,10 +9,16 @@ class Graph
 	
 	# Construct a new Graph
 	#
-	# @param [String] name the name of this graph
-	# @param [Array] options the options for the graph
-	# @param [Array] data the data for the graph
-	# @param [Integer] dt the timestep
+	# @param name [String] the name of this graph
+	# @param options [Object] the options for the graph
+	# @param data [Array] the data for the graph
+	# @options options [Integer] width the width of the canvas
+	# @options options [Integer] height the height of the canvas
+	# @options options [Integer] dt the timestep of the graph
+	# @options options [String] fill the CSS colour for the fill
+	# @options options [String] stroke the CSS colour for the stroke
+	# @options options [String] point.fill the CSS colour for the fill of points
+	# @options options [String] point.stroke the CSS colour for the stroke of points
 	#
 	constructor: ( name, options = {}, data ) ->
 		@_canvas = $("<canvas width='#{ options.width ? 450 }' height='#{ options.height ? 200 }'></canvas>")
@@ -28,8 +34,12 @@ class Graph
 		
 	# Add a data set to the Graph
 	#
-	# @param [Array] data an array with data points
-	# @param [Object] options the options for the dataset
+	# @param data [Array] an array with data points
+	# @param options [Object] the options for the dataset
+	# @options options [String] fill the CSS colour for the fill
+	# @options options [String] stroke the CSS colour for the stroke
+	# @options options [String] point.fill the CSS colour for the fill of points
+	# @options options [String] point.stroke the CSS colour for the stroke of points
 	# @returns [self] returns self for chaining
 	#
 	addData: ( data, options = {} ) ->
@@ -56,7 +66,7 @@ class Graph
 
 	# Render the Graph into a canvas
 	#
-	# @param [Object] optional: an element to append the Graph's canvas to
+	# @param elem [Object] optional: an element to append the Graph's canvas to
 	# @returns [Object] returns contained canvas object
 	#
 	render: ( elem ) ->
@@ -121,6 +131,8 @@ class Graph
 	
 	# Set the width en height of the graph
 	#
+	# @param width [Integer] the width of the canvas
+	# @param height [Integer] the height of the canvas
 	# @return [self] returns self for chaining
 	#
 	setDimensions: ( width, height ) ->

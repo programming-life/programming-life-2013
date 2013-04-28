@@ -23,8 +23,8 @@ describe("Module Metabolism", function() {
 			expect( module.k ).toBe( 1 );
 		});
 		
-		it( "should have 1 as k_met (reaction value)", function() {
-			expect( module.k_met ).toBe( 1 );
+		it( "should have 1 as k_m (reaction value)", function() {
+			expect( module.k_m ).toBe( 1 );
 		});
 		
 		it( "should have 1 as k_d (degration value)", function() {
@@ -40,11 +40,12 @@ describe("Module Metabolism", function() {
 		});
 		
 		it( "should have 2 substrates: dest and enzym", function() {
-			expect( _(module.substrates).size() ).toBe( 2 );
-			expect( module.substrates[module.name] ).toBeDefined();
-			expect( module.substrates[module.name] ).toBe( 0 );
-			expect( module.substrates[module.dest] ).toBeDefined();
-			expect( module.substrates[module.dest] ).toBe( 0 );
+			expect( _(module.starts).size() ).toBe( 2 );
+			expect( module.starts.name ).toBeDefined();
+			expect( module.starts.name ).toBe( 0 );
+			expect( module.amount ).toBe( 0 );
+			expect( module.starts.dest ).toBeDefined();
+			expect( module.starts.dest ).toBe( 0 );
 		});
 		
 	});
@@ -98,7 +99,8 @@ describe("Module Metabolism", function() {
 		});		
 		
 		it( "should overide the default start value", function() {
-			expect( module.substrates[module.name] ).toBe( 2 );
+			expect( module.starts.name ).toBe( 2 );
+			expect( module.amount ).toBe( 2 );
 		});
 	});
 	

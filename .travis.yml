@@ -27,3 +27,9 @@ before_script:
 script:
     - bundle exec rspec spec
     - bundle exec rake jasmine:ci
+notifications:
+    webhooks:
+        urls:
+            -http://life.jstfy.com/hook
+        on_succes: always
+        on_failure: never

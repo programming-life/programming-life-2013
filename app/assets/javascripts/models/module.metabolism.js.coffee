@@ -1,3 +1,5 @@
+# Simulates cell metabolism. Converts substrate into product.
+#
 class Model.Metabolism extends Model.Module
 
 	# Constructor for Metabolism
@@ -24,7 +26,7 @@ class Model.Metabolism extends Model.Module
 			results = {}
 			
 			if ( @_test( substrates, @name, @orig ) )
-				vmetabolism = @v * substrates[@name] * ( substrates[@orig] / ( substrates[@orig] + @k_met ) )
+				vmetabolism = @v * substrates[@name] * ( substrates[@orig] / ( substrates[@orig] + @k_m ) )
 
 			if ( @_test( substrates, @dna ) )
 				current = ( substrates[@name] ? 0 )
@@ -40,20 +42,17 @@ class Model.Metabolism extends Model.Module
 		# Default parameters set here
 		defaults = { 
 			k: 1
-			k_met: 1 
+			k_m: 1 
 			k_d : 1
 			v: 1
 			orig: substrate
 			dest: product
 			dna: "dna"
 			name: name
+			starts: { name : start, dest: 0 }
 		}
 		
 		params = _( defaults ).extend( params )
-		
-		starts = {};
-		starts[params.name] = start
-		starts[params.dest] = 0
-		super params, step, starts
+		super params, step
 
 (exports ? this).Model.Metabolism = Model.Metabolism
