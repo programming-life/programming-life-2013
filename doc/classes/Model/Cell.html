@@ -11,7 +11,7 @@
     <div id='base' data-path='../../'></div>
 <div id='header'>
   <div id='menu'>
-    <a href='../../README.md.html' title='Programming Life'>Programming Life</a>
+    <a href='../../README.md.html' title='Programming Life: Gigabase'>Programming Life: Gigabase</a>
     &raquo;
     <a href='../../class_index.html' title='Index'>Index</a>
     &raquo;
@@ -116,6 +116,14 @@
           <td>app&#47;assets&#47;javascripts&#47;models&#47;cell.js.coffee</td>
         </tr>
       </table>
+      <h2>Overview</h2>
+      <div class='docstring'>
+  <p>This is the model of a cell. It holds modules and substrates and is capable
+of simulating the modules for a timespan. A cell comes with one default 
+module which is the Cell Growth.</p>
+</div>
+<div class='tags'>
+</div>
       <h2>Instance Method Summary</h2>
       <ul class='summary'>
   <li>
@@ -132,81 +140,91 @@
   <li>
     <span class='signature'>
       <a href='#add-instance'>
-        - (void) <strong>add</strong>(module)
+        - (self) <strong>add</strong>(module)
       </a>
     </span>
     <span class='desc'>
-      Add module to cell @returns [self] chainable instance
+      Add module to cell
     </span>
   </li>
   <li>
     <span class='signature'>
       <a href='#add_substrate-instance'>
-        - (void) <strong>add_substrate</strong>(substrate, amount)
+        - (self) <strong>add_substrate</strong>(substrate, amount, inside_cell = true)
       </a>
     </span>
     <span class='desc'>
-      Add substrate to cell @returns [self] chainable instance
+      Add substrate to cell
     </span>
   </li>
   <li>
     <span class='signature'>
       <a href='#remove-instance'>
-        - (void) <strong>remove</strong>(module)
+        - (self) <strong>remove</strong>(module)
       </a>
     </span>
     <span class='desc'>
-      Remove module from cell @returns [self] chainable instance
+      Remove module from cell
     </span>
   </li>
   <li>
     <span class='signature'>
       <a href='#remove_substrate-instance'>
-        - (void) <strong>remove_substrate</strong>(substrate)
+        - (self) <strong>remove_substrate</strong>(substrate)
       </a>
     </span>
     <span class='desc'>
-      Removes this substrate from cell @returns [self] chainable instance
+      Removes this substrate from cell
     </span>
   </li>
   <li>
     <span class='signature'>
       <a href='#has-instance'>
-        - (void) <strong>has</strong>(module)
+        - (Boolean) <strong>has</strong>(module)
       </a>
     </span>
     <span class='desc'>
-      Checks if this cell has a module @returns [Boolean] true if the module is included
+      Checks if this cell has a module
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#has_substrate-instance'>
+        - (Boolean) <strong>has_substrate</strong>(substrate)
+      </a>
+    </span>
+    <span class='desc'>
+      Checks if this cell has this substrate
     </span>
   </li>
   <li>
     <span class='signature'>
       <a href='#amount_of-instance'>
-        - (void) <strong>amount_of</strong>(substrate)
+        - (Integer) <strong>amount_of</strong>(substrate)
       </a>
     </span>
     <span class='desc'>
-      Returns the amount of substrate in this cell @param string substrate substrate to check @returns int amount of substrate
+      Returns the amount of substrate in this cell
     </span>
   </li>
   <li>
     <span class='signature'>
       <a href='#run-instance'>
-        - (void) <strong>run</strong>(timespan)
+        - (self) <strong>run</strong>(timespan)
       </a>
     </span>
     <span class='desc'>
-      Runs this cell @returns [self] chainable instance
+      Runs this cell
     </span>
   </li>
   <li>
     <span class='signature'>
       <a href='#visualize-instance'>
-        - (void) <strong>visualize</strong>(duration, container, options = {})
+        - (Object) <strong>visualize</strong>(duration, container, options = {})
       </a>
     </span>
     <span class='desc'>
-      Visualizes this cell @returns [Object] Returns the graphs options { dt: 1, decimals: 5,
+      Visualizes this cell
     </span>
   </li>
 </ul>
@@ -241,58 +259,40 @@
   </ul>
   <h3>
     Options Hash:
-    (lipid):
+    (param):
   </h3>
   <ul class='options'>
     <li>
-      <span class='name'>the</span>
+      <span class='name'>lipid</span>
       <span class='type'>
         (<tt>String</tt>)
       </span>
       &mdash;
-      <span class='desc'>name of lipid to consume</span>
+      <span class='desc'>the name of lipid to consume</span>
     </li>
-  </ul>
-  <h3>
-    Options Hash:
-    (protein):
-  </h3>
-  <ul class='options'>
     <li>
-      <span class='name'>the</span>
+      <span class='name'>protein</span>
       <span class='type'>
         (<tt>String</tt>)
       </span>
       &mdash;
-      <span class='desc'>name of protein to consume</span>
+      <span class='desc'>the name of protein to consume</span>
     </li>
-  </ul>
-  <h3>
-    Options Hash:
-    (consume):
-  </h3>
-  <ul class='options'>
     <li>
-      <span class='name'>the</span>
+      <span class='name'>consume</span>
       <span class='type'>
         (<tt>String</tt>)
       </span>
       &mdash;
-      <span class='desc'>consume substrate to consume</span>
+      <span class='desc'>the consume substrate to consume</span>
     </li>
-  </ul>
-  <h3>
-    Options Hash:
-    (name):
-  </h3>
-  <ul class='options'>
     <li>
-      <span class='name'>the</span>
+      <span class='name'>name</span>
       <span class='type'>
         (<tt>String</tt>)
       </span>
       &mdash;
-      <span class='desc'>name, defaults to &quot;cell&quot;</span>
+      <span class='desc'>the name, defaults to &quot;cell&quot;</span>
     </li>
   </ul>
 </div>
@@ -302,10 +302,10 @@
       <div class='methods'>
   <div class='method_details'>
     <p class='signature' id='add-instance'>
-      - (void) <strong>add</strong>(module)
+      - (self) <strong>add</strong>(module)
     </p>
     <div class='docstring'>
-  <p>Add module to cell</p><p>@returns [self] chainable instance</p>
+  <p>Add module to cell</p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
@@ -313,20 +313,29 @@
     <li>
       <span class='name'>module</span>
       <span class='type'>
-        (<tt>Module</tt>)
+        (<tt><a href='../../classes/Model/Module.html'>Model.Module</a></tt>)
       </span>
       &mdash;
       <span class='desc'>module to add to this cell</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>self</tt>)
+      &mdash;
+      <span class='desc'>chainable instance</span>
     </li>
   </ul>
 </div>
   </div>
   <div class='method_details'>
     <p class='signature' id='add_substrate-instance'>
-      - (void) <strong>add_substrate</strong>(substrate, amount)
+      - (self) <strong>add_substrate</strong>(substrate, amount, inside_cell = true)
     </p>
     <div class='docstring'>
-  <p>Add substrate to cell</p><p>@returns [self] chainable instance</p>
+  <p>Add substrate to cell</p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
@@ -347,15 +356,32 @@
       &mdash;
       <span class='desc'>amount of substrate to add</span>
     </li>
+    <li>
+      <span class='name'>inside_cell</span>
+      <span class='type'>
+        (<tt>Boolean</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>if true is placed inside the cell</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>self</tt>)
+      &mdash;
+      <span class='desc'>chainable instance</span>
+    </li>
   </ul>
 </div>
   </div>
   <div class='method_details'>
     <p class='signature' id='remove-instance'>
-      - (void) <strong>remove</strong>(module)
+      - (self) <strong>remove</strong>(module)
     </p>
     <div class='docstring'>
-  <p>Remove module from cell</p><p>@returns [self] chainable instance</p>
+  <p>Remove module from cell</p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
@@ -363,20 +389,29 @@
     <li>
       <span class='name'>module</span>
       <span class='type'>
-        (<tt>Module</tt>)
+        (<tt><a href='../../classes/Model/Module.html'>Model.Module</a></tt>)
       </span>
       &mdash;
       <span class='desc'>module to remove from this cell</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>self</tt>)
+      &mdash;
+      <span class='desc'>chainable instance</span>
     </li>
   </ul>
 </div>
   </div>
   <div class='method_details'>
     <p class='signature' id='remove_substrate-instance'>
-      - (void) <strong>remove_substrate</strong>(substrate)
+      - (self) <strong>remove_substrate</strong>(substrate)
     </p>
     <div class='docstring'>
-  <p>Removes this substrate from cell</p><p>@returns [self] chainable instance</p>
+  <p>Removes this substrate from cell</p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
@@ -390,14 +425,23 @@
       <span class='desc'>substrate to remove from this cell</span>
     </li>
   </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>self</tt>)
+      &mdash;
+      <span class='desc'>chainable instance</span>
+    </li>
+  </ul>
 </div>
   </div>
   <div class='method_details'>
     <p class='signature' id='has-instance'>
-      - (void) <strong>has</strong>(module)
+      - (Boolean) <strong>has</strong>(module)
     </p>
     <div class='docstring'>
-  <p>Checks if this cell has a module</p><p>@returns [Boolean] true if the module is included</p>
+  <p>Checks if this cell has a module</p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
@@ -405,32 +449,89 @@
     <li>
       <span class='name'>module</span>
       <span class='type'>
-        (<tt>Module</tt>)
+        (<tt><a href='../../classes/Model/Module.html'>Model.Module</a></tt>)
       </span>
       &mdash;
       <span class='desc'>the module to check</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Boolean</tt>)
+      &mdash;
+      <span class='desc'>true if the module is included</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='has_substrate-instance'>
+      - (Boolean) <strong>has_substrate</strong>(substrate)
+    </p>
+    <div class='docstring'>
+  <p>Checks if this cell has this substrate</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>substrate</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the name of the substrate</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Boolean</tt>)
+      &mdash;
+      <span class='desc'>true if contains</span>
     </li>
   </ul>
 </div>
   </div>
   <div class='method_details'>
     <p class='signature' id='amount_of-instance'>
-      - (void) <strong>amount_of</strong>(substrate)
+      - (Integer) <strong>amount_of</strong>(substrate)
     </p>
     <div class='docstring'>
-  <p>Returns the amount of substrate in this cell
-@param string substrate substrate to check
-@returns int amount of substrate</p>
+  <p>Returns the amount of substrate in this cell</p>
 </div>
 <div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>substrate</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>substrate to check</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Integer</tt>)
+      &mdash;
+      <span class='desc'>amount of substrate</span>
+    </li>
+  </ul>
 </div>
   </div>
   <div class='method_details'>
     <p class='signature' id='run-instance'>
-      - (void) <strong>run</strong>(timespan)
+      - (self) <strong>run</strong>(timespan)
     </p>
     <div class='docstring'>
-  <p>Runs this cell</p><p>@returns [self] chainable instance</p>
+  <p>Runs this cell</p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
@@ -444,14 +545,23 @@
       <span class='desc'>the time it should run for</span>
     </li>
   </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>self</tt>)
+      &mdash;
+      <span class='desc'>chainable instance</span>
+    </li>
+  </ul>
 </div>
   </div>
   <div class='method_details'>
     <p class='signature' id='visualize-instance'>
-      - (void) <strong>visualize</strong>(duration, container, options = {})
+      - (Object) <strong>visualize</strong>(duration, container, options = {})
     </p>
     <div class='docstring'>
-  <p>Visualizes this cell</p><p>@returns [Object] Returns the graphs</p><p>options { dt: 1, decimals: 5, </p>
+  <p>Visualizes this cell</p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
@@ -473,12 +583,59 @@
       <span class='desc'>A container for the graphs.</span>
     </li>
     <li>
+      <span class='name'>options</span>
+      <span class='type'>
+        (<tt>Object</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the options for this visualisation</span>
+    </li>
+  </ul>
+  <h3>
+    Options Hash:
+    (option):
+  </h3>
+  <ul class='options'>
+    <li>
       <span class='name'>dt</span>
       <span class='type'>
         (<tt>Integer</tt>)
       </span>
       &mdash;
-      <span class='desc'>the step value</span>
+      <span class='desc'>the timestep, defaults to 1</span>
+    </li>
+    <li>
+      <span class='name'>graph</span>
+      <span class='type'>
+        (<tt>Object</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the graph options</span>
+    </li>
+    <li>
+      <span class='name'>graph.key</span>
+      <span class='type'>
+        (<tt>Object</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the graph options for that key</span>
+    </li>
+    <li>
+      <span class='name'>graphs</span>
+      <span class='type'>
+        (<tt>Object</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the original graphs</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Object</tt>)
+      &mdash;
+      <span class='desc'>Returns the graphs</span>
     </li>
   </ul>
 </div>
@@ -487,7 +644,7 @@
     </div>
     <div id='footer'>
   Generated on
-  Mon Apr 22 2013 23:38:07 GMT+0200 (W. Europe Daylight Time)
+  Sun Apr 28 2013 18:42:08 GMT+0200 (W. Europe Daylight Time)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

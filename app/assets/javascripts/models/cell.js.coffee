@@ -8,10 +8,10 @@ class Model.Cell
 	#
 	# @param params [Object] parameters for this cell
 	# @param start [Integer] the initial value of cell
-	# @option lipid [String] the name of lipid to consume
-	# @option protein [String] the name of protein to consume
-	# @option consume [String] the consume substrate to consume
-	# @option name [String] the name, defaults to "cell"
+	# @option params [String] lipid the name of lipid to consume
+	# @option params [String] protein the name of protein to consume
+	# @option params [String] consume the consume substrate to consume
+	# @option params [String] name the name, defaults to "cell"
 	#
 	constructor: ( params = {}, start = 1 ) ->
 		
@@ -38,7 +38,7 @@ class Model.Cell
 	
 	# Add module to cell
 	#
-	# @param module [Module] module to add to this cell
+	# @param module [Model.Module] module to add to this cell
 	# @return [self] chainable instance
 	#
 	add: ( module ) ->
@@ -61,7 +61,7 @@ class Model.Cell
 		
 	# Remove module from cell
 	#
-	# @param module [Module] module to remove from this cell
+	# @param module [Model.Module] module to remove from this cell
 	# @return [self] chainable instance
 	#
 	remove: ( module ) ->
@@ -79,7 +79,7 @@ class Model.Cell
 		
 	# Checks if this cell has a module
 	#
-	# @param module [Module] the module to check
+	# @param module [Model.Module] the module to check
 	# @return [Boolean] true if the module is included
 	#
 	has: ( module ) ->
