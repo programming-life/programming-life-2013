@@ -11,7 +11,7 @@
     <div id='base' data-path='../'></div>
 <div id='header'>
   <div id='menu'>
-    <a href='../README.md.html' title='Programming Life'>Programming Life</a>
+    <a href='../README.md.html' title='Programming Life: Gigabase'>Programming Life: Gigabase</a>
     &raquo;
     <a href='../class_index.html' title='Index'>Index</a>
     &raquo;
@@ -130,7 +130,7 @@
     </span>
     <span class='constructor note title'>Constructor</span>
     <span class='desc'>
-      Construct a new Graph
+      Construct a new Graph @options options [Integer] width the width of the canvas @options options [Integer] height the height of the canvas @options options [Integer] dt the timestep of the graph @options options [String] fill the CSS colour for the fill @options options [String] stroke the CSS colour for the stroke @options options [String] point.fill the CSS colour for the fill of points @options options [String] point.stroke the CSS colour for the stroke of points
     </span>
   </li>
   <li>
@@ -140,7 +140,7 @@
       </a>
     </span>
     <span class='desc'>
-      Add a data set to the Graph @returns [self] returns self for chaining
+      Add a data set to the Graph @options options [String] fill the CSS colour for the fill @options options [String] stroke the CSS colour for the stroke @options options [String] point.fill the CSS colour for the fill of points @options options [String] point.stroke the CSS colour for the stroke of points @returns [self] returns self for chaining
     </span>
   </li>
   <li>
@@ -201,7 +201,13 @@
       - (void) <strong>constructor</strong>(name, options = {}, data)
     </p>
     <div class='docstring'>
-  <p>Construct a new Graph</p>
+  <p>Construct a new Graph</p><p>@options options [Integer] width the width of the canvas
+@options options [Integer] height the height of the canvas
+@options options [Integer] dt the timestep of the graph
+@options options [String] fill the CSS colour for the fill
+@options options [String] stroke the CSS colour for the stroke
+@options options [String] point.fill the CSS colour for the fill of points
+@options options [String] point.stroke the CSS colour for the stroke of points</p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
@@ -217,7 +223,7 @@
     <li>
       <span class='name'>options</span>
       <span class='type'>
-        (<tt>Array</tt>)
+        (<tt>Object</tt>)
       </span>
       &mdash;
       <span class='desc'>the options for the graph</span>
@@ -230,14 +236,6 @@
       &mdash;
       <span class='desc'>the data for the graph</span>
     </li>
-    <li>
-      <span class='name'>dt</span>
-      <span class='type'>
-        (<tt>Integer</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the timestep</span>
-    </li>
   </ul>
 </div>
   </div>
@@ -249,7 +247,11 @@
       - (void) <strong>addData</strong>(data, options = {})
     </p>
     <div class='docstring'>
-  <p>Add a data set to the Graph</p><p>@returns [self] returns self for chaining</p>
+  <p>Add a data set to the Graph</p><p>@options options [String] fill the CSS colour for the fill
+@options options [String] stroke the CSS colour for the stroke
+@options options [String] point.fill the CSS colour for the fill of points
+@options options [String] point.stroke the CSS colour for the stroke of points
+@returns [self] returns self for chaining</p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
@@ -294,12 +296,12 @@
   <h3>Parameters:</h3>
   <ul class='param'>
     <li>
-      <span class='name'>optional:</span>
+      <span class='name'>elem</span>
       <span class='type'>
         (<tt>Object</tt>)
       </span>
       &mdash;
-      <span class='desc'>an element to append the Graph&#39;s canvas to</span>
+      <span class='desc'>optional: an element to append the Graph&#39;s canvas to</span>
     </li>
   </ul>
 </div>
@@ -350,6 +352,25 @@
   <p>Set the width en height of the graph</p>
 </div>
 <div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>width</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the width of the canvas</span>
+    </li>
+    <li>
+      <span class='name'>height</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the height of the canvas</span>
+    </li>
+  </ul>
   <h3>Returns:</h3>
   <ul class='return'>
     <li>
@@ -365,7 +386,7 @@
     </div>
     <div id='footer'>
   Generated on
-  Mon Apr 22 2013 23:38:07 GMT+0200 (W. Europe Daylight Time)
+  Sun Apr 28 2013 18:42:08 GMT+0200 (W. Europe Daylight Time)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

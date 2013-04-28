@@ -1,3 +1,5 @@
+# Simulates Cell Growth
+#
 class Model.CellGrowth extends Model.Module
 
 	# Constructor for Cell Growth
@@ -17,7 +19,7 @@ class Model.CellGrowth extends Model.Module
 				growth = mu * substrates[@name]
 				
 				results[@name] = growth
-				results[@consume] = -growth * substrates[@consume] # TODO SHOULD THIS BE HERE???
+				results[@consume] = -growth #* substrates[@consume] # TODO SHOULD THIS BE HERE???
 				
 			return results
 		
@@ -25,17 +27,17 @@ class Model.CellGrowth extends Model.Module
 			consume: "s_int"
 			infrastructure : [ "lipid", "protein" ]
 			name: "cell"
+			starts : { name : start }
 		}
 		
 		params = _( defaults ).extend( params )
-				
-		starts = {}
-		starts[params.name] = start
 				
 		# I need this reference
 		cell_growth = @
 		
 		Object.defineProperty( @, 'mu',
+			
+			# @property [Function] the function to get the mu
 			get: =>
 				# This returns the cell growth, but according to this module,
 				# meaning that this property can be used for all modules to
@@ -43,14 +45,14 @@ class Model.CellGrowth extends Model.Module
 				return ( substrates ) =>
 					
 					if ( _( cell_growth.infrastructure ).some( ( substrate ) -> cell_growth._test( substrates, substrate ) ) and cell_growth._test( substrates, cell_growth.name ) )
-						base = substrates[cell_growth.name] * ( substrates[cell_growth.consume] ? 1 )
+						base = ( substrates[cell_growth.consume] ? 1 ) * 1 #( substrates[cell_growth.name] )
 						for substrate in cell_growth.infrastructure
 							base *= ( substrates[substrate] ? 1 )
 						return base
 					return 0
 		)
 		
-		super params, step, starts		
+		super params, step		
 
 # Makes this available globally.
 (exports ? this).Model.CellGrowth = Model.CellGrowth

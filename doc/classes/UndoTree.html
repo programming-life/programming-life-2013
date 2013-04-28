@@ -11,7 +11,7 @@
     <div id='base' data-path='../'></div>
 <div id='header'>
   <div id='menu'>
-    <a href='../README.md.html' title='Programming Life'>Programming Life</a>
+    <a href='../README.md.html' title='Programming Life: Gigabase'>Programming Life: Gigabase</a>
     &raquo;
     <a href='../class_index.html' title='Index'>Index</a>
     &raquo;
@@ -136,37 +136,47 @@
     </span>
     <span class='constructor note title'>Constructor</span>
     <span class='desc'>
-      
+      Constructs a new undotree.
     </span>
   </li>
   <li>
     <span class='signature'>
       <a href='#add-instance'>
-        - (void) <strong>add</strong>(object)
+        - (Node) <strong>add</strong>(object)
       </a>
     </span>
     <span class='desc'>
-      
+      Has added a new node containing the object to the current branch of the tree.
     </span>
   </li>
   <li>
     <span class='signature'>
       <a href='#undo-instance'>
-        - (void) <strong>undo</strong>()
+        - (Object, null) <strong>undo</strong>()
       </a>
     </span>
     <span class='desc'>
-      
+      Moves the pointer to the active node of the current branch back a step.
     </span>
   </li>
   <li>
     <span class='signature'>
       <a href='#redo-instance'>
-        - (void) <strong>redo</strong>()
+        - (Object, null) <strong>redo</strong>()
       </a>
     </span>
     <span class='desc'>
-      
+      Move the pointer to the active node of the current branch forward a step.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#rebase-instance'>
+        - (self) <strong>rebase</strong>(branch, parent)
+      </a>
+    </span>
+    <span class='desc'>
+      Rebase a branch on a different node than it&#39;s current parent.
     </span>
   </li>
 </ul>
@@ -188,7 +198,21 @@
     <p class='signature' id='constructor-instance'>
       - (void) <strong>constructor</strong>(root)
     </p>
-    <div class='tags'>
+    <div class='docstring'>
+  <p>Constructs a new undotree.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>root</span>
+      <span class='type'>
+        (<tt><a href='../classes/Node.html'>Node</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The root node of the tree. Default is Node(null, null).</span>
+    </li>
+  </ul>
 </div>
   </div>
 </div>
@@ -196,30 +220,115 @@
       <div class='methods'>
   <div class='method_details'>
     <p class='signature' id='add-instance'>
-      - (void) <strong>add</strong>(object)
+      - (Node) <strong>add</strong>(object)
     </p>
-    <div class='tags'>
+    <div class='docstring'>
+  <p>Has added a new node containing the object to the current branch of the tree.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>object</span>
+      <span class='type'>
+        (<tt>Object</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The object to add to the tree.</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt><a href='../classes/Node.html'>Node</a></tt>)
+      &mdash;
+      <span class='desc'>The node containing the object.</span>
+    </li>
+  </ul>
 </div>
   </div>
   <div class='method_details'>
     <p class='signature' id='undo-instance'>
-      - (void) <strong>undo</strong>()
+      - (Object, null) <strong>undo</strong>()
     </p>
-    <div class='tags'>
+    <div class='docstring'>
+  <p>Moves the pointer to the active node of the current branch back a step.</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Object, null</tt>)
+      &mdash;
+      <span class='desc'>The object contained within the most recent active node.</span>
+    </li>
+  </ul>
 </div>
   </div>
   <div class='method_details'>
     <p class='signature' id='redo-instance'>
-      - (void) <strong>redo</strong>()
+      - (Object, null) <strong>redo</strong>()
     </p>
-    <div class='tags'>
+    <div class='docstring'>
+  <p>Move the pointer to the active node of the current branch forward a step.</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Object, null</tt>)
+      &mdash;
+      <span class='desc'>The object contained within the now active node.</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='rebase-instance'>
+      - (self) <strong>rebase</strong>(branch, parent)
+    </p>
+    <div class='docstring'>
+  <p>Rebase a branch on a different node than it&#39;s current parent.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>branch</span>
+      <span class='type'>
+        (<tt><a href='../classes/Node.html'>Node</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The branch to rebase.</span>
+    </li>
+    <li>
+      <span class='name'>new</span>
+      <span class='type'>
+        (<tt><a href='../classes/Node.html'>Node</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The new parent for the branch.</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>self</tt>)
+      &mdash;
+      <span class='desc'>Chainable self</span>
+    </li>
+  </ul>
 </div>
   </div>
 </div>
     </div>
     <div id='footer'>
   Generated on
-  Mon Apr 22 2013 23:38:07 GMT+0200 (W. Europe Daylight Time)
+  Sun Apr 28 2013 18:42:08 GMT+0200 (W. Europe Daylight Time)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

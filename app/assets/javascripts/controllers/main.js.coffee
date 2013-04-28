@@ -2,44 +2,36 @@
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://jashkenas.github.com/coffee-script/
 
+# The controller for the Main action and view
+#
 class Main
+
 	dt: 0.1
 	_tree: new UndoTree()
 
+	# Creates a new instance of Main
 	constructor: ( ) ->
 	
-	# Undoes the last move. Shorthand for @_popHistory()
-	#
+	# Undoes the last move.
 	undo: ( ) ->
-		@_popHistory()
+		object = [type, module]
+		@_tree.add( object )
 
-	# Redoes the last move. Shorthand for @_popFuture()
-	#
+	# Redoes the last move.
 	redo: ( ) ->
-		@_popFuture()
+		[type, module] = @_tree.redo()
+		switch type
+			when 'modify' then module.redo()
 
-	# Pushes a move onto the history stack
+	# Adds a move to the undotree
 	#
 	# @param [String] type, the type of move. For now, 'modify' is implemented.
 	# @param [Module] module, the module that has done the move.
 	#
-	pushHistory: ( type, module ) ->
+	addMove: ( type, module ) ->
 		object = [type, module]
 		@_tree.add( object )
 
-	# Pops the last move of the history stack and calls popHistory on the right module.
-	#
-	_popHistory: ( ) ->
-		[type, module] = @_tree.undo()
-		switch type
-			when 'modify' then module.popHistory()
-
-	# Pops the last move of the future stack and calls popFuture on the right module.
-	#
-	_popFuture: ( ) ->
-		[type, module] = @_tree.redo()
-		switch type
-			when 'modify' then module.popFuture()
 
 $(document).ready ->
 	(exports ? window).Main = new Main

@@ -45,7 +45,7 @@ describe("Module", function() {
 		describe("when having undone the most recent change", function() {
 			
 			beforeEach( function() {
-				module.popHistory();
+				module.undo();
 			});
 
 			it( "should be able undo the most recent change", function() {
@@ -59,7 +59,7 @@ describe("Module", function() {
 			describe( "when redoing that change", function() {
 				
 				beforeEach( function() {
-					module.popFuture();
+					module.redo();
 				});
 
 				it( "should have redone the change", function() {

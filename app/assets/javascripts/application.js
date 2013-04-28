@@ -15,11 +15,15 @@
 //= require underscore
 //
 //= require MVC
+//
+//= require_tree ./models
+//= require_tree ./views
+//= require_tree ./controllers
+//
 //= require_tree .
 //
 //= require bootstrap
 //= require raphael.min
 //= require chart
-
-
+//
 //= require numeric-1.2.6

@@ -11,7 +11,7 @@
     <div id='base' data-path='../'></div>
 <div id='header'>
   <div id='menu'>
-    <a href='../README.md.html' title='Programming Life'>Programming Life</a>
+    <a href='../README.md.html' title='Programming Life: Gigabase'>Programming Life: Gigabase</a>
     &raquo;
     <a href='../class_index.html' title='Index'>Index</a>
     &raquo;
@@ -114,6 +114,12 @@
           <td>app&#47;assets&#47;javascripts&#47;controllers&#47;main.js.coffee</td>
         </tr>
       </table>
+      <h2>Overview</h2>
+      <div class='docstring'>
+  <p>The controller for the Main action and view</p>
+</div>
+<div class='tags'>
+</div>
       <h2>Instance Method Summary</h2>
       <ul class='summary'>
   <li>
@@ -124,7 +130,7 @@
     </span>
     <span class='constructor note title'>Constructor</span>
     <span class='desc'>
-      
+      Creates a new instance of Main
     </span>
   </li>
   <li>
@@ -149,32 +155,12 @@
   </li>
   <li>
     <span class='signature'>
-      <a href='#pushHistory-instance'>
-        - (void) <strong>pushHistory</strong>(type, module)
+      <a href='#addMove-instance'>
+        - (void) <strong>addMove</strong>(type, module)
       </a>
     </span>
     <span class='desc'>
-      Pushes a move onto the history stack
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#_popHistory-instance'>
-        - (void) <strong>_popHistory</strong>()
-      </a>
-    </span>
-    <span class='desc'>
-      Pops the last move of the history stack and calls popHistory on the right module.
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#_popFuture-instance'>
-        - (void) <strong>_popFuture</strong>()
-      </a>
-    </span>
-    <span class='desc'>
-      Pops the last move of the future stack and calls popFuture on the right module.
+      Adds a move to the undotree
     </span>
   </li>
 </ul>
@@ -184,7 +170,10 @@
     <p class='signature' id='constructor-instance'>
       - (void) <strong>constructor</strong>()
     </p>
-    <div class='tags'>
+    <div class='docstring'>
+  <p>Creates a new instance of Main</p>
+</div>
+<div class='tags'>
 </div>
   </div>
 </div>
@@ -195,7 +184,7 @@
       - (void) <strong>undo</strong>()
     </p>
     <div class='docstring'>
-  <p>Undoes the last move. Shorthand for @_popHistory()</p>
+  <p>Undoes the last move.</p>
 </div>
 <div class='tags'>
 </div>
@@ -205,17 +194,17 @@
       - (void) <strong>redo</strong>()
     </p>
     <div class='docstring'>
-  <p>Redoes the last move. Shorthand for @_popFuture()</p>
+  <p>Redoes the last move.</p>
 </div>
 <div class='tags'>
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='pushHistory-instance'>
-      - (void) <strong>pushHistory</strong>(type, module)
+    <p class='signature' id='addMove-instance'>
+      - (void) <strong>addMove</strong>(type, module)
     </p>
     <div class='docstring'>
-  <p>Pushes a move onto the history stack</p>
+  <p>Adds a move to the undotree</p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
@@ -239,31 +228,11 @@
   </ul>
 </div>
   </div>
-  <div class='method_details'>
-    <p class='signature' id='_popHistory-instance'>
-      - (void) <strong>_popHistory</strong>()
-    </p>
-    <div class='docstring'>
-  <p>Pops the last move of the history stack and calls popHistory on the right module.</p>
-</div>
-<div class='tags'>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='_popFuture-instance'>
-      - (void) <strong>_popFuture</strong>()
-    </p>
-    <div class='docstring'>
-  <p>Pops the last move of the future stack and calls popFuture on the right module.</p>
-</div>
-<div class='tags'>
-</div>
-  </div>
 </div>
     </div>
     <div id='footer'>
   Generated on
-  Mon Apr 22 2013 23:38:07 GMT+0200 (W. Europe Daylight Time)
+  Sun Apr 28 2013 18:42:08 GMT+0200 (W. Europe Daylight Time)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

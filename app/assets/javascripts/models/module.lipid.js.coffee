@@ -1,3 +1,5 @@
+# Simulates a cell border from lipids
+#
 class Model.Lipid extends Model.Module
 
 	# Constructor for lipids
@@ -20,10 +22,10 @@ class Model.Lipid extends Model.Module
 			# Only calculate vlipid if the components are available
 			if ( @_test( substrates, @dna, @consume ) )
 				vlipid = @k * substrates[@dna] * substrates[@consume]
-				growth = mu * ( results[@name] ? 0 )
+				growth = mu * ( substrates[@name] ? 0 )
 			
 			if ( vlipid? and vlipid > 0 )
-				results[@name] = vlipid - growth # todo mu
+				results[@name] = vlipid - growth
 				results[@consume] = -vlipid	
 			
 			return results
@@ -34,12 +36,10 @@ class Model.Lipid extends Model.Module
 			dna : 'dna'
 			consume: food
 			name : "lipid"
+			starts: { name : start }
 		}
 		
 		params = _( defaults ).extend( params )
-		
-		starts = {}
-		starts[params.name] = start
-		super params, step, starts
+		super params, step
 
 (exports ? this).Model.Lipid = Model.Lipid
