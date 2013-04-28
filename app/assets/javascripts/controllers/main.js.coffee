@@ -2,7 +2,10 @@
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://jashkenas.github.com/coffee-script/
 
+# The controller for the Main action and view
+#
 class Main
+
 	dt: 0.1
 	_tree: new UndoTree()
 
