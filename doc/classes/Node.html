@@ -11,7 +11,7 @@
     <div id='base' data-path='../'></div>
 <div id='header'>
   <div id='menu'>
-    <a href='../README.md.html' title='Programming Life'>Programming Life</a>
+    <a href='../README.md.html' title='Programming Life: Gigabase'>Programming Life: Gigabase</a>
     &raquo;
     <a href='../class_index.html' title='Index'>Index</a>
     &raquo;
@@ -133,6 +133,16 @@
       Constructor for node
     </span>
   </li>
+  <li>
+    <span class='signature'>
+      <a href='#rebase-instance'>
+        - (self) <strong>rebase</strong>(parent)
+      </a>
+    </span>
+    <span class='desc'>
+      Rebase this branch on a different node than its current parent.
+    </span>
+  </li>
 </ul>
       <h2>Constructor Details</h2>
       <div class='methods'>
@@ -174,10 +184,43 @@
 </div>
   </div>
 </div>
+      <h2>Instance Method Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='rebase-instance'>
+      - (self) <strong>rebase</strong>(parent)
+    </p>
+    <div class='docstring'>
+  <p>Rebase this branch on a different node than its current parent.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>parent</span>
+      <span class='type'>
+        (<tt><a href='../classes/Node.html'>Node</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The new parent for the branch.</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>self</tt>)
+      &mdash;
+      <span class='desc'>chainable self</span>
+    </li>
+  </ul>
+</div>
+  </div>
+</div>
     </div>
     <div id='footer'>
   Generated on
-  Mon Apr 22 2013 23:38:07 GMT+0200 (W. Europe Daylight Time)
+  Sun Apr 28 2013 18:42:08 GMT+0200 (W. Europe Daylight Time)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

@@ -1,3 +1,5 @@
+# Simulates protein synthesization.
+#
 class Model.Protein extends Model.Module
 
 	# Constructor for Protein

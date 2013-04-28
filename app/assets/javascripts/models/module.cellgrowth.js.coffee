@@ -1,3 +1,5 @@
+# Simulates Cell Growth
+#
 class Model.CellGrowth extends Model.Module
 
 	# Constructor for Cell Growth
@@ -34,6 +36,8 @@ class Model.CellGrowth extends Model.Module
 		cell_growth = @
 		
 		Object.defineProperty( @, 'mu',
+			
+			# @property [Function] the function to get the mu
 			get: =>
 				# This returns the cell growth, but according to this module,
 				# meaning that this property can be used for all modules to

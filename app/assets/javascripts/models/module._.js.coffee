@@ -1,5 +1,5 @@
 # Baseclass of all modules. Defines basic behaviour like undo and redo 
-# mechanisms and solving of differential equations
+# mechanisms and solving of differential equations. 
 #
 class Model.Module
 
@@ -9,11 +9,19 @@ class Model.Module
 	# @param step [Function] the step function
 	#
 	constructor: ( params, step ) -> 
-		@_creation = Date.now()
+		
 		@_tree = new UndoTree()
+		creation = Date.now()
 
 		for key, value of params
-			((key) => 
+		
+			# The function to create a property out of param
+			#
+			# @param key [String] the property name
+			#
+			( ( key ) => 
+			
+				# This defines the private value.
 				Object.defineProperty( @ , "_#{key}",
 					value: value
 					configurable: false
@@ -21,6 +29,8 @@ class Model.Module
 					writable: true
 				)
 
+				# This defines the public functions to change
+				# those values.
 				Object.defineProperty( @ , key,
 					set: ( param ) ->
 						@_addMove(key, @["_#{key}"], param)
@@ -30,6 +40,7 @@ class Model.Module
 					enumerable: true
 					configurable: false
 				)
+				
 			) key
 
 		Object.defineProperty( @, '_step',
@@ -44,6 +55,12 @@ class Model.Module
 				return @starts.name
 			set: (value) ->
 				@starts.name = value
+		)
+		
+		Object.defineProperty( @, 'creation',
+			# @property [Date] the creation date
+			get: ->
+				return creation
 		)
 		
 		Object.seal( @ )

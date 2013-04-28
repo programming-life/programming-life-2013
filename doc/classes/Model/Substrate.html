@@ -17,7 +17,7 @@
     &raquo;
     <span class='title'>Model</span>
     &raquo;
-    <span class='title'>CellGrowth</span>
+    <span class='title'>Substrate</span>
     <nav>
       <ul>
         <li class='noframes'>
@@ -108,12 +108,12 @@
     <div id='content'>
       <h1>
         Class:
-        Model.CellGrowth
+        Model.Substrate
       </h1>
       <table class='box'>
         <tr>
           <td>Defined in:</td>
-          <td>app&#47;assets&#47;javascripts&#47;models&#47;module.cellgrowth.js.coffee</td>
+          <td>app&#47;assets&#47;javascripts&#47;models&#47;module.substrate.js.coffee</td>
         </tr>
         <tr>
           <td>Inherits:</td>
@@ -124,7 +124,7 @@
       </table>
       <h2>Overview</h2>
       <div class='docstring'>
-  <p>Simulates Cell Growth</p>
+  <p>Simulates substrates in the cell</p>
 </div>
 <div class='tags'>
 </div>
@@ -133,12 +133,12 @@
   <li>
     <span class='signature'>
       <a href='#constructor-instance'>
-        - (void) <strong>constructor</strong>(params = {}, start = 1)
+        - (void) <strong>constructor</strong>(params = {}, start = 1, name, inside_cell = true)
       </a>
     </span>
     <span class='constructor note title'>Constructor</span>
     <span class='desc'>
-      Constructor for Cell Growth
+      Constructor for Substrate
     </span>
   </li>
 </ul>
@@ -164,10 +164,10 @@
       <div class='methods'>
   <div class='method_details'>
     <p class='signature' id='constructor-instance'>
-      - (void) <strong>constructor</strong>(params = {}, start = 1)
+      - (void) <strong>constructor</strong>(params = {}, start = 1, name, inside_cell = true)
     </p>
     <div class='docstring'>
-  <p>Constructor for Cell Growth</p>
+  <p>Constructor for Substrate</p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
@@ -186,7 +186,23 @@
         (<tt>Integer</tt>)
       </span>
       &mdash;
-      <span class='desc'>the initial value of metabolism, defaults to 0</span>
+      <span class='desc'>the initial value of substrate, defaults to 1</span>
+    </li>
+    <li>
+      <span class='name'>name</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the name to use</span>
+    </li>
+    <li>
+      <span class='name'>inside_cell</span>
+      <span class='type'>
+        (<tt>Boolean</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>wether this substrate is inside the cell, defaults to true</span>
     </li>
   </ul>
   <h3>
@@ -195,12 +211,12 @@
   </h3>
   <ul class='options'>
     <li>
-      <span class='name'>consume</span>
+      <span class='name'>start</span>
       <span class='type'>
-        (<tt>String</tt>)
+        (<tt>Integer</tt>)
       </span>
       &mdash;
-      <span class='desc'>the substrate to use for cell growth</span>
+      <span class='desc'>the start amount of this substrate</span>
     </li>
     <li>
       <span class='name'>name</span>
@@ -208,7 +224,15 @@
         (<tt>String</tt>)
       </span>
       &mdash;
-      <span class='desc'>the name of the cell</span>
+      <span class='desc'>the name of this substrate</span>
+    </li>
+    <li>
+      <span class='name'>placement</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>placement in cell = 1, out cell = -1</span>
     </li>
   </ul>
 </div>

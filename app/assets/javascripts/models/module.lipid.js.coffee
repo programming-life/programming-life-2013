@@ -1,3 +1,5 @@
+# Simulates a cell border from lipids
+#
 class Model.Lipid extends Model.Module
 
 	# Constructor for lipids

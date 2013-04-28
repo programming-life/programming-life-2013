@@ -1,3 +1,5 @@
+# Simulates cell metabolism. Converts substrate into product.
+#
 class Model.Metabolism extends Model.Module
 
 	# Constructor for Metabolism
