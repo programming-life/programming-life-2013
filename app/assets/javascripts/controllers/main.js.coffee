@@ -11,6 +11,7 @@ class Main
 
 	# Creates a new instance of Main
 	constructor: ( ) ->
+		@view = new View.Main
 	
 	# Undoes the last move.
 	undo: ( ) ->

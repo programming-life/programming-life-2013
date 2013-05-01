@@ -62,6 +62,8 @@ class Model.Module
 			get: ->
 				return creation
 		)
+
+		$(document).trigger('moduleInit', this)
 		
 		Object.seal( @ )
 		
