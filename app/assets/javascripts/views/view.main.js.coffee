@@ -1,6 +1,8 @@
 class View.Main
+
 	constructor: ( ) ->
 		@_views = []		
+		@_drawn = []
 
 		@paper = Raphael('paper', 0, 0)
 		@resize()
@@ -10,6 +12,8 @@ class View.Main
 
 		@draw()
 
+	# Resizes the cell to the window size
+	#
 	resize: ( ) =>
 		@width = $(window).width() - 20
 		@height = $(window).height() - 5 
@@ -19,7 +23,8 @@ class View.Main
 
 		@draw()
 		
-
+	# Draws the cell
+	#
 	draw: ( ) ->
 		# First, determine the center and radius of our cell
 		centerX = @width / 2
@@ -31,7 +36,6 @@ class View.Main
 		
 		scale = radius / 400
 
-
 		unless @_shape
 			@_shape = @paper.circle(@x, @y, @radius)
 			@_shape.node.setAttribute('class', 'cell')
@@ -41,63 +45,92 @@ class View.Main
 				cx: centerX
 				cy: centerY
 				r: radius
-
-
+				
 		inTransporters = 0
 		outTransporters = 0
-
+		counters = {}
+		
 		# Draw each module
 		for view in @_views
-
-			x = 0
-			y = 0			
-
-			switch view.module.constructor.name
-				when "Lipid"
-					alpha = -3 * Math.PI / 4
-					x = centerX + radius * Math.cos(alpha)
-					y = centerY + radius * Math.sin(alpha)
-
-				when "Transporter"
-					if view.module.direction is 1
-						dx = 50 * inTransporters * scale					
-						alpha = Math.PI - Math.asin(dx / radius)
-						inTransporters++
-					else
-						dx = 50 * outTransporters * scale				
-						alpha = 0 + Math.asin(dx / radius)
-						outTransporters++
-
-					x = centerX + radius * Math.cos(alpha)
-					y = centerY + radius * Math.sin(alpha)
-
-				when "DNA"
-					x = centerX
-					y = centerY - radius / 2
-
-				when "Metabolism"
-					x = centerX
-					y = centerY + radius / 2
-
-				when "Protein"
-					x = centerX + radius / 2
-					y = centerY - radius / 2
-
-			view.draw(x, y, scale) 
-
-	moduleInit: ( event, module ) =>
-		unless module instanceof Model.CellGrowth
-			view = new View.Module(module)
-			@_views.push(view)
-			@draw()
-
-	getLocationForModule: ( module ) ->
 		
+			type = view.module.constructor.name
+			direction = view.module.direction ? view.module.placement ? 0
+			counter = counters[ "#{type}_#{direction}" ] ? 0
+			
+			# Send all the parameters through so the location
+			# method becomes functional. Easier to test and debug.
+			params = { 
+				count: counter
+				view: view
+				type: type 
+				placement: direction
+				cx: centerX
+				cy: centerY
+				r: radius
+				scale: scale
+			}
+			placement = @getLocationForModule( view.module, params )
 
+			counters[ "#{type}_#{direction}" ] = ++counter
+			view.draw( placement.x, placement.y, scale) 
 
+	# On module initialization add it to the cell
+	# 
+	# @param event [Object] event raised
+	# @param module [Model.Module] module added
+	#
+	moduleInit: ( event, module ) =>
+		unless _(@_drawn).indexOf( module.name ) isnt -1
+			unless module instanceof Model.CellGrowth
+				@_drawn.push module.name
+				view = new View.Module(module)
+				@_views.push(view)
+				@draw()
 
+	# Returns the location for a module
+	#
+	# @param module [Model.Module] the module to get the location for
+	# @returns [Object] the size as an object with x, y
+	#
+	getLocationForModule: ( module, params ) ->
+		x = 0
+		y = 0
+		
+		switch params.type
+			
+			when "Lipid"
+				alpha = -3 * Math.PI / 4 + ( params.count * Math.PI / 12 )
+				x = params.cx + params.r * Math.cos( alpha )
+				y = params.cy + params.r * Math.sin( alpha )
 
+			when "Transporter"
+				dx = 50 * params.count * params.scale
+				
+				if params.placement is 1					
+					alpha = Math.PI - Math.asin( dx / params.r )
+				else				
+					alpha = 0 + Math.asin( dx / params.r )
 
+				x = params.cx + params.r * Math.cos( alpha )
+				y = params.cy + params.r * Math.sin( alpha )
+
+			when "DNA"
+				x = params.cx + ( params.count % 3 * 40 )
+				y = params.cy - params.r / 2 + ( Math.round( params.count / 3 ) * 40 )
+
+			when "Metabolism"
+				x = params.cx + ( params.count % 3 * 40 )
+				y = params.cy + params.r / 2 + ( Math.round( params.count / 3 ) * 40 )
+
+			when "Protein"
+				x = params.cx + params.r / 2 + ( params.count % 3 * 40 )
+				y = params.cy - params.r / 2 + ( Math.round( params.count / 3 ) * 40 )
+				
+			when "Substrate"
+				x = if params.placement is 1 then ( params.cx - params.r - 130 ) else params.cx
+				y = params.cy + ( Math.round( params.count ) * 40 )
+				
+		return { x: x, y: y }
 
 
 (exports ? this).View.Main = View.Main
