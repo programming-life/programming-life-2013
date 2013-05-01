@@ -31,3 +31,59 @@ body {
 	margin: 0 auto;
 	margin-top:-40px;
 }
+
+.cell {
+	stroke: #cacaca;
+	stroke-width: 40px;
+}
+
+.module-box {
+	stroke:#ababab;
+	stroke-width:1px;
+	fill: #fff;
+
+	.inactive {
+		stroke-dasharray: 5,5;
+	}
+}
+
+.module-close {
+	fill: #fff;
+	stroke:#ababab;
+	stroke-width:1px;
+}
+
+.module-seperator {
+	stroke:#ababab;
+	stroke-width:1px;
+	fill:red;
+}
+
+.module-hitbox {
+	fill: none;
+	stroke: rgba(0, 0, 0, 0);
+	stroke-width: 0px;
+}
+
+text.module-label {
+
+	tspan {
+		font-family: sans-serif !important;
+		#font-size: 16px !important;
+		text-align: right;
+		fill: #000;
+
+		dominant-baseline:mathematical;
+	}
+}
+
+.transporter-arrow {
+	fill: #000;
+	stroke: #333;
+	stroke-width:1px;
+}
+
+.transporter-substrate-circle {
+	stroke:#333;
+	stroke-width:2px;
+}
