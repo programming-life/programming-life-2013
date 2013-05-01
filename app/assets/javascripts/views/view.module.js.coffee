@@ -19,7 +19,27 @@ class View.Module
 
 		$(document).on('moduleInvalidated', @onModuleInvalidated)
 		
+	hashCode : () ->
+		hash = 0
+		return hash if ( @name.length is 0 )
+		for i in [0...@name.length]
+			char = @name.charCodeAt i
+			hash = ( (hash << 5) - hash ) + char;
+			hash = hash & hash
+		return hash
 	
+	hashColor : () ->
+		return @numToColor @hashCode()
+
+			
+	numToColor : ( num, alpha = off ) ->
+		num >>>= 0
+		b = ( num & 0xFF )
+		g = ( num & 0xFF00 ) >>> 8
+		r = ( num & 0xFF0000 ) >>> 16
+		a = ( ( num & 0xFF000000 ) >>> 24 ) / 255
+		a = 1 unless alpha
+		return "rgba(#{[r, g, b, a].join ','})"
 		
 	# Runs if module is invalidated
 	# 
@@ -40,7 +60,7 @@ class View.Module
 		@_x = x
 		@_y = y
 		@_scale = scale
-		#@_color = @hashColor()
+		@_color = @hashColor()
 
 		padding = 8 * scale
 
@@ -67,8 +87,8 @@ class View.Module
 				# This is the circle in which we show the substrate
 				substrateCircle = @_paper.circle(x, y, 20 * scale)
 				substrateCircle.node.setAttribute('class', 'transporter-substrate-circle')
-				#substrateCircle.attr
-				#	'fill': @_color
+				substrateCircle.attr
+					'fill': @_color
 					
 				substrate = @module.orig ? "..."
 				substrateText = @_paper.text( x, y, _.escape _( substrate ).first() )
