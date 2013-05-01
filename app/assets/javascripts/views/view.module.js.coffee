@@ -114,6 +114,18 @@ class View.Module
 					text.attr
 						'font-size': 20 * scale
 			
+			when "Substrate"
+			
+				substrateCircle = @_paper.circle(x, y, 20 * scale)
+				substrateCircle.node.setAttribute('class', 'transporter-substrate-circle')
+				substrateCircle.attr
+					'fill': @_color
+					
+				substrate = @module.name ? "..."
+				substrateText = @_paper.text( x, y, _.escape _( substrate ).first() )
+				substrateText.node.setAttribute('class', 'transporter-substrate-text')
+				substrateText.attr
+					'font-size': 18 * scale
 			
 			else
 				text = @_paper.text(x, y, _.escape @type)
