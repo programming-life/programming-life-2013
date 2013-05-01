@@ -1,11 +1,16 @@
 class View.Module
+	
+	# Creates a new module view
+	# 
+	# @param module [Model.Module] the module to show
+	#
 	constructor: ( module ) ->
 		@_paper = Main.view.paper
 
 		@module = module		
 		@type = module.constructor.name
 		@name = module.name
-
+		
 		@_x = 0
 		@_y = 0
 		@_scale = 0
@@ -13,58 +18,85 @@ class View.Module
 		@_selected = false		
 
 		$(document).on('moduleInvalidated', @onModuleInvalidated)
-
+		
+	
+		
+	# Runs if module is invalidated
+	# 
+	# @param event [Object] the event raised
+	# @param module [Model.Module] the module invalidated
 	#
 	moduleInvalidated: ( event, module ) =>
 		if module is @module
 			@draw(@_x, @_y, @_scale)
 
-	# 
+	# Draws this view and thus the model
+	#
+	# @param x [Integer] the x position
+	# @param y [Integer] the y position
+	# @param scale [Integer] the scale
+	#
 	draw: ( x, y, scale ) ->
 		@_x = x
 		@_y = y
 		@_scale = scale
+		#@_color = @hashColor()
 
 		padding = 8 * scale
 
 		if @_selected
 			padding = 20 * scale
 
-
 		@_contents?.remove()
 		@_paper.setStart()
+		
 		switch @type
+		
 			when 'Transporter'
+			
+				# This path constructs the arrow we are showing as a transporter
 				arrow = @_paper.path("m #{x},#{y} 0,4.06536 85.154735,0 -4.01409,12.19606 27.12222,-16.26142 -27.12222,-16.26141 4.01409,12.19606 -85.154735,0 z")
 				arrow.node.setAttribute('class', 'transporter-arrow')
-				
+					
 				rect = arrow.getBBox()
-				dx = (rect.x - x)
-				dy = (rect.y - y)
+				dx = rect.x - x
+				dy = rect.y - y
 				arrow.translate(-dx - rect.width / 2, 0)
 				arrow.scale(scale, scale)
 
-
-
+				# This is the circle in which we show the substrate
 				substrateCircle = @_paper.circle(x, y, 20 * scale)
 				substrateCircle.node.setAttribute('class', 'transporter-substrate-circle')
-				
+				#substrateCircle.attr
+				#	'fill': @_color
+					
+				substrate = @module.orig ? "..."
+				substrateText = @_paper.text( x, y, _.escape _( substrate ).first() )
+				substrateText.node.setAttribute('class', 'transporter-substrate-text')
+				substrateText.attr
+					'font-size': 18 * scale
+					
 				if @_selected
-					text = @_paper.text(x, y - 60 * scale, @type)
+				
+					# Add transporter text
+					text = @_paper.text(x, y - 60 * scale, _.escape @type)
 					text.attr
 						'font-size': 20 * scale
 
 					arrowRect = arrow.getBBox()
 					textRect = text.getBBox()
 
+					# Add title line
 					line = @_paper.path("M #{Math.min(arrowRect.x, textRect.x) - padding},#{arrowRect.y - padding} L #{Math.max(arrowRect.x + arrowRect.width, textRect.x + textRect.width) + padding},#{arrowRect.y - padding} z")
 					line.node.setAttribute('class', 'module-seperator')
 
-					text = @_paper.text(x, y - 60 * scale, @type)
+					text = @_paper.text(x, y - 60 * scale, _.escape @type)
 					text.attr
 						'font-size': 20 * scale
+			
+			
 			else
-				text = @_paper.text(x, y, @type)
+				text = @_paper.text(x, y, _.escape @type)
 				text.attr
 					'font-size': 20 * scale
 
@@ -96,8 +128,8 @@ class View.Module
 		# Draw shadow around module view
 		@_shadow?.remove()
 		@_shadow = @_box?.glow
-			width: 25
-			opacity: .25
+			width: 35
+			opacity: .125
 		@_shadow?.scale(.8, .8)
 
 		# Draw hitbox in front of module view to detect mouseclicks
@@ -110,7 +142,5 @@ class View.Module
 				@_hitBox.click => 
 					@_selected = true
 					@draw(@_x, @_y, @_scale)
-					
-
 
 (exports ? this).View.Module = View.Module

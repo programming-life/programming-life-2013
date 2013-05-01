@@ -1,5 +1,7 @@
 class View.Main
 
+	# Creates a new Main view
+	#
 	constructor: ( ) ->
 		@_views = []		
 		@_drawn = []
