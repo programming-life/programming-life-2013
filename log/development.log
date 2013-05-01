@@ -1,0 +1,1320 @@
+
+
+Started GET "/" for 127.0.0.1 at 2013-04-20 16:52:38 +0200
+Connecting to database specified by database.yml
+Processing by MainController#index as HTML
+  Rendered main/index.html.erb within layouts/application (1.5ms)
+Compiled hook.css  (18ms)  (pid 11036)
+Compiled main.css  (3ms)  (pid 11036)
+Compiled bootstrap.css  (0ms)  (pid 11036)
+Compiled application.css  (49ms)  (pid 11036)
+Compiled jquery.js  (20ms)  (pid 11036)
+Compiled jquery_ujs.js  (0ms)  (pid 11036)
+Compiled controllers/hook.js  (317ms)  (pid 11036)
+Compiled controllers/main.js  (127ms)  (pid 11036)
+Compiled models/cell.js  (118ms)  (pid 11036)
+Compiled models/module.js  (122ms)  (pid 11036)
+Compiled views/graph.js  (138ms)  (pid 11036)
+Compiled underscore.js  (0ms)  (pid 11036)
+Compiled backbone.js  (0ms)  (pid 11036)
+Compiled bootstrap.js  (0ms)  (pid 11036)
+Compiled raphael.min.js  (1ms)  (pid 11036)
+Compiled chart.js  (0ms)  (pid 11036)
+Compiled numeric-1.2.6.js  (2ms)  (pid 11036)
+Compiled application.js  (971ms)  (pid 11036)
+Completed 200 OK in 1111ms (Views: 1110.7ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/assets/application.css?body=1" for 127.0.0.1 at 2013-04-20 16:52:41 +0200
+Served asset /application.css - 304 Not Modified (47ms)
+
+
+Started GET "/assets/bootstrap.css?body=1" for 127.0.0.1 at 2013-04-20 16:52:41 +0200
+Served asset /bootstrap.css - 304 Not Modified (9ms)
+
+
+Started GET "/assets/jquery.js?body=1" for 127.0.0.1 at 2013-04-20 16:52:41 +0200
+Served asset /jquery.js - 304 Not Modified (9ms)
+
+
+Started GET "/assets/hook.css?body=1" for 127.0.0.1 at 2013-04-20 16:52:41 +0200
+Served asset /hook.css - 304 Not Modified (1ms)
+
+
+Started GET "/assets/main.css?body=1" for 127.0.0.1 at 2013-04-20 16:52:41 +0200
+Served asset /main.css - 304 Not Modified (1ms)
+
+
+Started GET "/assets/jquery_ujs.js?body=1" for 127.0.0.1 at 2013-04-20 16:52:41 +0200
+Served asset /jquery_ujs.js - 304 Not Modified (1ms)
+
+
+Started GET "/assets/controllers/hook.js?body=1" for 127.0.0.1 at 2013-04-20 16:52:41 +0200
+Served asset /controllers/hook.js - 200 OK (2ms)
+
+
+Started GET "/assets/controllers/main.js?body=1" for 127.0.0.1 at 2013-04-20 16:52:41 +0200
+Served asset /controllers/main.js - 200 OK (1ms)
+
+
+Started GET "/assets/models/cell.js?body=1" for 127.0.0.1 at 2013-04-20 16:52:41 +0200
+Served asset /models/cell.js - 200 OK (2ms)
+
+
+Started GET "/assets/models/module.js?body=1" for 127.0.0.1 at 2013-04-20 16:52:41 +0200
+Served asset /models/module.js - 200 OK (1ms)
+
+
+Started GET "/assets/views/graph.js?body=1" for 127.0.0.1 at 2013-04-20 16:52:41 +0200
+Served asset /views/graph.js - 200 OK (1ms)
+
+
+Started GET "/assets/backbone.js?body=1" for 127.0.0.1 at 2013-04-20 16:52:41 +0200
+Served asset /backbone.js - 304 Not Modified (1ms)
+
+
+Started GET "/assets/underscore.js?body=1" for 127.0.0.1 at 2013-04-20 16:52:41 +0200
+Served asset /underscore.js - 304 Not Modified (3ms)
+
+
+Started GET "/assets/bootstrap.js?body=1" for 127.0.0.1 at 2013-04-20 16:52:41 +0200
+Served asset /bootstrap.js - 304 Not Modified (2ms)
+
+
+Started GET "/assets/raphael.min.js?body=1" for 127.0.0.1 at 2013-04-20 16:52:41 +0200
+Served asset /raphael.min.js - 200 OK (1ms)
+
+
+Started GET "/assets/chart.js?body=1" for 127.0.0.1 at 2013-04-20 16:52:41 +0200
+Served asset /chart.js - 304 Not Modified (24ms)
+
+
+Started GET "/assets/numeric-1.2.6.js?body=1" for 127.0.0.1 at 2013-04-20 16:52:41 +0200
+Served asset /numeric-1.2.6.js - 200 OK (2ms)
+
+
+Started GET "/assets/application.js?body=1" for 127.0.0.1 at 2013-04-20 16:52:41 +0200
+Served asset /application.js - 200 OK (12ms)
+
+
+Started GET "/" for 127.0.0.1 at 2013-04-22 10:07:12 +0200
+Connecting to database specified by database.yml
+Processing by MainController#index as HTML
+  Rendered main/index.html.erb within layouts/application (75.0ms)
+Compiled main.css  (441ms)  (pid 2361)
+Compiled graph.css  (6ms)  (pid 2361)
+Compiled application.css  (156ms)  (pid 2361)
+Compiled models/cell.js  (3425ms)  (pid 2361)
+Compiled models/module.js  (141ms)  (pid 2361)
+Compiled views/graph.js  (137ms)  (pid 2361)
+Compiled generators/module.generator.js  (146ms)  (pid 2361)
+Compiled application.js  (162ms)  (pid 2361)
+Completed 200 OK in 11364ms (Views: 11363.8ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/assets/application.css?body=1" for 127.0.0.1 at 2013-04-22 10:07:31 +0200
+Served asset /application.css - 304 Not Modified (15ms)
+
+
+Started GET "/assets/graph.css?body=1" for 127.0.0.1 at 2013-04-22 10:07:31 +0200
+Served asset /graph.css - 200 OK (2ms)
+
+
+Started GET "/assets/main.css?body=1" for 127.0.0.1 at 2013-04-22 10:07:31 +0200
+Served asset /main.css - 200 OK (1ms)
+
+
+Started GET "/assets/hook.css?body=1" for 127.0.0.1 at 2013-04-22 10:07:31 +0200
+Served asset /hook.css - 304 Not Modified (1ms)
+
+
+Started GET "/assets/jquery.js?body=1" for 127.0.0.1 at 2013-04-22 10:07:31 +0200
+Served asset /jquery.js - 304 Not Modified (4ms)
+
+
+Started GET "/assets/bootstrap.css?body=1" for 127.0.0.1 at 2013-04-22 10:07:31 +0200
+Served asset /bootstrap.css - 304 Not Modified (3ms)
+
+
+Started GET "/assets/jquery_ujs.js?body=1" for 127.0.0.1 at 2013-04-22 10:07:31 +0200
+Served asset /jquery_ujs.js - 304 Not Modified (3ms)
+
+
+Started GET "/assets/controllers/hook.js?body=1" for 127.0.0.1 at 2013-04-22 10:07:31 +0200
+Served asset /controllers/hook.js - 304 Not Modified (1ms)
+
+
+Started GET "/assets/controllers/main.js?body=1" for 127.0.0.1 at 2013-04-22 10:07:31 +0200
+Served asset /controllers/main.js - 304 Not Modified (1ms)
+
+
+Started GET "/assets/generators/module.generator.js?body=1" for 127.0.0.1 at 2013-04-22 10:07:31 +0200
+Served asset /generators/module.generator.js - 200 OK (1ms)
+
+
+Started GET "/assets/models/cell.js?body=1" for 127.0.0.1 at 2013-04-22 10:07:31 +0200
+Served asset /models/cell.js - 200 OK (1ms)
+
+
+Started GET "/assets/models/module.js?body=1" for 127.0.0.1 at 2013-04-22 10:07:31 +0200
+Served asset /models/module.js - 200 OK (1ms)
+
+
+Started GET "/assets/views/graph.js?body=1" for 127.0.0.1 at 2013-04-22 10:07:31 +0200
+Served asset /views/graph.js - 200 OK (1ms)
+
+
+Started GET "/assets/underscore.js?body=1" for 127.0.0.1 at 2013-04-22 10:07:31 +0200
+Served asset /underscore.js - 304 Not Modified (2ms)
+
+
+Started GET "/assets/bootstrap.js?body=1" for 127.0.0.1 at 2013-04-22 10:07:31 +0200
+Served asset /bootstrap.js - 304 Not Modified (1ms)
+
+
+Started GET "/assets/raphael.min.js?body=1" for 127.0.0.1 at 2013-04-22 10:07:31 +0200
+Served asset /raphael.min.js - 304 Not Modified (1ms)
+
+
+Started GET "/assets/chart.js?body=1" for 127.0.0.1 at 2013-04-22 10:07:31 +0200
+Served asset /chart.js - 304 Not Modified (21ms)
+
+
+Started GET "/assets/numeric-1.2.6.js?body=1" for 127.0.0.1 at 2013-04-22 10:07:31 +0200
+Served asset /numeric-1.2.6.js - 304 Not Modified (1ms)
+
+
+Started GET "/assets/application.js?body=1" for 127.0.0.1 at 2013-04-22 10:07:31 +0200
+Served asset /application.js - 200 OK (9ms)
+
+
+Started GET "/" for 127.0.0.1 at 2013-04-22 10:11:52 +0200
+Processing by MainController#index as HTML
+  Rendered main/index.html.erb within layouts/application (0.0ms)
+Completed 200 OK in 6ms (Views: 6.0ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/assets/application.css?body=1" for 127.0.0.1 at 2013-04-22 10:11:52 +0200
+Served asset /application.css - 304 Not Modified (0ms)
+
+
+Started GET "/assets/main.css?body=1" for 127.0.0.1 at 2013-04-22 10:11:52 +0200
+Served asset /main.css - 304 Not Modified (0ms)
+
+
+Started GET "/assets/graph.css?body=1" for 127.0.0.1 at 2013-04-22 10:11:52 +0200
+Served asset /graph.css - 304 Not Modified (0ms)
+
+
+Started GET "/assets/hook.css?body=1" for 127.0.0.1 at 2013-04-22 10:11:52 +0200
+Served asset /hook.css - 304 Not Modified (0ms)
+
+
+Started GET "/assets/jquery.js?body=1" for 127.0.0.1 at 2013-04-22 10:11:52 +0200
+Served asset /jquery.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/bootstrap.css?body=1" for 127.0.0.1 at 2013-04-22 10:11:52 +0200
+Served asset /bootstrap.css - 304 Not Modified (0ms)
+
+
+Started GET "/assets/jquery_ujs.js?body=1" for 127.0.0.1 at 2013-04-22 10:11:52 +0200
+Served asset /jquery_ujs.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/controllers/hook.js?body=1" for 127.0.0.1 at 2013-04-22 10:11:52 +0200
+Served asset /controllers/hook.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/controllers/main.js?body=1" for 127.0.0.1 at 2013-04-22 10:11:52 +0200
+Served asset /controllers/main.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/generators/module.generator.js?body=1" for 127.0.0.1 at 2013-04-22 10:11:52 +0200
+Served asset /generators/module.generator.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/models/cell.js?body=1" for 127.0.0.1 at 2013-04-22 10:11:52 +0200
+Served asset /models/cell.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/models/module.js?body=1" for 127.0.0.1 at 2013-04-22 10:11:52 +0200
+Served asset /models/module.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/views/graph.js?body=1" for 127.0.0.1 at 2013-04-22 10:11:52 +0200
+Served asset /views/graph.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/underscore.js?body=1" for 127.0.0.1 at 2013-04-22 10:11:52 +0200
+Served asset /underscore.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/bootstrap.js?body=1" for 127.0.0.1 at 2013-04-22 10:11:52 +0200
+Served asset /bootstrap.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/raphael.min.js?body=1" for 127.0.0.1 at 2013-04-22 10:11:52 +0200
+Served asset /raphael.min.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/chart.js?body=1" for 127.0.0.1 at 2013-04-22 10:11:52 +0200
+Served asset /chart.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/numeric-1.2.6.js?body=1" for 127.0.0.1 at 2013-04-22 10:11:52 +0200
+Served asset /numeric-1.2.6.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/application.js?body=1" for 127.0.0.1 at 2013-04-22 10:11:52 +0200
+Served asset /application.js - 304 Not Modified (0ms)
+
+
+Started GET "/" for 127.0.0.1 at 2013-04-22 10:44:26 +0200
+Connecting to database specified by database.yml
+Processing by MainController#index as HTML
+  Rendered main/index.html.erb within layouts/application (1.8ms)
+Compiled models/cell.js  (190ms)  (pid 3695)
+Compiled application.js  (9ms)  (pid 3695)
+Completed 200 OK in 346ms (Views: 345.2ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/assets/application.css?body=1" for 127.0.0.1 at 2013-04-22 10:44:28 +0200
+Served asset /application.css - 304 Not Modified (38ms)
+
+
+Started GET "/assets/hook.css?body=1" for 127.0.0.1 at 2013-04-22 10:44:28 +0200
+Served asset /hook.css - 304 Not Modified (3ms)
+
+
+Started GET "/assets/graph.css?body=1" for 127.0.0.1 at 2013-04-22 10:44:28 +0200
+Served asset /graph.css - 304 Not Modified (11ms)
+
+
+Started GET "/assets/main.css?body=1" for 127.0.0.1 at 2013-04-22 10:44:28 +0200
+Served asset /main.css - 304 Not Modified (9ms)
+
+
+Started GET "/assets/jquery.js?body=1" for 127.0.0.1 at 2013-04-22 10:44:28 +0200
+Served asset /jquery.js - 304 Not Modified (5ms)
+
+
+Started GET "/assets/bootstrap.css?body=1" for 127.0.0.1 at 2013-04-22 10:44:28 +0200
+Served asset /bootstrap.css - 304 Not Modified (2ms)
+
+
+Started GET "/assets/jquery_ujs.js?body=1" for 127.0.0.1 at 2013-04-22 10:44:28 +0200
+Served asset /jquery_ujs.js - 304 Not Modified (3ms)
+
+
+Started GET "/assets/controllers/hook.js?body=1" for 127.0.0.1 at 2013-04-22 10:44:28 +0200
+Served asset /controllers/hook.js - 304 Not Modified (2ms)
+
+
+Started GET "/assets/controllers/main.js?body=1" for 127.0.0.1 at 2013-04-22 10:44:28 +0200
+Served asset /controllers/main.js - 304 Not Modified (2ms)
+
+
+Started GET "/assets/generators/module.generator.js?body=1" for 127.0.0.1 at 2013-04-22 10:44:28 +0200
+Served asset /generators/module.generator.js - 304 Not Modified (3ms)
+
+
+Started GET "/assets/models/cell.js?body=1" for 127.0.0.1 at 2013-04-22 10:44:28 +0200
+Served asset /models/cell.js - 200 OK (1ms)
+
+
+Started GET "/assets/models/module.js?body=1" for 127.0.0.1 at 2013-04-22 10:44:28 +0200
+Served asset /models/module.js - 304 Not Modified (2ms)
+
+
+Started GET "/assets/views/graph.js?body=1" for 127.0.0.1 at 2013-04-22 10:44:28 +0200
+Served asset /views/graph.js - 304 Not Modified (1ms)
+
+
+Started GET "/assets/underscore.js?body=1" for 127.0.0.1 at 2013-04-22 10:44:28 +0200
+Served asset /underscore.js - 304 Not Modified (1ms)
+
+
+Started GET "/assets/bootstrap.js?body=1" for 127.0.0.1 at 2013-04-22 10:44:28 +0200
+Served asset /bootstrap.js - 304 Not Modified (1ms)
+
+
+Started GET "/assets/raphael.min.js?body=1" for 127.0.0.1 at 2013-04-22 10:44:28 +0200
+Served asset /raphael.min.js - 304 Not Modified (3ms)
+
+
+Started GET "/assets/chart.js?body=1" for 127.0.0.1 at 2013-04-22 10:44:28 +0200
+Served asset /chart.js - 304 Not Modified (1ms)
+
+
+Started GET "/assets/numeric-1.2.6.js?body=1" for 127.0.0.1 at 2013-04-22 10:44:28 +0200
+Served asset /numeric-1.2.6.js - 304 Not Modified (2ms)
+
+
+Started GET "/assets/application.js?body=1" for 127.0.0.1 at 2013-04-22 10:44:28 +0200
+Served asset /application.js - 304 Not Modified (30ms)
+
+
+Started GET "/" for 127.0.0.1 at 2013-04-22 11:15:24 +0200
+Connecting to database specified by database.yml
+Processing by MainController#index as HTML
+  Rendered main/index.html.erb within layouts/application (1.8ms)
+Completed 500 Internal Server Error in 174ms
+
+ActionView::Template::Error (SyntaxError: reserved word "var"
+  (in /home/vincent/Github/programming-life/app/assets/javascripts/controllers/main.js.coffee)):
+    3: <head>
+    4:   <title>ProgrammingLife</title>
+    5:   <%= stylesheet_link_tag    "application", :media => "all" %>
+    6:   <%= javascript_include_tag "application" %>
+    7:   <%= csrf_meta_tags %>
+    8: </head>
+    9: <body>
+  app/views/layouts/application.html.erb:6:in `_app_views_layouts_application_html_erb___1478034394236250721_17213540'
+
+
+  Rendered /var/lib/gems/1.9.1/gems/actionpack-3.2.12/lib/action_dispatch/middleware/templates/rescues/_trace.erb (1.2ms)
+  Rendered /var/lib/gems/1.9.1/gems/actionpack-3.2.12/lib/action_dispatch/middleware/templates/rescues/_request_and_response.erb (1.6ms)
+  Rendered /var/lib/gems/1.9.1/gems/actionpack-3.2.12/lib/action_dispatch/middleware/templates/rescues/template_error.erb within rescues/layout (10.3ms)
+
+
+Started GET "/" for 127.0.0.1 at 2013-04-22 11:16:12 +0200
+Processing by MainController#index as HTML
+  Rendered main/index.html.erb within layouts/application (0.0ms)
+Compiled controllers/main.js  (115ms)  (pid 3850)
+Compiled application.js  (9ms)  (pid 3850)
+Completed 200 OK in 195ms (Views: 195.1ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/assets/application.css?body=1" for 127.0.0.1 at 2013-04-22 11:16:13 +0200
+Served asset /application.css - 304 Not Modified (39ms)
+
+
+Started GET "/assets/graph.css?body=1" for 127.0.0.1 at 2013-04-22 11:16:13 +0200
+Served asset /graph.css - 304 Not Modified (3ms)
+
+
+Started GET "/assets/hook.css?body=1" for 127.0.0.1 at 2013-04-22 11:16:13 +0200
+Served asset /hook.css - 304 Not Modified (1ms)
+
+
+Started GET "/assets/main.css?body=1" for 127.0.0.1 at 2013-04-22 11:16:13 +0200
+Served asset /main.css - 304 Not Modified (2ms)
+
+
+Started GET "/assets/bootstrap.css?body=1" for 127.0.0.1 at 2013-04-22 11:16:13 +0200
+Served asset /bootstrap.css - 304 Not Modified (3ms)
+
+
+Started GET "/assets/jquery.js?body=1" for 127.0.0.1 at 2013-04-22 11:16:13 +0200
+Served asset /jquery.js - 304 Not Modified (3ms)
+
+
+Started GET "/assets/jquery_ujs.js?body=1" for 127.0.0.1 at 2013-04-22 11:16:13 +0200
+Served asset /jquery_ujs.js - 304 Not Modified (2ms)
+
+
+Started GET "/assets/controllers/hook.js?body=1" for 127.0.0.1 at 2013-04-22 11:16:13 +0200
+Served asset /controllers/hook.js - 304 Not Modified (2ms)
+
+
+Started GET "/assets/controllers/main.js?body=1" for 127.0.0.1 at 2013-04-22 11:16:13 +0200
+Served asset /controllers/main.js - 200 OK (1ms)
+
+
+Started GET "/assets/generators/module.generator.js?body=1" for 127.0.0.1 at 2013-04-22 11:16:13 +0200
+Served asset /generators/module.generator.js - 304 Not Modified (3ms)
+
+
+Started GET "/assets/models/cell.js?body=1" for 127.0.0.1 at 2013-04-22 11:16:13 +0200
+Served asset /models/cell.js - 304 Not Modified (1ms)
+
+
+Started GET "/assets/views/graph.js?body=1" for 127.0.0.1 at 2013-04-22 11:16:13 +0200
+Served asset /views/graph.js - 304 Not Modified (1ms)
+
+
+Started GET "/assets/models/module.js?body=1" for 127.0.0.1 at 2013-04-22 11:16:13 +0200
+Served asset /models/module.js - 304 Not Modified (1ms)
+
+
+Started GET "/assets/underscore.js?body=1" for 127.0.0.1 at 2013-04-22 11:16:13 +0200
+Served asset /underscore.js - 304 Not Modified (3ms)
+
+
+Started GET "/assets/bootstrap.js?body=1" for 127.0.0.1 at 2013-04-22 11:16:13 +0200
+Served asset /bootstrap.js - 304 Not Modified (1ms)
+
+
+Started GET "/assets/raphael.min.js?body=1" for 127.0.0.1 at 2013-04-22 11:16:13 +0200
+Served asset /raphael.min.js - 304 Not Modified (2ms)
+
+
+Started GET "/assets/chart.js?body=1" for 127.0.0.1 at 2013-04-22 11:16:13 +0200
+Served asset /chart.js - 304 Not Modified (1ms)
+
+
+Started GET "/assets/numeric-1.2.6.js?body=1" for 127.0.0.1 at 2013-04-22 11:16:13 +0200
+Served asset /numeric-1.2.6.js - 304 Not Modified (2ms)
+
+
+Started GET "/assets/application.js?body=1" for 127.0.0.1 at 2013-04-22 11:16:13 +0200
+Served asset /application.js - 304 Not Modified (11ms)
+
+
+Started GET "/" for 127.0.0.1 at 2013-04-22 11:17:14 +0200
+Processing by MainController#index as HTML
+  Rendered main/index.html.erb within layouts/application (0.0ms)
+Compiled controllers/main.js  (109ms)  (pid 3850)
+Compiled application.js  (27ms)  (pid 3850)
+Completed 200 OK in 174ms (Views: 173.6ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/assets/application.css?body=1" for 127.0.0.1 at 2013-04-22 11:17:14 +0200
+Served asset /application.css - 304 Not Modified (0ms)
+
+
+Started GET "/assets/graph.css?body=1" for 127.0.0.1 at 2013-04-22 11:17:14 +0200
+Served asset /graph.css - 304 Not Modified (1ms)
+
+
+Started GET "/assets/hook.css?body=1" for 127.0.0.1 at 2013-04-22 11:17:14 +0200
+Served asset /hook.css - 304 Not Modified (0ms)
+
+
+Started GET "/assets/main.css?body=1" for 127.0.0.1 at 2013-04-22 11:17:14 +0200
+Served asset /main.css - 304 Not Modified (0ms)
+
+
+Started GET "/assets/bootstrap.css?body=1" for 127.0.0.1 at 2013-04-22 11:17:14 +0200
+Served asset /bootstrap.css - 304 Not Modified (0ms)
+
+
+Started GET "/assets/jquery.js?body=1" for 127.0.0.1 at 2013-04-22 11:17:14 +0200
+Served asset /jquery.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/jquery_ujs.js?body=1" for 127.0.0.1 at 2013-04-22 11:17:14 +0200
+Served asset /jquery_ujs.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/controllers/hook.js?body=1" for 127.0.0.1 at 2013-04-22 11:17:14 +0200
+Served asset /controllers/hook.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/controllers/main.js?body=1" for 127.0.0.1 at 2013-04-22 11:17:14 +0200
+Served asset /controllers/main.js - 200 OK (1ms)
+
+
+Started GET "/assets/generators/module.generator.js?body=1" for 127.0.0.1 at 2013-04-22 11:17:14 +0200
+Served asset /generators/module.generator.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/models/cell.js?body=1" for 127.0.0.1 at 2013-04-22 11:17:14 +0200
+Served asset /models/cell.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/models/module.js?body=1" for 127.0.0.1 at 2013-04-22 11:17:14 +0200
+Served asset /models/module.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/views/graph.js?body=1" for 127.0.0.1 at 2013-04-22 11:17:15 +0200
+Served asset /views/graph.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/underscore.js?body=1" for 127.0.0.1 at 2013-04-22 11:17:15 +0200
+Served asset /underscore.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/bootstrap.js?body=1" for 127.0.0.1 at 2013-04-22 11:17:15 +0200
+Served asset /bootstrap.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/raphael.min.js?body=1" for 127.0.0.1 at 2013-04-22 11:17:15 +0200
+Served asset /raphael.min.js - 304 Not Modified (1ms)
+
+
+Started GET "/assets/chart.js?body=1" for 127.0.0.1 at 2013-04-22 11:17:15 +0200
+Served asset /chart.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/application.js?body=1" for 127.0.0.1 at 2013-04-22 11:17:15 +0200
+Served asset /application.js - 304 Not Modified (11ms)
+
+
+Started GET "/assets/numeric-1.2.6.js?body=1" for 127.0.0.1 at 2013-04-22 11:17:15 +0200
+Served asset /numeric-1.2.6.js - 304 Not Modified (0ms)
+
+
+Started GET "/" for 127.0.0.1 at 2013-04-22 11:20:35 +0200
+Processing by MainController#index as HTML
+  Rendered main/index.html.erb within layouts/application (0.0ms)
+Completed 500 Internal Server Error in 119ms
+
+ActionView::Template::Error (SyntaxError: reserved word "var"
+  (in /home/vincent/Github/programming-life/app/assets/javascripts/controllers/main.js.coffee)):
+    3: <head>
+    4:   <title>ProgrammingLife</title>
+    5:   <%= stylesheet_link_tag    "application", :media => "all" %>
+    6:   <%= javascript_include_tag "application" %>
+    7:   <%= csrf_meta_tags %>
+    8: </head>
+    9: <body>
+  app/views/layouts/application.html.erb:6:in `_app_views_layouts_application_html_erb___1478034394236250721_17213540'
+
+
+  Rendered /var/lib/gems/1.9.1/gems/actionpack-3.2.12/lib/action_dispatch/middleware/templates/rescues/_trace.erb (1.1ms)
+  Rendered /var/lib/gems/1.9.1/gems/actionpack-3.2.12/lib/action_dispatch/middleware/templates/rescues/_request_and_response.erb (0.8ms)
+  Rendered /var/lib/gems/1.9.1/gems/actionpack-3.2.12/lib/action_dispatch/middleware/templates/rescues/template_error.erb within rescues/layout (5.8ms)
+
+
+Started GET "/" for 127.0.0.1 at 2013-04-22 11:20:53 +0200
+Processing by MainController#index as HTML
+  Rendered main/index.html.erb within layouts/application (0.1ms)
+Compiled controllers/main.js  (119ms)  (pid 3850)
+Compiled application.js  (8ms)  (pid 3850)
+Completed 200 OK in 204ms (Views: 203.3ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/assets/application.css?body=1" for 127.0.0.1 at 2013-04-22 11:20:53 +0200
+Served asset /application.css - 304 Not Modified (0ms)
+
+
+Started GET "/assets/graph.css?body=1" for 127.0.0.1 at 2013-04-22 11:20:53 +0200
+Served asset /graph.css - 304 Not Modified (0ms)
+
+
+Started GET "/assets/jquery.js?body=1" for 127.0.0.1 at 2013-04-22 11:20:53 +0200
+Served asset /jquery.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/hook.css?body=1" for 127.0.0.1 at 2013-04-22 11:20:53 +0200
+Served asset /hook.css - 304 Not Modified (0ms)
+
+
+Started GET "/assets/main.css?body=1" for 127.0.0.1 at 2013-04-22 11:20:53 +0200
+Served asset /main.css - 304 Not Modified (0ms)
+
+
+Started GET "/assets/bootstrap.css?body=1" for 127.0.0.1 at 2013-04-22 11:20:53 +0200
+Served asset /bootstrap.css - 304 Not Modified (0ms)
+
+
+Started GET "/assets/jquery_ujs.js?body=1" for 127.0.0.1 at 2013-04-22 11:20:53 +0200
+Served asset /jquery_ujs.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/controllers/hook.js?body=1" for 127.0.0.1 at 2013-04-22 11:20:53 +0200
+Served asset /controllers/hook.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/controllers/main.js?body=1" for 127.0.0.1 at 2013-04-22 11:20:53 +0200
+Served asset /controllers/main.js - 200 OK (2ms)
+
+
+Started GET "/assets/generators/module.generator.js?body=1" for 127.0.0.1 at 2013-04-22 11:20:53 +0200
+Served asset /generators/module.generator.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/models/cell.js?body=1" for 127.0.0.1 at 2013-04-22 11:20:53 +0200
+Served asset /models/cell.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/models/module.js?body=1" for 127.0.0.1 at 2013-04-22 11:20:53 +0200
+Served asset /models/module.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/views/graph.js?body=1" for 127.0.0.1 at 2013-04-22 11:20:53 +0200
+Served asset /views/graph.js - 304 Not Modified (1ms)
+
+
+Started GET "/assets/bootstrap.js?body=1" for 127.0.0.1 at 2013-04-22 11:20:53 +0200
+Served asset /bootstrap.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/underscore.js?body=1" for 127.0.0.1 at 2013-04-22 11:20:53 +0200
+Served asset /underscore.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/chart.js?body=1" for 127.0.0.1 at 2013-04-22 11:20:53 +0200
+Served asset /chart.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/raphael.min.js?body=1" for 127.0.0.1 at 2013-04-22 11:20:53 +0200
+Served asset /raphael.min.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/numeric-1.2.6.js?body=1" for 127.0.0.1 at 2013-04-22 11:20:53 +0200
+Served asset /numeric-1.2.6.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/application.js?body=1" for 127.0.0.1 at 2013-04-22 11:20:53 +0200
+Served asset /application.js - 304 Not Modified (12ms)
+
+
+Started GET "/" for 127.0.0.1 at 2013-04-22 11:20:54 +0200
+Processing by MainController#index as HTML
+  Rendered main/index.html.erb within layouts/application (0.1ms)
+Completed 200 OK in 13ms (Views: 12.9ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/assets/application.css?body=1" for 127.0.0.1 at 2013-04-22 11:20:54 +0200
+Served asset /application.css - 304 Not Modified (0ms)
+
+
+Started GET "/assets/graph.css?body=1" for 127.0.0.1 at 2013-04-22 11:20:54 +0200
+Served asset /graph.css - 304 Not Modified (0ms)
+
+
+Started GET "/assets/main.css?body=1" for 127.0.0.1 at 2013-04-22 11:20:54 +0200
+Served asset /main.css - 304 Not Modified (0ms)
+
+
+Started GET "/assets/bootstrap.css?body=1" for 127.0.0.1 at 2013-04-22 11:20:54 +0200
+Served asset /bootstrap.css - 304 Not Modified (0ms)
+
+
+Started GET "/assets/hook.css?body=1" for 127.0.0.1 at 2013-04-22 11:20:54 +0200
+Served asset /hook.css - 304 Not Modified (0ms)
+
+
+Started GET "/assets/jquery.js?body=1" for 127.0.0.1 at 2013-04-22 11:20:54 +0200
+Served asset /jquery.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/jquery_ujs.js?body=1" for 127.0.0.1 at 2013-04-22 11:20:54 +0200
+Served asset /jquery_ujs.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/controllers/hook.js?body=1" for 127.0.0.1 at 2013-04-22 11:20:54 +0200
+Served asset /controllers/hook.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/controllers/main.js?body=1" for 127.0.0.1 at 2013-04-22 11:20:54 +0200
+Served asset /controllers/main.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/generators/module.generator.js?body=1" for 127.0.0.1 at 2013-04-22 11:20:54 +0200
+Served asset /generators/module.generator.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/models/cell.js?body=1" for 127.0.0.1 at 2013-04-22 11:20:54 +0200
+Served asset /models/cell.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/models/module.js?body=1" for 127.0.0.1 at 2013-04-22 11:20:54 +0200
+Served asset /models/module.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/views/graph.js?body=1" for 127.0.0.1 at 2013-04-22 11:20:54 +0200
+Served asset /views/graph.js - 304 Not Modified (1ms)
+
+
+Started GET "/assets/underscore.js?body=1" for 127.0.0.1 at 2013-04-22 11:20:54 +0200
+Served asset /underscore.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/bootstrap.js?body=1" for 127.0.0.1 at 2013-04-22 11:20:54 +0200
+Served asset /bootstrap.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/raphael.min.js?body=1" for 127.0.0.1 at 2013-04-22 11:20:54 +0200
+Served asset /raphael.min.js - 304 Not Modified (2ms)
+
+
+Started GET "/assets/chart.js?body=1" for 127.0.0.1 at 2013-04-22 11:20:54 +0200
+Served asset /chart.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/numeric-1.2.6.js?body=1" for 127.0.0.1 at 2013-04-22 11:20:54 +0200
+Served asset /numeric-1.2.6.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/application.js?body=1" for 127.0.0.1 at 2013-04-22 11:20:54 +0200
+Served asset /application.js - 304 Not Modified (1ms)
+
+
+Started GET "/" for 127.0.0.1 at 2013-04-22 11:21:15 +0200
+Processing by MainController#index as HTML
+  Rendered main/index.html.erb within layouts/application (0.0ms)
+Compiled controllers/main.js  (128ms)  (pid 3850)
+Compiled application.js  (8ms)  (pid 3850)
+Completed 200 OK in 193ms (Views: 192.8ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/assets/application.css?body=1" for 127.0.0.1 at 2013-04-22 11:21:15 +0200
+Served asset /application.css - 304 Not Modified (0ms)
+
+
+Started GET "/assets/graph.css?body=1" for 127.0.0.1 at 2013-04-22 11:21:15 +0200
+Served asset /graph.css - 304 Not Modified (0ms)
+
+
+Started GET "/assets/hook.css?body=1" for 127.0.0.1 at 2013-04-22 11:21:15 +0200
+Served asset /hook.css - 304 Not Modified (0ms)
+
+
+Started GET "/assets/main.css?body=1" for 127.0.0.1 at 2013-04-22 11:21:15 +0200
+Served asset /main.css - 304 Not Modified (1ms)
+
+
+Started GET "/assets/bootstrap.css?body=1" for 127.0.0.1 at 2013-04-22 11:21:15 +0200
+Served asset /bootstrap.css - 304 Not Modified (0ms)
+
+
+Started GET "/assets/jquery.js?body=1" for 127.0.0.1 at 2013-04-22 11:21:15 +0200
+Served asset /jquery.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/jquery_ujs.js?body=1" for 127.0.0.1 at 2013-04-22 11:21:15 +0200
+Served asset /jquery_ujs.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/controllers/hook.js?body=1" for 127.0.0.1 at 2013-04-22 11:21:15 +0200
+Served asset /controllers/hook.js - 304 Not Modified (1ms)
+
+
+Started GET "/assets/controllers/main.js?body=1" for 127.0.0.1 at 2013-04-22 11:21:15 +0200
+Served asset /controllers/main.js - 200 OK (1ms)
+
+
+Started GET "/assets/generators/module.generator.js?body=1" for 127.0.0.1 at 2013-04-22 11:21:15 +0200
+Served asset /generators/module.generator.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/models/cell.js?body=1" for 127.0.0.1 at 2013-04-22 11:21:15 +0200
+Served asset /models/cell.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/models/module.js?body=1" for 127.0.0.1 at 2013-04-22 11:21:15 +0200
+Served asset /models/module.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/views/graph.js?body=1" for 127.0.0.1 at 2013-04-22 11:21:15 +0200
+Served asset /views/graph.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/bootstrap.js?body=1" for 127.0.0.1 at 2013-04-22 11:21:15 +0200
+Served asset /bootstrap.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/underscore.js?body=1" for 127.0.0.1 at 2013-04-22 11:21:15 +0200
+Served asset /underscore.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/raphael.min.js?body=1" for 127.0.0.1 at 2013-04-22 11:21:15 +0200
+Served asset /raphael.min.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/chart.js?body=1" for 127.0.0.1 at 2013-04-22 11:21:15 +0200
+Served asset /chart.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/numeric-1.2.6.js?body=1" for 127.0.0.1 at 2013-04-22 11:21:15 +0200
+Served asset /numeric-1.2.6.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/application.js?body=1" for 127.0.0.1 at 2013-04-22 11:21:15 +0200
+Served asset /application.js - 304 Not Modified (39ms)
+
+
+Started GET "/" for 127.0.0.1 at 2013-04-22 11:21:18 +0200
+Processing by MainController#index as HTML
+  Rendered main/index.html.erb within layouts/application (0.0ms)
+Completed 200 OK in 6ms (Views: 6.4ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/assets/application.css?body=1" for 127.0.0.1 at 2013-04-22 11:21:18 +0200
+Served asset /application.css - 304 Not Modified (0ms)
+
+
+Started GET "/assets/hook.css?body=1" for 127.0.0.1 at 2013-04-22 11:21:18 +0200
+Served asset /hook.css - 304 Not Modified (0ms)
+
+
+Started GET "/assets/graph.css?body=1" for 127.0.0.1 at 2013-04-22 11:21:18 +0200
+Served asset /graph.css - 304 Not Modified (0ms)
+
+
+Started GET "/assets/bootstrap.css?body=1" for 127.0.0.1 at 2013-04-22 11:21:18 +0200
+Served asset /bootstrap.css - 304 Not Modified (0ms)
+
+
+Started GET "/assets/jquery.js?body=1" for 127.0.0.1 at 2013-04-22 11:21:18 +0200
+Served asset /jquery.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/main.css?body=1" for 127.0.0.1 at 2013-04-22 11:21:18 +0200
+Served asset /main.css - 304 Not Modified (0ms)
+
+
+Started GET "/assets/jquery_ujs.js?body=1" for 127.0.0.1 at 2013-04-22 11:21:18 +0200
+Served asset /jquery_ujs.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/controllers/hook.js?body=1" for 127.0.0.1 at 2013-04-22 11:21:18 +0200
+Served asset /controllers/hook.js - 304 Not Modified (1ms)
+
+
+Started GET "/assets/controllers/main.js?body=1" for 127.0.0.1 at 2013-04-22 11:21:18 +0200
+Served asset /controllers/main.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/generators/module.generator.js?body=1" for 127.0.0.1 at 2013-04-22 11:21:18 +0200
+Served asset /generators/module.generator.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/models/cell.js?body=1" for 127.0.0.1 at 2013-04-22 11:21:18 +0200
+Served asset /models/cell.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/models/module.js?body=1" for 127.0.0.1 at 2013-04-22 11:21:18 +0200
+Served asset /models/module.js - 304 Not Modified (1ms)
+
+
+Started GET "/assets/views/graph.js?body=1" for 127.0.0.1 at 2013-04-22 11:21:18 +0200
+Served asset /views/graph.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/underscore.js?body=1" for 127.0.0.1 at 2013-04-22 11:21:18 +0200
+Served asset /underscore.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/bootstrap.js?body=1" for 127.0.0.1 at 2013-04-22 11:21:18 +0200
+Served asset /bootstrap.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/raphael.min.js?body=1" for 127.0.0.1 at 2013-04-22 11:21:18 +0200
+Served asset /raphael.min.js - 304 Not Modified (2ms)
+
+
+Started GET "/assets/chart.js?body=1" for 127.0.0.1 at 2013-04-22 11:21:18 +0200
+Served asset /chart.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/numeric-1.2.6.js?body=1" for 127.0.0.1 at 2013-04-22 11:21:18 +0200
+Served asset /numeric-1.2.6.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/application.js?body=1" for 127.0.0.1 at 2013-04-22 11:21:18 +0200
+Served asset /application.js - 304 Not Modified (1ms)
+
+
+Started GET "/" for 127.0.0.1 at 2013-04-22 11:21:35 +0200
+Processing by MainController#index as HTML
+  Rendered main/index.html.erb within layouts/application (0.0ms)
+Compiled controllers/main.js  (117ms)  (pid 3850)
+Compiled application.js  (8ms)  (pid 3850)
+Completed 200 OK in 180ms (Views: 180.1ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/assets/application.css?body=1" for 127.0.0.1 at 2013-04-22 11:21:36 +0200
+Served asset /application.css - 304 Not Modified (0ms)
+
+
+Started GET "/assets/graph.css?body=1" for 127.0.0.1 at 2013-04-22 11:21:36 +0200
+Served asset /graph.css - 304 Not Modified (1ms)
+
+
+Started GET "/assets/hook.css?body=1" for 127.0.0.1 at 2013-04-22 11:21:36 +0200
+Served asset /hook.css - 304 Not Modified (0ms)
+
+
+Started GET "/assets/jquery.js?body=1" for 127.0.0.1 at 2013-04-22 11:21:36 +0200
+Served asset /jquery.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/bootstrap.css?body=1" for 127.0.0.1 at 2013-04-22 11:21:36 +0200
+Served asset /bootstrap.css - 304 Not Modified (0ms)
+
+
+Started GET "/assets/main.css?body=1" for 127.0.0.1 at 2013-04-22 11:21:36 +0200
+Served asset /main.css - 304 Not Modified (0ms)
+
+
+Started GET "/assets/jquery_ujs.js?body=1" for 127.0.0.1 at 2013-04-22 11:21:36 +0200
+Served asset /jquery_ujs.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/controllers/hook.js?body=1" for 127.0.0.1 at 2013-04-22 11:21:36 +0200
+Served asset /controllers/hook.js - 304 Not Modified (1ms)
+
+
+Started GET "/assets/controllers/main.js?body=1" for 127.0.0.1 at 2013-04-22 11:21:36 +0200
+Served asset /controllers/main.js - 200 OK (4ms)
+
+
+Started GET "/assets/generators/module.generator.js?body=1" for 127.0.0.1 at 2013-04-22 11:21:36 +0200
+Served asset /generators/module.generator.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/models/cell.js?body=1" for 127.0.0.1 at 2013-04-22 11:21:36 +0200
+Served asset /models/cell.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/models/module.js?body=1" for 127.0.0.1 at 2013-04-22 11:21:36 +0200
+Served asset /models/module.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/views/graph.js?body=1" for 127.0.0.1 at 2013-04-22 11:21:36 +0200
+Served asset /views/graph.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/underscore.js?body=1" for 127.0.0.1 at 2013-04-22 11:21:36 +0200
+Served asset /underscore.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/bootstrap.js?body=1" for 127.0.0.1 at 2013-04-22 11:21:36 +0200
+Served asset /bootstrap.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/raphael.min.js?body=1" for 127.0.0.1 at 2013-04-22 11:21:36 +0200
+Served asset /raphael.min.js - 304 Not Modified (1ms)
+
+
+Started GET "/assets/chart.js?body=1" for 127.0.0.1 at 2013-04-22 11:21:36 +0200
+Served asset /chart.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/numeric-1.2.6.js?body=1" for 127.0.0.1 at 2013-04-22 11:21:36 +0200
+Served asset /numeric-1.2.6.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/application.js?body=1" for 127.0.0.1 at 2013-04-22 11:21:36 +0200
+Served asset /application.js - 304 Not Modified (12ms)
+
+
+Started GET "/" for 127.0.0.1 at 2013-04-22 11:21:52 +0200
+Processing by MainController#index as HTML
+  Rendered main/index.html.erb within layouts/application (0.0ms)
+Compiled controllers/main.js  (111ms)  (pid 3850)
+Compiled application.js  (8ms)  (pid 3850)
+Completed 200 OK in 174ms (Views: 173.7ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/assets/application.css?body=1" for 127.0.0.1 at 2013-04-22 11:21:52 +0200
+Served asset /application.css - 304 Not Modified (0ms)
+
+
+Started GET "/assets/graph.css?body=1" for 127.0.0.1 at 2013-04-22 11:21:52 +0200
+Served asset /graph.css - 304 Not Modified (0ms)
+
+
+Started GET "/assets/hook.css?body=1" for 127.0.0.1 at 2013-04-22 11:21:52 +0200
+Served asset /hook.css - 304 Not Modified (0ms)
+
+
+Started GET "/assets/main.css?body=1" for 127.0.0.1 at 2013-04-22 11:21:52 +0200
+Served asset /main.css - 304 Not Modified (0ms)
+
+
+Started GET "/assets/bootstrap.css?body=1" for 127.0.0.1 at 2013-04-22 11:21:52 +0200
+Served asset /bootstrap.css - 304 Not Modified (0ms)
+
+
+Started GET "/assets/jquery.js?body=1" for 127.0.0.1 at 2013-04-22 11:21:52 +0200
+Served asset /jquery.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/jquery_ujs.js?body=1" for 127.0.0.1 at 2013-04-22 11:21:52 +0200
+Served asset /jquery_ujs.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/controllers/hook.js?body=1" for 127.0.0.1 at 2013-04-22 11:21:52 +0200
+Served asset /controllers/hook.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/controllers/main.js?body=1" for 127.0.0.1 at 2013-04-22 11:21:52 +0200
+Served asset /controllers/main.js - 200 OK (2ms)
+
+
+Started GET "/assets/generators/module.generator.js?body=1" for 127.0.0.1 at 2013-04-22 11:21:52 +0200
+Served asset /generators/module.generator.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/models/module.js?body=1" for 127.0.0.1 at 2013-04-22 11:21:52 +0200
+Served asset /models/module.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/models/cell.js?body=1" for 127.0.0.1 at 2013-04-22 11:21:52 +0200
+Served asset /models/cell.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/views/graph.js?body=1" for 127.0.0.1 at 2013-04-22 11:21:52 +0200
+Served asset /views/graph.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/underscore.js?body=1" for 127.0.0.1 at 2013-04-22 11:21:52 +0200
+Served asset /underscore.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/bootstrap.js?body=1" for 127.0.0.1 at 2013-04-22 11:21:52 +0200
+Served asset /bootstrap.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/raphael.min.js?body=1" for 127.0.0.1 at 2013-04-22 11:21:52 +0200
+Served asset /raphael.min.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/chart.js?body=1" for 127.0.0.1 at 2013-04-22 11:21:52 +0200
+Served asset /chart.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/numeric-1.2.6.js?body=1" for 127.0.0.1 at 2013-04-22 11:21:52 +0200
+Served asset /numeric-1.2.6.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/application.js?body=1" for 127.0.0.1 at 2013-04-22 11:21:52 +0200
+Served asset /application.js - 304 Not Modified (37ms)
+
+
+Started GET "/" for 127.0.0.1 at 2013-04-22 11:22:06 +0200
+Processing by MainController#index as HTML
+  Rendered main/index.html.erb within layouts/application (0.0ms)
+Compiled controllers/main.js  (109ms)  (pid 3850)
+Compiled application.js  (8ms)  (pid 3850)
+Completed 200 OK in 174ms (Views: 174.0ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/assets/application.css?body=1" for 127.0.0.1 at 2013-04-22 11:22:06 +0200
+Served asset /application.css - 304 Not Modified (1ms)
+
+
+Started GET "/assets/hook.css?body=1" for 127.0.0.1 at 2013-04-22 11:22:06 +0200
+Served asset /hook.css - 304 Not Modified (0ms)
+
+
+Started GET "/assets/main.css?body=1" for 127.0.0.1 at 2013-04-22 11:22:07 +0200
+Served asset /main.css - 304 Not Modified (2ms)
+
+
+Started GET "/assets/jquery.js?body=1" for 127.0.0.1 at 2013-04-22 11:22:07 +0200
+Served asset /jquery.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/bootstrap.css?body=1" for 127.0.0.1 at 2013-04-22 11:22:07 +0200
+Served asset /bootstrap.css - 304 Not Modified (0ms)
+
+
+Started GET "/assets/graph.css?body=1" for 127.0.0.1 at 2013-04-22 11:22:07 +0200
+Served asset /graph.css - 304 Not Modified (1ms)
+
+
+Started GET "/assets/controllers/hook.js?body=1" for 127.0.0.1 at 2013-04-22 11:22:07 +0200
+Served asset /controllers/hook.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/jquery_ujs.js?body=1" for 127.0.0.1 at 2013-04-22 11:22:07 +0200
+Served asset /jquery_ujs.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/controllers/main.js?body=1" for 127.0.0.1 at 2013-04-22 11:22:07 +0200
+Served asset /controllers/main.js - 200 OK (3ms)
+
+
+Started GET "/assets/generators/module.generator.js?body=1" for 127.0.0.1 at 2013-04-22 11:22:07 +0200
+Served asset /generators/module.generator.js - 304 Not Modified (1ms)
+
+
+Started GET "/assets/models/cell.js?body=1" for 127.0.0.1 at 2013-04-22 11:22:07 +0200
+Served asset /models/cell.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/views/graph.js?body=1" for 127.0.0.1 at 2013-04-22 11:22:07 +0200
+Served asset /views/graph.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/models/module.js?body=1" for 127.0.0.1 at 2013-04-22 11:22:07 +0200
+Served asset /models/module.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/bootstrap.js?body=1" for 127.0.0.1 at 2013-04-22 11:22:07 +0200
+Served asset /bootstrap.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/underscore.js?body=1" for 127.0.0.1 at 2013-04-22 11:22:07 +0200
+Served asset /underscore.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/raphael.min.js?body=1" for 127.0.0.1 at 2013-04-22 11:22:07 +0200
+Served asset /raphael.min.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/chart.js?body=1" for 127.0.0.1 at 2013-04-22 11:22:07 +0200
+Served asset /chart.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/numeric-1.2.6.js?body=1" for 127.0.0.1 at 2013-04-22 11:22:07 +0200
+Served asset /numeric-1.2.6.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/application.js?body=1" for 127.0.0.1 at 2013-04-22 11:22:07 +0200
+Served asset /application.js - 304 Not Modified (30ms)
+
+
+Started GET "/" for 127.0.0.1 at 2013-04-22 11:22:14 +0200
+Processing by MainController#index as HTML
+  Rendered main/index.html.erb within layouts/application (0.0ms)
+Compiled controllers/main.js  (116ms)  (pid 3850)
+Compiled application.js  (8ms)  (pid 3850)
+Completed 200 OK in 179ms (Views: 179.0ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/assets/application.css?body=1" for 127.0.0.1 at 2013-04-22 11:22:14 +0200
+Served asset /application.css - 304 Not Modified (2ms)
+
+
+Started GET "/assets/graph.css?body=1" for 127.0.0.1 at 2013-04-22 11:22:14 +0200
+Served asset /graph.css - 304 Not Modified (0ms)
+
+
+Started GET "/assets/bootstrap.css?body=1" for 127.0.0.1 at 2013-04-22 11:22:14 +0200
+Served asset /bootstrap.css - 304 Not Modified (0ms)
+
+
+Started GET "/assets/hook.css?body=1" for 127.0.0.1 at 2013-04-22 11:22:14 +0200
+Served asset /hook.css - 304 Not Modified (0ms)
+
+
+Started GET "/assets/main.css?body=1" for 127.0.0.1 at 2013-04-22 11:22:14 +0200
+Served asset /main.css - 304 Not Modified (1ms)
+
+
+Started GET "/assets/jquery.js?body=1" for 127.0.0.1 at 2013-04-22 11:22:14 +0200
+Served asset /jquery.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/jquery_ujs.js?body=1" for 127.0.0.1 at 2013-04-22 11:22:14 +0200
+Served asset /jquery_ujs.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/controllers/hook.js?body=1" for 127.0.0.1 at 2013-04-22 11:22:14 +0200
+Served asset /controllers/hook.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/controllers/main.js?body=1" for 127.0.0.1 at 2013-04-22 11:22:14 +0200
+Served asset /controllers/main.js - 200 OK (3ms)
+
+
+Started GET "/assets/generators/module.generator.js?body=1" for 127.0.0.1 at 2013-04-22 11:22:14 +0200
+Served asset /generators/module.generator.js - 304 Not Modified (1ms)
+
+
+Started GET "/assets/models/cell.js?body=1" for 127.0.0.1 at 2013-04-22 11:22:14 +0200
+Served asset /models/cell.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/models/module.js?body=1" for 127.0.0.1 at 2013-04-22 11:22:14 +0200
+Served asset /models/module.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/views/graph.js?body=1" for 127.0.0.1 at 2013-04-22 11:22:14 +0200
+Served asset /views/graph.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/bootstrap.js?body=1" for 127.0.0.1 at 2013-04-22 11:22:14 +0200
+Served asset /bootstrap.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/underscore.js?body=1" for 127.0.0.1 at 2013-04-22 11:22:14 +0200
+Served asset /underscore.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/raphael.min.js?body=1" for 127.0.0.1 at 2013-04-22 11:22:14 +0200
+Served asset /raphael.min.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/chart.js?body=1" for 127.0.0.1 at 2013-04-22 11:22:14 +0200
+Served asset /chart.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/numeric-1.2.6.js?body=1" for 127.0.0.1 at 2013-04-22 11:22:14 +0200
+Served asset /numeric-1.2.6.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/application.js?body=1" for 127.0.0.1 at 2013-04-22 11:22:14 +0200
+Served asset /application.js - 304 Not Modified (11ms)
+
+
+Started GET "/" for 127.0.0.1 at 2013-04-22 11:22:20 +0200
+Processing by MainController#index as HTML
+  Rendered main/index.html.erb within layouts/application (0.0ms)
+Compiled controllers/main.js  (111ms)  (pid 3850)
+Compiled application.js  (8ms)  (pid 3850)
+Completed 200 OK in 189ms (Views: 189.0ms | ActiveRecord: 0.0ms)
+
+
+Started GET "/assets/application.css?body=1" for 127.0.0.1 at 2013-04-22 11:22:21 +0200
+Served asset /application.css - 304 Not Modified (1ms)
+
+
+Started GET "/assets/graph.css?body=1" for 127.0.0.1 at 2013-04-22 11:22:21 +0200
+Served asset /graph.css - 304 Not Modified (2ms)
+
+
+Started GET "/assets/hook.css?body=1" for 127.0.0.1 at 2013-04-22 11:22:21 +0200
+Served asset /hook.css - 304 Not Modified (0ms)
+
+
+Started GET "/assets/bootstrap.css?body=1" for 127.0.0.1 at 2013-04-22 11:22:21 +0200
+Served asset /bootstrap.css - 304 Not Modified (0ms)
+
+
+Started GET "/assets/main.css?body=1" for 127.0.0.1 at 2013-04-22 11:22:21 +0200
+Served asset /main.css - 304 Not Modified (0ms)
+
+
+Started GET "/assets/jquery.js?body=1" for 127.0.0.1 at 2013-04-22 11:22:21 +0200
+Served asset /jquery.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/controllers/hook.js?body=1" for 127.0.0.1 at 2013-04-22 11:22:21 +0200
+Served asset /controllers/hook.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/jquery_ujs.js?body=1" for 127.0.0.1 at 2013-04-22 11:22:21 +0200
+Served asset /jquery_ujs.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/controllers/main.js?body=1" for 127.0.0.1 at 2013-04-22 11:22:21 +0200
+Served asset /controllers/main.js - 200 OK (1ms)
+
+
+Started GET "/assets/generators/module.generator.js?body=1" for 127.0.0.1 at 2013-04-22 11:22:21 +0200
+Served asset /generators/module.generator.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/models/module.js?body=1" for 127.0.0.1 at 2013-04-22 11:22:21 +0200
+Served asset /models/module.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/models/cell.js?body=1" for 127.0.0.1 at 2013-04-22 11:22:21 +0200
+Served asset /models/cell.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/views/graph.js?body=1" for 127.0.0.1 at 2013-04-22 11:22:21 +0200
+Served asset /views/graph.js - 304 Not Modified (2ms)
+
+
+Started GET "/assets/underscore.js?body=1" for 127.0.0.1 at 2013-04-22 11:22:21 +0200
+Served asset /underscore.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/bootstrap.js?body=1" for 127.0.0.1 at 2013-04-22 11:22:21 +0200
+Served asset /bootstrap.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/raphael.min.js?body=1" for 127.0.0.1 at 2013-04-22 11:22:21 +0200
+Served asset /raphael.min.js - 304 Not Modified (1ms)
+
+
+Started GET "/assets/chart.js?body=1" for 127.0.0.1 at 2013-04-22 11:22:21 +0200
+Served asset /chart.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/numeric-1.2.6.js?body=1" for 127.0.0.1 at 2013-04-22 11:22:21 +0200
+Served asset /numeric-1.2.6.js - 304 Not Modified (0ms)
+
+
+Started GET "/assets/application.js?body=1" for 127.0.0.1 at 2013-04-22 11:22:21 +0200
+Served asset /application.js - 304 Not Modified (11ms)
