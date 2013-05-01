@@ -5,6 +5,7 @@ describe("Module", function() {
 		params = { k: 3, b: 5 };
 		step = function( t, substrates ) { return { 'a' : this.k + this.b } };
 		module = new Model.Module( params, step );
+		date = Date.now();
 	});
 
 	it("should be able to set its properties to its params", function() {
@@ -19,6 +20,11 @@ describe("Module", function() {
 	it("should be able to run the step property in context", function() {
 		expect( module.step( 0, {} ).a ).toEqual( module.k + module.b );
 	});
+
+	it("should be able to get the date of creation", function() {
+		expect( module.creation ).toEqual( date );
+	});
+
 	
 	describe( "when a property is changed", function() { 
 		beforeEach( function() {
