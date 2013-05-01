@@ -29,12 +29,11 @@ class View.Module
 		return hash
 	
 	hashColor : ( hashee = @name ) ->
-		return @numToColor @hashCode hashee
-
+		return '#' + md5( hashee ).slice(0, 6) #@numToColor @hashCode hashee
 			
 	numToColor : ( num, alpha = off, minalpha = 127 ) ->
-		num += 0x0FCD90 # temp color correction
 		num >>>= 0
+		# TODO use higher order bytes too when no alpha
 		b = ( num & 0xFF )
 		g = ( num & 0xFF00 ) >>> 8
 		r = ( num & 0xFF0000 ) >>> 16
@@ -88,11 +87,12 @@ class View.Module
 
 				# This is the circle in which we show the substrate
 				substrate = @module.orig ? "..."
+				substrate_text = _.escape _( substrate ).first()
 				substrateCircle = @_paper.circle(x, y, 20 * scale)
 				substrateCircle.node.setAttribute('class', 'transporter-substrate-circle')
 				substrateCircle.attr
-					'fill': @hashColor substrate
-				substrateText = @_paper.text( x, y, _.escape _( substrate ).first() )
+					'fill': @hashColor substrate_text
+				substrateText = @_paper.text( x, y, substrate_text )
 				substrateText.node.setAttribute('class', 'transporter-substrate-text')
 				substrateText.attr
 					'font-size': 18 * scale
@@ -117,11 +117,12 @@ class View.Module
 			
 			when "Substrate"			
 				substrate = @module.name ? "..."
+				substrate_text = _.escape _( substrate ).first()
 				substrateCircle = @_paper.circle(x, y, 20 * scale)
 				substrateCircle.node.setAttribute('class', 'transporter-substrate-circle')
 				substrateCircle.attr
-					'fill': @hashColor substrate
-				substrateText = @_paper.text( x, y, _.escape _( substrate ).first() )
+					'fill': @hashColor substrate_text
+				substrateText = @_paper.text( x, y, substrate_text )
 				substrateText.node.setAttribute('class', 'transporter-substrate-text')
 				substrateText.attr
 					'font-size': 18 * scale
