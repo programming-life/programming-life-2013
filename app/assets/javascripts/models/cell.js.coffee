@@ -50,13 +50,14 @@ class Model.Cell
 	# @param substrate [String] substrate to add
 	# @param amount [Integer] amount of substrate to add
 	# @param inside_cell [Boolean] if true is placed inside the cell
+	# @param is_product [Boolean] if true is placed right of the cell
 	# @return [self] chainable instance
 	#
-	add_substrate: ( substrate, amount, inside_cell = on ) ->
+	add_substrate: ( substrate, amount, inside_cell = on, is_product = off ) ->
 		if ( @_substrates[ substrate ]? )
 			@_substrates[ substrate ].amount = amount
 		else
-			@_substrates[ substrate ] = new Model.Substrate( {}, amount, substrate, inside_cell )
+			@_substrates[ substrate ] = new Model.Substrate( {}, amount, substrate, inside_cell, is_product )
 		return this
 		
 	# Remove module from cell

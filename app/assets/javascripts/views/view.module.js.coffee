@@ -19,18 +19,36 @@ class View.Module
 
 		$(document).on('moduleInvalidated', @onModuleInvalidated)
 		
+	# Generates a hashcode based on the module name
+	#
+	# @param hashee [String] the name to use as hash
+	# @returns [Integer] the hashcode
+	#
 	hashCode : ( hashee = @name ) ->
 		hash = 0
 		return hash if ( hashee.length is 0 )
 		for i in [ 0...hashee.length ]
 			char = hashee.charCodeAt i
 			hash = ( (hash << 5) - hash ) + char;
-			hash = hash & hash
+			hash = hash & hash # cast to 32 bit int
 		return hash
 	
+	# Generates a colour based on the module name
+	#
+	# @param hashee [String] the name to use as hash
+	# @returns [String] the CSS color
+	#
 	hashColor : ( hashee = @name ) ->
 		return '#' + md5( hashee ).slice(0, 6) #@numToColor @hashCode hashee
-			
+		
+
+	# Generates a colour based on a numer
+	#
+	# @param num [Integer] the seed for the colour
+	# @param alpha [Boolean] if on, uses rgba, else rgb defaults to off
+	# @param minalpha [Integer] the minimum alpha if on, defaults to 127
+	# @returns [String] the CSS color
+	#
 	numToColor : ( num, alpha = off, minalpha = 127 ) ->
 		num >>>= 0
 		# TODO use higher order bytes too when no alpha
@@ -104,11 +122,11 @@ class View.Module
 					text.attr
 						'font-size': 20 * scale
 
-					arrowRect = arrow.getBBox()
+					objRect = arrow.getBBox()
 					textRect = text.getBBox()
 
 					# Add title line
-					line = @_paper.path("M #{Math.min(arrowRect.x, textRect.x) - padding},#{arrowRect.y - padding} L #{Math.max(arrowRect.x + arrowRect.width, textRect.x + textRect.width) + padding},#{arrowRect.y - padding} z")
+					line = @_paper.path("M #{Math.min(objRect.x, textRect.x) - padding},#{objRect.y - padding} L #{Math.max(objRect.x + objRect.width, textRect.x + textRect.width) + padding},#{objRect.y - padding} z")
 					line.node.setAttribute('class', 'module-seperator')
 
 					text = @_paper.text(x, y - 60 * scale, _.escape @type)
@@ -126,6 +144,24 @@ class View.Module
 				substrateText.node.setAttribute('class', 'transporter-substrate-text')
 				substrateText.attr
 					'font-size': 18 * scale
+					
+				if @_selected
+				
+					# Add transporter text
+					text = @_paper.text(x, y - 60 * scale, _.escape @type)
+					text.attr
+						'font-size': 20 * scale
+
+					textRect = text.getBBox()
+					objRect = substrateCircle.getBBox()
+
+					# Add title line
+					line = @_paper.path("M #{Math.min(objRect.x, textRect.x) - padding},#{objRect.y - padding} L #{Math.max(objRect.x + objRect.width, textRect.x + textRect.width) + padding},#{objRect.y - padding} z")
+					line.node.setAttribute('class', 'module-seperator')
+
+					text = @_paper.text(x, y - 60 * scale, _.escape @type)
+					text.attr
+						'font-size': 20 * scale
 			
 			else
 				text = @_paper.text(x, y, _.escape @type)
