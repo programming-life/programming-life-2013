@@ -24,10 +24,69 @@ class View.Main
 		@paper.setSize(@width, @height)
 
 		@draw()
+
+	actions: ( number ) ->
+		() => (
+			switch number
+				when 0
+					@cell = new Model.Cell()
+				when 1
+					@cell.add( new Model.DNA() )
+						.add( new Model.Lipid({}, .1) )
+				when 2
+					@cell.add_substrate( "s_ext", 1, false, false )
+				when 3
+					@cell.add( new Model.Transporter.int( {}, .1 ) )
+						.add_substrate( "s_int", 0, true, false )
+				when 4
+					@cell.add( new Model.Protein({}) )
+				when 5
+					@cell.add( new Model.Transporter.ext() )
+						.add_substrate( "p_ext", 0, false, true )
+				when 6
+					@cell.add( new Model.Metabolism({}) )
+						.add_substrate( "p_int", 0, true, true )
+				when 7
+					container = $(".container")
+					container.empty()
+					@cell.visualize( 20, container, { dt: .5 } )
+			@drawpane()
+			)
+	
+	# Cowboy hacking a pane
+	#
+	drawpane: ( ) ->
+		location = {
+			x: @width * 0.75
+			y: @height * 0.25
+		}
+		@pane = @paper.rect(location.x, location.y, 250, 400, 10)
+		@pane.node.setAttribute('class', 'box')
+		texts = ["Create initial cell","Add Infrastructure (DNA/Lipid)", "Add substrate outside cell", "Add transporter in", "Add Protein", "Add transporter out", "Add Metabolism", "Run" ]
+
+		for i in [1 .. texts.length]
+			rect = @paper.rect( location.x + 10 , location.y - 30 + 40 * i, 230, 30, 5 )
+			rect.attr({
+				'class': 'box'
+				'fill': '#00eeeb'
+			})
+
+			text = @paper.text( location.x + 120, location.y - 15 + 40 * i, texts[i-1] )
+			text.attr({'font-size': 15})
+
+			if (i > 1 and (@cell is undefined))
+				rect.attr({
+					'fill' : 'grey'
+				})
+			else
+				rect.click(@actions(i - 1))
+				text.click(@actions(i - 1))
+
 		
 	# Draws the cell
 	#
 	draw: ( ) ->
+		@drawpane()
 		# First, determine the center and radius of our cell
 		centerX = @width / 2
 		centerY = @height / 2
