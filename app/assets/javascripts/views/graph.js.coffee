@@ -2,6 +2,7 @@
 #
 class Graph
 
+	MAX_DATASETS : 2
 	_chartOptions:
 		pointDot: false
 		bezierCurve: false
@@ -53,6 +54,10 @@ class Graph
 				stroke : options.point?.stroke ? "#fff"
 
 		@_nPoints = data.length if @_nPoints < data.length		
+		
+		if ( @_datasets.length > @MAX_DATASETS )
+			@_datasets = _( @_datasets ).last( @MAX_DATASETS )
+		
 		return this
 	
 	# Clear all data from the Graph
