@@ -5,6 +5,8 @@ class View.Main
 	constructor: ( ) ->
 		@_views = []		
 		@_drawn = []
+		@rect = []
+		@text = []
 
 		@paper = Raphael('paper', 0, 0)
 		@resize()
@@ -82,7 +84,14 @@ class View.Main
 			x: @width * 0.75
 			y: @height * 0.25
 		}
-		@pane = @paper.rect(location.x, location.y, 250, 400, 10)
+		unless @pane
+			@pane = @paper.rect(location.x, location.y, 250, 400, 10)
+		else
+			@pane.attr({
+				cx: location.x
+				xy: location.y
+			})
+				
 		@pane.node.setAttribute('class', 'box')
 		texts = [
 			"Create initial cell",
@@ -98,14 +107,27 @@ class View.Main
 		]
 
 		for i in [1 .. texts.length]
-			rect = @paper.rect( location.x + 10 , location.y - 30 + 40 * i, 230, 30, 5 )
+			unless @rect[i]
+				rect = @paper.rect( location.x + 10 , location.y - 30 + 40 * i, 230, 30, 5 )
+				@rect[i] = rect
+			else
+				rect = @rect[i]
+				rect.attr({
+					cx: location.x
+					cy: location.y
+				})
+
 			rect.attr({
 				'class': 'box'
 				'fill': '#00eeeb'
 			})
 
-			text = @paper.text( location.x + 120, location.y - 15 + 40 * i, texts[i-1] )
-			text.attr({'font-size': 15})
+			text = @text[i]
+			unless text
+				text = @paper.text( location.x + 120, location.y - 15 + 40 * i, texts[i-1] )
+				@text[i] = text
+			else
+				text.attr({'font-size': 15})
 
 			if (i > 1 and (@cell is undefined))
 				rect.attr({
