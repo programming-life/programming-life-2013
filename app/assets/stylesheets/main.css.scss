@@ -1,3 +1,89 @@
 // Place all the styles related to the main controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+body {
+	
+}
+
+.bottom {
+	position: absolute;
+	bottom: 0px;
+}
+
+.left {
+	position: absolute;
+	left: 0px;
+}
+
+.right {
+	position: absolute;
+	right: 0px;
+}
+
+.graph {
+	padding: 0px;
+}
+
+.graph-title {
+	display: block;
+	width:50px;
+	margin: 0 auto;
+	margin-top:-40px;
+}
+
+.cell {
+	stroke: #cacaca;
+	stroke-width: 40px;
+}
+
+.module-box {
+	stroke:#ababab;
+	stroke-width:1px;
+	fill: #fff;
+
+	.inactive {
+		stroke-dasharray: 5,5;
+	}
+}
+
+.module-close {
+	fill: #fff;
+	stroke:#ababab;
+	stroke-width:1px;
+}
+
+.module-seperator {
+	stroke:#ababab;
+	stroke-width:1px;
+	fill:red;
+}
+
+.module-hitbox {
+	fill: none;
+	stroke: rgba(0, 0, 0, 0);
+	stroke-width: 0px;
+}
+
+text.module-label {
+
+	tspan {
+		font-family: sans-serif !important;
+		#font-size: 16px !important;
+		text-align: right;
+		fill: #000;
+
+		dominant-baseline:mathematical;
+	}
+}
+
+.transporter-arrow {
+	fill: #000;
+	stroke: #333;
+	stroke-width:1px;
+}
+
+.transporter-substrate-circle {
+	stroke:#333;
+	stroke-width:2px;
+}

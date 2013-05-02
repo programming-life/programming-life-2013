@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset='UTF-8'>
+  <title>CoffeeScript API Documentation</title>
+  <link rel='stylesheet' href='../../assets/codo.css' type='text/css'>
+  <script src='../../assets/codo.js'></script>
+  <script src='../../assets/search_data.js'></script>
+</head>
+  <body>
+    <div id='base' data-path='../../'></div>
+<div id='header'>
+  <div id='menu'>
+    <a href='../../README.md.html' title='Programming Life: Gigabase'>Programming Life: Gigabase</a>
+    &raquo;
+    <a href='../../class_index.html' title='Index'>Index</a>
+    &raquo;
+    <span class='title'>Model</span>
+    &raquo;
+    <span class='title'>Module</span>
+    <nav>
+      <ul>
+        <li class='noframes'>
+          (<a class='noframes' href='#'>no frames</a>)
+        </li>
+      </ul>
+    </nav>
+    <div id='search'>
+      <a id='class_list_link' href='../../class_list.html'>Classes</a>
+      <a id='file_list_link' href='../../file_list.html'>Files</a>
+      <a id='method_list_link' href='../../method_list.html'>Methods</a>
+      <a id='extra_list_link' href='../../extra_list.html'>Extras</a>
+    </div>
+  </div>
+  <iframe id='search_frame'></iframe>
+  <div id='fuzzySearch'>
+    <input type='text'>
+    <ol></ol>
+  </div>
+  <div id='help'>
+    <p>
+      Quickly fuzzy find classes, mixins, methods, file:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-T</span>
+        Open fuzzy finder dialog
+      </li>
+    </ul>
+    <p>
+      In frame mode you can toggle the list naviation frame on the left side:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-L</span>
+        Toggle list view
+      </li>
+    </ul>
+    <p>
+      You can focus a list in frame mode or toggle a tab in frameless mode:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-C</span>
+        Class list
+      </li>
+      <li>
+        <span>Ctrl-I</span>
+        Mixin list
+      </li>
+      <li>
+        <span>Ctrl-F</span>
+        File list
+      </li>
+      <li>
+        <span>Ctrl-M</span>
+        Method list
+      </li>
+      <li>
+        <span>Ctrl-E</span>
+        Extras list
+      </li>
+    </ul>
+    <p>
+      You can focus and blur the search input:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-S</span>
+        Focus search input
+      </li>
+      <li>
+        <span>Esc</span>
+        Blur search input
+      </li>
+    </ul>
+    <p>
+      In frameless mode you can close the list tab:
+    </p>
+    <ul>
+      <li>
+        <span>Esc</span>
+        Close list tab
+      </li>
+    </ul>
+  </div>
+</div>
+    <div id='content'>
+      <h1>
+        Class:
+        Model.Module
+      </h1>
+      <table class='box'>
+        <tr>
+          <td>Defined in:</td>
+          <td>app&#47;assets&#47;javascripts&#47;models&#47;module._.js.coffee</td>
+        </tr>
+      </table>
+      <h2>Overview</h2>
+      <div class='docstring'>
+  <p>Baseclass of all modules. Defines basic behaviour like undo and redo 
+mechanisms and solving of differential equations. </p>
+</div>
+<div class='tags'>
+</div>
+      <h2>Direct Known Subclasses</h2>
+      <p class='children'>
+                <a href='../../classes/Model/CellGrowth.html'>Model.CellGrowth</a>,
+                <a href='../../classes/Model/DNA.html'>Model.DNA</a>,
+                <a href='../../classes/Model/Lipid.html'>Model.Lipid</a>,
+                <a href='../../classes/Model/Metabolism.html'>Model.Metabolism</a>,
+                <a href='../../classes/Model/Protein.html'>Model.Protein</a>,
+                <a href='../../classes/Model/Substrate.html'>Model.Substrate</a>,
+        <a href='../../classes/Model/Transporter.html'>Model.Transporter</a>
+      </p>
+      <h2>Instance Method Summary</h2>
+      <ul class='summary'>
+  <li>
+    <span class='signature'>
+      <a href='#constructor-instance'>
+        - (void) <strong>constructor</strong>(params, step)
+      </a>
+    </span>
+    <span class='constructor note title'>Constructor</span>
+    <span class='desc'>
+      Constructor for module
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#getSubstrate-instance'>
+        - (Integer) <strong>getSubstrate</strong>(substrate)
+      </a>
+    </span>
+    <span class='desc'>
+      Gets the substrate start value
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#setSubstrate-instance'>
+        - (void) <strong>setSubstrate</strong>(substrate, value)
+      </a>
+    </span>
+    <span class='desc'>
+      Adds the substrate to the start values @returns [self] for chaining
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#step-instance'>
+        - (any) <strong>step</strong>(t, substrates, mu)
+      </a>
+    </span>
+    <span class='desc'>
+      Runs the step function in the correct context
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_test-instance'>
+        - (Boolean) <strong>_test</strong>(substrates, tests...)
+      </a>
+    </span>
+    <span class='desc'>
+      Tests if substrates are available
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_do-instance'>
+        - (void) <strong>_do</strong>(key, value)
+      </a>
+    </span>
+    <span class='desc'>
+      Applies a change to the parameters of the module @returns [self] for chaining
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_addMove-instance'>
+        - (void) <strong>_addMove</strong>(key, value, param)
+      </a>
+    </span>
+    <span class='desc'>
+      Adds a move to the undotree @returns [self] for chaining
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#undo-instance'>
+        - (void) <strong>undo</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Undoes the most recent move @returns [self] for chaining
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#redo-instance'>
+        - (void) <strong>redo</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Redoes the most recently undone move @returns [self] for chaining
+    </span>
+  </li>
+</ul>
+      <h2>Constructor Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='constructor-instance'>
+      - (void) <strong>constructor</strong>(params, step)
+    </p>
+    <div class='docstring'>
+  <p>Constructor for module</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>params</span>
+      <span class='type'>
+        (<tt>Object</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>parameters for this module</span>
+    </li>
+    <li>
+      <span class='name'>step</span>
+      <span class='type'>
+        (<tt>Function</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the step function</span>
+    </li>
+  </ul>
+</div>
+  </div>
+</div>
+      <h2>Instance Method Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='getSubstrate-instance'>
+      - (Integer) <strong>getSubstrate</strong>(substrate)
+    </p>
+    <div class='docstring'>
+  <p>Gets the substrate start value</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>substrate</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the substrate name</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Integer</tt>)
+      &mdash;
+      <span class='desc'>the value</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='setSubstrate-instance'>
+      - (void) <strong>setSubstrate</strong>(substrate, value)
+    </p>
+    <div class='docstring'>
+  <p>Adds the substrate to the start values</p><p>@returns [self] for chaining</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>substrate</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the substrate name</span>
+    </li>
+    <li>
+      <span class='name'>value</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the value</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='step-instance'>
+      - (any) <strong>step</strong>(t, substrates, mu)
+    </p>
+    <div class='docstring'>
+  <p>Runs the step function in the correct context</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>t</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the current time</span>
+    </li>
+    <li>
+      <span class='name'>substrates</span>
+      <span class='type'>
+        (<tt>Array</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the substrate values</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>any</tt>)
+      &mdash;
+      <span class='desc'>returns the value step function is returning</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_test-instance'>
+      - (Boolean) <strong>_test</strong>(substrates, tests...)
+    </p>
+    <div class='docstring'>
+  <p>Tests if substrates are available</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>substrates</span>
+      <span class='type'>
+        (<tt>Object</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the available subs</span>
+    </li>
+    <li>
+      <span class='name'>tests...</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>comma delimited list of strings to test</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Boolean</tt>)
+      &mdash;
+      <span class='desc'>true if all are available</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_do-instance'>
+      - (void) <strong>_do</strong>(key, value)
+    </p>
+    <div class='docstring'>
+  <p>Applies a change to the parameters of the module</p><p>@returns [self] for chaining</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>key</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The changed property</span>
+    </li>
+    <li>
+      <span class='name'>value</span>
+      <span class='type'>
+        (<tt>val</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The value of the changed property</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_addMove-instance'>
+      - (void) <strong>_addMove</strong>(key, value, param)
+    </p>
+    <div class='docstring'>
+  <p>Adds a move to the undotree</p><p>@returns [self] for chaining</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>key,</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the changed property</span>
+    </li>
+    <li>
+      <span class='name'>value,</span>
+      <span class='type'>
+        (<tt>val</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the value of the changed property </span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='undo-instance'>
+      - (void) <strong>undo</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Undoes the most recent move</p><p>@returns [self] for chaining</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='redo-instance'>
+      - (void) <strong>redo</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Redoes the most recently undone move</p><p>@returns [self] for chaining</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+</div>
+    </div>
+    <div id='footer'>
+  Generated on
+  Sun Apr 28 2013 18:42:08 GMT+0200 (W. Europe Daylight Time)
+  by
+  <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
+  v1.5.6
+  (Node.js v0.10.4).
+  &#10034;
+  Press Ctrl-h to see the keyboard shortcuts
+  &#10034;
+  <a href='http://twitter.com/#!/netzpirat'>@netzpirat</a>
+  &#10034;
+  <a href='https://mksoft.ch'>mksoft.ch</a>
+</div>
+  </body>
+</html>

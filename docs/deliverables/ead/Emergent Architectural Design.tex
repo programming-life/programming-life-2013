@@ -1,0 +1,90 @@
+\documentclass{report}
+
+\usepackage{enumerate,fullpage,graphicx,hyperref}
+
+\title{Emergent Architertural Design}
+\date{Last edited: \today}
+\author{Project members: \\
+	\begin{tabular}{c c c}
+	\hline 
+		Derk-Jan Karrenbeld & 4021967 & \includegraphics[scale=0.2]{../img/DJ.png}\\ 
+		Joost Verdoorn & 1545396 & \includegraphics[scale=0.2]{../img/Yoloost.png}\\ 
+		Steffan Sluis & 4088816 & \includegraphics[scale=0.2]{../img/SS.jpeg}\\ 
+		Tung Phan & 4004868 & \includegraphics[scale=0.2]{../img/TP.jpeg}\\ 
+		Vincent Robbemond & 4174097 & \includegraphics[scale=0.2]{../img/VR.jpeg}\\ 
+		\hline 
+	\end{tabular} 
+	}
+
+\begin{document}
+	\maketitle
+
+	\setcounter{section}{0}
+	\setcounter{secnumdepth}{3}
+	\setcounter{tocdepth}{5}
+	\renewcommand*\thesection{\arabic{section}}
+	
+	\pdfbookmark{\contentsname}{toc}
+	\tableofcontents
+
+	\clearpage
+
+	\section{Introduction}
+		This document contains the architectural design for the application created during the Context Project `Programming Life: Synthetic Biology'. The application is targeted at synthetic biologists and its main purpose is to easily model the complex workings of a cell. \\
+		The design of this application is explained first in terms of its design goals. Then a subsystem decomposition follows, which serves to uncover the inner workings of the application, along with a description of the mapping of subsystems to processes and computers, a hardware/software mapping. After this, the management of data and shared resources is discussed. In conclusion a short summary of the system architecture is given.
+		\subsection{Design goals}
+			Because the application has a very specific use, modelling cells and the processes within, the main design goal is to make this as easy and intuitive as possible. Secondary to this goal is the possibility to access the application from every common platform, such as not only desktop and laptop, but also mobile devices. Of course, working and optimally performing software is the first goal to be strived towards.
+			Because the field of technology this application targets is fairly new, another design goal is to meet this field by using new technologies. The team members actively agreed that they want to innovate and do selfstudy to broaden their knowledge. 
+			Lastly, the software that is being developed should by maintainable. 
+	\clearpage
+	\section{Software architecture views}
+		This section contains all the information about the software architecture of the application. The section is divided into several subsections to group together interesting information and improve readability.
+		\subsection{Subsystem Decomposition}
+			This section describes the key subsystems in the application. It is divided into two sections, because the application is divided this way as well. The first subsection is about the server-side subsystems and the second one is about the client-side subsystems.
+			\subsubsection{Server-side}
+				The server subsystems consist of two key parts: the server back end and the database. The server keeps an up-to-date copy of the database and sychronises with the client side when possible. It can also be used to do calculations that are too complicated for the client-side of the application. It is dependent upon the database, to synchronise the appropriate data to the appropriate client back end corresponding with a user.
+				The database is used for storage of user data, modules for cell design, as well as cell models created using the application. It provides a centralised storage so the client-side application can function on any platform without a persistent internet connection. It is not dependent upon anything, although every function using persistent data is dependent on it. 
+				A certain number of technologies are involved in the serverside.
+				\paragraph{Rails}
+					The server runs on Ruby on Rails. This is a fairly new but very stable platform that is not only free but also open source. This means active development by a lot of people. Problems are easily fixed and this should ease the use of the application that is being designed. The language itself is written from a standpoint where you should just be able to write code and not worry about breaking the interpreter. This makes it easy to write complex code.
+				\paragraph{MVC}
+					The pages served are HTML5 for markup with CSS3 for styling and Javascript for interaction. Pages are built by a comprehensive and solid Model-Viewer-Controller system. This keeps data separated from the representation, further increasing maintainability. 
+				\paragraph{Models and Database}
+					Ruby models are mapped to any SQL enabled language such as SQLite, MySQL and PostgreSQL. By not restricting the server database technology, switching systems, servers or extending  their capacity should be fairly simple and easy.
+				\paragraph{Views and ERB}
+					The views are in ERB which is an HTML template system. It is provided with the default Ruby library, so it does not require any extra software. Ruby controllers can expose data to these views. New views are easily added this way, so new ways of data representation are quickly devised.
+				\paragraph{Coffeescript and Javascript}
+					Interaction assets are written in Coffeescript, which is a language specially designed to make Javascript more maintainable, readable and cleaner altogether. Coffeedoc is used to document this code. In production a script called uglifier minifies and bundles all the scripts.
+				\paragraph{Jasmine, Teabag and Istanbul}
+					 Jasmine is a behaviour-driven development framework for Javascript. Istanbul is a Javascript coverage tool and Teabag is a Ruby on Rails test runner that functions as a wrapper for both Jasmine and Istanbul. By utilising these tools, it's possible to develop in a test-driven style and thus ensure that the code is properly tested.
+				\paragraph{SASS and CSS}
+					Styling assets are written in a language called Syntactically Awesome Stylesheets. Similar to CoffeeScript, SASS makes it easier and cleaner to create extensive CSS. 
+			\subsubsection{Client-side}
+				The client-side subsystems contain most of the applications functionality. These subsystems are responsible for displaying the graphical environment with all its modules, as well as doing the basic simulating. If the simulation becomes too complex, the complicated calculations can be sent to the sever to be processed on the server-side. If used locally, the client-side subsystems function independently of the server. If used on multiple machines, the client-side can be made dependent on the server and the database to synchronise user data.
+				\paragraph{Local storage}
+					Javascript determines the local storage engine that is availabe and uses that to maintain an offline copy of the application. This makes it very easy to design new cells. 
+				\paragraph{Interaction by Javascript}
+					Javascript facilitates interaction and processes all the differential equations. It generates the graphs and the reports with the help of the canvas element, part of HTML5.
+
+		\subsection{Hardware/software mapping}
+			The hardware/software mapping is illustrated by \hyperref[fig:csillustration]{figure \ref*{fig:csillustration}}. The server-side is a non-client piece of hardware, and can therefore be chosen specifically to suit the clients needs. Tasks of the server-side include, but are not limited to the compilation of source files and providing a SQL enabled database. The client-side hardware is required to support current webbuilding standards, which qualifies almost every machine from almost every platform to run the application. It's also possible for the client to work locally without internet connection, using the local storage.\\
+			\begin{figure}
+			\centering
+				\includegraphics[scale=0.8]{EAD.png}
+			\caption{Server and client illustrated}
+			\label{fig:csillustration}
+			\end{figure}
+\clearpage
+		\subsection{Persistent data management}
+			The application synchronises any persistent data with the database running on the server. This ensures availability of all user data if there is a connection to the server. The application also provides the possibility to store data locally and export simulation results to a report in multiple standardised format, such as \emph{HTML}, \emph{Excel} and \emph{PDF}.			
+		\subsection{Concurrency}
+			Each client runs independently and uses asynchronous communication with the server through \emph{REST} and \emph{AJAX}. Because of this, concurrency issues are very improbable. The client-side application is web-based, and uses only one process. Shared resources are retrieved directly from and synchronised directly with the database.
+	\clearpage
+	\section{Summary}
+		The application is a lightweight, cross-platform graphical design tool with a centralised storage database. The architecture ensures its functionality on different kinds of machines as well as the ease of simulating complex cell models. It not only offers stability, ease and intuitive design, it offers it on every machine.
+	\section{Glossary}
+		This section explains any and all terms that may be ambiguous or unclear:
+		\paragraph{REST} 
+			Representational State Transfer, or REST, is an architectural style of large-scale networked software that takes advantage of the technologies and protocols of the World Wide Web. \\
+See \href{http://goo.gl/Lfwhs}{http://goo.gl/Lfwhs} for more information.
+\end{document}

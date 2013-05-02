@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset='UTF-8'>
+  <title>CoffeeScript API Documentation</title>
+  <link rel='stylesheet' href='../assets/codo.css' type='text/css'>
+  <script src='../assets/codo.js'></script>
+  <script src='../assets/search_data.js'></script>
+</head>
+  <body>
+    <div id='base' data-path='../'></div>
+<div id='header'>
+  <div id='menu'>
+    <a href='../README.md.html' title='Programming Life: Gigabase'>Programming Life: Gigabase</a>
+    &raquo;
+    <a href='../class_index.html' title='Index'>Index</a>
+    &raquo;
+    <span class='title'>Graph</span>
+    <nav>
+      <ul>
+        <li class='noframes'>
+          (<a class='noframes' href='#'>no frames</a>)
+        </li>
+      </ul>
+    </nav>
+    <div id='search'>
+      <a id='class_list_link' href='../class_list.html'>Classes</a>
+      <a id='file_list_link' href='../file_list.html'>Files</a>
+      <a id='method_list_link' href='../method_list.html'>Methods</a>
+      <a id='extra_list_link' href='../extra_list.html'>Extras</a>
+    </div>
+  </div>
+  <iframe id='search_frame'></iframe>
+  <div id='fuzzySearch'>
+    <input type='text'>
+    <ol></ol>
+  </div>
+  <div id='help'>
+    <p>
+      Quickly fuzzy find classes, mixins, methods, file:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-T</span>
+        Open fuzzy finder dialog
+      </li>
+    </ul>
+    <p>
+      In frame mode you can toggle the list naviation frame on the left side:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-L</span>
+        Toggle list view
+      </li>
+    </ul>
+    <p>
+      You can focus a list in frame mode or toggle a tab in frameless mode:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-C</span>
+        Class list
+      </li>
+      <li>
+        <span>Ctrl-I</span>
+        Mixin list
+      </li>
+      <li>
+        <span>Ctrl-F</span>
+        File list
+      </li>
+      <li>
+        <span>Ctrl-M</span>
+        Method list
+      </li>
+      <li>
+        <span>Ctrl-E</span>
+        Extras list
+      </li>
+    </ul>
+    <p>
+      You can focus and blur the search input:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-S</span>
+        Focus search input
+      </li>
+      <li>
+        <span>Esc</span>
+        Blur search input
+      </li>
+    </ul>
+    <p>
+      In frameless mode you can close the list tab:
+    </p>
+    <ul>
+      <li>
+        <span>Esc</span>
+        Close list tab
+      </li>
+    </ul>
+  </div>
+</div>
+    <div id='content'>
+      <h1>
+        Class:
+        Graph
+      </h1>
+      <table class='box'>
+        <tr>
+          <td>Defined in:</td>
+          <td>app&#47;assets&#47;javascripts&#47;views&#47;graph.js.coffee</td>
+        </tr>
+      </table>
+      <h2>Overview</h2>
+      <div class='docstring'>
+  <p>Class to generate graphs from a set of data points</p>
+</div>
+<div class='tags'>
+</div>
+      <h2>Instance Method Summary</h2>
+      <ul class='summary'>
+  <li>
+    <span class='signature'>
+      <a href='#constructor-instance'>
+        - (void) <strong>constructor</strong>(name, options = {}, data)
+      </a>
+    </span>
+    <span class='constructor note title'>Constructor</span>
+    <span class='desc'>
+      Construct a new Graph @options options [Integer] width the width of the canvas @options options [Integer] height the height of the canvas @options options [Integer] dt the timestep of the graph @options options [String] fill the CSS colour for the fill @options options [String] stroke the CSS colour for the stroke @options options [String] point.fill the CSS colour for the fill of points @options options [String] point.stroke the CSS colour for the stroke of points
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#addData-instance'>
+        - (void) <strong>addData</strong>(data, options = {})
+      </a>
+    </span>
+    <span class='desc'>
+      Add a data set to the Graph @options options [String] fill the CSS colour for the fill @options options [String] stroke the CSS colour for the stroke @options options [String] point.fill the CSS colour for the fill of points @options options [String] point.stroke the CSS colour for the stroke of points @returns [self] returns self for chaining
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#clear-instance'>
+        - (void) <strong>clear</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Clear all data from the Graph @returns [self] returns self for chaining
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#render-instance'>
+        - (void) <strong>render</strong>(elem)
+      </a>
+    </span>
+    <span class='desc'>
+      Render the Graph into a canvas @returns [Object] returns contained canvas object
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#getCanvas-instance'>
+        - (Object) <strong>getCanvas</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Return the canvas object
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#getElement-instance'>
+        - (Object) <strong>getElement</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Return the parent object
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#setDimensions-instance'>
+        - (self) <strong>setDimensions</strong>(width, height)
+      </a>
+    </span>
+    <span class='desc'>
+      Set the width en height of the graph
+    </span>
+  </li>
+</ul>
+      <h2>Constructor Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='constructor-instance'>
+      - (void) <strong>constructor</strong>(name, options = {}, data)
+    </p>
+    <div class='docstring'>
+  <p>Construct a new Graph</p><p>@options options [Integer] width the width of the canvas
+@options options [Integer] height the height of the canvas
+@options options [Integer] dt the timestep of the graph
+@options options [String] fill the CSS colour for the fill
+@options options [String] stroke the CSS colour for the stroke
+@options options [String] point.fill the CSS colour for the fill of points
+@options options [String] point.stroke the CSS colour for the stroke of points</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>name</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the name of this graph</span>
+    </li>
+    <li>
+      <span class='name'>options</span>
+      <span class='type'>
+        (<tt>Object</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the options for the graph</span>
+    </li>
+    <li>
+      <span class='name'>data</span>
+      <span class='type'>
+        (<tt>Array</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the data for the graph</span>
+    </li>
+  </ul>
+</div>
+  </div>
+</div>
+      <h2>Instance Method Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='addData-instance'>
+      - (void) <strong>addData</strong>(data, options = {})
+    </p>
+    <div class='docstring'>
+  <p>Add a data set to the Graph</p><p>@options options [String] fill the CSS colour for the fill
+@options options [String] stroke the CSS colour for the stroke
+@options options [String] point.fill the CSS colour for the fill of points
+@options options [String] point.stroke the CSS colour for the stroke of points
+@returns [self] returns self for chaining</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>data</span>
+      <span class='type'>
+        (<tt>Array</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>an array with data points</span>
+    </li>
+    <li>
+      <span class='name'>options</span>
+      <span class='type'>
+        (<tt>Object</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the options for the dataset</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='clear-instance'>
+      - (void) <strong>clear</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Clear all data from the Graph</p><p>@returns [self] returns self for chaining</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='render-instance'>
+      - (void) <strong>render</strong>(elem)
+    </p>
+    <div class='docstring'>
+  <p>Render the Graph into a canvas</p><p>@returns [Object] returns contained canvas object</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>elem</span>
+      <span class='type'>
+        (<tt>Object</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>optional: an element to append the Graph&#39;s canvas to</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='getCanvas-instance'>
+      - (Object) <strong>getCanvas</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Return the canvas object</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Object</tt>)
+      &mdash;
+      <span class='desc'>the Graph&#39;s canvas</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='getElement-instance'>
+      - (Object) <strong>getElement</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Return the parent object</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Object</tt>)
+      &mdash;
+      <span class='desc'>the Graph&#39;s parent object</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='setDimensions-instance'>
+      - (self) <strong>setDimensions</strong>(width, height)
+    </p>
+    <div class='docstring'>
+  <p>Set the width en height of the graph</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>width</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the width of the canvas</span>
+    </li>
+    <li>
+      <span class='name'>height</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the height of the canvas</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>self</tt>)
+      &mdash;
+      <span class='desc'>returns self for chaining</span>
+    </li>
+  </ul>
+</div>
+  </div>
+</div>
+    </div>
+    <div id='footer'>
+  Generated on
+  Sun Apr 28 2013 18:42:08 GMT+0200 (W. Europe Daylight Time)
+  by
+  <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
+  v1.5.6
+  (Node.js v0.10.4).
+  &#10034;
+  Press Ctrl-h to see the keyboard shortcuts
+  &#10034;
+  <a href='http://twitter.com/#!/netzpirat'>@netzpirat</a>
+  &#10034;
+  <a href='https://mksoft.ch'>mksoft.ch</a>
+</div>
+  </body>
+</html>
