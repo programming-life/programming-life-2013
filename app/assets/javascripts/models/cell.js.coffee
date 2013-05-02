@@ -92,7 +92,7 @@ class Model.Cell
 	# @return [Boolean] true if contains
 	#
 	has_substrate : ( substrate ) ->
-		return @_substrate[ substrate ]?
+		return @_substrates[ substrate ]?
 	
 	# Returns the amount of substrate in this cell
 	# @param substrate [String] substrate to check
