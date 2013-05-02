@@ -15,6 +15,8 @@ class View.Main
 		$(document).on('moduleInit', @moduleInit)
 
 		@draw()
+		@drawpane()
+		
 
 	# Resizes the cell to the window size
 	#
@@ -31,7 +33,7 @@ class View.Main
 		() => (
 			switch number
 				when 0
-					@cell = new Model.Cell()
+					@cell = new Model.Cell() unless ( @cell? )
 				when 1
 					@cell.add( new Model.DNA() )
 						.add( new Model.Lipid({}, .1) )
@@ -49,8 +51,12 @@ class View.Main
 					@cell.add( new Model.Metabolism({}) )
 						.add_substrate( "p_int", 0, true, true )
 				when 7
-					if ( @graphs? )
-						unless ( @second? )
+					graphs = {}
+					graph = {}
+
+					container = $(".container")
+					if ( @graphs? and @graphs != {} )
+						unless ( @second? and @second )
 							graphs = @graphs
 							graph = {
 								stroke : "rgba( 240, 180, 180, .6 )"
@@ -58,20 +64,32 @@ class View.Main
 							}
 							@second = on
 						else
-							container = $(".container")
 							container.empty()
 							@second = off
-					@cell.visualize( 20, container, { dt: .5, graphs : graphs, graph: graph } )
+					
+					@graphs = @cell.visualize( 20, container, { dt: .5, graphs : graphs, graph: graph } )
+					
+					$('html, body').animate(
+						{ scrollTop: 
+							$( '.graph' ).first().offset().top - 20
+						}, 'slow')
+
 				when 8
-					@cell._modules[ 4 ].k = .4
-					@cell._modules[ 5 ].k = .4
+					
+					for i in [ 1 ... 6 ]
+						@cell._modules[ i ].k = Math.random().toFixed( 2 ) / .8 + .2
+						@cell._modules[ i ].k_d = Math.random().toFixed( 2 )  / .8 + .2
+						@cell._modules[ i ].k_tr = Math.random().toFixed( 2 )  / .8 + .2
+						@cell._modules[ i ].k_m = Math.random().toFixed( 2 )  / .8 + .2
+					@draw
+					
+					@actions( 7 )()
+					
 				when 9
 					@_views = []		
 					@_drawn = []
 					container = $(".container")
 					container.empty()
-					@cell = new Model.Cell()
-					
 					@resize()
 					
 			@drawpane()
@@ -80,6 +98,7 @@ class View.Main
 	# Cowboy hacking a pane
 	#
 	drawpane: ( ) ->
+	
 		location = {
 			x: @width * 0.75
 			y: @height * 0.25
@@ -102,14 +121,14 @@ class View.Main
 			"Add Protein", 
 			"Add transporter out", 
 			"Simulate",
-			"Change some parameters",
-			"Clear"
+			"Change some parameters"
 		]
 
 		for i in [1 .. texts.length]
 			unless @rect[i]
 				rect = @paper.rect( location.x + 10 , location.y - 30 + 40 * i, 230, 30, 5 )
 				@rect[i] = rect
+				rect.click( _.debounce( @actions(i - 1), 300) )
 			else
 				rect = @rect[i]
 				rect.attr({
@@ -126,22 +145,16 @@ class View.Main
 			unless text
 				text = @paper.text( location.x + 120, location.y - 15 + 40 * i, texts[i-1] )
 				@text[i] = text
-			else
-				text.attr({'font-size': 15})
 
 			if (i > 1 and (@cell is undefined))
 				rect.attr({
 					'fill' : 'grey'
 				})
-			else
-				rect.click(@actions(i - 1))
-				text.click(@actions(i - 1))
-
 		
 	# Draws the cell
 	#
 	draw: ( ) ->
-		@drawpane()
+	
 		# First, determine the center and radius of our cell
 		centerX = @width / 2
 		centerY = @height / 2
@@ -162,8 +175,6 @@ class View.Main
 				cy: centerY
 				r: radius
 				
-		inTransporters = 0
-		outTransporters = 0
 		counters = {}
 		
 		# Draw each module

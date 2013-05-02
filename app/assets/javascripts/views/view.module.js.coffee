@@ -164,7 +164,7 @@ class View.Module
 				return [ text, line ]
 				
 			when 'Information'
-				
+				console.log "information for #{@name}"
 				objRect = params.objRect
 				
 				# Add params text
