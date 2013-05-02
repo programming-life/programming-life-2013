@@ -179,7 +179,6 @@ class View.Module
 				#line.node.setAttribute('class', "#{module}-seperator" )
 				
 				return [ text, line ]
-				
 		
 		return []
 			
