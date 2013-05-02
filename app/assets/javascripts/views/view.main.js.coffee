@@ -128,7 +128,6 @@ class View.Main
 			unless @rect[i]
 				rect = @paper.rect( location.x + 10 , location.y - 30 + 40 * i, 230, 30, 5 )
 				@rect[i] = rect
-				rect.click( _.debounce( @actions(i - 1), 300) )
 			else
 				rect = @rect[i]
 				rect.attr({
@@ -145,11 +144,21 @@ class View.Main
 			unless text
 				text = @paper.text( location.x + 120, location.y - 15 + 40 * i, texts[i-1] )
 				@text[i] = text
+			else
+				text.attr({
+					cx : location.x + 120
+					cy : location.y - 15
+
+				})
 
 			if (i > 1 and (@cell is undefined))
 				rect.attr({
 					'fill' : 'grey'
 				})
+			else
+				rect.click( _.debounce( @actions(i - 1), 300) ) unless rect.cl
+				text.click(_.debounce( @actions(i - 1), 300) ) unless rect.cl
+				rect.cl = true
 		
 	# Draws the cell
 	#
