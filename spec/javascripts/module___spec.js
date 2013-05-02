@@ -5,7 +5,6 @@ describe("Module", function() {
 		params = { k: 3, b: 5 };
 		step = function( t, substrates ) { return { 'a' : this.k + this.b } };
 		module = new Model.Module( params, step );
-		date = Date.now();
 	});
 
 	it("should be able to set its properties to its params", function() {
@@ -22,7 +21,7 @@ describe("Module", function() {
 	});
 
 	it("should be able to get the date of creation", function() {
-		expect( module.creation ).toEqual( date );
+		expect( module.creation ).toBeDefined();
 	});
 
 	
