@@ -56,16 +56,18 @@ class View.Main
 
 					container = $(".container")
 					if ( @graphs? and @graphs != {} )
-						unless ( @second? and @second )
-							graphs = @graphs
-							graph = {
-								stroke : "rgba( 240, 180, 180, .6 )"
-								fill : "rgba( 240, 180, 180, .7 )"
-							}
-							@second = on
-						else
-							container.empty()
-							@second = off
+						graphs = @graphs
+						
+						for name, graph of @graphs
+							for set in graph._datasets
+								set.fill = "rgba(220,220,220,0.5)"
+								set.stroke = "rgba(220,220,220,1)"
+
+						graph = {
+							stroke : "rgba( 240, 180, 180, .6 )"
+							fill : "rgba( 240, 180, 180, .7 )"
+						}
+						
 					
 					@graphs = @cell.visualize( 20, container, { dt: .5, graphs : graphs, graph: graph } )
 					
@@ -76,14 +78,18 @@ class View.Main
 
 				when 8
 					
-					for i in [ 1 ... 6 ]
-						@cell._modules[ i ].k = Math.random().toFixed( 2 ) / .8 + .2
-						@cell._modules[ i ].k_d = Math.random().toFixed( 2 )  / .8 + .2
-						@cell._modules[ i ].k_tr = Math.random().toFixed( 2 )  / .8 + .2
-						@cell._modules[ i ].k_m = Math.random().toFixed( 2 )  / .8 + .2
-					@draw
-					
-					@actions( 7 )()
+					try
+						for i in [ 1 ... 6 ]
+							Math.round( ( @cell._modules[ i ].k = Math.random().toFixed( 2 ) /  .8 + .2 ) * 1000 ) / 1000
+							Math.round( ( @cell._modules[ i ].k_d = Math.random().toFixed( 2 )  / .8 + .2 ) * 1000 ) / 1000
+							Math.round( ( @cell._modules[ i ].k_tr = Math.random().toFixed( 2 )  / .8 + .2 ) * 1000 ) / 1000
+							Math.round( ( @cell._modules[ i ].k_m = Math.random().toFixed( 2 )  / .8 + .2 ) * 1000 ) / 1000
+							Math.round( ( @cell._modules[ i ].v = Math.random().toFixed( 2 )  / .8 + .2 ) * 1000 ) / 1000
+						@draw()
+						
+						@actions( 7 )()
+					catch err
+						@actions( 8 )()
 					
 				when 9
 					@_views = []		
@@ -145,6 +151,7 @@ class View.Main
 			unless text
 				text = @paper.text( location.x + 120, location.y - 15 + 40 * i, texts[i-1] )
 				@text[i] = text
+				text.click( _.debounce( @actions(i - 1), 300) )
 
 			if (i > 1 and (@cell is undefined))
 				rect.attr({
