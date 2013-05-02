@@ -22,7 +22,7 @@ class Model.Substrate extends Model.Module
 		defaults = { 
 			starts : { name: start }
 			name : name
-			placement: if inside_cell then 0 else ( if is_product then 1 else -1 )
+			placement: if inside_cell then ( if is_product then .5 else -.5 ) else ( if is_product then 1 else -1 )
 		}
 				
 		params = _( defaults ).extend( params )

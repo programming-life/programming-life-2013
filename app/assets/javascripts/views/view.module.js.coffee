@@ -59,7 +59,7 @@ class View.Module
 		a = 1 unless alpha
 		# (0.2126*R) + (0.7152*G) + (0.0722*B) << luminance
 		return "rgba(#{[r, g, b, a].join ','})"
-		
+
 	# Runs if module is invalidated
 	# 
 	# @param event [Object] the event raised
@@ -69,6 +69,102 @@ class View.Module
 		if module is @module
 			@draw(@_x, @_y, @_scale)
 
+	# Draw a component
+	#
+	# @param module [String] module name for classes
+	# @param component [String] component string
+	# @param x [Integer] x position
+	# @param y [Integer] y position
+	# @param scale [Integer] scale
+	# @param params [Object] options
+	# @returns [Array<Object>] The drawn components
+	#
+	drawComponent : ( module, component, x, y, scale, params = {} ) ->
+		switch component
+			when 'ProcessArrow'
+				arrow = @_paper.path("m #{x},#{y} 0,4.06536 85.154735,0 -4.01409,12.19606 27.12222,-16.26142 -27.12222,-16.26141 4.01409,12.19606 -85.154735,0 z")
+				arrow.node.setAttribute( 'class', "#{module}-arrow" )
+					
+				rect = arrow.getBBox()
+				dx = rect.x - x
+				dy = rect.y - y
+				arrow.translate(-dx - rect.width / 2, 0)
+				arrow.scale( scale, scale )
+				
+				return [ arrow ]
+				
+			when 'SubstrateCircle'
+			
+				# This is the circle in which we show the substrate
+				substrate = params.substrate
+				substrateText = _.escape _( substrate ).first()
+				if ( params.useFullName? and params.useFullName )
+					substrateText = substrate
+				substrateCircle = @_paper.circle( x, y, (params.r ? 20 ) * scale)
+				substrateCircle.node.setAttribute('class', "#{module}-substrate-circle" )
+				substrateCircle.attr
+					'fill': @hashColor substrateText
+				
+				if ( params.showText )
+					substrateText = @_paper.text( x, y, substrateText )
+					substrateText.node.setAttribute('class', "#{module}-substrate-text" )
+					substrateText.attr
+						'font-size': 18 * scale
+				
+				return [ substrateCircle, substrateText ]
+				
+			when 'Sector'
+				r = params.r * scale
+				startAngle = params.from
+				endAngle = params.to
+				rad = Math.PI / 180;
+				x1 = x + r * Math.cos( -startAngle * rad)
+				x2 = x + r * Math.cos( -endAngle * rad)
+				y1 = y + r * Math.sin( -startAngle * rad)
+				y2 = y + r * Math.sin( -endAngle * rad )
+				return [ @_paper.path( ["M", x, y, "L", x1, y1, "A", r, r, 0, +(endAngle - startAngle > 180), 0, x2, y2, "z"] ) ]
+				
+			when 'EnzymCircle'
+			
+				# This is the circle in which we show the conversion
+				origText = _.escape _( params.orig ).first()
+				destText = _.escape _( params.dest ).first()
+				
+				[ enzymOrigCircle ] = @drawComponent( 'enzym', 'Sector', x, y, scale, { r: 20, from: 90, to: 270 } );
+				enzymOrigCircle.attr
+					'fill': @hashColor origText
+				[ enzymDestCircle ] = @drawComponent( 'enzym', 'Sector', x, y, scale, { r: 20, from: 270, to: 90 } );
+				enzymDestCircle.attr
+					'fill': @hashColor destText
+				
+				if ( params.showText )
+				
+					substrateText = @_paper.text( x, y, "#{origText}>#{destText}" )
+					substrateText.node.setAttribute('class', "#{module}-substrate-text" )
+					substrateText.attr
+						'font-size': 18 * scale
+				
+				return [ enzymOrigCircle, enzymDestCircle, substrateText ]
+				
+				
+				
+			when 'ModuleTitle'
+				# Add title text
+				text = @_paper.text( x, y - 60 * scale, params.title )
+				text.attr
+					'font-size': 20 * scale
+
+				objRect = params.objRect
+				textRect = text.getBBox()
+
+				# Add title line
+				line = @_paper.path("M #{Math.min(objRect.x, textRect.x) - params.padding },#{objRect.y - params.padding } L #{Math.max(objRect.x + objRect.width, textRect.x + textRect.width) + params.padding},#{objRect.y - params.padding} z")
+				line.node.setAttribute('class', "#{module}-seperator" )
+				
+				return [ text, line ]
+		
+		return []
+			
 	# Draws this view and thus the model
 	#
 	# @param x [Integer] the x position
@@ -93,76 +189,65 @@ class View.Module
 		
 			when 'Transporter'
 			
-				# This path constructs the arrow we are showing as a transporter
-				arrow = @_paper.path("m #{x},#{y} 0,4.06536 85.154735,0 -4.01409,12.19606 27.12222,-16.26142 -27.12222,-16.26141 4.01409,12.19606 -85.154735,0 z")
-				arrow.node.setAttribute('class', 'transporter-arrow')
-					
-				rect = arrow.getBBox()
-				dx = rect.x - x
-				dy = rect.y - y
-				arrow.translate(-dx - rect.width / 2, 0)
-				arrow.scale(scale, scale)
-
-				# This is the circle in which we show the substrate
-				substrate = @module.orig ? "..."
-				substrate_text = _.escape _( substrate ).first()
-				substrateCircle = @_paper.circle(x, y, 20 * scale)
-				substrateCircle.node.setAttribute('class', 'transporter-substrate-circle')
-				substrateCircle.attr
-					'fill': @hashColor substrate_text
-				substrateText = @_paper.text( x, y, substrate_text )
-				substrateText.node.setAttribute('class', 'transporter-substrate-text')
-				substrateText.attr
-					'font-size': 18 * scale
+				[ arrow ] = @drawComponent( 'transporter', 'ProcessArrow', x, y, scale, { } )
+				
+				params =
+					substrate: @module.orig ? "..."
+					showText: off
+				
+				[ substrateCircle ] = @drawComponent( 'transporter', 'SubstrateCircle', x, y, scale, params )
 					
 				if @_selected
-				
-					# Add transporter text
-					text = @_paper.text(x, y - 60 * scale, _.escape @type)
-					text.attr
-						'font-size': 20 * scale
-
-					objRect = arrow.getBBox()
-					textRect = text.getBBox()
-
-					# Add title line
-					line = @_paper.path("M #{Math.min(objRect.x, textRect.x) - padding},#{objRect.y - padding} L #{Math.max(objRect.x + objRect.width, textRect.x + textRect.width) + padding},#{objRect.y - padding} z")
-					line.node.setAttribute('class', 'module-seperator')
-
-					text = @_paper.text(x, y - 60 * scale, _.escape @type)
-					text.attr
-						'font-size': 20 * scale
+					params = 
+						objRect : arrow.getBBox()
+						title: _.escape @type
+						padding: padding
+					
+					[ titleText, titleLine ] = @drawComponent( 'module', 'ModuleTitle', x, y, scale, params )
 			
-			when "Substrate"			
-				substrate = @module.name ? "..."
-				substrate_text = _.escape _( substrate ).first()
-				substrateCircle = @_paper.circle(x, y, 20 * scale)
-				substrateCircle.node.setAttribute('class', 'transporter-substrate-circle')
-				substrateCircle.attr
-					'fill': @hashColor substrate_text
-				substrateText = @_paper.text( x, y, substrate_text )
-				substrateText.node.setAttribute('class', 'transporter-substrate-text')
-				substrateText.attr
-					'font-size': 18 * scale
+			when "Substrate"		
+			
+				params =
+					substrate: @module.name ? "..."
+					showText: on
+					
+				[ substrateCircle, substrateText ] = @drawComponent( 
+					'substrate', 
+					'SubstrateCircle', 
+					x, y, scale, params )
+
+			when "Metabolism"
+			
+				[ arrow ] = @drawComponent( 'transporter', 'ProcessArrow', x, y, scale, { } )
+				
+				params =
+					orig: @module.orig ? "..."
+					dest: @module.dest ? "..."
+					showText: off
+				
+				[ enzymCircleOrig, enzymCircleDest ] = @drawComponent( 'enzym', 'EnzymCircle', x, y, scale, params )
 					
 				if @_selected
+					params = 
+						objRect : arrow.getBBox()
+						title: _.escape @type
+						padding: padding
+					
+					[ titleText, titleLine ] = @drawComponent( 'module', 'ModuleTitle', x, y, scale, params )
 				
-					# Add transporter text
-					text = @_paper.text(x, y - 60 * scale, _.escape @type)
-					text.attr
-						'font-size': 20 * scale
-
-					textRect = text.getBBox()
-					objRect = substrateCircle.getBBox()
-
-					# Add title line
-					line = @_paper.path("M #{Math.min(objRect.x, textRect.x) - padding},#{objRect.y - padding} L #{Math.max(objRect.x + objRect.width, textRect.x + textRect.width) + padding},#{objRect.y - padding} z")
-					line.node.setAttribute('class', 'module-seperator')
-
-					text = @_paper.text(x, y - 60 * scale, _.escape @type)
-					text.attr
-						'font-size': 20 * scale
+			when "Protein"	
 			
+				params =
+					substrate: @module.name ? "..."
+					showText: on
+					useFullName : on
+					r: 45
+					
+				[ substrateCircle, substrateText ] = @drawComponent( 
+					'protein', 
+					'SubstrateCircle', 
+					x, y, scale, params )
+					
 			else
 				text = @_paper.text(x, y, _.escape @type)
 				text.attr
