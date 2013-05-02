@@ -164,7 +164,7 @@ class View.Module
 				return [ text, line ]
 				
 			when 'Information'
-				
+				console.log "information for #{@name}"
 				objRect = params.objRect
 				
 				# Add params text
@@ -179,7 +179,6 @@ class View.Module
 				#line.node.setAttribute('class', "#{module}-seperator" )
 				
 				return [ text, line ]
-				
 		
 		return []
 			
@@ -371,6 +370,8 @@ class View.Module
 
 		# Draw close button in the top right corner
 		@_close?.remove()
+		@_closeText?.remove()
+		
 		if @_selected
 			rect = @_box?.getBBox()
 			if rect
@@ -380,6 +381,14 @@ class View.Module
 				@_close.click =>
 					@_selected = false
 					@draw(@_x, @_y, @_scale)
+					
+				@_closeText = @_paper.text(rect.x + rect.width, rect.y, 'x')
+				@_closeText.attr
+					'font-size': 20 * scale
+				@_closeText.click =>
+					@_selected = false
+					@draw(@_x, @_y, @_scale)
+					
 				#@_close.insertBefore(@_contents)
 
 		# Draw shadow around module view
