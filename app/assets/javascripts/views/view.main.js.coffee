@@ -38,18 +38,40 @@ class View.Main
 				when 3
 					@cell.add( new Model.Transporter.int( {}, .1 ) )
 						.add_substrate( "s_int", 0, true, false )
-				when 4
-					@cell.add( new Model.Protein({}) )
 				when 5
+					@cell.add( new Model.Protein({}) )
+				when 6
 					@cell.add( new Model.Transporter.ext() )
 						.add_substrate( "p_ext", 0, false, true )
-				when 6
+				when 4
 					@cell.add( new Model.Metabolism({}) )
 						.add_substrate( "p_int", 0, true, true )
 				when 7
+					if ( @graphs? )
+						unless ( @second? )
+							graphs = @graphs
+							graph = {
+								stroke : "rgba( 240, 180, 180, .6 )"
+								fill : "rgba( 240, 180, 180, .7 )"
+							}
+							@second = on
+						else
+							container = $(".container")
+							container.empty()
+							@second = off
+					@cell.visualize( 20, container, { dt: .5, graphs : graphs, graph: graph } )
+				when 8
+					@cell._modules[ 4 ].k = .4
+					@cell._modules[ 5 ].k = .4
+				when 9
+					@_views = []		
+					@_drawn = []
 					container = $(".container")
 					container.empty()
-					@cell.visualize( 20, container, { dt: .5 } )
+					@cell = new Model.Cell()
+					
+					@resize()
+					
 			@drawpane()
 			)
 	
@@ -62,7 +84,18 @@ class View.Main
 		}
 		@pane = @paper.rect(location.x, location.y, 250, 400, 10)
 		@pane.node.setAttribute('class', 'box')
-		texts = ["Create initial cell","Add Infrastructure (DNA/Lipid)", "Add substrate outside cell", "Add transporter in", "Add Protein", "Add transporter out", "Add Metabolism", "Run" ]
+		texts = [
+			"Create initial cell",
+			"Add Infrastructure ( DNA and Lipid )", 
+			"Add substrate outside cell", 
+			"Add transporter in", 
+			"Add Metabolism"
+			"Add Protein", 
+			"Add transporter out", 
+			"Simulate",
+			"Change some parameters",
+			"Clear"
+		]
 
 		for i in [1 .. texts.length]
 			rect = @paper.rect( location.x + 10 , location.y - 30 + 40 * i, 230, 30, 5 )
