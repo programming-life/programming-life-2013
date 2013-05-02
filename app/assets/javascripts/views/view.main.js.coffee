@@ -142,11 +142,10 @@ class View.Main
 	#
 	moduleInit: ( event, module ) =>
 		unless _(@_drawn).indexOf( module.name ) isnt -1
-			unless module instanceof Model.CellGrowth
-				@_drawn.push module.name
-				view = new View.Module(module)
-				@_views.push(view)
-				@draw()
+			@_drawn.push module.name
+			view = new View.Module(module)
+			@_views.push(view)
+			@draw()
 
 	# Returns the location for a module
 	#
@@ -158,6 +157,11 @@ class View.Main
 		y = 0
 		
 		switch params.type
+		
+			when "CellGrowth"
+				alpha = 3 * Math.PI / 4 + ( params.count * Math.PI / 12 )
+				x = params.cx + params.r * Math.cos( alpha )
+				y = params.cy + params.r * Math.sin( alpha )
 			
 			when "Lipid"
 				alpha = -3 * Math.PI / 4 + ( params.count * Math.PI / 12 )
@@ -188,7 +192,9 @@ class View.Main
 				y = params.cy - params.r / 2 + ( Math.round( params.count / 3 ) * 40 )
 				
 			when "Substrate"
-				x = if params.placement is -1 then ( params.cx - params.r - 130 ) else if params.placement is 1 then ( params.cx + params.r + 130 ) else params.cx 
+				x = ( params.cx + params.placement * 200 )
+				x = ( params.cx - params.r - 130 ) if params.placement is -1
+				x = ( params.cx + params.r + 130 ) if params.placement is 1 
 				y = params.cy + ( Math.round( params.count ) * 100 * params.scale )
 				
 		return { x: x, y: y }

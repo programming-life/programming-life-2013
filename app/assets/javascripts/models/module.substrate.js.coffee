@@ -14,6 +14,10 @@ class Model.Substrate extends Model.Module
 	# @option params [Integer] placement placement in cell = 0, out cell = -1 or 1
 	constructor: ( params = {}, start = 1, name, inside_cell = on, is_product = off ) ->
 			
+		placement = 1
+		placement = 0.5 if inside_cell
+		placement *= -1 unless is_product 
+		
 		# Step function for substrates
 		step = ( t, substrates, mu ) ->			
 			return { }
@@ -22,7 +26,7 @@ class Model.Substrate extends Model.Module
 		defaults = { 
 			starts : { name: start }
 			name : name
-			placement: if inside_cell then 0 else ( if is_product then 1 else -1 )
+			placement: placement
 		}
 				
 		params = _( defaults ).extend( params )
