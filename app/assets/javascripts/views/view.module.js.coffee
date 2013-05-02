@@ -157,11 +157,29 @@ class View.Module
 				objRect = params.objRect
 				textRect = text.getBBox()
 
-				# Add title line
+				# Add seperation line
 				line = @_paper.path("M #{Math.min(objRect.x, textRect.x) - params.padding },#{objRect.y - params.padding } L #{Math.max(objRect.x + objRect.width, textRect.x + textRect.width) + params.padding},#{objRect.y - params.padding} z")
 				line.node.setAttribute('class', "#{module}-seperator" )
 				
 				return [ text, line ]
+				
+			when 'Information'
+				
+				objRect = params.objRect
+				
+				# Add params text
+				text = @_paper.text( x, y + params.padding * 3, params.text )
+				text.attr
+					'font-size': 18 * scale
+
+				textRect = text.getBBox()
+				
+				#line = @_paper.path("M #{Math.min(objRect.x, textRect.x) - params.padding },#{ y + params.padding * 2 } L #{Math.max(objRect.x + objRect.width, textRect.x + textRect.width) + params.padding},#{ y + params.padding * 2 } z")
+				
+				#line.node.setAttribute('class', "#{module}-seperator" )
+				
+				return [ text, line ]
+				
 		
 		return []
 			
@@ -204,6 +222,20 @@ class View.Module
 						padding: padding
 					
 					[ titleText, titleLine ] = @drawComponent( 'module', 'ModuleTitle', x, y, scale, params )
+					
+					params = 
+						objRect : arrow.getBBox()
+						title: _.escape @type
+						padding: padding
+					
+					[ titleText, titleLine ] = @drawComponent( 'module', 'ModuleTitle', x, y, scale, params )
+					
+					params = 
+						objRect : arrow.getBBox()
+						text: "name: #{@module.name}\ninitial:  #{@module.starts.name}\nk: #{@module.k}\nk_tr: #{@module.k_tr}\nk_m: #{@module.k_m}\nsynth: #{@module.consume}\n#{@module.orig} > #{@module.dest}"
+						padding: padding
+					
+					[ paramsText, paramsLine ] = @drawComponent( 'module', 'Information', x, substrateCircle.getBBox().y + substrateCircle.getBBox().height + 40 * scale , scale, params )
 			
 			when "Substrate"		
 			
@@ -215,6 +247,16 @@ class View.Module
 					'substrate', 
 					'SubstrateCircle', 
 					x, y, scale, params )
+					
+				if @_selected
+	
+					params = 
+						objRect : substrateCircle.getBBox()
+						text: "name: #{@module.name}\ninitial:  #{@module.starts.name}"
+						padding: padding
+					
+					[ paramsText, paramsLine ] = @drawComponent( 'module', 'Information', x, y, scale, params )
+				
 
 			when "Metabolism"
 			
@@ -228,12 +270,20 @@ class View.Module
 				[ enzymCircleOrig, enzymCircleDest ] = @drawComponent( 'enzym', 'EnzymCircle', x, y, scale, params )
 					
 				if @_selected
+								
 					params = 
 						objRect : arrow.getBBox()
 						title: _.escape @type
 						padding: padding
 					
 					[ titleText, titleLine ] = @drawComponent( 'module', 'ModuleTitle', x, y, scale, params )
+					
+					params = 
+						objRect : arrow.getBBox()
+						text: "name: #{@module.name}\ninitial:  #{@module.starts.name}\nk: #{@module.k}\nk_m: #{@module.k_m}\nk_d: #{@module.k_d}\nv: #{@module.v}\n#{@module.orig} > #{@module.dest}"
+						padding: padding
+					
+					[ paramsText, paramsLine ] = @drawComponent( 'module', 'Information', x, enzymCircleOrig.getBBox().y + enzymCircleOrig.getBBox().height + 40 * scale , scale, params )
 				
 			when "Protein"	
 			
@@ -247,6 +297,59 @@ class View.Module
 					'protein', 
 					'SubstrateCircle', 
 					x, y, scale, params )
+					
+				if @_selected
+					params = 
+							objRect : substrateCircle.getBBox()
+							text: "name: #{@module.name}\ninitial:  #{@module.starts.name}\nk: #{@module.k}\nk_d: #{@module.k_d}\nsynth: #{@module.substrate}\n#{@module.substrate} > #{@module.name}"
+							padding: padding
+						
+						[ paramsText, paramsLine ] = @drawComponent( 'module', 'Information', x, substrateCircle.getBBox().y + substrateCircle.getBBox().height + 40 * scale , scale, params )
+					
+			when "DNA"
+						
+				text = @_paper.text(x, y, _.escape @type)
+				text.attr
+					'font-size': 20 * scale
+				
+				if @_selected
+	
+					params = 
+						objRect : text.getBBox()
+						text: "initial:  #{@module.starts.name}\nk: #{@module.k}\nsynth: #{@module.consume}\n#{@module.consume} > #{@module.name}"
+						padding: padding
+					
+					[ paramsText, paramsLine ] = @drawComponent( 'module', 'Information', x, y, scale, params )
+					
+			when "Lipid"
+						
+				text = @_paper.text(x, y, _.escape @type)
+				text.attr
+					'font-size': 20 * scale
+				
+				if @_selected
+	
+					params = 
+						objRect : text.getBBox()
+						text: "initial:  #{@module.starts.name}\nk: #{@module.k}\nsynth: #{@module.consume}\n#{@module.consume} > #{@module.name}"
+						padding: padding
+					
+					[ paramsText, paramsLine ] = @drawComponent( 'module', 'Information', x, y, scale, params )
+					
+			when "CellGrowth"
+						
+				text = @_paper.text(x, y, _.escape @type)
+				text.attr
+					'font-size': 20 * scale
+				
+				if @_selected
+	
+					params = 
+						objRect : text.getBBox()
+						text: "initial cell:  #{@module.starts.name}\ninfrastructure: #{@module.infrastructure.join(', ')}\nsynth: #{@module.consume}\n#{@module.infrastructure.join(', ')}, #{@module.consume} > #{@module.name}"
+						padding: padding
+					
+					[ paramsText, paramsLine ] = @drawComponent( 'module', 'Information', x, y, scale, params )
 					
 			else
 				text = @_paper.text(x, y, _.escape @type)
@@ -271,6 +374,7 @@ class View.Module
 		if @_selected
 			rect = @_box?.getBBox()
 			if rect
+						
 				@_close = @_paper.circle(rect.x + rect.width, rect.y, 15 * scale)
 				@_close.node.setAttribute('class', 'module-close')
 				@_close.click =>

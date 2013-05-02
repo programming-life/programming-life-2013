@@ -133,7 +133,9 @@ class View.Main
 				y = params.cy - params.r / 2 + ( Math.round( params.count / 3 ) * 40 )
 				
 			when "Substrate"
-				x = if params.placement is -1 then ( params.cx - params.r - 130 ) else if params.placement is 1 then ( params.cx + params.r + 130 ) else ( params.cx + params.placement * 200 )
+				x = ( params.cx + params.placement * 200 )
+				x = ( params.cx - params.r - 130 ) if params.placement is -1
+				x = ( params.cx + params.r + 130 ) if params.placement is 1 
 				y = params.cy + ( Math.round( params.count ) * 100 * params.scale )
 				
 		return { x: x, y: y }
