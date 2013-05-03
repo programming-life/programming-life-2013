@@ -12,7 +12,11 @@ describe( "Module Substrate", function() {
 		});
 
 		it( "should be inside the cell", function() {
-			expect( module.placement ).toBe ( -0.5 );
+			expect( module.placement ).toBeBetween( -1, 1 );
+		});
+		
+		it( "should be inside a substrate", function() {
+			expect( module.placement ).toBeAtMost( 0 );
 		});
 
 		it( "should have 1 substrate: name with value 1", function() {
@@ -78,5 +82,59 @@ describe( "Module Substrate", function() {
 		});
 		
 	});
+	
+	describe( "When using the inside_cell option", function() {
 
+		describe( "and inside_cell", function() {
+			
+			var module;
+			beforeEach( function() {
+				module = new Model.Substrate( undefined, 2, undefined, true );
+			});
+
+			it( "should have the correct placement", function(){
+				expect( module.placement ).toBeBetween( -1, 1 );
+			});
+		});
+		
+		describe( "and not inside_cell", function() {
+			
+			var module;
+			beforeEach( function() {
+				module = new Model.Substrate( undefined, 2, undefined, false );
+			});
+
+			it( "should have the correct placement", function(){
+				expect( module.placement ).not.toBeBetween( -1, 1 );
+			});
+		});
+		
+	});
+	
+	describe( "When using the is_product option", function() {
+
+		describe( "and is_product", function() {
+			
+			var module;
+			beforeEach( function() {
+				module = new Model.Substrate( undefined, 2, undefined, undefined, true );
+			});
+
+			it( "should have the correct placement", function(){
+				expect( module.placement ).toBeGreaterThan( 0 );
+			});
+		});
+		
+		describe( "and not is_product", function() {
+			
+			var module;
+			beforeEach( function() {
+				module = new Model.Substrate( undefined, 2, undefined, undefined, false );
+			});
+
+			it( "should have the correct placement", function(){
+				expect( module.placement ).toBeLessThan( 0 );
+			});
+		});
+	});
 });
