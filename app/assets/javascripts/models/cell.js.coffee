@@ -34,6 +34,9 @@ class Model.Cell
 		)
 		
 		Object.seal @
+		
+		Model.EventManager.trigger( 'cell.creation', @, [ creation ] )
+		
 		@add module
 	
 	# Add module to cell
@@ -43,6 +46,7 @@ class Model.Cell
 	#
 	add: ( module ) ->
 		@_modules.push module
+		Model.EventManager.trigger( 'cell.add.module', @, [ module ] )
 		return this
 		
 	# Add substrate to cell
@@ -58,6 +62,7 @@ class Model.Cell
 			@_substrates[ substrate ].amount = amount
 		else
 			@_substrates[ substrate ] = new Model.Substrate( {}, amount, substrate, inside_cell, is_product )
+			Model.EventManager.trigger( 'cell.add.substrate', @, [ substrate, amount, inside_cell, is_product ] )
 		return this
 		
 	# Remove module from cell
@@ -66,7 +71,8 @@ class Model.Cell
 	# @return [self] chainable instance
 	#
 	remove: ( module ) ->
-		@_modules.splice( @_modules.indexOf module, 1 ) #TODO: update to use underscore without
+		@_modules = _( @_modules ).without module
+		Model.EventManager.trigger( 'cell.remove.module', @, [ module ] )
 		return this
 		
 	# Removes this substrate from cell
@@ -76,6 +82,7 @@ class Model.Cell
 	#
 	remove_substrate: ( substrate ) ->
 		delete @_substrates[ substrate ]
+		Model.EventManager.trigger( 'cell.remove.substrate', @, [ substrate ] )
 		return this
 		
 	# Checks if this cell has a module
@@ -107,6 +114,8 @@ class Model.Cell
 	# @return [self] chainable instance
 	#
 	run : ( timespan ) ->
+		
+		Model.EventManager.trigger( 'cell.before.run', @, [ timespan ] )
 		
 		substrates = {}
 		variables = [ ]
@@ -164,16 +173,22 @@ class Model.Cell
 			# Calculate the mu for this timestep
 			mu = @module.mu( mapped )
 			
+			Model.EventManager.trigger( 'cell.before.step', @, [ t, v, mu, mapped ] )
+			
 			# Run all the equations
 			for module in @_modules
 				module_results = module.step( t, mapped, mu )
 				for variable, result of module_results
 					results[ mapping[ variable ] ] += result
-								
+				
+			Model.EventManager.trigger( 'cell.after.step', @, [ t, v, mu, mapped, results ] )
+				
 			return results
 				
 		# Run the ODE from 0...timespan with starting values and step function
 		sol = numeric.dopri( 0, timespan, values, step )
+		
+		Model.EventManager.trigger( 'cell.after.run', @, [ timespan, sol, mapping ] )
 		
 		# Return the system results
 		return { results: sol, map: mapping }
@@ -207,6 +222,8 @@ class Model.Cell
  
 		graphs = options.graphs ? { }
 		
+		Model.EventManager.trigger( 'cell.before.visualize', @, [ duration, container, graphs ] )	
+		
 		# Draw all the substrates
 		for key, value of mapping
 		
@@ -226,6 +243,8 @@ class Model.Cell
 			graphs[ key ].addData( dataset, graph_options )
 				.render(container)
 
+		Model.EventManager.trigger( 'cell.after.visualize', @, [ duration, container, graphs ] )		
+		
 		# Return graphs
 		return graphs		
 
