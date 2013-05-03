@@ -9,6 +9,16 @@ describe("Cell", function() {
 	it("should have a creation date", function() {
 		expect( cell.creation ).toBeDefined();
 	});
+
+	it("should accept custom params", function() {
+		cell = new Model.Cell({name: "custom_name"});
+		expect( cell ).toBeDefined();
+	});
+
+	it("should accept a custom start time", function() {
+		cell = new Model.Cell(null, 2);
+		expect( cell ).toBeDefined();
+	})
   
 	describe("when a module has been added", function() {
 		beforeEach(function() {
@@ -35,13 +45,29 @@ describe("Cell", function() {
 		});
 		
 		it("should have that substrate", function() {
-			expect( cell.amount_of( substrate_name ) ).toBe( substrate_amount );
+			expect( cell.has_substrate( substrate_name) ).toBeTruthy();
+		});
+
+		it("should replace the substrate if it already exists", function () {
+			cell.add_substrate( substrate_name, substrate_amount + 1 );
+			expect( cell.amount_of( substrate_name ) ).toBe( substrate_amount + 1 );
 		});
 		
 		it("should be able to remove that substrate", function() {
 			cell.remove_substrate( substrate_name );
 			expect( cell.amount_of( substrate_name ) ).not.toBeDefined();
 		});
+
+		it("can be an external substrate", function() {
+			cell.add_substrate( 'external', substrate_amount, false);
+			expect( cell.has_substrate( 'external' ) );
+		});
+
+		it("can be a product", function() {
+			cell.add_substrate( 'product', substrate_amount, true, false);
+			expect( cell.has_substrate( 'product' ) );
+		});
+
 	});
 	
 	describe("when the cell has ran", function() {
