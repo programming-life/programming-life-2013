@@ -45,7 +45,7 @@ describe( "Module Substrate", function() {
 
 		var module;
 		beforeEach( function() {
-			module = new Model.Substrate( {x: "new"}, undefined, "named_substrate");
+			module = new Model.Substrate( undefined, undefined, "named_substrate");
 		});
 
 		it( "should override the default name", function() {
@@ -53,4 +53,30 @@ describe( "Module Substrate", function() {
 		});
 
 	});
-})
+
+	describe( "When using name option and as parameter", function() {
+
+		var module;
+		beforeEach( function() {
+			module = new Model.Substrate( { name: "param_substrate"}, undefined, "named_substrate" );
+		});
+
+		it( "should not override parameterized name", function() {
+			expect( module.name ).toBe( "param_substrate" );
+		});
+	});
+
+	describe( "When using the start option", function() {
+
+		var module;
+		beforeEach( function() {
+			module = new Model.Substrate( undefined, 2 );
+		});
+
+		it( "should override the default value", function(){
+			expect( module.starts.name ).toBe( 2 );
+		});
+		
+	});
+
+});
