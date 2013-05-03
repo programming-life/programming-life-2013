@@ -1,11 +1,11 @@
 # Basic tree class
 #
-class Tree
+class Model.Tree
 	# Constructor for tree
 	#
 	# @param [Node] root The root node of the tree
 	#
-	constructor: ( root = new Node( null, null ) ) -> 
+	constructor: ( root = new Model.Node( null, null ) ) -> 
 		@_root = root
 		@_current = @_root
 	
@@ -16,7 +16,7 @@ class Tree
 	# @return [Node] the added node
 	#
 	add: ( object, parent = @_root ) ->
-		node = new Node(object, parent)
+		node = new Model.Node(object, parent)
 		current = node
 		while parent isnt null
 			parent._branch = current
@@ -36,4 +36,4 @@ class Tree
 			return res if res
 		return null
 		
-(exports ? this).Tree = Tree
+(exports ? this).Model.Tree = Model.Tree
