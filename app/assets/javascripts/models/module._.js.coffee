@@ -63,9 +63,9 @@ class Model.Module
 				return creation
 		)
 
-		$(document).trigger('moduleInit', this)
+		Object.seal @
 		
-		Object.seal( @ )
+		Model.EventManager.trigger( 'module.creation', @, [ creation ] )	
 		
 	# Gets the substrate start value
 	#
@@ -95,17 +95,22 @@ class Model.Module
 		return @_step.call( @, t, substrates, mu )
 		
 	# Tests if substrates are available
+	#
+	# @todo what to do when value is below 0?
 	# @param substrates [Object] the available subs
 	# @param tests... [String] comma delimited list of strings to test
 	# @return [Boolean] true if all are available
 	#
 	_test : ( substrates, tests... ) ->
 		
-		# TODO notification if fails
-		return not _( tests ).some( 
+		result = not _( tests ).some( 
 			( anon ) -> return not ( substrates[anon]? ) 
-			# TODO what to do when it goes below 0
 		)
+		
+		unless result
+			Model.EventManager.trigger( 'notifications.module.testfailed', @, [ substrates, tests ] )	
+		
+		return result
 		
 	# Applies a change to the parameters of the module
 	#
