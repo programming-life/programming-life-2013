@@ -31,3 +31,6 @@ Teabag.setup do |config|
   config.coverage         = true
   config.coverage_reports = "text,html,cobertura"
 end
+
+require 'coveralls'
+Coveralls.wear!
