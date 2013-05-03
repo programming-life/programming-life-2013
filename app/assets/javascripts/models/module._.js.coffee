@@ -66,25 +66,7 @@ class Model.Module
 		$(document).trigger('moduleInit', this)
 		
 		Object.seal( @ )
-		
-	# Gets the substrate start value
-	#
-	# @param substrate [String] the substrate name
-	# @return [Integer] the value
-	#
-	getSubstrate: ( substrate ) ->
-		return @starts[ substrate ] ? false	
-		
-	# Adds the substrate to the start values
-	#
-	# @param substrate [String] the substrate name
-	# @param value [Integer] the value
-	# @returns [self] for chaining
-	#
-	setSubstrate: ( substrate, value ) ->
-		@starts[ substrate ] = value
-		return this
-		
+				
 	# Runs the step function in the correct context
 	# 
 	# @param t [Integer] the current time
