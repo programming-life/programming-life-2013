@@ -15,9 +15,9 @@
     &raquo;
     <a href='../../class_index.html' title='Index'>Index</a>
     &raquo;
-    <span class='title'>Model</span>
+    <span class='title'>View</span>
     &raquo;
-    <span class='title'>Lipid</span>
+    <span class='title'>Main</span>
     <nav>
       <ul>
         <li class='noframes'>
@@ -108,129 +108,153 @@
     <div id='content'>
       <h1>
         Class:
-        Model.Lipid
+        View.Main
       </h1>
       <table class='box'>
         <tr>
           <td>Defined in:</td>
-          <td>app&#47;assets&#47;javascripts&#47;models&#47;module.lipid.js.coffee</td>
-        </tr>
-        <tr>
-          <td>Inherits:</td>
-          <td>
-            <a href='../../classes/Model/Module.html'>Model.Module</a>
-          </td>
+          <td>app&#47;assets&#47;javascripts&#47;views&#47;view.main.js.coffee</td>
         </tr>
       </table>
-      <h2>Overview</h2>
-      <div class='docstring'>
-  <p>Simulates a cell border from lipids</p>
-</div>
-<div class='tags'>
-</div>
       <h2>Instance Method Summary</h2>
       <ul class='summary'>
   <li>
     <span class='signature'>
       <a href='#constructor-instance'>
-        - (void) <strong>constructor</strong>(params = {}, start = 1, food = "s_int")
+        - (void) <strong>constructor</strong>()
       </a>
     </span>
     <span class='constructor note title'>Constructor</span>
     <span class='desc'>
-      Constructor for lipids
+      Creates a new Main view
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#resize-instance'>
+        - (void) <strong>resize</strong>()
+      </a>
+    </span>
+    <span class='bound note title'>Bound</span>
+    <span class='desc'>
+      Resizes the cell to the window size
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#draw-instance'>
+        - (void) <strong>draw</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Draws the cell
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#moduleInit-instance'>
+        - (void) <strong>moduleInit</strong>(event, module)
+      </a>
+    </span>
+    <span class='bound note title'>Bound</span>
+    <span class='desc'>
+      On module initialization add it to the cell
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#getLocationForModule-instance'>
+        - (void) <strong>getLocationForModule</strong>(module, params)
+      </a>
+    </span>
+    <span class='desc'>
+      Returns the location for a module @returns [Object] the size as an object with x, y
     </span>
   </li>
 </ul>
-      <h2>
-        <small>Inherited Method Summary</small>
-      </h2>
-      <h3 class='inherited'>
-        Methods inherited from
-        <a href='../../classes/Model/Module.html'>Model.Module</a>
-      </h3>
-      <p class='inherited'>
-                <a href='../../classes/Model/Module.html#constructor-instance'>#constructor</a>,
-                <a href='../../classes/Model/Module.html#step-instance'>#step</a>,
-                <a href='../../classes/Model/Module.html#_test-instance'>#_test</a>,
-                <a href='../../classes/Model/Module.html#_do-instance'>#_do</a>,
-                <a href='../../classes/Model/Module.html#_addMove-instance'>#_addMove</a>,
-                <a href='../../classes/Model/Module.html#undo-instance'>#undo</a>,
-        <a href='../../classes/Model/Module.html#redo-instance'>#redo</a>
-      </p>
       <h2>Constructor Details</h2>
       <div class='methods'>
   <div class='method_details'>
     <p class='signature' id='constructor-instance'>
-      - (void) <strong>constructor</strong>(params = {}, start = 1, food = "s_int")
+      - (void) <strong>constructor</strong>()
     </p>
     <div class='docstring'>
-  <p>Constructor for lipids</p>
+  <p>Creates a new Main view</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+</div>
+      <h2>Instance Method Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='resize-instance'>
+      - (void) <strong>resize</strong>()
+      (bound)
+    </p>
+    <div class='docstring'>
+  <p>Resizes the cell to the window size</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='draw-instance'>
+      - (void) <strong>draw</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Draws the cell</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='moduleInit-instance'>
+      - (void) <strong>moduleInit</strong>(event, module)
+      (bound)
+    </p>
+    <div class='docstring'>
+  <p>On module initialization add it to the cell</p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
   <ul class='param'>
     <li>
-      <span class='name'>params</span>
+      <span class='name'>event</span>
       <span class='type'>
         (<tt>Object</tt>)
       </span>
       &mdash;
-      <span class='desc'>parameters for this module</span>
+      <span class='desc'>event raised</span>
     </li>
     <li>
-      <span class='name'>start</span>
+      <span class='name'>module</span>
       <span class='type'>
-        (<tt>Integer</tt>)
+        (<tt><a href='../../classes/Model/Module.html'>Model.Module</a></tt>)
       </span>
       &mdash;
-      <span class='desc'>the initial value of lipid, defaults to 1</span>
-    </li>
-    <li>
-      <span class='name'>food</span>
-      <span class='type'>
-        (<tt>String</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the substrate converted to lipid, defaults to &quot;s_int&quot;</span>
+      <span class='desc'>module added</span>
     </li>
   </ul>
-  <h3>
-    Options Hash:
-    (param):
-  </h3>
-  <ul class='options'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='getLocationForModule-instance'>
+      - (void) <strong>getLocationForModule</strong>(module, params)
+    </p>
+    <div class='docstring'>
+  <p>Returns the location for a module</p><p>@returns [Object] the size as an object with x, y</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
     <li>
-      <span class='name'>k</span>
+      <span class='name'>module</span>
       <span class='type'>
-        (<tt>Integer</tt>)
+        (<tt><a href='../../classes/Model/Module.html'>Model.Module</a></tt>)
       </span>
       &mdash;
-      <span class='desc'>the subscription rate, defaults to 1</span>
-    </li>
-    <li>
-      <span class='name'>dna</span>
-      <span class='type'>
-        (<tt>String</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the dna to use, defaults to &quot;dna&quot;</span>
-    </li>
-    <li>
-      <span class='name'>consume</span>
-      <span class='type'>
-        (<tt>String</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the consume substrate, overides the food parameter, defaults to &quot;s_int&quot;</span>
-    </li>
-    <li>
-      <span class='name'>name</span>
-      <span class='type'>
-        (<tt>String</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the name, defaults to &quot;lipid&quot;</span>
+      <span class='desc'>the module to get the location for</span>
     </li>
   </ul>
 </div>
