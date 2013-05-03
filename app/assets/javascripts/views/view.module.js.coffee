@@ -17,7 +17,7 @@ class View.Module
 
 		@_selected = false		
 
-		$(document).on('moduleInvalidated', @onModuleInvalidated)
+		Model.EventManager.on( 'module.set.property', @, @moduleInvalidated )
 		
 	# Generates a hashcode based on the module name
 	#

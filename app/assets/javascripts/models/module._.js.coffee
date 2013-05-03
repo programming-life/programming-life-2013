@@ -67,13 +67,14 @@ class Model.Module
 		Object.seal @
 						
 		context = @
-		addmove = ( key, value, param ) ->
-			unless @ isnt context
+		addmove = ( caller, key, value, param ) ->
+			console.log 'addmove', key, caller, @
+			unless caller isnt context
 				@_addMove key, value, param
 						
-		Model.EventManager.on( 'module.set.property', addmove )
-		#Model.EventManager.on( 'module.set.amount', addmove )
-		#Model.EventManager.on( 'module.set.substrate', addmove )
+		Model.EventManager.on( 'module.set.property', @, addmove )
+		#Model.EventManager.on( 'module.set.amount', @, addmove )
+		Model.EventManager.on( 'module.set.substrate', @, addmove )
 		Model.EventManager.trigger( 'module.creation', @, [ creation ] )	
 		
 	# Gets the substrate start value
@@ -91,7 +92,7 @@ class Model.Module
 	# @returns [self] for chaining
 	#
 	setSubstrate: ( substrate, value ) ->
-		Model.EventManager.trigger( 'module.set.substrate', @, [ "starts.#{substrate}", @starts[ substrate ] ? 0, value ] )	
+		Model.EventManager.trigger( 'module.set.substrate', @, [ "_starts.#{substrate}", @starts[ substrate ] ? 0, value ] )	
 		@_starts[ substrate ] = value
 		return this
 		
@@ -150,8 +151,10 @@ class Model.Module
 	# @returns [self] for chaining
 	#
 	undo: ( ) ->
-		[ key, value, param ] = @_tree.undo()
-		@_do( key, value )
+		result = @_tree.undo()
+		if result isnt null
+			[ key, value, param ] = result
+			@_do( key, value )
 		return this
 
 	# Redoes the most recently undone move
@@ -159,8 +162,10 @@ class Model.Module
 	# @returns [self] for chaining
 	#
 	redo : ( ) ->
-		[ key, value, param ] = @_tree.redo()
-		@_do( key, param )
+		result = @_tree.redo()
+		if result isnt null
+			[ key, value, param ] = result
+			@_do( key, param )
 		return this
 
 (exports ? this).Model.Module = Model.Module

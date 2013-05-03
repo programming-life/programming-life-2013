@@ -23,25 +23,28 @@ class Model.EventManager
 	# Triggers an event
 	#
 	# @param event [String] event name
-	# @param caller [Object] caller context (this)
+	# @param caller [Object] who triggered the event ( passed as argument )
 	# @param args [Array<any>] arguments to pass
 	# @return [self] chaining self
 	#
 	trigger : ( event, caller, args ) ->
+		
 		if @_events[ event ]?
 			trigger = ( element, index, list ) ->
-				element.apply( caller, args )
+				element.apply( element, _( [ caller ] ).concat args )
 			_( @_events[ event ] ).each trigger
+			
 		return this
 		
 	# Binds an event (alias for bind)
 	#
 	# @param event [String] event name
+	# @param context [Object] who binds on the event ( passed as this )
 	# @param func [Function] the event
 	# @return [self] chaining self
 	#
-	on : ( event, func ) ->
-		return @bind event, func
+	on : ( event, context, func ) ->
+		return @bind event, context, func
 		
 	# Unbinds an event (alias for unbind)
 	#
@@ -55,13 +58,14 @@ class Model.EventManager
 	# Binds an event
 	#
 	# @param event [String] event name
+	# @param context [Context] will serve as this
 	# @param func [Function] the event
 	# @return [self] chaining self
 	#
-	bind : ( event, func ) ->
+	bind : ( event, context, func ) ->
 		unless @_events[ event ]?
 			@_events[ event ] = []
-		@_events[ event ].push func
+		@_events[ event ].push _( func ).bind context
 		return this
 		
 	# Unbinds an event
