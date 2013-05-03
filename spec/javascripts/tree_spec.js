@@ -9,9 +9,9 @@ describe("Tree", function() {
 	
 		beforeEach( function() {
 			rootObject = {test: "test"};
-			root = new Node(rootObject, null);
+			root = new Model.Node(rootObject, null);
 
-			tree = new Tree(root);
+			tree = new Model.Tree(root);
 		});
 		
 		it("should have the provided root as a root", function() {
@@ -27,7 +27,7 @@ describe("Tree", function() {
 
 			beforeEach( function() {
 				nodeObject = {test: "test2"};
-				node = new Node(nodeObject, root);
+				node = new Model.Node(nodeObject, root);
 				tree.add( node );
 			});
 

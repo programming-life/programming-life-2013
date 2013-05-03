@@ -51,7 +51,7 @@ describe("Node", function() {
 
 		beforeEach( function() {
 			nodeObject = {test: "test"};
-			node = new Node(nodeObject, null);
+			node = new Model.Node(nodeObject, null);
 		});
 
 		it("should contain the object", function() {
@@ -70,7 +70,7 @@ describe("Node", function() {
 			var child;
 
 			beforeEach( function() {
-				child = new Node(null, node);
+				child = new Model.Node(null, node);
 			});
 
 			it("should have the root node as its parent", function() {
