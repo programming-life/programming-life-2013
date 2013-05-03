@@ -91,6 +91,21 @@ describe("UndoTree", function() {
 				it("should have returned the second last action", function() {
 					expect( undone ).toBe( object[4] );
 				});
+				
+				describe("when redo has been called", function() {
+
+					beforeEach( function() {
+						redone = tree.redo();
+					});
+
+					it("should have the last node as current", function() {
+						expect( tree._current ).toBe( node[5] );
+					});
+
+					it("should have returned the next action", function() {
+						expect( redone ).toBe( object[5] );
+					});
+				});
 
 				describe("when a new node is added to the tree", function() {
 					var newNode;
@@ -107,18 +122,7 @@ describe("UndoTree", function() {
 						beforeEach( function() {
 							tree.undo();
 						});
-
-						describe("and then redoing", function() {
-							beforeEach( function() {
-								tree.redo();
-							});
-
-							it("should have the same tree", function() {
-								expect( tree._current ).toBe( newNode );
-								expect( tree._current._parent._children.length ).toBe( 2 );
-							});
-						});
-
+						
 						describe("and the old branch node is added again to the tree", function() {
 							beforeEach( function() {
 								oldBranchNode = tree.add( object[4] );
@@ -132,25 +136,23 @@ describe("UndoTree", function() {
 								expect( tree._current._parent._children.length ).toBe( 2 );
 							});
 						});
+
+						describe("and then redoing", function() {
+							beforeEach( function() {
+								tree.redo();
+							});
+
+							it("should have the same tree", function() {
+								expect( tree._current ).toBe( newNode );
+								expect( tree._current._parent._children.length ).toBe( 2 );
+							});
+						});
+
 					});
 
 				});
 			});
 
-			describe("when redo has been called", function() {
-
-				beforeEach( function() {
-					redone = tree.redo();
-				});
-
-				it("should have the last node as current", function() {
-					expect( tree._current ).toBe( node[5] );
-				});
-
-				it("should have returned the next action", function() {
-					expect( redone ).toBe( object[5] );
-				});
-			});
 		});
 
 		describe("when rebasing a branch", function() {
