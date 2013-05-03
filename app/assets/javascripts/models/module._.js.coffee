@@ -10,7 +10,7 @@ class Model.Module
 	#
 	constructor: ( params, step ) -> 
 		
-		@_tree = new UndoTree()
+		@_tree = new Model.UndoTree()
 		creation = Date.now()
 
 		for key, value of params

@@ -1,5 +1,5 @@
 # Basic node class
-class Node
+class Model.Node
 
 	# Constructor for node
 	#
@@ -31,4 +31,4 @@ class Node
 		@_parent = parent
 		return this
 
-(exports ? this).Node = Node
+(exports ? this).Model.Node = Model.Node

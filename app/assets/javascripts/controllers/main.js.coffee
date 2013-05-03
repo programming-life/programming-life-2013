@@ -7,7 +7,7 @@
 class Main
 
 	dt: 0.1
-	_tree: new UndoTree()
+	_tree: new Model.UndoTree()
 
 	# Creates a new instance of Main
 	constructor: ( ) ->
