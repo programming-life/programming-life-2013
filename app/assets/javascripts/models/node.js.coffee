@@ -24,7 +24,7 @@ class Node
 		parent._children.push this
 		parent._branch = this if not parent._branch
 
-		if @_parent is not null
+		if @_parent isnt null
 			index = @_parent._children.indexOf(this)
 			@_parent._children.splice(index, 1);
 
