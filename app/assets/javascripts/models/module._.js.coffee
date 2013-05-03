@@ -11,7 +11,7 @@ class Model.Module
 	constructor: ( params, step ) -> 
 		
 		Object.defineProperty( @ , "_tree",
-			value: new UndoTree()
+			value: new Model.UndoTree()
 			configurable: false
 			enumerable: false
 			writable: true
