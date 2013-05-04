@@ -11,8 +11,9 @@ class View.Main
 		@paper = Raphael('paper', 0, 0)
 		@resize()
 		
-		$(window).on('resize', @resize)
-		$(document).on('moduleInit', @moduleInit)
+		$( window ).on('resize', @resize)
+		Model.EventManager.on( 'cell.add.module', @, @onModuleAdd )
+		Model.EventManager.on( 'cell.remove.module', @, @onModuleRemove )
 
 		@draw()
 
@@ -75,16 +76,28 @@ class View.Main
 			counters[ "#{type}_#{direction}" ] = ++counter
 			view.draw( placement.x, placement.y, scale) 
 
-	# On module initialization add it to the cell
+	# On module added, add it from the cell
 	# 
-	# @param event [Object] event raised
+	# @param cell [Model.Cell] cell added to
 	# @param module [Model.Module] module added
 	#
-	moduleInit: ( event, module ) =>
-		unless _(@_drawn).indexOf( module.name ) isnt -1
+	onModuleAdd: ( cell, module ) =>
+		unless _( @_drawn ).indexOf( module.name ) isnt -1
 			@_drawn.push module.name
-			view = new View.Module(module)
-			@_views.push(view)
+			@_views.push new View.Module( @paper, module )
+			@draw()
+			
+	# On module removed, removed it from the cell
+	# 
+	# @param cell [Model.Cell] cell removed from
+	# @param module [Model.Module] module removed
+	#
+	onModuleRemove: ( cell, module ) =>
+		index = _( @_drawn ).indexOf( module.name )
+		if index isnt -1
+			@_views[ index ].clear()
+			@_views = @_views.splice( index, 1 )
+			@_drawn = @_drawn.splice( index, 1 )
 			@draw()
 
 	# Returns the location for a module
