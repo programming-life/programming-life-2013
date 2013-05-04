@@ -77,6 +77,7 @@ class Model.Module
 		Model.EventManager.on( 'module.set.substrate', @, addmove )
 		Model.EventManager.trigger( 'module.creation', @, [ creation ] )	
 		
+		Object.seal( @ )
 	# Gets the substrate start value
 	#
 	# @param substrate [String] the substrate name

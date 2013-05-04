@@ -11,7 +11,7 @@
     <div id='base' data-path='../../'></div>
 <div id='header'>
   <div id='menu'>
-    <a href='../../README.md.html' title='Programming Life: Gigabase'>Programming Life: Gigabase</a>
+    <a href='../../README.md.html' title='Programming-life'>Programming-life</a>
     &raquo;
     <a href='../../class_index.html' title='Index'>Index</a>
     &raquo;
@@ -149,8 +149,8 @@ module which is the Cell Growth.</p>
   </li>
   <li>
     <span class='signature'>
-      <a href='#add_substrate-instance'>
-        - (self) <strong>add_substrate</strong>(substrate, amount, inside_cell = true)
+      <a href='#addSubstrate-instance'>
+        - (self) <strong>addSubstrate</strong>(substrate, amount, inside_cell = true, is_product = false)
       </a>
     </span>
     <span class='desc'>
@@ -169,8 +169,8 @@ module which is the Cell Growth.</p>
   </li>
   <li>
     <span class='signature'>
-      <a href='#remove_substrate-instance'>
-        - (self) <strong>remove_substrate</strong>(substrate)
+      <a href='#removeSubstrate-instance'>
+        - (self) <strong>removeSubstrate</strong>(substrate)
       </a>
     </span>
     <span class='desc'>
@@ -189,8 +189,8 @@ module which is the Cell Growth.</p>
   </li>
   <li>
     <span class='signature'>
-      <a href='#has_substrate-instance'>
-        - (Boolean) <strong>has_substrate</strong>(substrate)
+      <a href='#hasSubstrate-instance'>
+        - (Boolean) <strong>hasSubstrate</strong>(substrate)
       </a>
     </span>
     <span class='desc'>
@@ -199,8 +199,18 @@ module which is the Cell Growth.</p>
   </li>
   <li>
     <span class='signature'>
-      <a href='#amount_of-instance'>
-        - (Integer) <strong>amount_of</strong>(substrate)
+      <a href='#getSubstrate-instance'>
+        - (Model.Substrate) <strong>getSubstrate</strong>(substrate)
+      </a>
+    </span>
+    <span class='desc'>
+      Gets a substrate
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#amountOf-instance'>
+        - (Integer) <strong>amountOf</strong>(substrate)
       </a>
     </span>
     <span class='desc'>
@@ -331,8 +341,8 @@ module which is the Cell Growth.</p>
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='add_substrate-instance'>
-      - (self) <strong>add_substrate</strong>(substrate, amount, inside_cell = true)
+    <p class='signature' id='addSubstrate-instance'>
+      - (self) <strong>addSubstrate</strong>(substrate, amount, inside_cell = true, is_product = false)
     </p>
     <div class='docstring'>
   <p>Add substrate to cell</p>
@@ -363,6 +373,14 @@ module which is the Cell Growth.</p>
       </span>
       &mdash;
       <span class='desc'>if true is placed inside the cell</span>
+    </li>
+    <li>
+      <span class='name'>is_product</span>
+      <span class='type'>
+        (<tt>Boolean</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>if true is placed right of the cell</span>
     </li>
   </ul>
   <h3>Returns:</h3>
@@ -407,8 +425,8 @@ module which is the Cell Growth.</p>
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='remove_substrate-instance'>
-      - (self) <strong>remove_substrate</strong>(substrate)
+    <p class='signature' id='removeSubstrate-instance'>
+      - (self) <strong>removeSubstrate</strong>(substrate)
     </p>
     <div class='docstring'>
   <p>Removes this substrate from cell</p>
@@ -467,8 +485,8 @@ module which is the Cell Growth.</p>
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='has_substrate-instance'>
-      - (Boolean) <strong>has_substrate</strong>(substrate)
+    <p class='signature' id='hasSubstrate-instance'>
+      - (Boolean) <strong>hasSubstrate</strong>(substrate)
     </p>
     <div class='docstring'>
   <p>Checks if this cell has this substrate</p>
@@ -497,8 +515,38 @@ module which is the Cell Growth.</p>
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='amount_of-instance'>
-      - (Integer) <strong>amount_of</strong>(substrate)
+    <p class='signature' id='getSubstrate-instance'>
+      - (Model.Substrate) <strong>getSubstrate</strong>(substrate)
+    </p>
+    <div class='docstring'>
+  <p>Gets a substrate</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>substrate</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the name of the substrate</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt><a href='../../classes/Model/Substrate.html'>Model.Substrate</a></tt>)
+      &mdash;
+      <span class='desc'>the substrate</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='amountOf-instance'>
+      - (Integer) <strong>amountOf</strong>(substrate)
     </p>
     <div class='docstring'>
   <p>Returns the amount of substrate in this cell</p>
@@ -644,7 +692,7 @@ module which is the Cell Growth.</p>
     </div>
     <div id='footer'>
   Generated on
-  Sun Apr 28 2013 18:42:08 GMT+0200 (W. Europe Daylight Time)
+  Fri May 03 2013 22:38:25 GMT+0200 (W. Europe Daylight Time)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

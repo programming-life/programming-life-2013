@@ -57,7 +57,7 @@ class Model.Cell
 	# @param is_product [Boolean] if true is placed right of the cell
 	# @return [self] chainable instance
 	#
-	add_substrate: ( substrate, amount, inside_cell = on, is_product = off ) ->
+	addSubstrate: ( substrate, amount, inside_cell = on, is_product = off ) ->
 		if ( @_substrates[ substrate ]? )
 			@_substrates[ substrate ].amount = amount
 		else
@@ -80,7 +80,7 @@ class Model.Cell
 	# @param substrate [String] substrate to remove from this cell
 	# @return [self] chainable instance
 	#
-	remove_substrate: ( substrate ) ->
+	removeSubstrate: ( substrate ) ->
 		delete @_substrates[ substrate ]
 		Model.EventManager.trigger( 'cell.remove.substrate', @, [ substrate ] )
 		return this
@@ -98,13 +98,21 @@ class Model.Cell
 	# @param substrate [String] the name of the substrate
 	# @return [Boolean] true if contains
 	#
-	has_substrate : ( substrate ) ->
-		return @_substrate[ substrate ]?
+	hasSubstrate : ( substrate ) ->
+		return @_substrates[ substrate ]?
+		
+	# Gets a substrate
+	# 
+	# @param substrate [String] the name of the substrate
+	# @return [Model.Substrate] the substrate
+	#
+	getSubstrate : ( substrate ) ->
+		return @_substrates[ substrate ] ? null
 	
 	# Returns the amount of substrate in this cell
 	# @param substrate [String] substrate to check
 	# @return [Integer] amount of substrate
-	amount_of: ( substrate ) ->
+	amountOf: ( substrate ) ->
 		return @_substrates[ substrate ]?.amount
 	
 		

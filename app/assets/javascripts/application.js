@@ -23,7 +23,7 @@
 //= require_tree .
 //
 //= require bootstrap
-//= require raphael.min
+//= require raphael-2.1.0
 //= require chart
 //= require md5.min
 //

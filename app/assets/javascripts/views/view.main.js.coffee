@@ -15,157 +15,16 @@ class View.Main
 		$(document).on('moduleInit', @moduleInit)
 
 		@draw()
-		@drawpane()
-		
 
 	# Resizes the cell to the window size
 	#
 	resize: ( ) =>
 		@width = $(window).width() - 20
 		@height = $(window).height() - 5 
-
-
 		@paper.setSize(@width, @height)
 
-		@draw()
-
-	actions: ( number ) ->
-		() => (
-			switch number
-				when 0
-					@cell = new Model.Cell() unless ( @cell? )
-				when 1
-					@cell.add( new Model.DNA() )
-						.add( new Model.Lipid({}, .1) )
-				when 2
-					@cell.add_substrate( "s_ext", 1, false, false )
-				when 3
-					@cell.add( new Model.Transporter.int( {}, .1 ) )
-						.add_substrate( "s_int", 0, true, false )
-				when 5
-					@cell.add( new Model.Protein({}) )
-				when 6
-					@cell.add( new Model.Transporter.ext() )
-						.add_substrate( "p_ext", 0, false, true )
-				when 4
-					@cell.add( new Model.Metabolism({}) )
-						.add_substrate( "p_int", 0, true, true )
-				when 7
-					graphs = {}
-					graph = {}
-
-					container = $(".container")
-					if ( @graphs? and @graphs != {} )
-						graphs = @graphs
-						
-						for name, graph of @graphs
-							for set in graph._datasets
-								set.fill = "rgba(220,220,220,0.5)"
-								set.stroke = "rgba(220,220,220,1)"
-
-						graph = {
-							stroke : "rgba( 240, 180, 180, .6 )"
-							fill : "rgba( 240, 180, 180, .7 )"
-						}
-						
-					
-					@graphs = @cell.visualize( 20, container, { dt: .5, graphs : graphs, graph: graph } )
-					
-					$('html, body').animate(
-						{ scrollTop: 
-							$( '.graph' ).first().offset().top - 20
-						}, 'slow')
-
-				when 8
-					
-					try
-						for i in [ 1 ... 6 ]
-							Math.round( ( @cell._modules[ i ].k = Math.random().toFixed( 2 ) /  .8 + .2 ) * 1000 ) / 1000
-							Math.round( ( @cell._modules[ i ].k_d = Math.random().toFixed( 2 )  / .8 + .2 ) * 1000 ) / 1000
-							Math.round( ( @cell._modules[ i ].k_tr = Math.random().toFixed( 2 )  / .8 + .2 ) * 1000 ) / 1000
-							Math.round( ( @cell._modules[ i ].k_m = Math.random().toFixed( 2 )  / .8 + .2 ) * 1000 ) / 1000
-							Math.round( ( @cell._modules[ i ].v = Math.random().toFixed( 2 )  / .8 + .2 ) * 1000 ) / 1000
-						@draw()
-						
-						@actions( 7 )()
-					catch err
-						@actions( 8 )()
-					
-				when 9
-					@_views = []		
-					@_drawn = []
-					container = $(".container")
-					container.empty()
-					@resize()
-					
-			@drawpane()
-			)
+		@draw()	
 	
-	# Cowboy hacking a pane
-	#
-	drawpane: ( ) ->
-	
-		location = {
-			x: @width * 0.75
-			y: @height * 0.25
-		}
-		unless @pane
-			@pane = @paper.rect(location.x, location.y, 250, 400, 10)
-		else
-			@pane.attr({
-				cx: location.x
-				xy: location.y
-			})
-				
-		@pane.node.setAttribute('class', 'box')
-		texts = [
-			"Create initial cell",
-			"Add Infrastructure ( DNA and Lipid )", 
-			"Add substrate outside cell", 
-			"Add transporter in", 
-			"Add Metabolism"
-			"Add Protein", 
-			"Add transporter out", 
-			"Simulate",
-			"Change some parameters"
-		]
-
-		for i in [1 .. texts.length]
-			unless @rect[i]
-				rect = @paper.rect( location.x + 10 , location.y - 30 + 40 * i, 230, 30, 5 )
-				@rect[i] = rect
-			else
-				rect = @rect[i]
-				rect.attr({
-					cx: location.x
-					cy: location.y
-				})
-
-			rect.attr({
-				'class': 'box'
-				'fill': '#00eeeb'
-			})
-
-			text = @text[i]
-			unless text
-				text = @paper.text( location.x + 120, location.y - 15 + 40 * i, texts[i-1] )
-				@text[i] = text
-			else
-				text.attr({
-					cx : location.x + 120
-					cy : location.y - 15
-
-				})
-
-			if (i > 1 and (@cell is undefined))
-				rect.attr({
-					'fill' : 'grey'
-				})
-			else
-				rect.click( _.debounce( @actions(i - 1), 300) ) unless rect.cl
-				text.click(_.debounce( @actions(i - 1), 300) ) unless rect.cl
-				rect.cl = true
-		
 	# Draws the cell
 	#
 	draw: ( ) ->
