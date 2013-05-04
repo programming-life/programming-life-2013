@@ -95,7 +95,7 @@ class Model.Module
 		
 		changes = { }
 		changes[ substrate ] = value
-		changed = _( _( { } ).extend @starts ).extend changes
+		changed = _( { } ).extend @starts, changes
 		
 		@starts = changed
 		return this
@@ -170,6 +170,7 @@ class Model.Module
 	#
 	redo : ( ) ->
 		result = @_tree.redo()
+		console.log "I would like to redo: ", result
 		if result isnt null
 			[ key, value, param ] = result
 			@_do( key, param )
