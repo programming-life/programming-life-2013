@@ -1,7 +1,8 @@
 class HookController < ApplicationController
 	
 	def index
-		@version = `git describe --abbrev=0`
+		@version = `git describe`
+		@branch = `git rev-parse --abbrev-ref HEAD`
 	end
 
 	def post
@@ -12,7 +13,7 @@ class HookController < ApplicationController
 		`cd /var/www/life/`
 		`git checkout master`
 		`git reset --hard HEAD`
-		@exitcode = `git pull origin master`
+		`git pull origin master`
 		@version = `git describe --abbrev=0`
 	end
 end
