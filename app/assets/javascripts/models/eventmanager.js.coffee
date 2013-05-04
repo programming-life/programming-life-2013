@@ -19,7 +19,15 @@ class Model.EventManager
 	#
 	constructor : () ->
 		@_events = {}
-	
+		
+		Object.defineProperty( @, 'events',			
+			# @property [Array<String>] The events available 
+			get: ->
+				return _.keys @_events
+		)
+		
+		Object.seal @
+		
 	# Triggers an event
 	#
 	# @param event [String] event name
@@ -85,6 +93,9 @@ class Model.EventManager
 	# @return [Array<Function>] the bindings
 	#
 	bindings : ( event ) ->
-		return @_events[ event ] ? []
+		if ( event? )
+			return @_events[ event ] ? []
+		return @_events
+	
 
 (exports ? this).Model.EventManager = Model.EventManager.getSingleton()
