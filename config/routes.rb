@@ -1,6 +1,7 @@
 ProgrammingLife::Application.routes.draw do
    
-  match 'hook' => 'hook#index', :via => [:post]
+  post 'hook' => 'hook#post'
+  get 'hook' => 'hook#index'
 	
   # The priority is based upon order of creation:
   # first created -> highest priority.
