@@ -33,6 +33,7 @@ class Model.Module
 				# those values.
 				Object.defineProperty( @ , key,
 					set: ( param ) ->
+						console.log "I am setting #{key}", @["_#{key}"], param
 						Model.EventManager.trigger( 'module.set.property', @, [ "_#{key}", @["_#{key}"], param ] )
 						@_do( "_#{key}", param )
 					get: ->
@@ -52,10 +53,9 @@ class Model.Module
 		Object.defineProperty( @, 'amount',
 			# @property [Integer] the amount of this substrate at start
 			get: ->
-				return @starts.name
-			set: (value) ->
-				Model.EventManager.trigger( 'module.set.amount', @, [ 'amount', @starts.name, value ] )
-				@starts.name = value
+				return @getSubstrate 'name'
+			set: ( value ) ->
+				@setSubstrate 'name', value
 		)
 		
 		Object.defineProperty( @, 'creation',
@@ -68,13 +68,10 @@ class Model.Module
 						
 		context = @
 		addmove = ( caller, key, value, param ) ->
-			console.log 'addmove', key, caller, @
 			unless caller isnt context
 				@_addMove key, value, param
 						
-		#Model.EventManager.on( 'module.set.property', @, addmove )
-		#Model.EventManager.on( 'module.set.amount', @, addmove )
-		Model.EventManager.on( 'module.set.substrate', @, addmove )
+		Model.EventManager.on( 'module.set.property', @, addmove )
 		Model.EventManager.trigger( 'module.creation', @, [ creation ] )	
 		
 		Object.seal( @ )
@@ -87,15 +84,20 @@ class Model.Module
 	getSubstrate: ( substrate ) ->
 		return @starts[ substrate ] ? false	
 		
-	# Adds the substrate to the start values
+	# Sets the substrate to the start values
 	#
 	# @param substrate [String] the substrate name
 	# @param value [Integer] the value
 	# @returns [self] for chaining
 	#
 	setSubstrate: ( substrate, value ) ->
-		Model.EventManager.trigger( 'module.set.substrate', @, [ "starts.#{substrate}", @starts[ substrate ] ? 0, value ] )	
-		@starts[ substrate ] = value
+		Model.EventManager.trigger( 'module.set.substrate', @, [ substrate, @starts[ substrate ] ? undefined, value ] )	
+		
+		changes = { }
+		changes[ substrate ] = value
+		changed = _( _( { } ).extend @starts ).extend changes
+		
+		@starts = changed
 		return this
 		
 	# Runs the step function in the correct context
@@ -135,7 +137,9 @@ class Model.Module
 	# @returns [self] for chaining
 	#
 	_do : ( key, value ) ->
+		console.log "Doing: #{key}", @[ key ], value
 		@[ key ] = value
+		console.log "Done: #{key}", @[ key ], value
 		return this
 
 	# Adds a move to the undotree
@@ -154,6 +158,7 @@ class Model.Module
 	#
 	undo: ( ) ->
 		result = @_tree.undo()
+		console.log "I would like to undo: ", result
 		if result isnt null
 			[ key, value, param ] = result
 			@_do( key, value )
