@@ -33,8 +33,9 @@ class Model.Module
 				# those values.
 				Object.defineProperty( @ , key,
 					set: ( param ) ->
-						@_addMove(key, @["_#{key}"], param)
-						@_do(key, param)
+						console.log "I am setting #{key}", @["_#{key}"], param
+						Model.EventManager.trigger( 'module.set.property', @, [ "_#{key}", @["_#{key}"], param ] )
+						@_do( "_#{key}", param )
 					get: ->
 						return @["_#{key}"]
 					enumerable: true
@@ -52,9 +53,9 @@ class Model.Module
 		Object.defineProperty( @, 'amount',
 			# @property [Integer] the amount of this substrate at start
 			get: ->
-				return @starts.name
-			set: (value) ->
-				@starts.name = value
+				return @getSubstrate 'name'
+			set: ( value ) ->
+				@setSubstrate 'name', value
 		)
 		
 		Object.defineProperty( @, 'creation',
@@ -63,10 +64,42 @@ class Model.Module
 				return creation
 		)
 
-		$(document).trigger('moduleInit', this)
+		Object.seal @
+						
+		context = @
+		addmove = ( caller, key, value, param ) ->
+			unless caller isnt context
+				@_addMove key, value, param
+						
+		Model.EventManager.on( 'module.set.property', @, addmove )
+		Model.EventManager.trigger( 'module.creation', @, [ creation ] )	
 		
 		Object.seal( @ )
-				
+		
+	# Gets the substrate start value
+	#
+	# @param substrate [String] the substrate name
+	# @return [Integer] the value
+	#
+	getSubstrate: ( substrate ) ->
+		return @starts[ substrate ] ? false	
+		
+	# Sets the substrate to the start values
+	#
+	# @param substrate [String] the substrate name
+	# @param value [Integer] the value
+	# @returns [self] for chaining
+	#
+	setSubstrate: ( substrate, value ) ->
+		Model.EventManager.trigger( 'module.set.substrate', @, [ substrate, @starts[ substrate ] ? undefined, value ] )	
+		
+		changes = { }
+		changes[ substrate ] = value
+		changed = _( { } ).extend @starts, changes
+		
+		@starts = changed
+		return this
+		
 	# Runs the step function in the correct context
 	# 
 	# @param t [Integer] the current time
@@ -74,20 +107,28 @@ class Model.Module
 	# @return [any] returns the value step function is returning
 	#
 	step : ( t, substrates, mu ) ->
-		return @_step.call( @, t, substrates, mu )
+		Model.EventManager.trigger( 'module.before.step', @, [ t, substrates, mu ] )
+		results = @_step.call( @, t, substrates, mu )
+		Model.EventManager.trigger( 'module.after.step', @, [ t, substrates, mu, results ] )
+		return results
 		
 	# Tests if substrates are available
+	#
+	# @todo what to do when value is below 0?
 	# @param substrates [Object] the available subs
 	# @param tests... [String] comma delimited list of strings to test
 	# @return [Boolean] true if all are available
 	#
 	_test : ( substrates, tests... ) ->
 		
-		# TODO notification if fails
-		return not _( tests ).some( 
+		result = not _( tests ).some( 
 			( anon ) -> return not ( substrates[anon]? ) 
-			# TODO what to do when it goes below 0
 		)
+		
+		unless result
+			Model.EventManager.trigger( 'notification', @, [ 'module', 'test', [ substrates, tests ] ] )	
+		
+		return result
 		
 	# Applies a change to the parameters of the module
 	#
@@ -96,7 +137,9 @@ class Model.Module
 	# @returns [self] for chaining
 	#
 	_do : ( key, value ) ->
-		@["_#{key}"] = value
+		console.log "Doing: #{key}", @[ key ], value
+		@[ key ] = value
+		console.log "Done: #{key}", @[ key ], value
 		return this
 
 	# Adds a move to the undotree
@@ -106,8 +149,7 @@ class Model.Module
 	# @returns [self] for chaining
 	#
 	_addMove: ( key, value, param ) ->
-		object = [key, value, param]
-		@_tree.add(object)
+		@_tree.add [ key, value, param ]
 		return this
 
 	# Undoes the most recent move
@@ -115,8 +157,11 @@ class Model.Module
 	# @returns [self] for chaining
 	#
 	undo: ( ) ->
-		[key, value, param] = @_tree.undo()
-		@_do(key, value)
+		result = @_tree.undo()
+		console.log "I would like to undo: ", result
+		if result isnt null
+			[ key, value, param ] = result
+			@_do( key, value )
 		return this
 
 	# Redoes the most recently undone move
@@ -124,8 +169,11 @@ class Model.Module
 	# @returns [self] for chaining
 	#
 	redo : ( ) ->
-		[key, value, param] = @_tree.redo()
-		@_do(key, param)
+		result = @_tree.redo()
+		console.log "I would like to redo: ", result
+		if result isnt null
+			[ key, value, param ] = result
+			@_do( key, param )
 		return this
 
 (exports ? this).Model.Module = Model.Module
