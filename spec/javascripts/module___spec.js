@@ -35,7 +35,7 @@ describe("Module", function() {
 		});
 
 		it( "should have stored that change", function() {
-			expect( module._tree._current._object ).toEqual( ["k",3, 8] );
+			expect( module._tree._current._object ).toEqual( ["_k",3, 8] );
 		});
 		
 		it("should not apply if not present at creation", function() {
@@ -44,7 +44,7 @@ describe("Module", function() {
 		});	
 
 		it( "should not have stored that change", function() {
-			expect( module._tree._current._object ).toEqual( ["k",3, 8] );
+			expect( module._tree._current._object ).toEqual( ["_k",3, 8] );
 		});
 
 		describe("when having undone the most recent change", function() {
