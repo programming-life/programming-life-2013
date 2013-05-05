@@ -9,11 +9,16 @@ class HookController < ApplicationController
 		# TODO check if this is really from Travis CI
 		# Check if the branch name is master
 		# Check if it built correctly
-		
+				
 		`cd /var/www/life/`
+		`git fetch --tags`
 		`git checkout master`
 		`git reset --hard HEAD`
 		`git pull origin master`
 		@version = `git describe --abbrev=0`
+		
+		# Delete tmp directory?
+		# chmod 774 ?
+		# permissions?
 	end
 end
