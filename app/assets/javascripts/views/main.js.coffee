@@ -3,7 +3,7 @@ class View.Main
 	# Creates a new Main view
 	#
 	constructor: ( ) ->
-		@_views = []		
+		@_views = []
 		@_drawn = []
 		@rect = []
 		@text = []
@@ -43,7 +43,6 @@ class View.Main
 		unless @_shape
 			@_shape = @paper.circle( @x, @y, @radius )
 			@_shape.node.setAttribute( 'class', 'cell' )
-
 		else
 			@_shape.attr
 				cx: centerX
@@ -75,6 +74,7 @@ class View.Main
 
 			counters[ "#{type}_#{direction}" ] = ++counter
 			view.draw( placement.x, placement.y, scale ) 
+			
 
 	# On module added, add it from the cell
 	# 
