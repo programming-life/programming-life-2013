@@ -46,7 +46,7 @@ class Model.Transporter extends Model.Module
 			k: 1
 			k_tr: 1
 			k_m : 1
-			name : name ? "transporter_#{origin}_to_#{destination}"
+			name : name ? "#{@id}_#{origin}_to_#{destination}"
 			orig: origin
 			dest: destination
 			dna: "dna"
