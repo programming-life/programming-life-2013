@@ -13,6 +13,7 @@
 //= require jquery
 //= require jquery_ujs
 //= require underscore
+//= require big.min
 //
 //= require MVC
 //
@@ -23,8 +24,7 @@
 //= require_tree .
 //
 //= require bootstrap
-//= require raphael-2.1.0
+//= require raphael.min
 //= require chart
 //= require md5.min
-//
 //= require numeric-1.2.6
