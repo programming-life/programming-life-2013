@@ -1,5 +1,8 @@
 ProgrammingLife::Application.routes.draw do
    
+  resources :module_templates
+
+
   resources :cells
 
 

@@ -1,0 +1,21 @@
+<h1>Listing module_templates</h1>
+
+<table>
+  <tr>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @module_templates.each do |module_template| %>
+  <tr>
+    <td><%= link_to 'Show', module_template %></td>
+    <td><%= link_to 'Edit', edit_module_template_path(module_template) %></td>
+    <td><%= link_to 'Destroy', module_template, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Module template', new_module_template_path %>
