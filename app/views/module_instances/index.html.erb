@@ -1,0 +1,21 @@
+<h1>Listing module_instances</h1>
+
+<table>
+  <tr>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @module_instances.each do |module_instance| %>
+  <tr>
+    <td><%= link_to 'Show', module_instance %></td>
+    <td><%= link_to 'Edit', edit_module_instance_path(module_instance) %></td>
+    <td><%= link_to 'Destroy', module_instance, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Module instance', new_module_instance_path %>
