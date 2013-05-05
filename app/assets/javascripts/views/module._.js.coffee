@@ -15,9 +15,16 @@ class View.Module
 		@_y = 0
 		@_scale = 0
 
-		@_selected = false		
+		@_selected = off	
+		@_visible = on
 
 		Model.EventManager.on( 'module.set.property', @, @onModuleInvalidated )
+		
+		Object.defineProperty( @, 'visible',
+			# @property [Function] the step function
+			get: ->
+				return @_visible
+		)
 		
 	# Generates a hashcode based on the module name
 	#

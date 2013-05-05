@@ -2,7 +2,9 @@
 #
 class Graph
 
+	# The number of datasets visible
 	MAX_DATASETS : 2
+	
 	_chartOptions:
 		pointDot: false
 		bezierCurve: false
@@ -53,11 +55,7 @@ class Graph
 				fill : options.point?.fill ? "rgba(220,220,220,1)",
 				stroke : options.point?.stroke ? "#fff"
 
-		@_nPoints = data.length if @_nPoints < data.length		
-		
-		if ( @_datasets.length > @MAX_DATASETS )
-			@_datasets = _( @_datasets ).last( @MAX_DATASETS )
-		
+		@_nPoints = data.length if @_nPoints < data.length				
 		return this
 	
 	# Clear all data from the Graph
@@ -77,17 +75,19 @@ class Graph
 	render: ( elem ) ->
 		ctx = @_canvas.get(0).getContext("2d")
 		
-		duration = @_nPoints * @_dt
+		duration = ( @_nPoints - 1 ) * @_dt
 		options = _.clone @_chartOptions
 
-		# This is a temporary fix to show lines which are horizontal. 
+		datasets = _( @_datasets ).last @MAX_DATASETS
 		
 		# Get maximum and minimum values
-		for dataset in @_datasets
+		for dataset in datasets
 			datamin = _.min dataset.data
 			datamax = _.max dataset.data
 			min = ( if ( min? ) then Math.min( min, datamin ) else datamin )
 			max = ( if ( max? ) then Math.max( max, datamax ) else datamax )
+			
+		console.log datamin, datamax, min, max
 
 		# Adapt scale if max and min are equal
 		if ( max == min )
@@ -100,13 +100,15 @@ class Graph
 			# time begin, just indicate it didn't change and don't show labels
 			options.scaleShowLabels = false 
 			 
-		
+		labels = for t in [0 ... @_nPoints ] by 1
+			''
+		labels[ 0 ] = 0
+		labels[ labels.length - 1 ] = duration
+					
 		new Chart( ctx ).Line
-			labels: 
-				for t in [0 ... duration] by @_dt
-					if ( 0 < t < duration - @_dt ) then '' else t
+			labels: labels
 			datasets:
-				for dataset in @_datasets
+				for dataset in datasets
 					data: dataset.data
 					fillColor : dataset.fill,
 					strokeColor : dataset.stroke,

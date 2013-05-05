@@ -63,6 +63,13 @@ class Model.Module
 			get: ->
 				return creation
 		)
+		
+		id = _.uniqueId "#{this.constructor.name}_"
+		Object.defineProperty( @, 'id', 
+			# @property [Integer]  the unique id
+			get : ->
+				return id
+		)
 
 		Object.seal @
 						
