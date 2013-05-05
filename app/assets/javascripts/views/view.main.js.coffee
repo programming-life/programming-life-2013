@@ -8,10 +8,10 @@ class View.Main
 		@rect = []
 		@text = []
 
-		@paper = Raphael('paper', 0, 0)
+		@paper = Raphael( 'paper', 0, 0 )
 		@resize()
 		
-		$( window ).on('resize', @resize)
+		$( window ).on( 'resize', @resize )
 		Model.EventManager.on( 'cell.add.module', @, @onModuleAdd )
 		Model.EventManager.on( 'cell.remove.module', @, @onModuleRemove )
 
@@ -20,9 +20,9 @@ class View.Main
 	# Resizes the cell to the window size
 	#
 	resize: ( ) =>
-		@width = $(window).width() - 20
-		@height = $(window).height() - 5 
-		@paper.setSize(@width, @height)
+		@width = $( window ).width() - 20
+		@height = $( window ).height() - 5 
+		@paper.setSize( @width, @height )
 
 		@draw()	
 	
@@ -33,7 +33,7 @@ class View.Main
 		# First, determine the center and radius of our cell
 		centerX = @width / 2
 		centerY = @height / 2
-		radius = Math.min(@width, @height) / 2 * .7
+		radius = Math.min( @width, @height ) / 2 * .7
 
 		radius = 400 if radius > 400
 		radius = 200 if radius < 200
@@ -41,8 +41,8 @@ class View.Main
 		scale = radius / 400
 
 		unless @_shape
-			@_shape = @paper.circle(@x, @y, @radius)
-			@_shape.node.setAttribute('class', 'cell')
+			@_shape = @paper.circle( @x, @y, @radius )
+			@_shape.node.setAttribute( 'class', 'cell' )
 
 		else
 			@_shape.attr
@@ -74,7 +74,7 @@ class View.Main
 			placement = @getLocationForModule( view.module, params )
 
 			counters[ "#{type}_#{direction}" ] = ++counter
-			view.draw( placement.x, placement.y, scale) 
+			view.draw( placement.x, placement.y, scale ) 
 
 	# On module added, add it from the cell
 	# 
@@ -95,9 +95,11 @@ class View.Main
 	onModuleRemove: ( cell, module ) =>
 		index = _( @_drawn ).indexOf( module.name )
 		if index isnt -1
-			@_views[ index ].clear()
-			@_views = @_views.splice( index, 1 )
-			@_drawn = @_drawn.splice( index, 1 )
+			view = @_views[ index ]
+			view.clear()
+			@_views = _( @_views ).without view
+			@_drawn = _( @_drawn ).without module.name
+			
 			@draw()
 
 	# Returns the location for a module
