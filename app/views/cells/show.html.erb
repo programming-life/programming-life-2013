@@ -1,0 +1,15 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Name:</b>
+  <%= @cell.name %>
+</p>
+
+<p>
+  <b>Id:</b>
+  <%= @cell.id %>
+</p>
+
+
+<%= link_to 'Edit', edit_cell_path(@cell) %> |
+<%= link_to 'Back', cells_path %>

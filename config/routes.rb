@@ -1,5 +1,8 @@
 ProgrammingLife::Application.routes.draw do
    
+  resources :cells
+
+
   post 'hook' => 'hook#post'
   get 'hook' => 'hook#index'
 	
