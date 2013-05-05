@@ -148,7 +148,7 @@ class View.Main
 				y = params.cy + params.r * Math.sin( alpha )
 
 			when "Transporter"
-				dx = 50 * params.count * params.scale
+				dx = 60 * params.count * params.scale
 				
 				if params.placement is 1					
 					alpha = Math.PI - Math.asin( dx / params.r )
@@ -160,15 +160,15 @@ class View.Main
 
 			when "DNA"
 				x = params.cx + ( params.count % 3 * 40 )
-				y = params.cy - params.r / 2 + ( Math.round( params.count / 3 ) * 40 )
+				y = params.cy - params.r / 2 + ( Math.floor( params.count / 3 ) * 40 )
 
 			when "Metabolism"
-				x = params.cx + ( params.count % 3 * 40 )
-				y = params.cy + params.r / 2 + ( Math.round( params.count / 3 ) * 40 )
+				x = params.cx + ( params.count % 2 * 80 )
+				y = params.cy + params.r / 2 + ( Math.floor( params.count / 2 ) * 40 )
 
 			when "Protein"
 				x = params.cx + params.r / 2 + ( params.count % 3 * 40 )
-				y = params.cy - params.r / 2 + ( Math.round( params.count / 3 ) * 40 )
+				y = params.cy - params.r / 2 + ( Math.floor( params.count / 3 ) * 40 )
 				
 			when "Substrate"
 				x = ( params.cx + params.placement * 200 )

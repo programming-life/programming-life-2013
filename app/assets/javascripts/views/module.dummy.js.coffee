@@ -78,7 +78,7 @@ class View.DummyModule extends View.Module
 		@_scale = scale
 		@_color = @hashColor()
 
-		padding = 8 * scale
+		padding = 15 * scale
 
 		if @_selected
 			padding = 20 * scale
@@ -105,13 +105,13 @@ class View.DummyModule extends View.Module
 					
 				when "Substrate"
 				
-					text = @_paper.text( x, y, _.escape "Add #{@type} #{@name}" )
+					text = @_paper.text( x, y, _.escape "Add #{@name}" )
 					text.attr
 						'font-size': 20 * scale
 					
 				when "Transporter"
 				
-					text = @_paper.text( x, y, _.escape "Add #{@type} #{@name}" )
+					text = @_paper.text( x, y, _.escape "Add #{@name}" )
 					text.attr
 						'font-size': 20 * scale
 										
