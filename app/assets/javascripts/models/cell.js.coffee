@@ -62,7 +62,7 @@ class Model.Cell
 			@_substrates[ substrate ].amount = amount
 		else
 			@_substrates[ substrate ] = new Model.Substrate( {}, amount, substrate, inside_cell, is_product )
-			Model.EventManager.trigger( 'cell.add.substrate', @, [ substrate, amount, inside_cell, is_product ] )
+			Model.EventManager.trigger( 'cell.add.substrate', @, [ @_substrates[ substrate ], substrate, amount, inside_cell, is_product ] )
 		return this
 		
 	# Remove module from cell
