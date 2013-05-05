@@ -25,7 +25,7 @@ before_script:
     - sh -e /etc/init.d/xvfb start
 
 script:
-    - bundle exec rspec spec
+    - bundle exec rake test
     - bundle exec rake jasmine:ci
 notifications:
     webhooks:

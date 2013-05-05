@@ -4,8 +4,8 @@ class View.Module
 	# 
 	# @param module [Model.Module] the module to show
 	#
-	constructor: ( module ) ->
-		@_paper = Main.view.paper
+	constructor: ( paper, module ) ->
+		@_paper = paper
 
 		@module = module		
 		@type = module.constructor.name
@@ -15,9 +15,16 @@ class View.Module
 		@_y = 0
 		@_scale = 0
 
-		@_selected = false		
+		@_selected = off	
+		@_visible = on
 
-		$(document).on('moduleInvalidated', @onModuleInvalidated)
+		Model.EventManager.on( 'module.set.property', @, @onModuleInvalidated )
+		
+		Object.defineProperty( @, 'visible',
+			# @property [Function] the step function
+			get: ->
+				return @_visible
+		)
 		
 	# Generates a hashcode based on the module name
 	#
@@ -62,12 +69,11 @@ class View.Module
 
 	# Runs if module is invalidated
 	# 
-	# @param event [Object] the event raised
 	# @param module [Model.Module] the module invalidated
 	#
-	moduleInvalidated: ( event, module ) =>
+	onModuleInvalidated: ( module, params... ) =>
 		if module is @module
-			@draw(@_x, @_y, @_scale)
+			@draw( @_x, @_y, @_scale )
 
 	# Draw a component
 	#
@@ -164,7 +170,7 @@ class View.Module
 				return [ text, line ]
 				
 			when 'Information'
-				console.log "information for #{@name}"
+				
 				objRect = params.objRect
 				
 				# Add params text
@@ -181,6 +187,17 @@ class View.Module
 				return [ text, line ]
 		
 		return []
+
+	# Clears the module view
+	#
+	clear: () ->
+		@_contents?.remove()
+		@_box?.remove()
+		@_close?.remove()
+		@_closeText?.remove()
+		@_shadow?.remove()
+		@_hitBox?.remove()
+		console.log 'cleared' 
 			
 	# Draws this view and thus the model
 	#

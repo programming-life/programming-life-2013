@@ -23,4 +23,5 @@
 //
 // You can require javascript files here. A good place to start is by requiring your application.js.
 //= require application
+//= require_tree ./helpers
 

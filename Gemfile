@@ -7,7 +7,6 @@ gem 'rails', '3.2.12'
 
 gem 'sqlite3'
 
-
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
@@ -18,18 +17,16 @@ group :assets do
   # gem 'therubyracer', :platforms => :ruby
 
   gem 'uglifier', '>= 1.0.3'
+  gem "teabag"
 end
 
 group :development, :test do
   gem 'rake'
   gem 'jasmine'
+  gem 'coveralls', require: false
 end
 
 gem 'jquery-rails'
-
-group :assets do
-	gem "teabag"
-end
 
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'

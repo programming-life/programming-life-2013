@@ -4,14 +4,14 @@
 
 # The controller for the Main action and view
 #
-class Main
+class Controller.Main
 
 	dt: 0.1
 	_tree: new UndoTree()
 
 	# Creates a new instance of Main
 	constructor: ( ) ->
-		@view = new View.Main
+		@view = new View.Main()
 	
 	# Undoes the last move.
 	undo: ( ) ->
@@ -35,6 +35,6 @@ class Main
 
 
 $(document).ready ->
-	(exports ? window).Main = new Main
+	(exports ? window).Controller.Main = Controller.Main
 		
 	

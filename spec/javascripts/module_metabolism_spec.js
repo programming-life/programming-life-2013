@@ -7,8 +7,8 @@ describe("Module Metabolism", function() {
 			module = new Model.Metabolism();
 		});
 		
-		it( "should have 'enzym' as name", function() {
-			expect( module.name ).toBe( "enzym" );
+		it( "should have 'enzyme' as name", function() {
+			expect( module.name ).toBe( "enzyme" );
 		});
 		
 		it( "should have 's_int' as substrate", function() {

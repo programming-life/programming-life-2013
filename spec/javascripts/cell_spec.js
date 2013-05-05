@@ -9,6 +9,16 @@ describe("Cell", function() {
 	it("should have a creation date", function() {
 		expect( cell.creation ).toBeDefined();
 	});
+
+	it("should accept custom params", function() {
+		cell = new Model.Cell( { name: "custom_name"} );
+		expect( cell ).toBeDefined();
+	});
+
+	it("should accept a custom start time", function() {
+		cell = new Model.Cell( undefined, 2 );
+		expect( cell ).toBeDefined();
+	})
   
 	describe("when a module has been added", function() {
 		beforeEach(function() {
@@ -27,33 +37,80 @@ describe("Cell", function() {
 	});
 	
 	describe("when a substrate has been added", function() {
+	
 		var substrate_name = 'mock';
 		var substrate_amount = 42;
 		
 		beforeEach(function() {
-			cell.add_substrate( substrate_name, substrate_amount );
+			cell.addSubstrate( substrate_name, substrate_amount );
 		});
 		
 		it("should have that substrate", function() {
-			expect( cell.amount_of( substrate_name ) ).toBe( substrate_amount );
+			expect( cell.hasSubstrate( substrate_name ) ).toBeTruthy();
+			substrate = cell.getSubstrate( substrate_name );
+			expect( substrate ).toBeDefined();
+			expect( substrate ).not.toBe( null );
+		});
+		
+		it("should have the amount specified", function() {
+			expect( cell.amountOf( substrate_name ) ).toBe( substrate_amount );
+			substrate = cell.getSubstrate( substrate_name );
+			expect( substrate.amount ).toBe( substrate_amount );
+		})
+
+		it("should replace the substrate amount if it already exists", function () {
+			substrate = cell.getSubstrate( substrate_name );
+			cell.addSubstrate( substrate_name, substrate_amount + 1 );
+			expect( substrate ).toBe( cell.getSubstrate( substrate_name ) );
+			expect( cell.amountOf( substrate_name ) ).toBe( substrate_amount + 1 );
+			expect( substrate.amount ).toBe( substrate_amount + 1 );
 		});
 		
 		it("should be able to remove that substrate", function() {
-			cell.remove_substrate( substrate_name );
-			expect( cell.amount_of( substrate_name ) ).not.toBeDefined();
+			cell.removeSubstrate( substrate_name );
+			expect( cell.hasSubstrate( substrate_name ) ).toBeFalsy();
+			expect( cell.getSubstrate( substrate_name ) ).toBeNull();
+			expect( cell.amountOf( substrate_name ) ).not.toBeDefined();
+		});
+
+		it("can be an external substrate", function() {
+			cell.addSubstrate( 'e_substrate', substrate_amount, false, false );
+			expect( cell.hasSubstrate( 'e_substrate' ) ).toBeTruthy();
+			substrate = cell.getSubstrate( 'e_substrate' );
+			expect( substrate.placement ).toBeAtMost( -1 );
+		});
+		
+		it("can be an internal substrate", function() {
+			cell.addSubstrate( 'i_substrate', substrate_amount, true, false );
+			expect( cell.hasSubstrate( 'i_substrate' ) ).toBeTruthy();
+			substrate = cell.getSubstrate( 'i_substrate' );
+			expect( substrate.placement ).toBeBetween( -1, 0 );
+		});
+
+		it("can be an internal product", function() {
+			cell.addSubstrate( 'i_product', substrate_amount, true, true );
+			expect( cell.hasSubstrate( 'i_product' ) ).toBeTruthy();
+			substrate = cell.getSubstrate( 'i_product' );
+			expect( substrate.placement ).toBeBetween( 0, 1 );
+		});
+		
+		it("can be an external product", function() {
+			cell.addSubstrate( 'e_product', substrate_amount, false, true );
+			expect( cell.hasSubstrate( 'e_product' ) ).toBeTruthy();
+			substrate = cell.getSubstrate( 'e_product' );
+			expect( substrate.placement ).toBeAtLeast( 1 );
 		});
 	});
 	
 	describe("when the cell has ran", function() {
 		var run_t = 10;
-		var result = null;
+		var result;
 		
 		beforeEach(function() {
 			result = cell.run( run_t );
 		});
 		
 		it("should have run with t runtime", function() {
-			
 			expect( result ).toBeDefined();
 			expect( result.results.x ).toBeDefined();
 			expect( result.results.x[ 0 ] ).toBe( 0 );
@@ -71,9 +128,9 @@ describe("Cell", function() {
 
 		beforeEach(function() {
 			cell = new Model.Cell();
-			cell.add_substrate( 'enzym', enzym )
-				.add_substrate( 'food_out', food )
-				.add_substrate( 'food_in', 0 )
+			cell.addSubstrate( 'enzym', enzym )
+				.addSubstrate( 'food_out', food )
+				.addSubstrate( 'food_in', 0 )
 				
 			create_transport = new Model.Module(
 				{ 
@@ -174,8 +231,7 @@ describe("Cell", function() {
 
 			beforeEach(function() {
 				container = $("<div class='container'></div>");
-				dt = 0.1;
-				cell.visualize(2, container);
+				cell.visualize( 2, container );
 			});
 
 			it("the container should have as many graphs as the cell has substrates", function() {
