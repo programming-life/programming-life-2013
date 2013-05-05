@@ -14,6 +14,7 @@ class View.Main
 		@resize()
 		
 		@cell = new Model.Cell()
+		
 		@_views.push new View.DummyModule( @paper, @cell, new Model.DNA() )
 		@_views.push new View.DummyModule( @paper, @cell, new Model.Lipid() )
 		@_views.push new View.DummyModule( @paper, @cell, new Model.Substrate( { placement: -1, name: 's' } ), { name: 's_ext', inside_cell: off, is_product: off, amount: 1 } )
@@ -29,6 +30,37 @@ class View.Main
 		if ( @cell? )
 			for module in @cell._modules
 				@onModuleAdd( @cell, module )
+		
+		@_views.push new View.Action( @paper, 'Run', {}, () =>
+			try
+				graphs = {}
+				graph = {}
+
+				container = $(".container")
+				if ( @graphs? and @graphs != {} )
+					graphs = @graphs
+
+					for name, graph of @graphs
+						for set in graph._datasets
+							set.fill = "rgba(220,220,220,0.5)"
+							set.stroke = "rgba(220,220,220,1)"
+
+					graph = {
+						stroke : "rgba( 240, 180, 180, .6 )"
+						fill : "rgba( 240, 180, 180, .7 )"
+					}
+
+
+				@graphs = @cell.visualize( 10, container, { dt: .2, graphs : graphs, graph: graph } )
+
+				$('html, body').animate(
+					{ scrollTop: 
+						$( '.graph' ).first().offset().top - 20
+					}, 'slow')
+			catch err
+				console.log err
+			
+		)
 		
 		$( window ).on( 'resize', @resize )
 		Model.EventManager.on( 'cell.add.module', @, @onModuleAdd )
@@ -77,27 +109,34 @@ class View.Main
 			unless view.visible
 				continue
 			
-			type = view.module.constructor.name
-			direction = view.module.direction ? view.module.placement ? 0
-			counter = counters[ "#{type}_#{direction}" ] ? 0
+			if ( view instanceof View.Module )
+				type = view.module.constructor.name
+				direction = view.module.direction ? view.module.placement ? 0
+				counter = counters[ "#{type}_#{direction}" ] ? 0
+				
+				# Send all the parameters through so the location
+				# method becomes functional. Easier to test and debug.
+				params = { 
+					count: counter
+					view: view
+					type: type 
+					placement: direction
+					cx: centerX
+					cy: centerY
+					r: radius
+					scale: scale
+				}
+				
+				placement = @getLocationForModule( view.module, params )
+				
+				counters[ "#{type}_#{direction}" ] = ++counter
+				
+			if ( view instanceof View.Action )
+				placement = { x: centerX, y: centerY, scale }
 			
-			# Send all the parameters through so the location
-			# method becomes functional. Easier to test and debug.
-			params = { 
-				count: counter
-				view: view
-				type: type 
-				placement: direction
-				cx: centerX
-				cy: centerY
-				r: radius
-				scale: scale
-			}
-			placement = @getLocationForModule( view.module, params )
-
-			counters[ "#{type}_#{direction}" ] = ++counter
 			view.draw( placement.x, placement.y, scale ) 
 			
+		
 
 	# On module added, add it from the cell
 	# 
