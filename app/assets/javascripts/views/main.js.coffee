@@ -11,7 +11,9 @@ class View.Main
 		@text = []
 
 		@paper = Raphael( 'paper', 0, 0 )
-		@resize()
+		@width = $( window ).width() - 20
+		@height = $( window ).height() - 5 
+		@setSize( @width, @height)
 		
 		@cell = new Model.Cell()
 		
@@ -61,6 +63,14 @@ class View.Main
 				console.log err
 			
 		)
+
+		tree = new Model.UndoTree(new Model.Node("Root",null))
+		for i in [1..3]
+			tree.add( "Test"+i )
+			tree.undo()
+			tree.add( "Test"+4 )
+			tree.add( "Test"+5 )
+		@_views.push new View.Tree( tree, @paper )
 		
 		$( window ).on( 'resize', @resize )
 		Model.EventManager.on( 'cell.add.module', @, @onModuleAdd )
@@ -68,13 +78,21 @@ class View.Main
 		Model.EventManager.on( 'cell.remove.module', @, @onModuleRemove )
 		
 		@draw()
+	
+	# Sets the size of the cell
+	#
+	# @param width [Integer] The width
+	# @param height [Integer] The height
+	#
+	setSize: (width, height ) ->
+		@paper.setSize(width, height)
 
 	# Resizes the cell to the window size
 	#
 	resize: ( ) =>
 		@width = $( window ).width() - 20
 		@height = $( window ).height() - 5 
-		@paper.setSize( @width, @height )
+		@setSize( @width, @height )
 
 		@draw()	
 	
@@ -133,6 +151,10 @@ class View.Main
 				
 			if ( view instanceof View.Action )
 				placement = { x: centerX, y: centerY, scale }
+
+			if ( view instanceof View.Tree )
+				placement = {x: 200, y: 100, scale }
+				
 			
 			view.draw( placement.x, placement.y, scale ) 
 			
