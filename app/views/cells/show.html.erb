@@ -1,15 +1,38 @@
 <p id="notice"><%= notice %></p>
 
 <p>
-  <b>Name:</b>
-  <%= @cell.name %>
-</p>
-
-<p>
   <b>Id:</b>
   <%= @cell.id %>
 </p>
 
+<p>
+  <b>Name:</b>
+  <%= @cell.name %>
+</p>
+
+<table class="table table-bordered">
+
+	<thead>
+		<tr>
+			<th>Id</th>
+			<th>Template</th>
+			<th></th>
+			<th></th>
+		</tr>
+	</thead>
+	
+	<tbody>
+		<% @cell.module_instances do |module_instance| %>
+		<tr>
+			<td><%= module_instance.id %></td>
+			<td><%= ModuleTemplate.find( module_instance.template_id ).name %></td>
+			<td><%= link_to 'Show', module_instance %></td>
+			<td><%= link_to 'Edit', edit_module_instance_path( module_instance ) %></td>
+		</tr>
+		<% end %>
+	</tbody>
+	
+</table>
 
 <%= link_to 'Edit', edit_cell_path(@cell) %> |
 <%= link_to 'Back', cells_path %>
