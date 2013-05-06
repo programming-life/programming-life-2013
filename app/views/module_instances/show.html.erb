@@ -17,7 +17,7 @@
 		</tr>
 		<tr>
 			<td>Based on</td>
-			<td><%= link_to raw('<i class=" icon-random"></i> ' + @module_template.name + ' template'), @module_template, :class => 'btn btn-mini' %></td>
+			<td><%= link_to raw('<i class=" icon-random"></i> ' + @module_template.name + ' template'), @module_template, :class => 'btn btn-mini' %> <span class="label label-info">module.<%= @module_template.file %>.js</span></td>
 		</tr>
 		<tr>
 			<td>Part of</td>
@@ -57,7 +57,7 @@
 
 <footer class="row">
 	<div class="form-actions span12">
-		<%= link_to raw('<i class="icon-pencil icon-white"></i> Edit'), edit_module_template_path(@module_instance), :class => 'btn btn-primary' %> 
+		<%= link_to raw('<i class="icon-pencil icon-white"></i> Edit'), edit_module_instance_path(@module_instance), :class => 'btn btn-primary' %> 
 		<%= link_to raw('<i class="icon-trash"></i> Destroy'), @module_instance, method: :delete, data: { confirm: 'Are you sure?' }, :class => 'btn btn-danger' %>  
 		<%= link_to 'Back', module_instances_path %>
 	</div>

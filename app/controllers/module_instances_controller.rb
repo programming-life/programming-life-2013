@@ -56,6 +56,7 @@ class ModuleInstancesController < ApplicationController
   def new
   
     @module_instance = ModuleInstance.new
+	
 	@module_instance.build_cell
 	@module_instance.build_module_template
 	@module_instance.module_values.build
@@ -70,6 +71,15 @@ class ModuleInstancesController < ApplicationController
   # GET /module_instances/1/edit
   def edit
     @module_instance = ModuleInstance.find(params[:id])
+	
+	@module_parameters = @module_instance.module_parameters
+	@module_values = @module_instance.module_values
+	@module_hash = Hash[ ( @module_parameters.map { |p| p.key } ).zip( 
+		@module_parameters.map { |p| 
+				( found = ( @module_values.select{ |v| v.module_parameter == p } ).first ).nil? ? nil : found.value
+			} 
+		)
+	]
   end
 
   # POST /module_instances

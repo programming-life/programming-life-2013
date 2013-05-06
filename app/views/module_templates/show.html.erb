@@ -20,6 +20,10 @@
 			<td><%= @module_template.name %></td>
 		</tr>
 		<tr>
+			<td>File</td>
+			<td><%= link_to "module.#{@module_template.file}.js", asset_path( "models/module.#{@module_template.file}.js"), :class => 'btn btn-info btn-mini' + ( @module_template.file.nil? ? ' disabled' : '' )  %></span></td>
+		</tr>
+		<tr>
 			<td>Parameters</td>
 			<td>
 				<% 

@@ -35,6 +35,8 @@ class CellsController < ApplicationController
   # GET /cells/new.json
   def new
     @cell = Cell.new
+	
+	@available_templates = ModuleTemplate.all
 
     respond_to do |format|
       format.html # new.html.erb
