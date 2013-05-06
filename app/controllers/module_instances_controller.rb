@@ -2,7 +2,21 @@ class ModuleInstancesController < ApplicationController
   # GET /module_instances
   # GET /module_instances.json
   def index
+	
+	@filters = { 
+		cell_id: params.has_key?(:cell) ? params[:cell].to_i : nil ,
+		module_template_id: params.has_key?(:template) ? params[:template].to_i : nil
+	}
+	
     @module_instances = ModuleInstance.all
+	
+	@filters.each { |filter, value|
+		if( !value.nil? )
+			@module_instances = @module_instances.select{ |i| 
+				i[filter] == value 
+			}
+		end
+	}
 
     respond_to do |format|
       format.html # index.html.erb
@@ -13,8 +27,19 @@ class ModuleInstancesController < ApplicationController
   # GET /module_instances/1
   # GET /module_instances/1.json
   def show
-    @module_instance = ModuleInstance.find(params[:id])
-
+  
+	# We need the following data
+	#
+	# Instance < Template
+	# 	Template has Parameters
+	# 	Instance has Values
+	#
+    @module_instance = ModuleInstance.find( params[:id] )
+	@cell = Cell.find( @module_instance.cell_id )
+	@module_template = ModuleTemplate.find( @module_instance.module_template_id )
+	@module_parameters = ModuleParameter.where( :module_template_id => @module_template.id ) 
+	@module_values = ModuleValue.where( :module_instance_id => @module_instance.id ) 
+	
     respond_to do |format|
       format.html # show.html.erb
       format.json { render json: @module_instance }
@@ -24,6 +49,7 @@ class ModuleInstancesController < ApplicationController
   # GET /module_instances/new
   # GET /module_instances/new.json
   def new
+  
     @module_instance = ModuleInstance.new
 	@module_instance.build_cell
 	@module_instance.build_module_template
