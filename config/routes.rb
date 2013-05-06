@@ -1,5 +1,7 @@
 ProgrammingLife::Application.routes.draw do
    
+  get "pdftest/test"
+
   post 'hook' => 'hook#post'
   get 'hook' => 'hook#index'
 	
