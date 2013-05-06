@@ -35,5 +35,29 @@ class Model.Tree
 			res = @find( object, child)
 			return res if res
 		return null
+	
+	iterator: ( ) ->
+		return @breadthfirst()
+	
+	breadthfirst: ( start = @_root ) ->
+		res = [start]
+
+		res.push start._children...
+
+		for child in start._children
+			arr = @breadthfirst(child)
+			arr.splice(0,1)
+			res.push arr...
+
+		return res
+	
+	depthfirst: ( start = @_root ) ->
+		res = [start]
+
+		for child in start._children
+			res.push @depthfirst(child)...
+
+		return res
+		
 		
 (exports ? this).Model.Tree = Model.Tree
