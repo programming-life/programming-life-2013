@@ -21,14 +21,15 @@
 		<tr>
 			<td>Modules</td>
 			<td>
+				<i class="icon-magnet"></i> 
 				<% 
 					modules = []
 					@module_instances.each do |module_instance| 
-						modules.push link_to ModuleTemplate.find( module_instance.module_template_id).name, module_instance
+						modules.push link_to ModuleTemplate.find( module_instance.module_template_id).name, module_instance, :class => 'btn btn-mini'
 					end
 				%>
 				
-				<%= listify modules %>
+				<%= (listify modules).html_safe %>
 			</td>
 		</tr>
 		
@@ -45,6 +46,9 @@
 </table>
 
 <footer class="row">
+	<div class="link-actions span12">
+		<%= link_to raw('<i class="icon-magnet"></i> Modules linked'), module_instances_path( :cell => @cell.id ), :class => 'btn' %> 
+	</div>
 	<div class="form-actions span12">
 		<%= link_to raw('<i class="icon-pencil icon-white"></i> Edit'), edit_cell_path(@cell), :class => 'btn btn-primary' %> 
 		<%= link_to raw('<i class="icon-trash"></i> Destroy'), @cell, method: :delete, data: { confirm: 'Are you sure?' }, :class => 'btn btn-danger' %>  

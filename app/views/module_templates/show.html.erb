@@ -39,10 +39,10 @@
 				<%
 					instances = []
 					@module_instances_page.each do |module_instance| 
-						instances.push link_to '#' + module_instance.id.to_s, module_instance
+						instances.push link_to '#' + module_instance.id.to_s, module_instance, :class => 'btn btn-mini'
 					end
 				%>
-				<%= listify instances %>
+				<%= (listify instances).html_safe %>
 				<%= will_paginate @module_instances_page %>
 			</td>
 		</tr>
