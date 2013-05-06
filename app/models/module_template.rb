@@ -13,8 +13,8 @@ class ModuleTemplate < ActiveRecord::Base
   
 	validates :name, :presence => true
   
-	has_many :module_instances
-	has_many :module_parameters
+	has_many :module_instances, :dependent => :destroy
+	has_many :module_parameters, :dependent => :destroy
 	has_many :cells, :through => :module_instances
   
 	accepts_nested_attributes_for  :module_parameters, :allow_destroy => true
