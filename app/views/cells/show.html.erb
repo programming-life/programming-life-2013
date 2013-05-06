@@ -1,38 +1,49 @@
+<h1>Cell #<%= @cell.id %></h1>
 <p id="notice"><%= notice %></p>
 
-<p>
-  <b>Id:</b>
-  <%= @cell.id %>
-</p>
-
-<p>
-  <b>Name:</b>
-  <%= @cell.name %>
-</p>
-
-<table class="table table-bordered">
-
+<table class="table">
 	<thead>
 		<tr>
-			<th>Id</th>
-			<th>Template</th>
-			<th></th>
-			<th></th>
+			<td><strong>Key</strong></td>
+			<td><strong>Value</strong></td>
 		</tr>
 	</thead>
-	
 	<tbody>
-		<% @cell.module_instances do |module_instance| %>
 		<tr>
-			<td><%= module_instance.id %></td>
-			<td><%= ModuleTemplate.find( module_instance.template_id ).name %></td>
-			<td><%= link_to 'Show', module_instance %></td>
-			<td><%= link_to 'Edit', edit_module_instance_path( module_instance ) %></td>
+			<td>Id</td>
+			<td><%= @cell.id %></td>
 		</tr>
-		<% end %>
+		<tr>
+			<td>Name</td>
+			<td><%= @cell.name %></td>
+		</tr>
+		
+		<tr>
+			<td>Modules</td>
+			<td>
+				<% 
+					modules = []
+					@module_instances.each do |module_instance| 
+						modules.push link_to ModuleTemplate.find( module_instance.module_template_id).name, module_instance
+					end
+				%>
+				
+				<%= listify modules %>
+			</td>
+		</tr>
+		
+		<tr>
+			<td>Creation</td>
+			<td><%= @cell.created_at.strftime("%a %d %B %Y at %H:%M") %></td>
+		</tr>
 	</tbody>
 	
 </table>
 
-<%= link_to 'Edit', edit_cell_path(@cell) %> |
-<%= link_to 'Back', cells_path %>
+<footer class="row">
+	<div class="form-actions span12">
+		<%= link_to raw('<i class="icon-pencil icon-white"></i> Edit'), edit_cell_path(@cell), :class => 'btn btn-primary' %> 
+		<%= link_to raw('<i class="icon-trash"></i> Destroy'), @cell, method: :delete, data: { confirm: 'Are you sure?' }, :class => 'btn btn-danger' %>  
+		<%= link_to 'Back', cells_path %>
+	</div>
+</footer>
