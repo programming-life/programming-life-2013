@@ -10,7 +10,7 @@
 #
 
 class ModuleTemplate < ActiveRecord::Base
-	attr_accessible :id, :name, :step
+	attr_accessible :id, :name, :step, :file, :module_parameters_attributes
   
 	validates :name, :presence => true
   
