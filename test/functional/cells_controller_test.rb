@@ -18,7 +18,7 @@ class CellsControllerTest < ActionController::TestCase
 
   test "should create cell" do
     assert_difference('Cell.count') do
-      post :create, cell: { id: @cell.id, name: @cell.name }
+      post :create, cell: { name: @cell.name }
     end
 
     assert_redirected_to cell_path(assigns(:cell))

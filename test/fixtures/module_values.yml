@@ -14,6 +14,12 @@
 
 one:
   value: 1
+  id: 1
+  module_instance_id: 1
+  module_parameter_id: 1
 
 two:
-  value: 1
+  value: 'dolor'
+  id: 2
+  module_instance_id: 2
+  module_parameter_id: 2

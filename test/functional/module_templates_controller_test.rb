@@ -18,7 +18,7 @@ class ModuleTemplatesControllerTest < ActionController::TestCase
 
   test "should create module_template" do
     assert_difference('ModuleTemplate.count') do
-      post :create, module_template: {  }
+      post :create, module_template: { :name => 'Hello' }
     end
 
     assert_redirected_to module_template_path(assigns(:module_template))

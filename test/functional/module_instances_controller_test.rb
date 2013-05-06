@@ -18,7 +18,7 @@ class ModuleInstancesControllerTest < ActionController::TestCase
 
   test "should create module_instance" do
     assert_difference('ModuleInstance.count') do
-      post :create, module_instance: {  }
+      post :create, module_instance: { :module_template_id => 1 }
     end
 
     assert_redirected_to module_instance_path(assigns(:module_instance))

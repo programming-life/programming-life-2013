@@ -13,8 +13,10 @@
 
 one:
   id: 1
-  key: MyString
+  module_template_id: 1
+  key: k
 
 two:
-  id: 1
-  key: MyString
+  id: 2 
+  module_template_id: 2
+  key: lipsum
