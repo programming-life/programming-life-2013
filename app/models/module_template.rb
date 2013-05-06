@@ -6,10 +6,11 @@
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #  name       :string(255)
+#  step       :text
 #
 
 class ModuleTemplate < ActiveRecord::Base
-	attr_accessible :id, :name
+	attr_accessible :id, :name, :step
   
 	validates :name, :presence => true
   
