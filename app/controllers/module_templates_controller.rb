@@ -16,9 +16,9 @@ class ModuleTemplatesController < ApplicationController
   # GET /module_templates/1.json
   def show
     @module_template = ModuleTemplate.find( params[:id] )
-	@module_instances = ModuleInstance.where( :module_template_id => @module_template.id )
-	@module_instances_page = @module_instances.paginate( :page => params[:page], :per_page => 20 )
-	@module_parameters = ModuleParameter.where( :module_template_id => @module_template.id )
+	@module_instances = @module_template.module_instances
+	@module_instances_page = @module_template.module_instances.paginate( :page => params[:page], :per_page => 20 )
+	@module_parameters = @module_template.module_parameters
 
     respond_to do |format|
       format.html # show.html.erb
