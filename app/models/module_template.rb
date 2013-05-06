@@ -1,7 +1,6 @@
 class ModuleTemplate < ActiveRecord::Base
   attr_accessible :id, :name
   
-  validates :id, :presence => true
   validates :name, :presence => true
   
   has_many :module_instances

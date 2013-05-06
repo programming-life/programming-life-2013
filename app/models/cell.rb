@@ -3,6 +3,5 @@ class Cell < ActiveRecord::Base
   
   has_many :module_instances
   has_many :module_templates, :through => :module_instances
-  
-  validates :id, :presence => true
+ 
 end
