@@ -82,7 +82,5 @@ describe("Tree", function() {
 			});
 
 		});
-
 	})
-
 });
