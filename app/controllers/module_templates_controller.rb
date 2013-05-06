@@ -14,6 +14,7 @@ class ModuleTemplatesController < ApplicationController
   # GET /module_templates/1.json
   def show
     @module_template = ModuleTemplate.find(params[:id])
+	@module_instances = @module_template.module_instances
 
     respond_to do |format|
       format.html # show.html.erb

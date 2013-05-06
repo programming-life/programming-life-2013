@@ -1,21 +1,35 @@
-<h1>Listing module_templates</h1>
+<h1>Listing Modules (Template)</h1>
 
-<table>
-  <tr>
-    <th></th>
-    <th></th>
-    <th></th>
-  </tr>
+<table class="table table-hover">
+	<thead>
+		<tr>
+			<th>Id</th>
+			<th>Name</th>
+			<th></th>
+			<th></th>
+			<th></th>
+			<th></th>
+			<th></th>
+			<th></th>
+		</tr>
+	</thead>
 
-<% @module_templates.each do |module_template| %>
-  <tr>
-    <td><%= link_to 'Show', module_template %></td>
-    <td><%= link_to 'Edit', edit_module_template_path(module_template) %></td>
-    <td><%= link_to 'Destroy', module_template, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-  </tr>
-<% end %>
+	<tbody>
+		<% @module_templates.each do |module_template| %>
+		<tr>
+			<td><%= module_template.id %></td>
+			<td><%= module_template.name %></td>
+			<td>Cells</td>
+			<td>Instances</td>
+			<td>Parameters</td>
+			<td><i class="icon-search"></i> <%= link_to 'Show', module_template %></td>
+			<td><i class="icon-pencil"></i> <%= link_to 'Edit', edit_module_template_path(module_template) %></td>
+			<td><i class="icon-trash"></i> <%= link_to 'Destroy', module_template, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+		</tr>
+		<% end %>
+	</tbody>
 </table>
 
 <br />
 
-<%= link_to 'New Module template', new_module_template_path %>
+<%= link_to 'New Module (Template)', new_module_template_path %>

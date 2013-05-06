@@ -1,5 +1,14 @@
 <p id="notice"><%= notice %></p>
 
+<p>
+  <b>Id:</b>
+  <%= @module_template.id %>
+</p>
+
+<p>
+  <b>Name:</b>
+  <%= @module_template.name %>
+</p>
 
 <%= link_to 'Edit', edit_module_template_path(@module_template) %> |
 <%= link_to 'Back', module_templates_path %>

@@ -1,23 +1,27 @@
 <h1>Listing cells</h1>
 
-<table>
-  <tr>
-    <th>Name</th>
-    <th>Id</th>
-    <th></th>
-    <th></th>
-    <th></th>
-  </tr>
+<table class="table table-hover">
+	<thead>
+		<tr>
+			<th>Id</th>
+			<th>Name</th>
+			<th></th>
+			<th></th>
+			<th></th>
+		</tr>
+	</thead>
 
-<% @cells.each do |cell| %>
-  <tr>
-    <td><%= cell.name %></td>
-    <td><%= cell.id %></td>
-    <td><%= link_to 'Show', cell %></td>
-    <td><%= link_to 'Edit', edit_cell_path(cell) %></td>
-    <td><%= link_to 'Destroy', cell, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-  </tr>
-<% end %>
+	<tbody>
+		<% @cells.each do |cell| %>
+		<tr>
+			<td><%= cell.id %></td>
+			<td><%= cell.name %></td>
+			<td><i class="icon-search"></i> <%= link_to 'Show', cell %></td>
+			<td><i class="icon-pencil"></i> <%= link_to 'Edit', edit_cell_path(cell) %></td>
+			<td><i class="icon-trash"></i> <%= link_to 'Destroy', cell, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+		</tr>
+		<% end %>
+	</tbody>
 </table>
 
 <br />
