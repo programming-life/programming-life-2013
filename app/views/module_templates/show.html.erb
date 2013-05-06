@@ -35,6 +35,7 @@
 		<tr>
 			<td>Instances</td>
 			<td>
+				<i class="icon-random"></i>
 				<%
 					instances = []
 					@module_instances_page.each do |module_instance| 
@@ -48,6 +49,10 @@
 		<tr>
 			<td>Creation</td>
 			<td><%= @module_template.created_at.strftime("%a %d %B %Y at %H:%M") %></td>
+		</tr>
+		<tr>
+			<td>Updated</td>
+			<td><%= (@module_template.updated_at == @module_template.created_at ? "Never" : @module_template.updated_at.strftime("%a %d %B %Y at %H:%M")  ) %></td>
 		</tr>
 	</tbody>
 </table>

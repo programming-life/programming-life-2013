@@ -36,6 +36,10 @@
 			<td>Creation</td>
 			<td><%= @cell.created_at.strftime("%a %d %B %Y at %H:%M") %></td>
 		</tr>
+		<tr>
+			<td>Updated</td>
+			<td><%= (@cell.updated_at == @cell.created_at ? "Never" : @cell.updated_at.strftime("%a %d %B %Y at %H:%M")  ) %></td>
+		</tr>
 	</tbody>
 	
 </table>
