@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130506205936) do
+ActiveRecord::Schema.define(:version => 20130506210523) do
 
   create_table "cells", :force => true do |t|
     t.string   "name"
@@ -40,10 +40,12 @@ ActiveRecord::Schema.define(:version => 20130506205936) do
   add_index "module_parameters", ["id"], :name => "index_module_parameters_on_id", :unique => true
 
   create_table "module_templates", :force => true do |t|
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
     t.string   "name"
     t.text     "step"
+    t.string   "module_template"
+    t.string   "file"
   end
 
   add_index "module_templates", ["id"], :name => "index_module_templates_on_id", :unique => true
