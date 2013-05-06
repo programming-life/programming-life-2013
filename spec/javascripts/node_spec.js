@@ -9,10 +9,10 @@ describe("Node", function() {
 		var children;
 
 		beforeEach( function() {
-			left = new Node( null, null );
-			right = new Node( null, null );
+			left = new Model.Node( null, null );
+			right = new Model.Node( null, null );
 			children = [left, right];
-			node = new Node( null, null, children );
+			node = new Model.Node( null, null, children );
 			left._parent = node;
 			right._parent = node;
 		});
