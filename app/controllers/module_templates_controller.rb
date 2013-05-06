@@ -26,7 +26,7 @@ class ModuleTemplatesController < ApplicationController
   # GET /module_templates/new.json
   def new
     @module_template = ModuleTemplate.new
-	#@module_template.module_parameters.build
+	@module_template.module_parameters.build
 	@module_template.module_instances.build
 	
     respond_to do |format|

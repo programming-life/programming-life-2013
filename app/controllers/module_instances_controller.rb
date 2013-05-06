@@ -25,10 +25,10 @@ class ModuleInstancesController < ApplicationController
   # GET /module_instances/new.json
   def new
     @module_instance = ModuleInstance.new
-	@module_instance.build_cell
-	@module_instance.build_module_template
-	@module_instance.build_module_values
-	@module_instance.build_module_parameters
+	@module_instance.cell.build
+	@module_instance.module_template.build
+	@module_instance.module_values.build
+	@module_instance.module_parameters.build
 
     respond_to do |format|
       format.html # new.html.erb
