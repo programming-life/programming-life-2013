@@ -1,3 +1,13 @@
+# == Schema Information
+#
+# Table name: cells
+#
+#  id         :integer          not null, primary key
+#  name       :string(255)
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
+
 class Cell < ActiveRecord::Base
 	attr_accessible :id, :name
   

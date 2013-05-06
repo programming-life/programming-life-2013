@@ -3,7 +3,7 @@ class ModuleTemplatesController < ApplicationController
   # GET /module_templates.json
   def index
     @module_templates = ModuleTemplate.all
-
+	
     respond_to do |format|
       format.html # index.html.erb
       format.json { render json: @module_templates }
@@ -26,7 +26,9 @@ class ModuleTemplatesController < ApplicationController
   # GET /module_templates/new.json
   def new
     @module_template = ModuleTemplate.new
-
+	#@module_template.module_parameters.build
+	@module_template.module_instances.build
+	
     respond_to do |format|
       format.html # new.html.erb
       format.json { render json: @module_template }

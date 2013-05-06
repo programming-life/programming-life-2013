@@ -69,3 +69,35 @@ ProgrammingLife::Application.routes.draw do
   # Note: This route will make all actions in every controller accessible via GET requests.
   # match ':controller(/:action(/:id))(.:format)'
 end
+#== Route Map
+# Generated on 06 May 2013 04:32
+#
+#     module_instances GET    /module_instances(.:format)          module_instances#index
+#                      POST   /module_instances(.:format)          module_instances#create
+#  new_module_instance GET    /module_instances/new(.:format)      module_instances#new
+# edit_module_instance GET    /module_instances/:id/edit(.:format) module_instances#edit
+#      module_instance GET    /module_instances/:id(.:format)      module_instances#show
+#                      PUT    /module_instances/:id(.:format)      module_instances#update
+#                      DELETE /module_instances/:id(.:format)      module_instances#destroy
+#     module_templates GET    /module_templates(.:format)          module_templates#index
+#                      POST   /module_templates(.:format)          module_templates#create
+#  new_module_template GET    /module_templates/new(.:format)      module_templates#new
+# edit_module_template GET    /module_templates/:id/edit(.:format) module_templates#edit
+#      module_template GET    /module_templates/:id(.:format)      module_templates#show
+#                      PUT    /module_templates/:id(.:format)      module_templates#update
+#                      DELETE /module_templates/:id(.:format)      module_templates#destroy
+#                cells GET    /cells(.:format)                     cells#index
+#                      POST   /cells(.:format)                     cells#create
+#             new_cell GET    /cells/new(.:format)                 cells#new
+#            edit_cell GET    /cells/:id/edit(.:format)            cells#edit
+#                 cell GET    /cells/:id(.:format)                 cells#show
+#                      PUT    /cells/:id(.:format)                 cells#update
+#                      DELETE /cells/:id(.:format)                 cells#destroy
+#                 hook POST   /hook(.:format)                      hook#post
+#                      GET    /hook(.:format)                      hook#index
+#                 root        /                                    main#index
+# 
+# Routes for Teabag::Engine:
+#      GET /fixtures/*filename(.:format) teabag/spec#fixtures
+#      GET /:suite(.:format)             teabag/spec#runner {:suite=>"default"}
+# root     /                             teabag/spec#suites
