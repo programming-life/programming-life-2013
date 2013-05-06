@@ -9,8 +9,8 @@ class ModuleInstancesController < ApplicationController
 	#get_filters( :cell, :template )
 
     @module_instances = ModuleInstance.all
-	filter_on_key!( @module_instances, :module_template_id, @filters[:template] ) if ( !@filters[:template].nil? )
-	filter_on_key!( @module_instances, :cell_id, @filters[:cell] ) if ( !@filters[:cell].nil? )
+	@module_instances = filter_on_key( @module_instances, :module_template_id, @filters[:template] ) if ( !@filters[:template].nil? )
+	@module_instances = filter_on_key( @module_instances, :cell_id, @filters[:cell] ) if ( !@filters[:cell].nil? )
 
     respond_to do |format|
       format.html # index.html.erb
@@ -29,10 +29,21 @@ class ModuleInstancesController < ApplicationController
 	# 	Instance has Values
 	#
     @module_instance = ModuleInstance.find( params[:id] )
-	@cell = Cell.find( @module_instance.cell_id )
-	@module_template = ModuleTemplate.find( @module_instance.module_template_id )
-	@module_parameters = ModuleParameter.where( :module_template_id => @module_template.id ) 
-	@module_values = ModuleValue.where( :module_instance_id => @module_instance.id ) 
+	
+	@cell = @module_instance.cell
+	@module_template = @module_instance.module_template
+	
+	# Gets the parameters and values and hashes them. Missing
+	# values are substituted with nils, so the parameters will
+	# show up.
+	@module_parameters = @module_instance.module_parameters
+	@module_values = @module_instance.module_values
+	@module_hash = Hash[ ( @module_parameters.map { |p| p.key } ).zip( 
+		@module_parameters.map { |p| 
+				( found = ( @module_values.select{ |v| v.module_parameter == p } ).first ).nil? ? nil : found.value
+			} 
+		)
+	]
 	
     respond_to do |format|
       format.html # show.html.erb

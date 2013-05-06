@@ -34,12 +34,12 @@
 						</tr>
 					</thead>
 					<tbody
-					<% @module_values.each do |module_value| %>
+					<% @module_hash.each { |key, value| %>
 						<tr>
-							<td class="span3"><%= ModuleParameter.find( module_value.module_parameter_id ).key %></td>
-							<td class="span9"><%= module_value.value %></td>
+							<td class="span3"><%= key %></td>
+							<td class="span9"><%= value.nil? ? '<span class="label label-important">missing</span>'.html_safe : value  %></td>
 						</tr>
-					<% end %>
+					<% } %>
 					</tbody>
 				</table>
 			</td>
