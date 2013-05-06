@@ -1,12 +1,23 @@
-<h1>Listing Modules (Template)</h1>
+<header class="row">
+	<h1 class="span12">Listing Modules (Templates)</h1>
+	<section id="filters" class="span12">
+	<% @filters.each { |filter, value| 
+		remove = { }
+		remove["#{filter}"] = nil
+	%>
+		<div class="alert alert-info">
+			<%= link_to_self raw('&times;'), remove , { class: 'close' } %>
+			<i class="icon-filter"></i> <%= filter %>
+		</div>
+	<% } %>
+	</section>
+</header>
 
 <table class="table table-hover">
 	<thead>
 		<tr>
 			<th>Id</th>
 			<th>Name</th>
-			<th></th>
-			<th></th>
 			<th></th>
 			<th></th>
 			<th></th>
@@ -19,17 +30,22 @@
 		<tr>
 			<td><%= module_template.id %></td>
 			<td><%= module_template.name %></td>
-			<td>Cells</td>
-			<td>Instances</td>
-			<td>Parameters</td>
-			<td><i class="icon-search"></i> <%= link_to 'Show', module_template %></td>
-			<td><i class="icon-pencil"></i> <%= link_to 'Edit', edit_module_template_path(module_template) %></td>
-			<td><i class="icon-trash"></i> <%= link_to 'Destroy', module_template, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+			<td><%= link_to pluralize( ModuleInstance.where( :module_template_id => module_template.id ).select( :cell_id ).uniq.count, 'cell'), cells_path( :template => module_template.id ) %></td>
+			<td><%= link_to pluralize( ModuleInstance.where( :module_template_id => module_template.id ).count, 'instance'), cells_path( :template => module_template.id ) %></td>
+			<td class="span3">
+				<%= link_to raw('<i class="icon-search"></i> Show'), module_template, :class => 'btn btn-small' %> 
+				<%= link_to raw('<i class="icon-pencil"></i> Edit'), edit_module_template_path(module_template), :class => 'btn btn-small' %> 
+			</td>
+			<td class="span2">
+				<%= link_to raw('<i class="icon-trash"></i> Destroy'), module_template, method: :delete, data: { confirm: 'Are you sure?' }, :class => 'btn btn-small btn-danger' %>
+			</td>
 		</tr>
 		<% end %>
 	</tbody>
 </table>
 
-<br />
-
-<%= link_to 'New Module (Template)', new_module_template_path %>
+<footer class="row">
+	<div class="form-actions span12">
+		<%= link_to raw('<i class=" icon-plus-sign icon-white"></i> New Module (Template)'), new_module_template_path, :class => 'btn btn-small btn-primary' %>
+	</div>
+</footer>
