@@ -1,0 +1,74 @@
+<header class="row">
+	<h1 class="span12">Module (Template) #<%= @module_template.id %></h1>
+	<p class="span12" id="notice"><%= notice %></p>
+</header>
+
+<table class="table row">
+	<thead class="span12">
+		<tr>
+			<td class="span2"><strong>Key</strong></td>
+			<td class="span10"><strong>Value</strong></td>
+		</tr>
+	</thead>
+	<tbody class="span12">
+		<tr>
+			<td class="span2">Id</td>
+			<td class="span10"><%= @module_template.id %></td>
+		</tr>
+		<tr>
+			<td>Name</td>
+			<td><%= @module_template.name %></td>
+		</tr>
+		<tr>
+			<td>File</td>
+			<td><%= link_to "module.#{@module_template.file}.js", asset_path( "models/module.#{@module_template.file}.js"), :class => 'btn btn-info btn-mini' + ( @module_template.file.nil? ? ' disabled' : '' )  %></span></td>
+		</tr>
+		<tr>
+			<td>Parameters</td>
+			<td>
+				<% 
+					parameters = []
+					@module_parameters.each do |module_parameter| 
+						parameters.push module_parameter.key
+					end
+				%>
+				
+				<%= listify parameters %>
+			</td>
+		</tr>
+		<tr>
+			<td>Instances</td>
+			<td>
+				<i class="icon-random"></i>
+				<%
+					instances = []
+					@module_instances_page.each do |module_instance| 
+						instances.push link_to '#' + module_instance.id.to_s, module_instance, :class => 'btn btn-mini'
+					end
+				%>
+				<%= (listify instances).html_safe %>
+				<%= will_paginate @module_instances_page %>
+			</td>
+		</tr>
+		<tr>
+			<td>Creation</td>
+			<td><%= @module_template.created_at.strftime("%a %d %B %Y at %H:%M") %></td>
+		</tr>
+		<tr>
+			<td>Updated</td>
+			<td><%= (@module_template.updated_at == @module_template.created_at ? "Never" : @module_template.updated_at.strftime("%a %d %B %Y at %H:%M")  ) %></td>
+		</tr>
+	</tbody>
+</table>
+
+<footer class="row">
+	<div class="link-actions span12">
+		<%= link_to raw('<i class="icon-magnet"></i> Cell containers'), cells_path( :template => @module_template.id ), :class => 'btn' %> 
+		<%= link_to raw('<i class="icon-random"></i> Derived instances'), module_instances_path( :template => @module_template.id ), :class => 'btn' %> 
+	</div>
+	<div class="form-actions span12">
+		<%= link_to raw('<i class="icon-pencil icon-white"></i> Edit'), edit_module_template_path(@module_template), :class => 'btn btn-primary' %> 
+		<%= link_to raw('<i class="icon-trash"></i> Destroy'), @module_template, method: :delete, data: { confirm: 'Are you sure?' }, :class => 'btn btn-danger' %> 
+		<%= link_to 'Back', module_templates_path %>
+	</div>
+</footer>

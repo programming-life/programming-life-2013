@@ -1,0 +1,54 @@
+<%= nested_form_for(@module_instance, :html => {:class => "form-horizontal"} ) do |f| %>
+	<% if @module_instance.errors.any? %>
+	<div id="error_explanation">
+		<h2><%= pluralize(@module_instance.errors.count, "error") %> prohibited this Module (Instance) from being saved:</h2>
+
+		<ul>
+			<% @module_instance.errors.full_messages.each do |msg| %>
+			<li><%= msg %></li>
+			<% end %>
+		</ul>
+	</div>
+	<% end %>
+
+	<div class="control-group">
+		<%= f.label :id, :class => "control-label" %>
+		<div class="controls">
+			<div>
+				<%= (@module_instance.new_record? ? "new unique id" : @module_instance.id) %>
+			</div>
+		</div>
+	</div>
+	
+	<div class="control-group">
+		<%= f.label 'Based on', :class => "control-label" %>
+		<div class="controls">
+			<%= f.select :module_template_id, ModuleTemplate.all.collect {|x| [ x.name, x.id ] }, {}, :multiple => false, :disabled => !@module_instance.new_record?  %>
+		</div>
+	</div>
+	
+	<div class="control-group">
+		<%= f.label 'Part of', :class => "control-label" %>
+		<div class="controls">
+			<%= f.select :cell_id, Cell.all.collect {|x| [ x.name, x.id ] }, {}, :multiple => false, :disabled => !@module_instance.new_record?  %>
+		</div>
+	</div>
+	
+	<% if (@module_instance.new_record?) %>
+	<div class="control-group">
+		<div class="controls">
+			<span class="label label-info">Save before editing parameters</span>
+		</div>
+	</div>
+	<% else %>
+	<section id="parameters">
+		<%= f.fields_for :module_values do |builder| %>
+			<%= render "module_value_fields", :f => builder%>
+		<% end %>
+	</section>
+	<% end %>
+
+	<div class="form-actions">
+		<%= f.submit :class => "btn btn-primary" %>
+	</div>
+<% end %>

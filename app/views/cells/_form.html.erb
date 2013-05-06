@@ -1,0 +1,45 @@
+<%= nested_form_for(@cell, :html => {:class => "form-horizontal"} ) do |f| %>
+	<% if @cell.errors.any? %>
+    <div id="alert alert-block alert-error">
+		<h2><%= pluralize(@cell.errors.count, "error") %> prohibited this cell from being saved:</h2>
+
+		<ul>
+		<% @cell.errors.full_messages.each do |msg| %>
+			<li><%= msg %></li>
+		<% end %>
+		</ul>
+    </div>
+	<% end %>
+
+	<div class="control-group">
+		<%= f.label :id, :class => "control-label" %>
+		<div class="controls">
+			<div>
+				<%= (@cell.new_record? ? '<span class="label label-info">new unique id</span>'.html_safe : @cell.id) %>
+			</div>
+		</div>
+	</div>
+	
+	<div class="control-group">
+		<%= f.label :name, :class => "control-label" %>
+		<div class="controls">
+			<%= f.text_field :name %>
+		</div>
+	</div>
+	
+	<section id="instances">
+		<%= f.fields_for :module_instances do |builder| %>
+			<%= render "module_instance_fields", :f => builder %>
+		<% end %>
+	</section>
+	
+	<div class="control-group">
+		<div class="controls">
+			<%= f.link_to_add '<i class="icon-plus"></i> Add Module'.html_safe, :module_instances, :class => 'btn', :data => { :target => "#instances" } %>
+		</div>
+	</div>
+	
+	<div class="form-actions">
+		<%= f.submit :class => "btn btn-primary" %>
+	</div>
+<% end %>

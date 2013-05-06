@@ -1,0 +1,22 @@
+# == Schema Information
+#
+# Table name: module_parameters
+#
+#  id                 :integer          not null, primary key
+#  key                :string(255)
+#  created_at         :datetime         not null
+#  updated_at         :datetime         not null
+#  module_template_id :integer
+#
+
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  id: 1
+  module_template_id: 1
+  key: k
+
+two:
+  id: 2 
+  module_template_id: 2
+  key: lipsum
