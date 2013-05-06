@@ -3,20 +3,14 @@ class ModuleInstancesController < ApplicationController
   # GET /module_instances.json
   def index
 	
-	@filters = { 
-		cell_id: params.has_key?(:cell) ? params[:cell].to_i : nil ,
-		module_template_id: params.has_key?(:template) ? params[:template].to_i : nil
-	}
-	
+	@filters = { }
+	@filters[:cell] = params[:cell].to_i if params.has_key?(:cell)
+	@filters[:template] = params[:template].to_i if params.has_key?(:template)
+	#get_filters( :cell, :template )
+
     @module_instances = ModuleInstance.all
-	
-	@filters.each { |filter, value|
-		if( !value.nil? )
-			@module_instances = @module_instances.select{ |i| 
-				i[filter] == value 
-			}
-		end
-	}
+	filter_on_key!( @module_instances, :module_template_id, @filters[:template] ) if ( !@filters[:template].nil? )
+	filter_on_key!( @module_instances, :cell_id, @filters[:cell] ) if ( !@filters[:cell].nil? )
 
     respond_to do |format|
       format.html # index.html.erb

@@ -2,6 +2,8 @@ class ModuleTemplatesController < ApplicationController
   # GET /module_templates
   # GET /module_templates.json
   def index
+  
+	@filters = { }
     @module_templates = ModuleTemplate.all
 	
     respond_to do |format|

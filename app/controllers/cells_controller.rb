@@ -2,7 +2,16 @@ class CellsController < ApplicationController
   # GET /cells
   # GET /cells.json
   def index
+  
+	@filters = { }
+	@filters[:template] = params[:template].to_i if params.has_key?(:template)
+	
     @cells = Cell.all
+	
+	if ( !@filters[:template].nil? )
+		cells = ModuleInstance.where( :module_template_id => @filters[:template] ).select( :cell_id )
+		@cells.select!{ |c| cells.any?{ |y| y.cell_id == c.id } }
+	end
 
     respond_to do |format|
       format.html # index.html.erb
@@ -14,6 +23,7 @@ class CellsController < ApplicationController
   # GET /cells/1.json
   def show
     @cell = Cell.find(params[:id])
+	@module_instances = ModuleInstance.where( :cell_id => @cell.id )
 
     respond_to do |format|
       format.html # show.html.erb
