@@ -8,7 +8,7 @@ describe("Tree", function() {
 	describe("when a tree is constructed", function() {
 	
 		beforeEach( function() {
-			rootObject = {test: "test"};
+			rootObject = "root";
 			root = new Model.Node(rootObject, null);
 
 			tree = new Model.Tree(root);
@@ -50,7 +50,39 @@ describe("Tree", function() {
 					expect( found ).toEqual( node );
 				});
 			});
+		});
+		describe("when a big tree is constructed", function() {
+			var nodes;
+			beforeEach( function() {
+				nodes = [root];
+				for (i = 1; i < 5; i++) {
+					nodes[i] = tree.add("test"+i, nodes[i-1]);
+				}
+				for (i = 5; i < 9; i++) {
+					nodes[i] = tree.add("test"+i, nodes[i-5]);
+				}
+				
+			});
+
+			it( "should be able to generate a breadthfirst iterator", function() {
+				it = tree.iterator()
+				expected = [0,1,5,2,6,3,7,4,8]
+				for (i = 0; i < it.length; i++ ) {
+					expect( it[i] ).toBe( nodes[expected[i]] );
+				}
+			});
+
+			it( "should be able to generate a depthfirst iterator", function() {
+				it = tree.depthfirst()
+				console.log(it)
+				expected = [0,1,2,3,4,8,7,6,5]
+				for (i = 0; i < it.length; i++ ) {
+					expect( it[i] ).toBe( nodes[expected[i]] );
+				}
+			});
 
 		});
+
 	})
+
 });

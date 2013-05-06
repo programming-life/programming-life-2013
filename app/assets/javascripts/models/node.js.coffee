@@ -12,6 +12,7 @@ class Model.Node
 		@_parent = parent
 		@_children = children
 		@_branch = null
+		@_creation = new Date()
 
 		@_parent._children.push(this) if @_parent
 
