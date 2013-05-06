@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130506000950) do
+ActiveRecord::Schema.define(:version => 20130506023614) do
 
   create_table "cells", :force => true do |t|
     t.string   "name"
@@ -22,16 +22,19 @@ ActiveRecord::Schema.define(:version => 20130506000950) do
   add_index "cells", ["id"], :name => "index_cells_on_id", :unique => true
 
   create_table "module_instances", :force => true do |t|
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at",         :null => false
+    t.datetime "updated_at",         :null => false
+    t.integer  "module_template_id"
+    t.integer  "cell_id"
   end
 
   add_index "module_instances", ["id"], :name => "index_module_instances_on_id", :unique => true
 
   create_table "module_parameters", :force => true do |t|
     t.string   "key"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at",         :null => false
+    t.datetime "updated_at",         :null => false
+    t.integer  "module_template_id"
   end
 
   add_index "module_parameters", ["id"], :name => "index_module_parameters_on_id", :unique => true
@@ -46,8 +49,10 @@ ActiveRecord::Schema.define(:version => 20130506000950) do
 
   create_table "module_values", :force => true do |t|
     t.float    "value"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at",          :null => false
+    t.datetime "updated_at",          :null => false
+    t.integer  "module_parameter_id"
+    t.integer  "module_instance_id"
   end
 
 end
