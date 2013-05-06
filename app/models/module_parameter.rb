@@ -10,7 +10,7 @@
 #
 
 class ModuleParameter < ActiveRecord::Base
-  attr_accessible :id, :key
+  attr_accessible :id, :key, :module_template_id
   
   belongs_to :module_template
   has_many :module_values, :dependent => :destroy

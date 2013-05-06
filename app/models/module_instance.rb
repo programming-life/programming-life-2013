@@ -10,7 +10,7 @@
 #
 
 class ModuleInstance < ActiveRecord::Base
-	attr_accessible :id, :module_template_attributes
+	attr_accessible :id, :module_template_id, :cell_id
 
 	has_many :module_values
 	has_many :module_parameters, :through => :module_template
