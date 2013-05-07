@@ -19,7 +19,7 @@ class View.Node
 		@_y = y
 		@_scale = scale
 
-		padding = 15 * scale
+		padding = 30 * scale
 		
 		@_contents?.remove()
 		@_contents = @_paper.set()
@@ -32,19 +32,22 @@ class View.Node
 		text.attr
 			'font-size': 20 * scale
 
-		radius = Math.max( text.getBBox().width, text.getBBox().height )
-		@_circle = @_paper.circle( x, y, radius)
+		@_radius = Math.max( text.getBBox().width, text.getBBox().height )
+		@_circle = @_paper.circle( x, y, @_radius)
 
 		@_contents.push(text, @_circle)
 
 		scalar = (@_views.length - 1) * 0.5
+		nextX = x - (2 * @_radius + padding) * scalar
+		nextY = y + 2 * @_radius + padding
 
-		leftX = x - (2 * radius + padding) * scalar
-		nextX = leftX
 		for view in @_views
-			view.draw(nextX, y + 2 * radius + padding, scale)
+			view.draw(nextX, nextY, scale)
 			@_contents.push view._contents...
-			nextX = nextX + (2 * radius) + padding
+
+			@_contents.push @drawArrow(view)
+
+			nextX = nextX + (2 * @_radius) + padding
 
 		# Draw shadow around module view
 		@_shadow?.remove()
@@ -52,5 +55,24 @@ class View.Node
 			width: 5
 			opacity: .125
 		@_shadow?.scale(.9, .9)
+	
+	# Draw an arrow from this node to next
+	# @param next [View.Node] The next node
+	# @return [Object] The arrow
+	# @todo Use angle and (co)sine
+	drawArrow:( next ) ->
+		#angle = Raphael.angle(@_x, @_y, next._x, next._y)
+		a = ({
+			x: @_x
+			y: @_y + @_radius
+			nextX: next._x
+			nextY: next._y - @_radius - 5
+		})
+
+		arrow = @_paper.arrowSet(a.x, a.y, a.nextX, a.nextY, 5)
+		arrow[0].attr({
+			"fill" : "black"
+		})
+		return arrow
 
 (exports ? this).View.Node = View.Node
