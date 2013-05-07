@@ -23,71 +23,132 @@ describe("Module", function() {
 	it("should be able to get the date of creation", function() {
 		expect( module.creation ).toBeDefined();
 	});
+	
+	it("should be able to serialize the module", function() {
+		serialized = module.serialize( true )
+		expect( serialized ).toBeDefined();
+		expect( serialized.length ).toBeGreaterThan( 2 )
+	});
 
+	describe( "when serialized and deserialized", function() { 
+		var serialized;
+		var deserialized;
+		
+		beforeEach( function() {
+			serialized = module.serialize( true )
+			deserialized = Model.Module.deserialize( serialized );
+		});
+		
+		it("should be able to retain the properties and values", function() {
+			expect( deserialized.k ).toEqual( 3 );
+			expect( deserialized.b ).toEqual( 5 );
+		});
+
+		it("should not have a step property", function() {
+			expect( deserialized._step ).not.toBeDefined();
+		});
+		it("should be able to a date of creation", function() {
+			expect( deserialized.creation ).toBeDefined();
+		});
+		
+		it("should be have a new id", function() {
+			expect( deserialized.id ).toBeDefined();
+			expect( deserialized.id ).not.toBe( module.id );
+		});
+	});
 	
 	describe( "when a property is changed", function() { 
-		beforeEach( function() {
-			module.k = 8;
-		});
-		
-		it( "should have applied that change", function() {
-			expect( module.k ).toEqual(8)
-		});
-
-		it( "should have stored that change", function() {
-			expect( module._tree._current._object ).toEqual( ["_k",3, 8] );
-		});
-		
-		it("should not apply if not present at creation", function() {
-			module.c = 10
-			expect(module.c).toEqual(undefined)
-		});	
-
-		it( "should not have stored that change", function() {
-			expect( module._tree._current._object ).toEqual( ["_k",3, 8] );
-		});
-
-		describe("when having undone the most recent change", function() {
-			
+	
+		describe( "and it was present", function() {
 			beforeEach( function() {
-				module.undo();
+				module.k = 8;
+			});
+		
+		
+			it( "should have applied that change", function() {
+				expect( module.k ).toEqual(8)
 			});
 
-			it( "should be able undo the most recent change", function() {
-				expect(module.k).toEqual(3);
+			it( "should have stored that change", function() {
+				expect( module._tree._current._object ).toEqual( ["_k",3, 8] );
 			});
-
-			it( "should have updated the most recent change", function() {
-				expect( module._tree._current ).toEqual( module._tree._root);
-			});
-
-			describe( "when redoing that change", function() {
+			
+			describe( "and module was serialized and deserialized", function() { 
+				var serialized;
+				var deserialized;
 				
 				beforeEach( function() {
-					module.redo();
+					serialized = module.serialize( true )
+					deserialized = Model.Module.deserialize( serialized );
+				});
+				
+				it("should have stored the change", function() {
+					expect( deserialized.k ).toEqual( 8 );
+				});
+			});
+			
+			describe("and undoing that change", function() {
+			
+				beforeEach( function() {
+					module.undo();
 				});
 
-				it( "should have redone the change", function() {
-					expect( module.k ).toEqual(8);
+				it( "should have undone the most recent change", function() {
+					expect(module.k).toEqual(3);
 				});
 
 				it( "should have updated the most recent change", function() {
+					expect( module._tree._current ).toEqual( module._tree._root);
 				});
 
+				describe( "and redoing it", function() {
+					
+					beforeEach( function() {
+						module.redo();
+					});
+
+					it( "should have redone the change", function() {
+						expect( module.k ).toEqual(8);
+					});
+
+					xit( "should have updated the most recent change", function() {
+						throw 'not implemented'
+					});
+
+				});
+					
+				describe( "and changing it again", function() { 
+					beforeEach( function() {
+						module.k = 5;
+					});
+					
+					xit( "should have updated the most recent change", function() {
+						throw 'not implemented'
+					});
+
+					xit( "should have kept the old change in a different branch", function() {
+						throw 'not implemented'
+					});
+				});
 			});
-				
-			describe( "when that property is changed again", function() { 
-				beforeEach( function() {
-					module.k = 5;
-				});
-				
-				it( "should have updated the most recent change", function() {
-				});
+	
+		});
+		
+		describe( "and it was not present", function() {
+		
+			beforeEach( function() {
+				module.c = 10;
+			});
+			
+			it("should not have applied tha change", function() {
+				expect(module.c).toEqual(undefined)
+			});	
 
-				it( "should have kept the old change in a different branch", function() {
-				});
+			it( "should not have stored that change", function() {
+				expect( module._tree._current._object ).not.toEqual( ["_k",3, 10] );
 			});
 		});
+
 	});
 	
 }); 

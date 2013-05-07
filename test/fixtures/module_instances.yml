@@ -1,0 +1,23 @@
+# == Schema Information
+#
+# Table name: module_instances
+#
+#  id                 :integer          not null, primary key
+#  created_at         :datetime         not null
+#  updated_at         :datetime         not null
+#  module_template_id :integer
+#  cell_id            :integer
+#
+
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+#
+one:
+  id: 1
+  cell_id: 1
+  module_template_id: 1
+
+two: 
+  id: 2
+  cell_id: 1
+  module_template_id: 2

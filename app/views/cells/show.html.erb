@@ -1,0 +1,57 @@
+<h1>Cell #<%= @cell.id %></h1>
+<p id="notice"><%= notice %></p>
+
+<table class="table">
+	<thead>
+		<tr>
+			<td><strong>Key</strong></td>
+			<td><strong>Value</strong></td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>Id</td>
+			<td><%= @cell.id %></td>
+		</tr>
+		<tr>
+			<td>Name</td>
+			<td><%= @cell.name %></td>
+		</tr>
+		
+		<tr>
+			<td>Modules</td>
+			<td>
+				<i class="icon-magnet"></i> 
+				<% 
+					modules = []
+					@module_instances.each do |module_instance| 
+						modules.push link_to ModuleTemplate.find( module_instance.module_template_id).name, module_instance, :class => 'btn btn-mini'
+					end
+				%>
+				
+				<%= (listify modules).html_safe %>
+			</td>
+		</tr>
+		
+		<tr>
+			<td>Creation</td>
+			<td><%= @cell.created_at.strftime("%a %d %B %Y at %H:%M") %></td>
+		</tr>
+		<tr>
+			<td>Updated</td>
+			<td><%= (@cell.updated_at == @cell.created_at ? "Never" : @cell.updated_at.strftime("%a %d %B %Y at %H:%M")  ) %></td>
+		</tr>
+	</tbody>
+	
+</table>
+
+<footer class="row">
+	<div class="link-actions span12">
+		<%= link_to raw('<i class="icon-magnet"></i> Modules linked'), module_instances_path( :cell => @cell.id ), :class => 'btn' %> 
+	</div>
+	<div class="form-actions span12">
+		<%= link_to raw('<i class="icon-pencil icon-white"></i> Edit'), edit_cell_path(@cell), :class => 'btn btn-primary' %> 
+		<%= link_to raw('<i class="icon-trash"></i> Destroy'), @cell, method: :delete, data: { confirm: 'Are you sure?' }, :class => 'btn btn-danger' %>  
+		<%= link_to 'Back', cells_path %>
+	</div>
+</footer>

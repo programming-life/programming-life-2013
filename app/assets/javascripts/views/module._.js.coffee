@@ -15,9 +15,16 @@ class View.Module
 		@_y = 0
 		@_scale = 0
 
-		@_selected = false		
+		@_selected = off	
+		@_visible = on
 
 		Model.EventManager.on( 'module.set.property', @, @onModuleInvalidated )
+		
+		Object.defineProperty( @, 'visible',
+			# @property [Function] the step function
+			get: ->
+				return @_visible
+		)
 		
 	# Generates a hashcode based on the module name
 	#
@@ -67,6 +74,13 @@ class View.Module
 	onModuleInvalidated: ( module, params... ) =>
 		if module is @module
 			@draw( @_x, @_y, @_scale )
+
+	moduleSelected: ( event, module ) =>
+		console.log 'yolo'
+		if not @_selected and @_hovered and module isnt @module
+			@_selected = false
+			@draw(@_x, @_y, @_scale)
+
 
 	# Draw a component
 	#
@@ -199,6 +213,9 @@ class View.Module
 	# @param scale [Integer] the scale
 	#
 	draw: ( x, y, scale ) ->
+		big = @_selected || @_hovered
+
+
 		@_x = x
 		@_y = y
 		@_scale = scale
@@ -206,7 +223,7 @@ class View.Module
 
 		padding = 8 * scale
 
-		if @_selected
+		if big
 			padding = 20 * scale
 
 		@_contents?.remove()
@@ -224,7 +241,7 @@ class View.Module
 				
 				[ substrateCircle ] = @drawComponent( 'transporter', 'SubstrateCircle', x, y, scale, params )
 					
-				if @_selected
+				if big
 					params = 
 						objRect : arrow.getBBox()
 						title: _.escape @type
@@ -257,7 +274,7 @@ class View.Module
 					'SubstrateCircle', 
 					x, y, scale, params )
 					
-				if @_selected
+				if big
 	
 					params = 
 						objRect : substrateCircle.getBBox()
@@ -278,7 +295,7 @@ class View.Module
 				
 				[ enzymCircleOrig, enzymCircleDest ] = @drawComponent( 'enzym', 'EnzymCircle', x, y, scale, params )
 					
-				if @_selected
+				if big
 								
 					params = 
 						objRect : arrow.getBBox()
@@ -307,7 +324,7 @@ class View.Module
 					'SubstrateCircle', 
 					x, y, scale, params )
 					
-				if @_selected
+				if big
 					params = 
 							objRect : substrateCircle.getBBox()
 							text: "name: #{@module.name}\ninitial:  #{@module.starts.name}\nk: #{@module.k}\nk_d: #{@module.k_d}\nsynth: #{@module.substrate}\n#{@module.substrate} > #{@module.name}"
@@ -321,7 +338,7 @@ class View.Module
 				text.attr
 					'font-size': 20 * scale
 				
-				if @_selected
+				if big
 	
 					params = 
 						objRect : text.getBBox()
@@ -336,7 +353,7 @@ class View.Module
 				text.attr
 					'font-size': 20 * scale
 				
-				if @_selected
+				if big
 	
 					params = 
 						objRect : text.getBBox()
@@ -351,7 +368,7 @@ class View.Module
 				text.attr
 					'font-size': 20 * scale
 				
-				if @_selected
+				if big
 	
 					params = 
 						objRect : text.getBBox()
@@ -415,8 +432,21 @@ class View.Module
 			if rect
 				@_hitBox = @_paper.rect(rect.x, rect.y, rect.width, rect.height)
 				@_hitBox.node.setAttribute('class', 'module-hitbox')
-				@_hitBox.click => 
+				@_hitBox.insertAfter(@_contents)
+
+				if @_hovered
+					@_hitBox.mouseout =>
+						@_hovered = false
+						@draw(@_x, @_y, @_scale)
+				else
+					@_hitBox.mouseover =>
+						$(document).trigger('moduleSelected', @module)
+						@_hovered = true
+						@draw(@_x, @_y, @_scale)
+
+				@_hitBox.click =>
+					$(document).trigger('moduleSelected', @module)
 					@_selected = true
-					@draw(@_x, @_y, @_scale)
+					@draw(@_x, @_y, @_scale)				
 
 (exports ? this).View.Module = View.Module

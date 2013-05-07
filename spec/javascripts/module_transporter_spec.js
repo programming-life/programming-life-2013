@@ -56,6 +56,85 @@ describe("Module Transporter", function() {
 			expect( module.starts.dest ).toBe( 0 );
 		});
 		
+		it("should be able to serialize the module", function() {
+			serialized = module.serialize( true )
+			expect( serialized ).toBeDefined();
+			expect( serialized.length ).toBeGreaterThan( 2 )
+		});
+		
+		describe("and when serialized", function() {
+			var serialized;
+			beforeEach( function() {
+				serialized = module.serialize( true )
+			});
+			
+			it("should be able to deserialize", function() {
+				deserialized = Model.Transporter.deserialize( serialized )
+				expect( deserialized ).toBeDefined();
+				expect( deserialized.constructor.name ).toBe( module.constructor.name )
+			});
+			
+			describe("and when deserialized", function() {
+				var deserialized;
+				beforeEach( function() {
+					deserialized = Model.Transporter.deserialize( serialized )
+				});
+				
+				it( "should have 'transporter_undefined_to_undefined' as name", function() {
+					expect( module.name ).toBe( "transporter_undefined_to_undefined" );
+				});
+
+				it( "should have 'undefined' as orig", function() {
+					expect( module.orig ).toBe( undefined );
+				});
+
+				it( "should have 'undefined' as dest", function() {
+					expect( module.dest ).toBe( undefined );
+				});
+
+				it( "should have 's_int' as consume", function() {
+					expect( module.consume ).toBe( 's_int' );
+				});
+
+				it( "should have 1 as k (transcription value)", function() {
+					expect( module.k ).toBe( 1 );
+				});
+
+				it( "should have 1 as k_tr (transport value)", function() {
+					expect( module.k_tr ).toBe( 1 );
+				});
+
+				it( "should have 1 as k_m (reaction value)", function() {
+					expect( module.k_m ).toBe( 1 );
+				});
+
+				it( "should have 'dna' as dna", function() {
+					expect( module.dna ).toBe( "dna" );
+				});
+
+				it( "should have 'cell' as cell", function() {
+					expect( module.cell ).toBe( "cell" );
+				});
+
+				it( "should have a property direction", function() {
+					expect( module.direction ).toBe( 0 );
+				});
+
+				it( "should have 2 substrate: name with value 1, dest with 0", function() {
+					expect( _(module.starts).size() ).toBe( 2 );
+					expect( module.starts.name ).toBeDefined();
+					expect( module.starts.name ).toBe( 1 );
+					expect( module.amount ).toBe( 1 );
+					expect( module.starts.dest ).toBeDefined();
+					expect( module.starts.dest ).toBe( 0 );
+				});
+		
+				it( "should have a _step function", function() {
+					expect( deserialized._step ).toBeDefined();
+				});
+			});
+		});
+		
 	});
 			
 	describe( "when using params in the constructor", function() {

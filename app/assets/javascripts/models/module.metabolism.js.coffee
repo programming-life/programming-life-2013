@@ -18,7 +18,7 @@ class Model.Metabolism extends Model.Module
 	# @option params [String] dest the product after conversion, overrides product
 	# @option params [String] name the name of the metabolism, overrides name
 	#
-	constructor: ( params = {}, start = 0, substrate = "s_int", product = "p_int", name = "enzym" ) ->
+	constructor: ( params = {}, start = 0, substrate = "s_int", product = "p_int", name = "enzyme" ) ->
 	
 		# Step function for lipids
 		step = ( t, substrates, mu ) ->
