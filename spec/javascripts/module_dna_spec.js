@@ -26,6 +26,55 @@ describe("Module DNA", function() {
 			expect( module.amount ).toBe( 1 );
 		});
 		
+		it("should be able to serialize the module", function() {
+			serialized = module.serialize( true )
+			expect( serialized ).toBeDefined();
+			expect( serialized.length ).toBeGreaterThan( 2 )
+		});
+		
+		describe("and when serialized", function() {
+			var serialized;
+			beforeEach( function() {
+				serialized = module.serialize( true )
+			});
+			
+			it("should be able to deserialize", function() {
+				deserialized = Model.DNA.deserialize( serialized )
+				expect( deserialized ).toBeDefined();
+				expect( deserialized.constructor.name ).toBe( module.constructor.name )
+			});
+			
+			describe("and when deserialized", function() {
+				var deserialized;
+				beforeEach( function() {
+					deserialized = Model.DNA.deserialize( serialized )
+				});
+				
+				it( "should have 'dna' as name", function() {
+					expect( module.name ).toBe( "dna" );
+				});
+				
+				it( "should have 'p_int' as consume", function() {
+					expect( module.consume ).toBe( "p_int" );
+				});
+				
+				it( "should have 1 as k (transcription value)", function() {
+					expect( module.k ).toBe( 1 );
+				});
+				
+				it( "should have 1 substrate: name with value 1", function() {
+					expect( _(module.starts).size() ).toBe( 1 );
+					expect( module.starts.name ).toBeDefined();
+					expect( module.starts.name ).toBe( 1 );
+					expect( module.amount ).toBe( 1 );
+				});
+				
+				it( "should have a _step function", function() {
+					expect( deserialized._step ).toBeDefined();
+				});
+			});
+		});
+		
 	});
 			
 	describe( "when using params in the constructor", function() {

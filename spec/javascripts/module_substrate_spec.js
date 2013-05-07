@@ -24,6 +24,54 @@ describe( "Module Substrate", function() {
 			expect( module.starts.name ).toBeDefined();
 			expect( module.starts.name ).toBe( 1 );
 		});
+		
+		it("should be able to serialize the module", function() {
+			serialized = module.serialize( true )
+			expect( serialized ).toBeDefined();
+			expect( serialized.length ).toBeGreaterThan( 2 )
+		});
+		
+		describe("and when serialized", function() {
+			var serialized;
+			beforeEach( function() {
+				serialized = module.serialize( true )
+			});
+			
+			it("should be able to deserialize", function() {
+				deserialized = Model.Substrate.deserialize( serialized )
+				expect( deserialized ).toBeDefined();
+				expect( deserialized.constructor.name ).toBe( module.constructor.name )
+			});
+			
+			describe("and when deserialized", function() {
+				var deserialized;
+				beforeEach( function() {
+					deserialized = Model.Substrate.deserialize( serialized )
+				});
+				
+				it( "should have no name", function() {
+					expect( module.name ).toBe( undefined );
+				});
+
+				it( "should be inside the cell", function() {
+					expect( module.placement ).toBeBetween( -1, 1 );
+				});
+				
+				it( "should be inside a substrate", function() {
+					expect( module.placement ).toBeAtMost( 0 );
+				});
+
+				it( "should have 1 substrate: name with value 1", function() {
+					expect( _( module.starts ).size() ).toBe( 1 );
+					expect( module.starts.name ).toBeDefined();
+					expect( module.starts.name ).toBe( 1 );
+				});
+		
+				it( "should have a _step function", function() {
+					expect( deserialized._step ).toBeDefined();
+				});
+			});
+		});
 
 	});
 
