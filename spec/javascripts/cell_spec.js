@@ -19,6 +19,12 @@ describe("Cell", function() {
 		cell = new Model.Cell( undefined, 2 );
 		expect( cell ).toBeDefined();
 	})
+	
+	it("should be able to serialize the cell", function() {
+		serialized = cell.serialize( true )
+		expect( serialized ).toBeDefined();
+		expect( serialized.length ).toBeGreaterThan( 2 )
+	});
   
 	describe("when a module has been added", function() {
 		beforeEach(function() {
@@ -239,5 +245,11 @@ describe("Cell", function() {
 			});
 
 		});
+		
+		xit( "serialized and deserilized, should retain substrates, modules, cell", function() {
+		
+		});
 	});
+	
+	
 });

@@ -111,7 +111,7 @@ describe("Module", function() {
 						expect( module.k ).toEqual(8);
 					});
 
-					it( "should have updated the most recent change", function() {
+					xit( "should have updated the most recent change", function() {
 						throw 'not implemented'
 					});
 
@@ -122,11 +122,11 @@ describe("Module", function() {
 						module.k = 5;
 					});
 					
-					it( "should have updated the most recent change", function() {
+					xit( "should have updated the most recent change", function() {
 						throw 'not implemented'
 					});
 
-					it( "should have kept the old change in a different branch", function() {
+					xit( "should have kept the old change in a different branch", function() {
 						throw 'not implemented'
 					});
 				});
