@@ -7,13 +7,13 @@ describe("Graph", function() {
     var options = { dt: 1 };
     
 	beforeEach(function() {
-		graph = new Graph( name, options );
+		graph = new View.Graph( name, options );
 	});
 	
 	describe("when dataset is provided during creation", function() {
 	
 		beforeEach( function() {
-			graph = new Graph( name, options, data );
+			graph = new View.Graph( name, options, data );
 		});
 		
 		it("should have 1 dataset", function() {
