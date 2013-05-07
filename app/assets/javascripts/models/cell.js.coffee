@@ -15,8 +15,19 @@ class Model.Cell
 	#
 	constructor: ( params = {}, start = 1 ) ->
 		
-		@_modules = []
-		@_substrates = {}
+		Object.defineProperty( @, '_modules',
+			value: [],
+			configurable: false,
+			enumerable: false,
+			writable: true,
+		)
+		
+		Object.defineProperty( @, '_substrates',
+			value: {},
+			configurable: false,
+			enumerable: false,
+			writable: true,
+		)
 		
 		creation = Date.now()
 		module = new Model.CellGrowth(  params, start )
@@ -255,6 +266,61 @@ class Model.Cell
 		
 		# Return graphs
 		return graphs		
+		
+	# Serializes a cell
+	# 
+	# @param to_string [Boolean] Stringifies object if try, default true
+	# @return [String,Object] JSON Object or String
+	#
+	serialize : ( to_string = on ) ->
+		
+		parameters = {}
+		for parameter in Object.keys( @ )
+			parameters[parameter] = @[parameter]
+		type = @constructor.name
+		
+		modules = []
+		for module in @_modules
+			modules.push module.serialize( false )
+			
+		substrates = {}
+		for substrate, object of @_substrates
+			substrates[ substrate ] = object.serialize( false )
+		
+		result = { 
+			parameters: parameters
+			type: type
+			modules: modules
+			substrates: substrates
+		}
+		
+		return JSON.stringify( result )  if to_string
+		return result
+		
+	# Deserializes a cell
+	# 
+	# @param serialized [Object,String] the serialized object
+	# @return [Model.Cell] the cell
+	#
+	@deserialize : ( serialized ) ->
+		
+		serialized = JSON.parse( serialized ) if _( serialized ).isString()
+		fn = ( window || @ )["Model"]
+		
+		result = new fn[serialized.type]( serialized.parameters )
+		for module in result._modules
+			result.remove module
+		for substrate, object of result._substrates
+			result.removeSubstrate substrate
+		
+		for module in serialized.modules
+			result.add Model.Module.deserialize( module )
+			
+		for substrate, object of serialized.substrates
+			object = Model.Module.deserialize( object )
+			result._substrates[ substrate ] = object
+			
+		return result
 
 # Makes this available globally.
 (exports ? this).Model.Cell = Model.Cell

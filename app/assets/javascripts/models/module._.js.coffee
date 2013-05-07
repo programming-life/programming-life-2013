@@ -10,7 +10,13 @@ class Model.Module
 	#
 	constructor: ( params, step ) -> 
 		
-		@_tree = new UndoTree()
+		Object.defineProperty( @ , "_tree",
+			value: new UndoTree()
+			configurable: false
+			enumerable: false
+			writable: true
+		)
+	
 		creation = Date.now()
 
 		for key, value of params
@@ -182,5 +188,39 @@ class Model.Module
 			[ key, value, param ] = result
 			@_do( key, param )
 		return this
+		
+	# Serializes a module
+	# 
+	# @param to_string [Boolean] Stringifies object if try, default true
+	# @return [String,Object] JSON Object or String
+	#
+	serialize : ( to_string = on ) ->
+	
+		parameters = {}
+		for parameter in Object.keys( @ )
+			parameters[parameter] = @[parameter]
+			
+		type = @constructor.name
+		
+		result = { 
+			parameters: parameters
+			type: type 
+		}
+		
+		return JSON.stringify( result )  if to_string
+		return result
+		
+	# Deserializes a module
+	# 
+	# @param serialized [Object,String] the serialized object
+	# @return [Model.Module] the module
+	#
+	@deserialize : ( serialized ) ->
+		
+		serialized = JSON.parse( serialized ) if _( serialized ).isString()
+		fn = ( window || @ )["Model"]
+		
+		return new fn[ serialized.type ]( serialized.parameters )
+		
 
 (exports ? this).Model.Module = Model.Module
