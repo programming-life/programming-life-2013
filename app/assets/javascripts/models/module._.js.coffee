@@ -205,6 +205,7 @@ class Model.Module
 		result = { 
 			parameters: parameters
 			type: type 
+			step: @_step.toString() if type is "Module"
 		}
 		
 		return JSON.stringify( result )  if to_string
@@ -213,14 +214,18 @@ class Model.Module
 	# Deserializes a module
 	# 
 	# @param serialized [Object,String] the serialized object
+	# @todo Safer Eval function
 	# @return [Model.Module] the module
 	#
 	@deserialize : ( serialized ) ->
 		
 		serialized = JSON.parse( serialized ) if _( serialized ).isString()
 		fn = ( window || @ )["Model"]
+		return new fn[ serialized.type ]( serialized.parameters ) unless serialized.type is "Module"
 		
-		return new fn[ serialized.type ]( serialized.parameters )
+		# If we are an arbitrary module, we will need the step function
+		eval( "var step = #{serialized.step}" )  
+		return new fn[ serialized.type ]( serialized.parameters, step )
 		
 
 (exports ? this).Model.Module = Model.Module

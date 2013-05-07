@@ -18,7 +18,7 @@ class ModuleInstancesControllerTest < ActionController::TestCase
 
   test "should create module_instance" do
     assert_difference('ModuleInstance.count') do
-      post :create, module_instance: { :module_template_id => 1 }
+      post :create, module_instance: { :module_template_id => @module_instance.module_template_id }
     end
 
     assert_redirected_to module_instance_path(assigns(:module_instance))
@@ -35,7 +35,7 @@ class ModuleInstancesControllerTest < ActionController::TestCase
   end
 
   test "should update module_instance" do
-    put :update, id: @module_instance, module_instance: {  }
+    put :update, id: @module_instance, module_instance: { :id => @module_instance.id  }
     assert_redirected_to module_instance_path(assigns(:module_instance))
   end
 

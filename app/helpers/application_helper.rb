@@ -15,7 +15,7 @@ module ApplicationHelper
 	end
 	
 	def filter_on_key!( results, key, value )
-		results = filter_on_key( results, key, value)
+		results.select! { |result| result[key] == value }
 	end
 	
 	# This will create a link to the current document with the provided options

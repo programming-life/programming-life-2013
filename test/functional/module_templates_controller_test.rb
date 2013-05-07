@@ -18,7 +18,7 @@ class ModuleTemplatesControllerTest < ActionController::TestCase
 
   test "should create module_template" do
     assert_difference('ModuleTemplate.count') do
-      post :create, module_template: { :name => 'Hello' }
+      post :create, module_template: { :name =>  @module_template.name }
     end
 
     assert_redirected_to module_template_path(assigns(:module_template))
@@ -35,7 +35,7 @@ class ModuleTemplatesControllerTest < ActionController::TestCase
   end
 
   test "should update module_template" do
-    put :update, id: @module_template, module_template: {  }
+    put :update, id: @module_template, module_template: { :id =>  @module_template.id  }
     assert_redirected_to module_template_path(assigns(:module_template))
   end
 

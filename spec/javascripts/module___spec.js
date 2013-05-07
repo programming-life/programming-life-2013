@@ -44,8 +44,9 @@ describe("Module", function() {
 			expect( deserialized.b ).toEqual( 5 );
 		});
 
-		it("should not have a step property", function() {
-			expect( deserialized._step ).not.toBeDefined();
+		it("should have retained the step function", function() {
+			expect( module._step ).toBeDefined();
+			expect( module._step ).toEqual( step );
 		});
 		it("should be able to a date of creation", function() {
 			expect( deserialized.creation ).toBeDefined();
