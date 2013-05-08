@@ -30,7 +30,7 @@
 		<tr>
 			<td><%= module_template.id %></td>
 			<td><%= module_template.name %></td>
-			<td><%= link_to pluralize( ModuleInstance.where( :module_template_id => module_template.id ).select( :cell_id ).uniq.count, 'cell'), cells_path( :template => module_template.id ) %></td>
+			<td><%= link_to pluralize( ModuleInstance.where( :module_template_id => module_template.id ).map { |c| c.cell_id }.uniq.count, 'cell'), cells_path( :template => module_template.id ) %></td>
 			<td><%= link_to pluralize( ModuleInstance.where( :module_template_id => module_template.id ).count, 'instance'), module_instances_path( :template => module_template.id ) %></td>
 			<td class="span3">
 				<%= link_to raw('<i class="icon-search"></i> Show'), module_template, :class => 'btn btn-small' %> 
