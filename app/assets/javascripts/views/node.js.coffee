@@ -11,7 +11,7 @@ class View.Node
 	# Performs the desired action on clik
 	#
 	onClick: ( ) ->
-		console.log("Clicked" + this)
+		console.log("Clicked " + @_node._object)
 
 	# Draws the view and thus the model
 	#
@@ -29,18 +29,15 @@ class View.Node
 		@_contents?.remove()
 		@_contents = @_paper.set()
 
-		# Draw stuff
-		id = new Date() - @_node._creation + "\n"
-		id += @_node._object
+		@_drawText()
 
-		text = @_paper.text(x, y, id)
-		text.attr
-			'font-size': 20 * scale
+		@_radius = Math.max( @_text.getBBox().width, @_text.getBBox().height )
 
-		@_radius = Math.max( text.getBBox().width, text.getBBox().height )
-		@_circle = @_paper.circle( x, y, @_radius)
+		@_drawCircle()
+		@_drawShadow()
 
-		@_contents.push(text, @_circle)
+
+		@_contents.push(@_text, @_circle)
 
 		scalar = (@_views.length - 1) * 0.5
 		nextX = x - (2 * @_radius + padding) * scalar
@@ -50,32 +47,62 @@ class View.Node
 			view.draw(nextX, nextY, scale)
 			@_contents.push view._contents...
 
-			@_contents.push @drawArrow(view)
+			@_contents.push @_drawArrow(view)
 
 			nextX = nextX + (2 * @_radius) + padding
 
-		# Draw shadow around module view
+		@_drawHitBox()
+
+
+	
+	_drawCircle: ( ) ->
+		@_circle?.remove()
+		@_circle = @_paper.circle(@_x, @_y, @_radius)
+	
+	_drawShadow: ( ) ->
 		@_shadow?.remove()
 		@_shadow = @_circle?.glow
 			width: 5
 			opacity: .125
 		@_shadow?.scale(.9, .9)
+		
+	
+	_drawText: ( ) ->
+		@_text?.remove()
+		id = new Date() - @_node._creation + "\n"
+		id += @_node._object
 
-		# Draw hitbox in front of node view to detect mouseclicks
-		@_hitBox?.remove()
+		@_text = @_paper.text(@_x, @_y, id)
+		@_text.attr
+			'font-size': 20 * @_scale
+	
+	_drawHitBox: ( ) ->
+		unless @_dragging
+			@_hitBox?.remove()
 		@_hitBox = @_paper.circle(@_x, @_y, @_radius)
 		@_hitBox.node.setAttribute(	"class","node-hitbox")
 		@_hitBox.click =>
 			@onClick()
+		drag = ( dx, dy, x, y )  =>
+			@_x = x
+			@_y = y
+			@_drawCircle( )
+			@_drawShadow()
+			@_drawText()
+			@_drawHitBox()
+		dragStart = () =>
+			@_dragging = true
+		dragStop= () =>
+			@_dragging = false
+			@_drawHitBox()
 
-		@_hitBox.toFront()
-
+		@_hitBox.drag(drag, dragStart, dragStop)
 	
 	# Draw an arrow from this node to next
 	# @param next [View.Node] The next node
 	# @return [Object] The arrow
 	# @todo Use angle and (co)sine
-	drawArrow:( next ) ->
+	_drawArrow:( next ) ->
 		#angle = Raphael.angle(@_x, @_y, next._x, next._y)
 		a = ({
 			x: @_x
@@ -89,5 +116,7 @@ class View.Node
 			"fill" : "black"
 		})
 		return arrow
+	
+	_clear: ( ) ->
 
 (exports ? this).View.Node = View.Node
