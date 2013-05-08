@@ -1,6 +1,6 @@
 # Class to generate graphs from a set of data points
 #
-class Graph
+class View.Graph
 
 	# The number of datasets visible
 	MAX_DATASETS : 2
@@ -148,4 +148,4 @@ class Graph
 		return this
 
 
-(exports ? this).Graph = Graph
+(exports ? this).View.Graph = View.Graph

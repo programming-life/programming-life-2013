@@ -305,7 +305,7 @@ class Model.Cell
 		
 			dataset = []
 			if ( !graphs[ key ] )
-				graphs[ key ] = new Graph( key, graph_options ) 
+				graphs[ key ] = new View.Graph( key, graph_options ) 
 			
 			# Push all the values, but round for float rounding errors
 			for time in [ 0 .. duration ] by dt

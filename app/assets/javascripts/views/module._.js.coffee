@@ -19,6 +19,8 @@ class View.Module
 		@_visible = on
 
 		Model.EventManager.on( 'module.set.property', @, @onModuleInvalidated )
+		Model.EventManager.on( 'module.set.selected', @, @onModuleSelected )
+		Model.EventManager.on( 'module.set.hovered', @, @onModuleHovered )
 		
 		Object.defineProperty( @, 'visible',
 			# @property [Function] the step function
@@ -73,138 +75,38 @@ class View.Module
 	#
 	onModuleInvalidated: ( module, params... ) =>
 		if module is @module
-			@draw( @_x, @_y, @_scale )
+			@redraw()
 
-	moduleSelected: ( event, module ) =>
-		console.log 'yolo'
-		if not @_selected and @_hovered and module isnt @module
+	onModuleSelected: ( module, selected ) =>
+		if module is @module and selected isnt @_selected
+			console.log 'a'
+			@_selected = selected
+			@redraw()
+
+		else if selected is @_selected is true
 			@_selected = false
-			@draw(@_x, @_y, @_scale)
+			@redraw()
 
+	onModuleHovered: ( module, hovered ) =>
+		if module is @module and hovered isnt @_hovered
+			console.log hovered
+			@_hovered = hovered
+			@redraw()
 
-	# Draw a component
-	#
-	# @param module [String] module name for classes
-	# @param component [String] component string
-	# @param x [Integer] x position
-	# @param y [Integer] y position
-	# @param scale [Integer] scale
-	# @param params [Object] options
-	# @returns [Array<Object>] The drawn components
-	#
-	drawComponent : ( module, component, x, y, scale, params = {} ) ->
-		switch component
-			when 'ProcessArrow'
-				arrow = @_paper.path("m #{x},#{y} 0,4.06536 85.154735,0 -4.01409,12.19606 27.12222,-16.26142 -27.12222,-16.26141 4.01409,12.19606 -85.154735,0 z")
-				arrow.node.setAttribute( 'class', "#{module}-arrow" )
-					
-				rect = arrow.getBBox()
-				dx = rect.x - x
-				dy = rect.y - y
-				arrow.translate(-dx - rect.width / 2, 0)
-				arrow.scale( scale, scale )
-				
-				return [ arrow ]
-				
-			when 'SubstrateCircle'
-			
-				# This is the circle in which we show the substrate
-				substrate = params.substrate
-				substrateText = _.escape _( substrate ).first()
-				if ( params.useFullName? and params.useFullName )
-					substrateText = substrate
-				substrateCircle = @_paper.circle( x, y, (params.r ? 20 ) * scale)
-				substrateCircle.node.setAttribute('class', "#{module}-substrate-circle" )
-				substrateCircle.attr
-					'fill': @hashColor substrateText
-				
-				if ( params.showText )
-					substrateText = @_paper.text( x, y, substrateText )
-					substrateText.node.setAttribute('class', "#{module}-substrate-text" )
-					substrateText.attr
-						'font-size': 18 * scale
-				
-				return [ substrateCircle, substrateText ]
-				
-			when 'Sector'
-				r = params.r * scale
-				startAngle = params.from
-				endAngle = params.to
-				rad = Math.PI / 180;
-				x1 = x + r * Math.cos( -startAngle * rad)
-				x2 = x + r * Math.cos( -endAngle * rad)
-				y1 = y + r * Math.sin( -startAngle * rad)
-				y2 = y + r * Math.sin( -endAngle * rad )
-				return [ @_paper.path( ["M", x, y, "L", x1, y1, "A", r, r, 0, +(endAngle - startAngle > 180), 0, x2, y2, "z"] ) ]
-				
-			when 'EnzymCircle'
-			
-				# This is the circle in which we show the conversion
-				origText = _.escape _( params.orig ).first()
-				destText = _.escape _( params.dest ).first()
-				
-				[ enzymOrigCircle ] = @drawComponent( 'enzym', 'Sector', x, y, scale, { r: 20, from: 90, to: 270 } );
-				enzymOrigCircle.attr
-					'fill': @hashColor origText
-				[ enzymDestCircle ] = @drawComponent( 'enzym', 'Sector', x, y, scale, { r: 20, from: 270, to: 90 } );
-				enzymDestCircle.attr
-					'fill': @hashColor destText
-				
-				if ( params.showText )
-				
-					substrateText = @_paper.text( x, y, "#{origText}>#{destText}" )
-					substrateText.node.setAttribute('class', "#{module}-substrate-text" )
-					substrateText.attr
-						'font-size': 18 * scale
-				
-				return [ enzymOrigCircle, enzymDestCircle, substrateText ]
-				
-				
-				
-			when 'ModuleTitle'
-				# Add title text
-				text = @_paper.text( x, y - 60 * scale, params.title )
-				text.attr
-					'font-size': 20 * scale
-
-				objRect = params.objRect
-				textRect = text.getBBox()
-
-				# Add seperation line
-				line = @_paper.path("M #{Math.min(objRect.x, textRect.x) - params.padding },#{objRect.y - params.padding } L #{Math.max(objRect.x + objRect.width, textRect.x + textRect.width) + params.padding},#{objRect.y - params.padding} z")
-				line.node.setAttribute('class', "#{module}-seperator" )
-				
-				return [ text, line ]
-				
-			when 'Information'
-				
-				objRect = params.objRect
-				
-				# Add params text
-				text = @_paper.text( x, y + params.padding * 3, params.text )
-				text.attr
-					'font-size': 18 * scale
-
-				textRect = text.getBBox()
-				
-				#line = @_paper.path("M #{Math.min(objRect.x, textRect.x) - params.padding },#{ y + params.padding * 2 } L #{Math.max(objRect.x + objRect.width, textRect.x + textRect.width) + params.padding},#{ y + params.padding * 2 } z")
-				
-				#line.node.setAttribute('class', "#{module}-seperator" )
-				
-				return [ text, line ]
-		
-		return []
+		else if hovered is @_hovered is true
+			@_hovered = false
+			@redraw()	
 
 	# Clears the module view
 	#
 	clear: () ->
-		@_contents?.remove()
-		@_box?.remove()
-		@_close?.remove()
-		@_closeText?.remove()
-		@_shadow?.remove()
-		@_hitBox?.remove()
-		console.log 'cleared' 
+		@_view?.remove()
+
+	# Redraws this view iff it has been drawn before
+	#
+	redraw: ( ) ->
+		if @_x and @_y and @_scale
+			@draw(@_x, @_y, @_scale)
 			
 	# Draws this view and thus the model
 	#
@@ -213,22 +115,21 @@ class View.Module
 	# @param scale [Integer] the scale
 	#
 	draw: ( x, y, scale ) ->
-		big = @_selected || @_hovered
+		# Clear all existing content
+		@clear()
 
-
+		# Store x, y, and scale values for further redraws
 		@_x = x
 		@_y = y
 		@_scale = scale
 		@_color = @hashColor()
 
-		padding = 8 * scale
+		# If we're either hovered or selected, we will display a bigger version of the view
+		big = @_selected || @_hovered
+		padding = 15 * scale
 
-		if big
-			padding = 20 * scale
-
-		@_contents?.remove()
-		@_paper.setStart()
-		
+		# Start a set for contents
+		@_paper.setStart()		
 		switch @type
 		
 			when 'Transporter'
@@ -382,71 +283,195 @@ class View.Module
 				text.attr
 					'font-size': 20 * scale
 
-		@_contents = @_paper.setFinish()
+		contents = @_paper.setFinish()
 
-		# Draw a box around all contents
-		@_box?.remove()
-		if @_contents?.length > 0
-			rect = @_contents.getBBox()
-			if rect
-				@_box = @_paper.rect(rect.x - padding, rect.y - padding, rect.width + 2 * padding, rect.height + 2 * padding)
-				@_box.node.setAttribute('class', 'module-box')
-				@_box.attr
-					r: 10 * scale
-				@_box.insertBefore(@_contents)
+		# Start a new set for the entire view
+		@_paper.setStart()
 
-		# Draw close button in the top right corner
-		@_close?.remove()
-		@_closeText?.remove()
-		
+		# Draw box
+		box = @drawBox(contents, scale)
+		box.insertBefore(contents)
+
+		# Draw closebutton
+		closeButton = @drawCloseButton(box, scale)
+		closeButton.click =>
+			Model.EventManager.trigger('module.set.selected', @module, [ false ])
+
+		# Draw shadow
 		if @_selected
-			rect = @_box?.getBBox()
-			if rect
-						
-				@_close = @_paper.circle(rect.x + rect.width, rect.y, 15 * scale)
-				@_close.node.setAttribute('class', 'module-close')
-				@_close.click =>
-					@_selected = false
-					@draw(@_x, @_y, @_scale)
-					
-				@_closeText = @_paper.text(rect.x + rect.width, rect.y, 'x')
-				@_closeText.attr
-					'font-size': 20 * scale
-				@_closeText.click =>
-					@_selected = false
-					@draw(@_x, @_y, @_scale)
-					
-				#@_close.insertBefore(@_contents)
+			shadow = @drawShadow(box, scale)
 
-		# Draw shadow around module view
-		@_shadow?.remove()
-		@_shadow = @_box?.glow
+		# Draw hitbox
+		hitbox = @drawHitbox(box, scale)
+		hitbox.click =>
+			Model.EventManager.trigger('module.set.selected', @module, [ true ])
+
+		if @_hovered
+			hitbox.mouseout =>			
+				Model.EventManager.trigger('module.set.hovered', @module, [ false ])		
+		else 
+			hitbox.mouseover =>
+				Model.EventManager.trigger('module.set.hovered', @module, [ true ])
+
+
+		@_view = @_paper.setFinish()
+		@_view.push(contents)
+
+		
+
+	drawBox : ( elem, scale ) ->
+		rect = elem.getBBox()
+		padding = 15 * scale
+		box = @_paper.rect(rect.x - padding, rect.y - padding, rect.width + 2 * padding, rect.height + 2 * padding)
+		box.node.setAttribute('class', 'module-box')
+		box.attr
+			r: 10 * scale
+
+		return box
+
+	drawCloseButton : ( elem, scale ) ->
+		rect = elem.getBBox()
+
+		closeButton = @_paper.set()
+
+		circle = @_paper.circle(rect.x + rect.width, rect.y, 15 * scale)
+		circle.node.setAttribute('class', 'module-close')
+			
+		text = @_paper.text(rect.x + rect.width, rect.y, 'x')
+		text.attr
+			'font-size': 20 * scale
+
+		closeButton.push(circle, text)
+
+		return closeButton
+
+	drawShadow : ( elem, scale ) ->
+		shadow = elem.glow
 			width: 35
 			opacity: .125
-		@_shadow?.scale(.8, .8)
+		shadow.scale(.8, .8)
 
-		# Draw hitbox in front of module view to detect mouseclicks
-		@_hitBox?.remove()
-		if not @_selected
-			rect = @_box?.getBBox()
-			if rect
-				@_hitBox = @_paper.rect(rect.x, rect.y, rect.width, rect.height)
-				@_hitBox.node.setAttribute('class', 'module-hitbox')
-				@_hitBox.insertAfter(@_contents)
+		return shadow
 
-				if @_hovered
-					@_hitBox.mouseout =>
-						@_hovered = false
-						@draw(@_x, @_y, @_scale)
-				else
-					@_hitBox.mouseover =>
-						$(document).trigger('moduleSelected', @module)
-						@_hovered = true
-						@draw(@_x, @_y, @_scale)
+	drawHitbox : ( elem, scale ) ->
+		rect = elem.getBBox()
+		hitbox = @_paper.rect(rect.x, rect.y, rect.width, rect.height)
+		hitbox.node.setAttribute('class', 'module-hitbox')	
 
-				@_hitBox.click =>
-					$(document).trigger('moduleSelected', @module)
-					@_selected = true
-					@draw(@_x, @_y, @_scale)				
+		return hitbox
+
+	# Draw a component
+	#
+	# @param module [String] module name for classes
+	# @param component [String] component string
+	# @param x [Integer] x position
+	# @param y [Integer] y position
+	# @param scale [Integer] scale
+	# @param params [Object] options
+	# @returns [Array<Object>] The drawn components
+	#
+	drawComponent : ( module, component, x, y, scale, params = {} ) ->
+		switch component
+			when 'ProcessArrow'
+				arrow = @_paper.path("m #{x},#{y} 0,4.06536 85.154735,0 -4.01409,12.19606 27.12222,-16.26142 -27.12222,-16.26141 4.01409,12.19606 -85.154735,0 z")
+				arrow.node.setAttribute( 'class', "#{module}-arrow" )
+					
+				rect = arrow.getBBox()
+				dx = rect.x - x
+				dy = rect.y - y
+				arrow.translate(-dx - rect.width / 2, 0)
+				arrow.scale( scale, scale )
+				
+				return [ arrow ]
+				
+			when 'SubstrateCircle'
+			
+				# This is the circle in which we show the substrate
+				substrate = params.substrate
+				substrateText = _.escape _( substrate ).first()
+				if ( params.useFullName? and params.useFullName )
+					substrateText = substrate
+				substrateCircle = @_paper.circle( x, y, (params.r ? 20 ) * scale)
+				substrateCircle.node.setAttribute('class', "#{module}-substrate-circle" )
+				substrateCircle.attr
+					'fill': @hashColor substrateText
+				
+				if ( params.showText )
+					substrateText = @_paper.text( x, y, substrateText )
+					substrateText.node.setAttribute('class', "#{module}-substrate-text" )
+					substrateText.attr
+						'font-size': 18 * scale
+				
+				return [ substrateCircle, substrateText ]
+				
+			when 'Sector'
+				r = params.r * scale
+				startAngle = params.from
+				endAngle = params.to
+				rad = Math.PI / 180;
+				x1 = x + r * Math.cos( -startAngle * rad)
+				x2 = x + r * Math.cos( -endAngle * rad)
+				y1 = y + r * Math.sin( -startAngle * rad)
+				y2 = y + r * Math.sin( -endAngle * rad )
+				return [ @_paper.path( ["M", x, y, "L", x1, y1, "A", r, r, 0, +(endAngle - startAngle > 180), 0, x2, y2, "z"] ) ]
+				
+			when 'EnzymCircle'
+			
+				# This is the circle in which we show the conversion
+				origText = _.escape _( params.orig ).first()
+				destText = _.escape _( params.dest ).first()
+				
+				[ enzymOrigCircle ] = @drawComponent( 'enzym', 'Sector', x, y, scale, { r: 20, from: 90, to: 270 } );
+				enzymOrigCircle.attr
+					'fill': @hashColor origText
+				[ enzymDestCircle ] = @drawComponent( 'enzym', 'Sector', x, y, scale, { r: 20, from: 270, to: 90 } );
+				enzymDestCircle.attr
+					'fill': @hashColor destText
+				
+				if ( params.showText )
+				
+					substrateText = @_paper.text( x, y, "#{origText}>#{destText}" )
+					substrateText.node.setAttribute('class', "#{module}-substrate-text" )
+					substrateText.attr
+						'font-size': 18 * scale
+				
+				return [ enzymOrigCircle, enzymDestCircle, substrateText ]
+				
+				
+				
+			when 'ModuleTitle'
+				# Add title text
+				text = @_paper.text( x, y - 60 * scale, params.title )
+				text.attr
+					'font-size': 20 * scale
+
+				objRect = params.objRect
+				textRect = text.getBBox()
+
+				# Add seperation line
+				line = @_paper.path("M #{Math.min(objRect.x, textRect.x) - params.padding },#{objRect.y - params.padding } L #{Math.max(objRect.x + objRect.width, textRect.x + textRect.width) + params.padding},#{objRect.y - params.padding} z")
+				line.node.setAttribute('class', "#{module}-seperator" )
+				
+				return [ text, line ]
+				
+			when 'Information'
+				
+				objRect = params.objRect
+				
+				# Add params text
+				text = @_paper.text( x, y + params.padding * 3, params.text )
+				text.attr
+					'font-size': 18 * scale
+
+				textRect = text.getBBox()
+				
+				#line = @_paper.path("M #{Math.min(objRect.x, textRect.x) - params.padding },#{ y + params.padding * 2 } L #{Math.max(objRect.x + objRect.width, textRect.x + textRect.width) + params.padding},#{ y + params.padding * 2 } z")
+				
+				#line.node.setAttribute('class', "#{module}-seperator" )
+				
+				return [ text, line ]
+		
+		return []			
 
 (exports ? this).View.Module = View.Module
+

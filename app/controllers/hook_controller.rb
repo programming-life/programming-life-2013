@@ -16,6 +16,8 @@ class HookController < ApplicationController
 		`git reset --hard HEAD`
 		`git pull origin master`
 		@version = `git describe --abbrev=0`
+
+		`bundle install --deployment`
 		
 		# Delete tmp directory?
 		# chmod 774 ?
