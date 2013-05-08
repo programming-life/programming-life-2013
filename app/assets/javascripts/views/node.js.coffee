@@ -7,6 +7,11 @@ class View.Node
 
 		for child in @_node._children
 			@_views.push new View.Node( child, @_paper )
+	
+	# Performs the desired action on clik
+	#
+	onClick: ( ) ->
+		console.log("Clicked" + this)
 
 	# Draws the view and thus the model
 	#
@@ -55,6 +60,16 @@ class View.Node
 			width: 5
 			opacity: .125
 		@_shadow?.scale(.9, .9)
+
+		# Draw hitbox in front of node view to detect mouseclicks
+		@_hitBox?.remove()
+		@_hitBox = @_paper.circle(@_x, @_y, @_radius)
+		@_hitBox.node.setAttribute(	"class","node-hitbox")
+		@_hitBox.click =>
+			@onClick()
+
+		@_hitBox.toFront()
+
 	
 	# Draw an arrow from this node to next
 	# @param next [View.Node] The next node
