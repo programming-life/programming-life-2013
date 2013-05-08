@@ -31,7 +31,7 @@
 			<td><%= module_template.id %></td>
 			<td><%= module_template.name %></td>
 			<td><%= link_to pluralize( ModuleInstance.where( :module_template_id => module_template.id ).select( :cell_id ).uniq.count, 'cell'), cells_path( :template => module_template.id ) %></td>
-			<td><%= link_to pluralize( ModuleInstance.where( :module_template_id => module_template.id ).count, 'instance'), cells_path( :template => module_template.id ) %></td>
+			<td><%= link_to pluralize( ModuleInstance.where( :module_template_id => module_template.id ).count, 'instance'), module_instances_path( :template => module_template.id ) %></td>
 			<td class="span3">
 				<%= link_to raw('<i class="icon-search"></i> Show'), module_template, :class => 'btn btn-small' %> 
 				<%= link_to raw('<i class="icon-pencil"></i> Edit'), edit_module_template_path(module_template), :class => 'btn btn-small' %> 
