@@ -48,13 +48,14 @@ describe("Module", function() {
 			expect( module._step ).toBeDefined();
 			expect( module._step ).toEqual( step );
 		});
+		
 		it("should be able to a date of creation", function() {
 			expect( deserialized.creation ).toBeDefined();
 		});
 		
-		it("should be have a new id", function() {
+		it("should be have same id", function() {
 			expect( deserialized.id ).toBeDefined();
-			expect( deserialized.id ).not.toBe( module.id );
+			expect( deserialized.id ).toBe( module.id );
 		});
 	});
 	

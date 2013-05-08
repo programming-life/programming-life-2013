@@ -8,7 +8,7 @@ class Model.Module
 	# @param params [Object] parameters for this module
 	# @param step [Function] the step function
 	#
-	constructor: ( params, step ) -> 
+	constructor: ( params = {}, step ) -> 
 		
 		Object.defineProperty( @ , "_tree",
 			value: new UndoTree()
@@ -17,7 +17,10 @@ class Model.Module
 			writable: true
 		)
 	
-		creation = Date.now()
+		params = _( params ).defaults( {
+			id: _.uniqueId "client:#{this.constructor.name}:"
+			creation: Date.now()
+		} )
 
 		for key, value of params
 		
@@ -63,21 +66,6 @@ class Model.Module
 			set: ( value ) ->
 				@setSubstrate 'name', value
 		)
-		
-		if _( _( params ).keys() ).indexOf( 'creation' ) is -1
-			Object.defineProperty( @, 'creation',
-				# @property [Date] the creation date
-				get: ->
-					return creation
-			)
-		
-		if _( _( params ).keys() ).indexOf( 'id' ) is -1
-			id = _.uniqueId "client:#{this.constructor.name}_"
-			Object.defineProperty( @, 'id', 
-				# @property [Integer]  the unique id
-				get : ->
-					return id
-			)
 
 		Object.seal @
 						
@@ -87,7 +75,7 @@ class Model.Module
 				@_addMove key, value, param
 						
 		Model.EventManager.on( 'module.set.property', @, addmove )
-		Model.EventManager.trigger( 'module.creation', @, [ creation ] )	
+		Model.EventManager.trigger( 'module.creation', @, [ @creation, @id ] )	
 		
 	# Gets the substrate start value
 	#
@@ -205,7 +193,7 @@ class Model.Module
 		result = { 
 			parameters: parameters
 			type: type 
-			step: @_step.toString() if type is "Module"
+			step: @_step.toString() if type is "Module" and @_step?
 		}
 		
 		return JSON.stringify( result )  if to_string
@@ -225,7 +213,7 @@ class Model.Module
 		
 		# If we are an arbitrary module, we will need the step function
 		step = null
-		eval( "step = #{serialized.step}" )  
+		eval( "step = #{serialized.step}" ) if serialized.step?
 		return new fn[ serialized.type ]( serialized.parameters, step )
 		
 

@@ -28,27 +28,31 @@ class Model.Cell
 			enumerable: false,
 			writable: true,
 		)
-		
-		creation = Date.now()
-		module = new Model.CellGrowth(  params, start )
-		
-		Object.defineProperty( @, 'module',
-			# @property [Model.CellGrowth] the cell growth module
-			get: ->
-				return module
+				
+		id = _.uniqueId "client:#{this.constructor.name}_"
+		Object.defineProperty( @, 'id',
+			# @property [Date] the creation date
+			get : -> 
+				return id
 		)
 		
+		creation = Date.now()
 		Object.defineProperty( @, 'creation',
 			# @property [Date] the creation date
 			get : -> 
 				return creation
 		)
 		
+		Object.defineProperty( @, 'module',
+			# @property [Date] the creation date
+			get : -> 
+				return _( @_modules ).find( ( module ) -> module.constructor.name is "CellGrowth" )
+		)
+		
 		Object.seal @
 		
-		Model.EventManager.trigger( 'cell.creation', @, [ creation ] )
-		
-		@add module
+		Model.EventManager.trigger( 'cell.creation', @, [ @creation, @id ] )
+		@add new Model.CellGrowth( params, start )
 	
 	# Add module to cell
 	#
@@ -294,7 +298,7 @@ class Model.Cell
 			substrates: substrates
 		}
 		
-		return JSON.stringify( result )  if to_string
+		return JSON.stringify( result ) if to_string
 		return result
 		
 	# Deserializes a cell
@@ -302,7 +306,7 @@ class Model.Cell
 	# @param serialized [Object,String] the serialized object
 	# @return [Model.Cell] the cell
 	#
-	@deserialize : ( serialized ) ->
+	@deserialize : ( serialized = {} ) ->
 		
 		serialized = JSON.parse( serialized ) if _( serialized ).isString()
 		fn = ( window || @ )["Model"]
