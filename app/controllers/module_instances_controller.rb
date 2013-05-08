@@ -45,7 +45,7 @@ class ModuleInstancesController < ApplicationController
 		@module_values = @module_instance.module_values
 		@module_hash = Hash[ ( @module_parameters.map { |p| p.key } ).zip( 
 			@module_parameters.map { |p| 
-					( found = ( @module_values.select{ |v| v.module_parameter == p } ).first ).nil? ? nil : found.value
+					( found = ( @module_values.select{ |v| v.module_parameter == p } ).first ).blank? ? nil : found.value
 				} 
 			)
 		]
