@@ -64,18 +64,20 @@ class Model.Module
 				@setSubstrate 'name', value
 		)
 		
-		Object.defineProperty( @, 'creation',
-			# @property [Date] the creation date
-			get: ->
-				return creation
-		)
+		if _( _( params ).keys() ).indexOf( 'creation' ) is -1
+			Object.defineProperty( @, 'creation',
+				# @property [Date] the creation date
+				get: ->
+					return creation
+			)
 		
-		id = _.uniqueId "#{this.constructor.name}_"
-		Object.defineProperty( @, 'id', 
-			# @property [Integer]  the unique id
-			get : ->
-				return id
-		)
+		if _( _( params ).keys() ).indexOf( 'id' ) is -1
+			id = _.uniqueId "client:#{this.constructor.name}_"
+			Object.defineProperty( @, 'id', 
+				# @property [Integer]  the unique id
+				get : ->
+					return id
+			)
 
 		Object.seal @
 						
@@ -86,8 +88,6 @@ class Model.Module
 						
 		Model.EventManager.on( 'module.set.property', @, addmove )
 		Model.EventManager.trigger( 'module.creation', @, [ creation ] )	
-		
-		Object.seal( @ )
 		
 	# Gets the substrate start value
 	#
@@ -224,7 +224,8 @@ class Model.Module
 		return new fn[ serialized.type ]( serialized.parameters ) unless serialized.type is "Module"
 		
 		# If we are an arbitrary module, we will need the step function
-		eval( "var step = #{serialized.step}" )  
+		step = null
+		eval( "step = #{serialized.step}" )  
 		return new fn[ serialized.type ]( serialized.parameters, step )
 		
 
