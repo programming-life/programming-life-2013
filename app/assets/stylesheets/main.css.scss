@@ -38,9 +38,9 @@ body {
 }
 
 .module-box {
-	stroke:#ababab;
+	stroke:#cacaca;
 	stroke-width:1px;
-	fill: #fff;
+	fill: rgba( 255, 255, 255, 1 );
 
 	&.inactive {
 		stroke-dasharray: 5,5;
@@ -61,12 +61,12 @@ body {
 }
 
 .module-hitbox {
-	fill: none;
-	stroke: rgba(0, 0, 0, 0);
-	stroke-width: 0px;
+	fill: rgba(255, 0, 0, 0);
+	stroke: rgba(255, 0, 0, 0);
+	stroke-width: 1px;
 }
 
-text.module-label {
+.module-label {
 
 	tspan {
 		font-family: sans-serif !important;
