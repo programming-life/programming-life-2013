@@ -109,7 +109,12 @@ class Model.Module
 		return null unless _( id ).isString()
 		data = id.split( ':' )
 		return { id: parseInt( data[0] ), origin: "server" } if data.length is 1
-		return { id: parseInt( data[2] ), origin: data[0] }	
+		return { id: parseInt( data[2] ), origin: data[0] }
+		
+	# 
+	#
+	isLocal : () ->
+		return Model.Module.extractId( @id ).origin isnt "server"
 		
 	# Gets the substrate start value
 	#
@@ -233,6 +238,66 @@ class Model.Module
 		return JSON.stringify( result )  if to_string
 		return result
 		
+	# Tries to save a module
+	#
+	save : ( cell = 1 ) ->
+		
+		serialized_data = @serialize( false )
+		
+		# if dynamic, also needs to save the template
+		# if ( serialized_data.step? )
+		# 	build template blabla
+			
+		# First get the template for this instance
+		$.get( @url, 	{ 
+				redirect: 'template', 
+				type: serialized_data.type,
+			} 
+		).done( ( module_template ) =>
+		
+			# Next map data for this object
+			module_instance_data = { 
+				module_instance:
+					id: serialized_data.id unless @isLocal()
+					module_template_id: module_template.id
+					cell_id: cell
+			}
+			
+			# Define the parameters set function, so we can resuse it
+			update_parameters = () =>
+			
+				params = []
+				for key, value of serialized_data.parameters
+					console.log key
+					params.push
+						key: key
+						value: value
+						
+				module_parameters_data = {
+					module_parameters: params
+				}
+				console.log module_parameters_data
+				$.ajax( @url, { data: module_parameters_data, type: 'PUT' } ).done( ( data ) => 
+					console.log data 
+				)
+			
+			# This is the create
+			if @isLocal()
+				$.post( @url, module_instance_data ).done( ( data ) => 
+					
+					# Lets save those results first
+					@id = data.id
+					
+					# And now we need to store those parameters
+					update_parameters()
+				)
+			
+			# This is the update
+			else
+				# For module instances only parameters can chane
+				update_parameters()
+		)
+		
 	# Deserializes a module
 	# 
 	# @param serialized [Object,String] the serialized object
@@ -248,7 +313,8 @@ class Model.Module
 		# If we are an arbitrary module, we will need the step function
 		step = null
 		eval( "step = #{serialized.step}" ) if serialized.step?
-		return new fn[ serialized.type ]( serialized.parameters, step )
+		
+	
 		
 
 (exports ? this).Model.Module = Model.Module

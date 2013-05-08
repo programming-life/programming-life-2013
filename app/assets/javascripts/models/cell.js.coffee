@@ -96,6 +96,11 @@ class Model.Cell
 		data = id.split( ':' )
 		return { id: parseInt( data[0] ), origin: "server" } if data.length is 1
 		return { id: parseInt( data[2] ), origin: data[0] }
+		
+	# 
+	#
+	isLocal : () ->
+		return Model.Cell.extractId( @id ).origin isnt "server"
 	
 	# Add module to cell
 	#
@@ -343,6 +348,22 @@ class Model.Cell
 		
 		return JSON.stringify( result ) if to_string
 		return result
+		
+	# Tries to save a module
+	#
+	save : () ->
+		
+		save_url = @url
+		save_data = @serialize( false )
+		
+		# map data to server accepted data
+		here = {	
+			id: save_data.id unless @isLocal()
+			name: 'MyTestCell'
+		}
+		
+		subsequent_calls = []
+		
 		
 	# Deserializes a cell
 	# 
