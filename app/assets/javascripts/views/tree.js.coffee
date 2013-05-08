@@ -13,7 +13,7 @@ class View.Tree
 
 		@_visible = on
 
-		@_view = new View.Node( @_tree._root, @_paper )
+		@_view = new View.Node( @_tree._root, @_paper, null )
 		
 		Object.defineProperty( @, 'visible',
 			# @property [Function] the step function
@@ -29,8 +29,12 @@ class View.Tree
 	#
 	draw: ( x, y, scale ) ->
 		console.log("Drawing undotree")
-		@_x = x
-		@_y = y
+		if @_view._x and @_view._y
+			@_x = @_view.x
+			@_y = @_view.y
+		else
+			@_x = x
+			@_y = y
 		@_scale = scale
 
 		padding = 15 * scale
@@ -40,7 +44,7 @@ class View.Tree
 		@_contents = @_paper.set()
 
 		# Draw stuff
-		@_view.draw(x, y , scale)
+		@_view.draw(@_x, @_y , @_scale)
 
 		@_contents.push @_view._contents...
 
