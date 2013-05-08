@@ -8,7 +8,7 @@ class Model.Module
 	# @param params [Object] parameters for this module
 	# @param step [Function] the step function
 	#
-	constructor: ( params, step ) -> 
+	constructor: ( params = {}, step ) -> 
 		
 		Object.defineProperty( @ , "_tree",
 			value: new UndoTree()
@@ -17,7 +17,10 @@ class Model.Module
 			writable: true
 		)
 	
-		creation = Date.now()
+		params = _( params ).defaults( {
+			id: _.uniqueId "client:#{this.constructor.name}:"
+			creation: Date.now()
+		} )
 
 		for key, value of params
 		
@@ -51,43 +54,67 @@ class Model.Module
 			) key
 
 		Object.defineProperty( @, '_step',
+			
 			# @property [Function] the step function
 			get: ->
 				return step
+				
+			configurable: false
+			enumerable: false
 		)
 		
 		Object.defineProperty( @, 'amount',
+			
 			# @property [Integer] the amount of this substrate at start
 			get: ->
 				return @getSubstrate 'name'
+				
 			set: ( value ) ->
 				@setSubstrate 'name', value
+				
+			configurable: false
+			enumerable: false
 		)
 		
-		Object.defineProperty( @, 'creation',
-			# @property [Date] the creation date
-			get: ->
-				return creation
-		)
-		
-		id = _.uniqueId "#{this.constructor.name}_"
-		Object.defineProperty( @, 'id', 
-			# @property [Integer]  the unique id
-			get : ->
-				return id
+		Object.defineProperty( @, 'url',
+			
+			# @property [String] the url for this model
+			get : -> 
+				data = Model.Module.extractId( @id )
+				return "/module_instances/#{ data.id }.json" if data.origin is "server"
+				return '/module_instances.json'
+			
+			configurable: false
+			enumerable: false
 		)
 
 		Object.seal @
-						
+					
+		# Bind the events
 		context = @
 		addmove = ( caller, key, value, param ) ->
 			unless caller isnt context
 				@_addMove key, value, param
 						
 		Model.EventManager.on( 'module.set.property', @, addmove )
-		Model.EventManager.trigger( 'module.creation', @, [ creation ] )	
+		Model.EventManager.trigger( 'module.creation', @, [ @creation, @id ] )	
 		
-		Object.seal( @ )
+	# Extracts id data from id
+	#
+	# @param id [Object,Number,String] id containing id data
+	# @return [Object] extracted id data
+	@extractId: ( id ) ->
+		return id if _( id ).isObject()
+		return { id: id, origin: "server" } if _( id ).isNumber()
+		return null unless _( id ).isString()
+		data = id.split( ':' )
+		return { id: parseInt( data[0] ), origin: "server" } if data.length is 1
+		return { id: parseInt( data[2] ), origin: data[0] }
+		
+	# 
+	#
+	isLocal : () ->
+		return Model.Module.extractId( @id ).origin isnt "server"
 		
 	# Gets the substrate start value
 	#
@@ -205,11 +232,87 @@ class Model.Module
 		result = { 
 			parameters: parameters
 			type: type 
-			step: @_step.toString() if type is "Module"
+			step: @_step.toString() if type is "Module" and @_step?
 		}
 		
 		return JSON.stringify( result )  if to_string
 		return result
+		
+	# Tries to save a module
+	#
+	save : ( cell = 1 ) ->
+		
+		serialized_data = @serialize( false )
+		
+		# if dynamic, also needs to save the template
+		# if ( serialized_data.step? )
+		# 	build template blabla
+			
+		# First get the template for this instance
+		data =
+			redirect: 'template'
+			type: serialized_data.type
+			
+		$.get( @url, data )
+			.done( ( module_template ) =>
+		
+				# Next map data for this object
+				module_instance_data =
+					module_instance:
+						id: serialized_data.id unless @isLocal()
+						module_template_id: module_template.id
+						cell_id: cell
+				
+				# Define the parameters set function, so we can resuse it
+				update_parameters = () =>
+				
+					params = []
+					for key, value of serialized_data.parameters
+						console.log key
+						params.push
+							key: key
+							value: value
+							
+					module_parameters_data =
+						module_parameters: params
+						
+					$.ajax( @url, { data: module_parameters_data, type: 'PUT' } )
+						.done( ( data ) => 
+							console.log data 
+						)
+						
+						.fail( ( data ) => 
+							Model.EventManager.trigger( 
+								'notification', @, [ 'module', 'save', [ 'update parameters', data, module_parameters_data ] ] )	
+						)
+				
+				# This is the create
+				if @isLocal()
+					$.post( @url, module_instance_data )
+						.done( ( data ) => 
+							
+							# Lets save those results first
+							@id = data.id
+							
+							# And now we need to store those parameters
+							update_parameters()
+						)
+						
+						.fail( ( data ) => 
+							Model.EventManager.trigger( 
+								'notification', @, [ 'module', 'save', [ 'create instance', data, module_instance_data ] ] )	
+						)
+				
+				# This is the update
+				else
+					# For module instances only parameters can chane
+					update_parameters() 
+			)
+			
+			.fail( ( data ) => 
+				Model.EventManager.trigger( 
+					'notification', @, [ 'module', 'save', [ 'get template', data, module_template_data ] ] )	
+			)
 		
 	# Deserializes a module
 	# 
@@ -224,8 +327,10 @@ class Model.Module
 		return new fn[ serialized.type ]( serialized.parameters ) unless serialized.type is "Module"
 		
 		# If we are an arbitrary module, we will need the step function
-		eval( "var step = #{serialized.step}" )  
-		return new fn[ serialized.type ]( serialized.parameters, step )
+		step = null
+		eval( "step = #{serialized.step}" ) if serialized.step?
+		
+	
 		
 
 (exports ? this).Model.Module = Model.Module

@@ -6,49 +6,112 @@ class Model.Cell
 
 	# Constructor for cell
 	#
-	# @param params [Object] parameters for this cell
+	# @param params [Object] parameters for the cellgrowth module
+	# @param start [Integer] the initial value of cell
+	# @param paramscell [Object] parameters for the cell
 	# @param start [Integer] the initial value of cell
 	# @option params [String] lipid the name of lipid to consume
 	# @option params [String] protein the name of protein to consume
 	# @option params [String] consume the consume substrate to consume
 	# @option params [String] name the name, defaults to "cell"
 	#
-	constructor: ( params = {}, start = 1 ) ->
+	constructor: ( params = {}, start = 1, paramscell = {} ) ->
 		
 		Object.defineProperty( @, '_modules',
-			value: [],
-			configurable: false,
-			enumerable: false,
-			writable: true,
+			value: []
+			configurable: false
+			enumerable: false
+			writable: true
 		)
 		
 		Object.defineProperty( @, '_substrates',
-			value: {},
-			configurable: false,
-			enumerable: false,
-			writable: true,
+			value: {}
+			configurable: false
+			enumerable: false
+			writable: true
 		)
 		
-		creation = Date.now()
-		module = new Model.CellGrowth(  params, start )
+		# Add defaults for serialization
+		defaults = {
+			id: _.uniqueId "client:#{this.constructor.name}:"
+			creation: Date.now()
+		}
 		
+		paramscell = _( paramscell ).defaults( defaults )
+		for key, value of paramscell
+			# The function to create a property out of param
+			#
+			# @param key [String] the property name
+			#
+			( ( key ) => 
+			
+				# This defines the private value.
+				Object.defineProperty( @ , "_#{key}",
+					value: value
+					configurable: false
+					enumerable: false
+					writable: true
+				)
+
+				# This defines the public functions to change
+				# those values.
+				Object.defineProperty( @ , key,
+					set: ( param ) ->
+						console.log "I am setting #{key}", @["_#{key}"], param
+						Model.EventManager.trigger( 'cell.set.property', @, [ "_#{key}", @["_#{key}"], param ] )
+						@["_#{key}"] = param
+						#@_do( "_#{key}", param )
+					get: ->
+						return @["_#{key}"]
+					enumerable: true
+					configurable: false
+				)
+				
+			) key
+
 		Object.defineProperty( @, 'module',
-			# @property [Model.CellGrowth] the cell growth module
-			get: ->
-				return module
-		)
-		
-		Object.defineProperty( @, 'creation',
+			
 			# @property [Date] the creation date
 			get : -> 
-				return creation
+				return _( @_modules ).find( ( module ) -> module.constructor.name is "CellGrowth" )
+			
+			configurable: false
+			enumerable: false
+		)
+		
+		Object.defineProperty( @, 'url',
+			
+			# @property [String] the url for this model
+			get : -> 
+				data = Model.Cell.extractId( @id )
+				return "/cells/#{ data.id }.json" if data.origin is "server"
+				return '/cells.json'
+			
+			configurable: false
+			enumerable: false
 		)
 		
 		Object.seal @
 		
-		Model.EventManager.trigger( 'cell.creation', @, [ creation ] )
+		Model.EventManager.trigger( 'cell.creation', @, [ @creation, @id ] )
+		@add new Model.CellGrowth( params, start )
 		
-		@add module
+	# Extracts id data from id
+	#
+	# @param id [Object,Number,String] id containing id data
+	# @return [Object] extracted id data
+	@extractId: ( id ) ->
+		return id if _( id ).isObject()
+		return { id: id, origin: "server" } if _( id ).isNumber()
+		return null unless _( id ).isString()
+		data = id.split( ':' )
+		return { id: parseInt( data[0] ), origin: "server" } if data.length is 1
+		return { id: parseInt( data[2] ), origin: data[0] }
+		
+	# 
+	#
+	isLocal : () ->
+		return Model.Cell.extractId( @id ).origin isnt "server"
 	
 	# Add module to cell
 	#
@@ -294,20 +357,72 @@ class Model.Cell
 			substrates: substrates
 		}
 		
-		return JSON.stringify( result )  if to_string
+		return JSON.stringify( result ) if to_string
 		return result
+		
+	# Tries to save a module
+	#
+	save : () ->
+		
+		save_data = @serialize( false )
+		
+		# map data to server accepted data
+		cell_data =
+			cell:
+				id: save_data.id unless @isLocal()
+				name: 'My Test Cell'	
+			
+		# Define the modules set function, so we can resuse it
+		update_modules = () =>
+		
+			for module in @_modules
+				module.save @id
+					
+		# This is the create
+		if @isLocal()
+			$.post( @url, cell_data )
+				.done( ( data ) => 
+					
+					# Lets save those results first
+					@id = data.id
+					
+					# And now we need to store those module
+					update_modules()
+				)
+				
+				.fail( ( data ) => 
+					Model.EventManager.trigger( 
+						'notification', @, [ 'cell', 'save', [ 'create', data, module_instance_data ] ] )	
+				)
+		
+		# This is the update
+		else
+			$.ajax( @url, { data: cell_data, type: 'PUT' } )
+				.done( ( data ) => 
+				
+					# And now we need to store those module
+					update_modules()
+				)
+				
+				.fail( ( data ) => 
+					Model.EventManager.trigger( 
+						'notification', @, [ 'cell', 'save', [ 'update', data, module_instance_data ] ] )	
+				)
+	
+		subsequent_calls = []
+		
 		
 	# Deserializes a cell
 	# 
 	# @param serialized [Object,String] the serialized object
 	# @return [Model.Cell] the cell
 	#
-	@deserialize : ( serialized ) ->
+	@deserialize : ( serialized = {} ) ->
 		
 		serialized = JSON.parse( serialized ) if _( serialized ).isString()
 		fn = ( window || @ )["Model"]
 		
-		result = new fn[serialized.type]( serialized.parameters )
+		result = new fn[serialized.type]( undefined, undefined, serialized.parameters  )
 		for module in result._modules
 			result.remove module
 		for substrate, object of result._substrates

@@ -8,207 +8,250 @@
 
 templates = ModuleTemplate.create(
 	[
+		# Template 0
 		{ 
-			name: 'ModuleA',
-			file: 'lipid'
+			name: 'Lipids',
+			file: 'lipid',
+			javascript_model: 'Lipid'
+			
+			#k, consume, dna
+		},
+		
+		# Template 1
+		{
+			name: 'DNA',
+			file: 'dna',
+			javascript_model: 'DNA'
+			
 			#k, consume
 		},
 		
+		# Template 2
 		{
-			name: 'ModuleB',
-			file: 'substrate'
-			#k
+			name: 'Metabolism Enzyme',
+			file: 'metabolism',
+			javascript_model: 'Metabolism'
+			#k, k_m, k_d, v, orig, dest, dna
 		},
 		
+		# Template 3
 		{
-			name: 'ModuleC',
-			file: 'metabolism'
-			#k, k_met
+			name: 'Protein',
+			file: 'protein',
+			javascript_model: 'Protein'
+			#k, k_d, dna, substrate
 		},
 		
+		# Template 4
 		{
-			name: 'ModuleD',
-			file: nil
-			#lipsum
+			name: 'Substrate',
+			file: 'substrate',
+			javascript_model: 'Substrate'
+			#placement, supply
+		},
+		
+		# Template 5
+		{
+			name: 'Transporter',
+			file: 'transporter',
+			javascript_model: 'Transporter'
+			#k, k_tr, k_m, orig, dest, dna,	consume
+		},
+		
+		# Template 6
+		{
+			name: 'Cell growth',
+			file: 'cellgrowth',
+			javascript_model: 'CellGrowth'
+			#consume, #infrastructure
 		}
 	]
 )
 
 parameters = ModuleParameter.create(
 	[
+	
 		# parameter 0
 		{ 
 			key: 'k', 
 			module_template_id: templates.at(0).id
-			#ModuleA
+			#Lipid
 		}, 
 		
 		# parameter 1
 		{ 
 			key: 'consume', 
 			module_template_id: templates.at(0).id 
-			#ModuleA
+			#Lipid
 		},
 		
 		# parameter 2
-		{ 
-			key: 'k', 
-			module_template_id: templates.at(1).id 
-			#ModuleB
-		}, 
+		{
+			key: 'dna', 
+			module_template_id: templates.at(0).id 
+			#Lipid
+		},
 		
 		# parameter 3
 		{ 
 			key: 'k', 
-			module_template_id: templates.at(2).id 
-			#ModuleC
-		},
+			module_template_id: templates.at(1).id
+			#DNA
+		}, 
 		
 		# parameter 4
 		{ 
-			key: 'k_met', 
-			module_template_id: templates.at(2).id
-			#ModuleC
+			key: 'consume', 
+			module_template_id: templates.at(1).id 
+			#DNA
 		},
 		
 		# parameter 5
 		{ 
-			key: 'lipsum', 
+			key: 'k', 
+			module_template_id: templates.at(2).id
+			#Metabolism
+		}, 
+		
+		# parameter 6
+		{ 
+			key: 'k_m', 
+			module_template_id: templates.at(2).id 
+			#Metabolism
+		},
+		
+		# parameter 7
+		{ 
+			key: 'k_d', 
+			module_template_id: templates.at(2).id 
+			#Metabolism
+		},
+		
+		# parameter 8
+		{ 
+			key: 'v', 
+			module_template_id: templates.at(2).id 
+			#Metabolism
+		},
+		
+		# parameter 9
+		{ 
+			key: 'dna', 
+			module_template_id: templates.at(2).id 
+			#Metabolism
+		},
+		
+		# parameter 10
+		{ 
+			key: 'orig', 
+			module_template_id: templates.at(2).id 
+			#Metabolism
+		},
+		
+		# parameter 11
+		{ 
+			key: 'dest', 
+			module_template_id: templates.at(2).id 
+			#Metabolism
+		},
+		
+		# parameter 12
+		{ 
+			key: 'dna', 
 			module_template_id: templates.at(3).id 
-			#ModuleD
-		}, 
-		
-		
-	]
-)
-
-cells = Cell.create(
-	[
-		{ 
-			name: 'CellA'
+			#Protein
 		},
 		
+		# parameter 13
 		{ 
-			name: 'CellB' 
+			key: 'k', 
+			module_template_id: templates.at(3).id 
+			#Protein
 		},
 		
+		# parameter 14
 		{ 
-			name: 'CellC' 
-		} 
-	]
-)
-
-instances = ModuleInstance.create(
-	[
-		# instance 0
-		{ 
-			module_template_id: templates.at(0).id , 
-			cell_id: cells.at(0).id
-			#CellA, #ModuleA
-		}, 
-		
-		# instance 1
-		{ 
-			module_template_id: templates.at(1).id , 
-			cell_id: cells.at(0).id
-			#CellA, #ModuleB
+			key: 'substrate', 
+			module_template_id: templates.at(3).id 
+			#Protein
 		},
 		
-		# instance 2
+		# parameter 15
 		{ 
-			module_template_id: templates.at(0).id , 
-			cell_id: cells.at(1).id 
-			#CellB, #ModuleA
+			key: 'placement', 
+			module_template_id: templates.at(4).id 
+			#Substrate
 		},
 		
-		# instance 3
+		# parameter 16
 		{ 
-			module_template_id: templates.at(0).id , 
-			cell_id: cells.at(2).id
-			#CellC, #ModuleA
+			key: 'supply', 
+			module_template_id: templates.at(4).id 
+			#Substrate
 		},
 		
-		# instance 4
+		# parameter 17
 		{ 
-			module_template_id: templates.at(2).id , 
-			cell_id: cells.at(2).id 
-			#CellC, #ModuleC
+			key: 'k', 
+			module_template_id: templates.at(5).id 
+			#Transporter
 		},
 		
-		# instance 5
+		# parameter 18
 		{ 
-			module_template_id: templates.at(3).id , 
-			cell_id: cells.at(2).id 
-			#CellD, #ModuleD
-		}
-	] 
-)
-
-ModuleValue.destroy_all()
-
-values = ModuleValue.create(
-	[
-		# instance 0: Module A
-		{ 
-			value: 1, 
-			module_parameter_id: parameters.at(0).id, #k
-			module_instance_id: instances.at(0).id 
-		}, 
-		{ 
-			value: 's_int', 
-			module_parameter_id: parameters.at(1).id, #consume
-			module_instance_id: instances.at(0).id 
+			key: 'k_tr', 
+			module_template_id: templates.at(5).id 
+			#Transporter
 		},
 		
-		# instance 1: Module B
+		# parameter 19
 		{ 
-			value: 0.8, 
-			module_parameter_id: parameters.at(2).id, #k
-			module_instance_id: instances.at(1).id 
-		}, 
-		
-		# instance 2: Module A
-		{ 
-			value: 0.5, 
-			module_parameter_id: parameters.at(0).id, #k
-			module_instance_id: instances.at(2).id 
-		}, 
-		{ 
-			value: 's_int', 
-			module_parameter_id: parameters.at(1).id, #consume
-			module_instance_id: instances.at(2).id 
+			key: 'k_m', 
+			module_template_id: templates.at(5).id 
+			#Transporter
 		},
 		
-		# instance 3: Module A
+		# parameter 20
 		{ 
-			value: 1, 
-			module_parameter_id: parameters.at(0).id, #k
-			module_instance_id: instances.at(3).id 
-		}, 
-		{ 
-			value: 'p_int', 
-			module_parameter_id: parameters.at(1).id, #consume
-			module_instance_id: instances.at(3).id 
+			key: 'orig', 
+			module_template_id: templates.at(5).id 
+			#Transporter
 		},
 		
-		# instance 4: Module C
+		# parameter 21
 		{ 
-			value: 0.75, 
-			module_parameter_id: parameters.at(3).id, #k
-			module_instance_id: instances.at(4).id 
+			key: 'dest', 
+			module_template_id: templates.at(5).id 
+			#Transporter
 		},
 		
+		# parameter 22
 		{ 
-			value: 0.2, 
-			module_parameter_id: parameters.at(4).id, #k_met
-			module_instance_id: instances.at(4).id 
+			key: 'dna', 
+			module_template_id: templates.at(5).id 
+			#Transporter
 		},
 		
-		# instance 5: Module D
+		# parameter 23
 		{ 
-			value: 'dolor', 
-			module_parameter_id: parameters.at(5).id, #k
-			module_instance_id: instances.at(5).id 
+			key: 'consume', 
+			module_template_id: templates.at(5).id 
+			#Transporter
 		},
+		
+		# parameter 22
+		{ 
+			key: 'consume', 
+			module_template_id: templates.at(6).id 
+			#CellGrowth
+		},
+		
+		# parameter 23
+		{ 
+			key: 'infrastructure', 
+			module_template_id: templates.at(6).id 
+			#CellGrowth
+		},
+				
 	]
 )
