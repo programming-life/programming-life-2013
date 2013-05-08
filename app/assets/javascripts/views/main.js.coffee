@@ -65,11 +65,14 @@ class View.Main
 		)
 
 		tree = new Model.UndoTree(new Model.Node("Root",null))
-		for i in [1..3]
-			tree.add( "Test"+i )
-			tree.undo()
-			tree.add( "Test"+4 )
-			tree.add( "Test"+5 )
+		tree.add("test")
+		tree.undo()
+		tree.add("test2")
+#		for i in [1..3]
+#			tree.add( "Test"+i )
+#			tree.undo()
+#			tree.add( "Test"+4 )
+#			tree.add( "Test"+5 )
 		@_views.push new View.Tree( tree, @paper )
 		
 		$( window ).on( 'resize', @resize )

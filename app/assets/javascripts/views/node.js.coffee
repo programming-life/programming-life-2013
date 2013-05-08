@@ -1,12 +1,13 @@
 class View.Node
-	constructor: ( node, paper ) ->
+	constructor: ( node, paper, parent ) ->
 		@_node = node
 		@_paper = paper
+		@_parent = parent
 
 		@_views = []
 
 		for child in @_node._children
-			@_views.push new View.Node( child, @_paper )
+			@_views.push new View.Node( child, @_paper, @ )
 	
 	# Performs the desired action on clik
 	#
@@ -24,40 +25,42 @@ class View.Node
 		@_y = y
 		@_scale = scale
 
-		padding = 30 * scale
-		
+		@_padding = 30 * scale
+
 		@_contents?.remove()
 		@_contents = @_paper.set()
 
 		@_drawText()
+		@_radius = Math.max( @_text.getBBox().width, @_text.getBBox().height ) * scale
 
-		@_radius = Math.max( @_text.getBBox().width, @_text.getBBox().height )
 
 		@_drawCircle()
 		@_drawShadow()
-
-
-		@_contents.push(@_text, @_circle)
-
-		scalar = (@_views.length - 1) * 0.5
-		nextX = x - (2 * @_radius + padding) * scalar
-		nextY = y + 2 * @_radius + padding
-
-		for view in @_views
-			view.draw(nextX, nextY, scale)
-			@_contents.push view._contents...
-
-			@_contents.push @_drawArrow(view)
-
-			nextX = nextX + (2 * @_radius) + padding
-
 		@_drawHitBox()
 
+		unless @_parent is null
+			@_drawArrow(@_parent)
+		
+		@_drawViews()
+
+
+	_drawViews: ( ) ->
+		scalar = (@_views.length - 1) * 0.5
+		nextX = @_x - (2 * @_radius + @_padding) * scalar
+		nextY = @_y + 2 * @_radius + @_padding
+
+		for view in @_views
+			view.draw(nextX, nextY, @_scale)
+			@_contents.push view._contents...
+
+
+			nextX = nextX + (2 * @_radius) + @_padding
 
 	
 	_drawCircle: ( ) ->
 		@_circle?.remove()
 		@_circle = @_paper.circle(@_x, @_y, @_radius)
+		@_contents.push(@_text, @_circle)
 	
 	_drawShadow: ( ) ->
 		@_shadow?.remove()
@@ -90,6 +93,13 @@ class View.Node
 			@_drawShadow()
 			@_drawText()
 			@_drawHitBox()
+
+			unless @_parent is null
+				@_drawArrow(@_parent)
+
+			for view in @_views
+				view._drawArrow(@)
+
 		dragStart = () =>
 			@_dragging = true
 		dragStop= () =>
@@ -98,25 +108,23 @@ class View.Node
 
 		@_hitBox.drag(drag, dragStart, dragStop)
 	
-	# Draw an arrow from this node to next
-	# @param next [View.Node] The next node
+	# Draw an arrow from this node to other
+	# @param next [View.Node] The other node
 	# @return [Object] The arrow
 	# @todo Use angle and (co)sine
 	_drawArrow:( next ) ->
-		#angle = Raphael.angle(@_x, @_y, next._x, next._y)
-		a = ({
-			x: @_x
-			y: @_y + @_radius
-			nextX: next._x
-			nextY: next._y - @_radius - 5
-		})
+		@_arrow?.remove()
+		x = @_x
 
-		arrow = @_paper.arrowSet(a.x, a.y, a.nextX, a.nextY, 5)
-		arrow[0].attr({
+		y = @_y - @_radius
+		nextX = next._x
+		nextY = next._y + @_radius
+		
+		@_arrow = @_paper.arrowSet(x, y, nextX, nextY, 5)
+		@_arrow[0].attr({
 			"fill" : "black"
 		})
-		return arrow
-	
-	_clear: ( ) ->
+
+		@_contents.push @_arrow
 
 (exports ? this).View.Node = View.Node
