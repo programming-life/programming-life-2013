@@ -11,7 +11,7 @@ class ModuleInstancesController < ApplicationController
 		@filters[:template] = params[:template].to_i if params.has_key?(:template)
 		#get_filters( :cell, :template )
 
-		@module_instances = ModuleInstance.all
+		@module_instances = ModuleInstance.paginate( :page => params[:page], :per_page => 15 )
 		@module_instances = filter_on_key( @module_instances, :module_template_id, @filters[:template] ) if ( !@filters[:template].nil? )
 		@module_instances = filter_on_key( @module_instances, :cell_id, @filters[:cell] ) if ( !@filters[:cell].nil? )
 

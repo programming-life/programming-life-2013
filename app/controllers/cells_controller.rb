@@ -6,11 +6,11 @@ class CellsController < ApplicationController
 	@filters = { }
 	@filters[:template] = params[:template].to_i if params.has_key?(:template)
 	
-    @cells = Cell.all
+    @cells = Cell.paginate( :page => params[:page], :per_page => 15 )
 	
 	if ( !@filters[:template].nil? )
 		cells = ModuleInstance.where( :module_template_id => @filters[:template] ).select( :cell_id )
-		@cells.select!{ |c| cells.any?{ |y| y.cell_id == c.id } }
+		@cells = @cells.where( :id => cells )
 	end
 
     respond_to do |format|
