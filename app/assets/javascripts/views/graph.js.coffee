@@ -148,4 +148,4 @@ class View.Graph
 		return this
 
 
-(exports ? this).Graph = Graph
+(exports ? this).View.Graph = View.Graph
