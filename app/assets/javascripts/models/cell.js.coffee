@@ -6,53 +6,96 @@ class Model.Cell
 
 	# Constructor for cell
 	#
-	# @param params [Object] parameters for this cell
+	# @param params [Object] parameters for the cellgrowth module
+	# @param start [Integer] the initial value of cell
+	# @param paramscell [Object] parameters for the cell
 	# @param start [Integer] the initial value of cell
 	# @option params [String] lipid the name of lipid to consume
 	# @option params [String] protein the name of protein to consume
 	# @option params [String] consume the consume substrate to consume
 	# @option params [String] name the name, defaults to "cell"
 	#
-	constructor: ( params = {}, start = 1 ) ->
+	constructor: ( params = {}, start = 1, paramscell = {} ) ->
 		
 		Object.defineProperty( @, '_modules',
-			value: [],
-			configurable: false,
-			enumerable: false,
-			writable: true,
+			value: []
+			configurable: false
+			enumerable: false
+			writable: true
 		)
 		
 		Object.defineProperty( @, '_substrates',
-			value: {},
-			configurable: false,
-			enumerable: false,
-			writable: true,
-		)
-				
-		id = _.uniqueId "client:#{this.constructor.name}_"
-		Object.defineProperty( @, 'id',
-			# @property [Date] the creation date
-			get : -> 
-				return id
+			value: {}
+			configurable: false
+			enumerable: false
+			writable: true
 		)
 		
-		creation = Date.now()
-		Object.defineProperty( @, 'creation',
+		# Add defaults for serialization
+		defaults = {
+			id: _.uniqueId "client:#{this.constructor.name}:"
+			creation: Date.now()
+		}
+		paramscell = _( paramscell ).defaults( defaults )
+		
+		Object.defineProperty( @, 'id',
+			
 			# @property [Date] the creation date
 			get : -> 
-				return creation
+				return paramscell.id
+			
+			configurable: false
+			enumerable: true
+		)
+		
+		Object.defineProperty( @, 'creation',
+			
+			# @property [Date] the creation date
+			get : -> 
+				return paramscell.creation
+			
+			configurable: false,
+			enumerable: true
 		)
 		
 		Object.defineProperty( @, 'module',
+			
 			# @property [Date] the creation date
 			get : -> 
 				return _( @_modules ).find( ( module ) -> module.constructor.name is "CellGrowth" )
+			
+			configurable: false
+			enumerable: false
+		)
+		
+		Object.defineProperty( @, 'url',
+			
+			# @property [String] the url for this model
+			get : -> 
+				data = Model.Cell.extractId( @id )
+				return "/cells/#{ data.id }.json" if data.origin is "server"
+				return '/cells.json'
+			
+			configurable: false
+			enumerable: false
 		)
 		
 		Object.seal @
 		
 		Model.EventManager.trigger( 'cell.creation', @, [ @creation, @id ] )
 		@add new Model.CellGrowth( params, start )
+		
+	# Extracts id data from id
+	#
+	# @param id [Object,Number,String] id containing id data
+	# @return [Object] extracted id data
+	@extractId: ( id ) ->
+		return id if _( id ).isObject()
+		return { id: id, origin: "server" } if _( id ).isNumber()
+		return null unless _( id ).isString()
+		data = id.split( ':' )
+		return { id: parseInt( data[0] ), origin: "server" } if data.length is 1
+		return { id: parseInt( data[2] ), origin: data[0] }
 	
 	# Add module to cell
 	#
@@ -311,7 +354,7 @@ class Model.Cell
 		serialized = JSON.parse( serialized ) if _( serialized ).isString()
 		fn = ( window || @ )["Model"]
 		
-		result = new fn[serialized.type]( serialized.parameters )
+		result = new fn[serialized.type]( undefined, undefined, serialized.parameters  )
 		for module in result._modules
 			result.remove module
 		for substrate, object of result._substrates

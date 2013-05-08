@@ -54,21 +54,43 @@ class Model.Module
 			) key
 
 		Object.defineProperty( @, '_step',
+			
 			# @property [Function] the step function
 			get: ->
 				return step
+				
+			configurable: false
+			enumerable: false
 		)
 		
 		Object.defineProperty( @, 'amount',
+			
 			# @property [Integer] the amount of this substrate at start
 			get: ->
 				return @getSubstrate 'name'
+				
 			set: ( value ) ->
 				@setSubstrate 'name', value
+				
+			configurable: false
+			enumerable: false
+		)
+		
+		Object.defineProperty( @, 'url',
+			
+			# @property [String] the url for this model
+			get : -> 
+				data = Model.Module.extractId( @id )
+				return "/module_instances/#{ data.id }.json" if data.origin is "server"
+				return '/module_instances.json'
+			
+			configurable: false
+			enumerable: false
 		)
 
 		Object.seal @
-						
+					
+		# Bind the events
 		context = @
 		addmove = ( caller, key, value, param ) ->
 			unless caller isnt context
@@ -76,6 +98,18 @@ class Model.Module
 						
 		Model.EventManager.on( 'module.set.property', @, addmove )
 		Model.EventManager.trigger( 'module.creation', @, [ @creation, @id ] )	
+		
+	# Extracts id data from id
+	#
+	# @param id [Object,Number,String] id containing id data
+	# @return [Object] extracted id data
+	@extractId: ( id ) ->
+		return id if _( id ).isObject()
+		return { id: id, origin: "server" } if _( id ).isNumber()
+		return null unless _( id ).isString()
+		data = id.split( ':' )
+		return { id: parseInt( data[0] ), origin: "server" } if data.length is 1
+		return { id: parseInt( data[2] ), origin: data[0] }	
 		
 	# Gets the substrate start value
 	#
