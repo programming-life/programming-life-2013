@@ -329,7 +329,7 @@ class Model.Module
 		# If we are an arbitrary module, we will need the step function
 		step = null
 		eval( "step = #{serialized.step}" ) if serialized.step?
-		
+		return new fn[ serialized.type ]( serialized.parameters, step )
 	
 		
 
