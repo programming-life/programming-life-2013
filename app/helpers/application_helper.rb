@@ -11,11 +11,11 @@ module ApplicationHelper
 	end
 	
 	def filter_on_key( results, key, value )
-		return results.select { |result| result[key] == value }
+		return results.where( key.to_sym => value )
 	end
 	
 	def filter_on_key!( results, key, value )
-		results.select! { |result| result[key] == value }
+		results = results.where( key.to_sym => value )
 	end
 	
 	# This will create a link to the current document with the provided options

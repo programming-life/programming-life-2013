@@ -4,7 +4,7 @@ class ModuleTemplatesController < ApplicationController
   def index
   
 	@filters = { }
-    @module_templates = ModuleTemplate.all
+    @module_templates = ModuleTemplate.paginate( :page => params[:page], :per_page => 15 )
 	
     respond_to do |format|
       format.html # index.html.erb
