@@ -249,54 +249,70 @@ class Model.Module
 		# 	build template blabla
 			
 		# First get the template for this instance
-		$.get( @url, 	{ 
-				redirect: 'template', 
-				type: serialized_data.type,
-			} 
-		).done( ( module_template ) =>
+		data =
+			redirect: 'template'
+			type: serialized_data.type
+			
+		$.get( @url, data )
+			.done( ( module_template ) =>
 		
-			# Next map data for this object
-			module_instance_data = { 
-				module_instance:
-					id: serialized_data.id unless @isLocal()
-					module_template_id: module_template.id
-					cell_id: cell
-			}
-			
-			# Define the parameters set function, so we can resuse it
-			update_parameters = () =>
-			
-				params = []
-				for key, value of serialized_data.parameters
-					console.log key
-					params.push
-						key: key
-						value: value
+				# Next map data for this object
+				module_instance_data =
+					module_instance:
+						id: serialized_data.id unless @isLocal()
+						module_template_id: module_template.id
+						cell_id: cell
+				
+				# Define the parameters set function, so we can resuse it
+				update_parameters = () =>
+				
+					params = []
+					for key, value of serialized_data.parameters
+						console.log key
+						params.push
+							key: key
+							value: value
+							
+					module_parameters_data =
+						module_parameters: params
 						
-				module_parameters_data = {
-					module_parameters: params
-				}
-				console.log module_parameters_data
-				$.ajax( @url, { data: module_parameters_data, type: 'PUT' } ).done( ( data ) => 
-					console.log data 
-				)
+					$.ajax( @url, { data: module_parameters_data, type: 'PUT' } )
+						.done( ( data ) => 
+							console.log data 
+						)
+						
+						.fail( ( data ) => 
+							Model.EventManager.trigger( 
+								'notification', @, [ 'module', 'save', [ 'update parameters', data, module_parameters_data ] ] )	
+						)
+				
+				# This is the create
+				if @isLocal()
+					$.post( @url, module_instance_data )
+						.done( ( data ) => 
+							
+							# Lets save those results first
+							@id = data.id
+							
+							# And now we need to store those parameters
+							update_parameters()
+						)
+						
+						.fail( ( data ) => 
+							Model.EventManager.trigger( 
+								'notification', @, [ 'module', 'save', [ 'create instance', data, module_instance_data ] ] )	
+						)
+				
+				# This is the update
+				else
+					# For module instances only parameters can chane
+					update_parameters() 
+			)
 			
-			# This is the create
-			if @isLocal()
-				$.post( @url, module_instance_data ).done( ( data ) => 
-					
-					# Lets save those results first
-					@id = data.id
-					
-					# And now we need to store those parameters
-					update_parameters()
-				)
-			
-			# This is the update
-			else
-				# For module instances only parameters can chane
-				update_parameters()
-		)
+			.fail( ( data ) => 
+				Model.EventManager.trigger( 
+					'notification', @, [ 'module', 'save', [ 'get template', data, module_template_data ] ] )	
+			)
 		
 	# Deserializes a module
 	# 

@@ -36,28 +36,39 @@ class Model.Cell
 			id: _.uniqueId "client:#{this.constructor.name}:"
 			creation: Date.now()
 		}
+		
 		paramscell = _( paramscell ).defaults( defaults )
-		
-		Object.defineProperty( @, 'id',
+		for key, value of paramscell
+			# The function to create a property out of param
+			#
+			# @param key [String] the property name
+			#
+			( ( key ) => 
 			
-			# @property [Date] the creation date
-			get : -> 
-				return paramscell.id
-			
-			configurable: false
-			enumerable: true
-		)
-		
-		Object.defineProperty( @, 'creation',
-			
-			# @property [Date] the creation date
-			get : -> 
-				return paramscell.creation
-			
-			configurable: false,
-			enumerable: true
-		)
-		
+				# This defines the private value.
+				Object.defineProperty( @ , "_#{key}",
+					value: value
+					configurable: false
+					enumerable: false
+					writable: true
+				)
+
+				# This defines the public functions to change
+				# those values.
+				Object.defineProperty( @ , key,
+					set: ( param ) ->
+						console.log "I am setting #{key}", @["_#{key}"], param
+						Model.EventManager.trigger( 'cell.set.property', @, [ "_#{key}", @["_#{key}"], param ] )
+						@["_#{key}"] = param
+						#@_do( "_#{key}", param )
+					get: ->
+						return @["_#{key}"]
+					enumerable: true
+					configurable: false
+				)
+				
+			) key
+
 		Object.defineProperty( @, 'module',
 			
 			# @property [Date] the creation date
@@ -353,15 +364,51 @@ class Model.Cell
 	#
 	save : () ->
 		
-		save_url = @url
 		save_data = @serialize( false )
 		
 		# map data to server accepted data
-		here = {	
-			id: save_data.id unless @isLocal()
-			name: 'MyTestCell'
-		}
+		cell_data =
+			cell:
+				id: save_data.id unless @isLocal()
+				name: 'My Test Cell'	
+			
+		# Define the modules set function, so we can resuse it
+		update_modules = () =>
 		
+			for module in @_modules
+				module.save @id
+					
+		# This is the create
+		if @isLocal()
+			$.post( @url, cell_data )
+				.done( ( data ) => 
+					
+					# Lets save those results first
+					@id = data.id
+					
+					# And now we need to store those module
+					update_modules()
+				)
+				
+				.fail( ( data ) => 
+					Model.EventManager.trigger( 
+						'notification', @, [ 'cell', 'save', [ 'create', data, module_instance_data ] ] )	
+				)
+		
+		# This is the update
+		else
+			$.ajax( @url, { data: cell_data, type: 'PUT' } )
+				.done( ( data ) => 
+				
+					# And now we need to store those module
+					update_modules()
+				)
+				
+				.fail( ( data ) => 
+					Model.EventManager.trigger( 
+						'notification', @, [ 'cell', 'save', [ 'update', data, module_instance_data ] ] )	
+				)
+	
 		subsequent_calls = []
 		
 		
