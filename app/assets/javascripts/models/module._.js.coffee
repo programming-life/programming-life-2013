@@ -331,6 +331,17 @@ class Model.Module
 		step = null
 		eval( "step = #{serialized.step}" ) if serialized.step?
 		return new fn[ serialized.type ]( serialized.parameters, step )
+		
+	@load : ( module_id, cell, callback ) ->
+		module = new Model.Module( { id: module_id } )
+		$.get( module.url, { all: true } )
+			.done( ( data ) =>
+				result = Model.Module.deserialize( data )
+				
+				console.log result
+				cell.add result
+				callback.apply( @, result ) if callback?
+			)
 	
 		
 

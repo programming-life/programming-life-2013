@@ -45,14 +45,28 @@ class ModuleInstancesController < ApplicationController
 		@module_values = @module_instance.module_values
 		@module_hash = Hash[ ( @module_parameters.map { |p| p.key } ).zip( 
 			@module_parameters.map { |p| 
-					( found = ( @module_values.select{ |v| v.module_parameter == p } ).first ).nil? ? nil : found.value
+					( found = ( @module_values.select{ |v| v.module_parameter == p } ).first ).nil? ? nil : ActiveSupport::JSON.decode(found.value)
 				} 
 			)
 		]
 
 		respond_to do |format|
 			format.html # show.html.erb
-			format.json { render json: @module_instance }
+			
+			if ( params.has_key?(:all) )
+				@module_hash[:id] = @module_instance.id
+				format.json { 
+					render json: { 
+						id: @module_instance.id,
+						cell_id: @module_instance.cell_id,
+						type: @module_template.javascript_model,
+						step: @module_template.step,
+						parameters: @module_hash
+					} 
+				}
+			else
+				format.json { render json: @module_instance }
+			end
 		end
 	end
 
@@ -81,7 +95,7 @@ class ModuleInstancesController < ApplicationController
 		@module_values = @module_instance.module_values
 		@module_hash = Hash[ ( @module_parameters.map { |p| p.key } ).zip( 
 			@module_parameters.map { |p| 
-					( found = ( @module_values.select{ |v| v.module_parameter == p } ).first ).nil? ? nil : found.value
+					( found = ( @module_values.select{ |v| v.module_parameter == p } ).first ).nil? ? nil : ActiveSupport::JSON.decode(found.value)
 				} 
 			)
 		]
@@ -183,11 +197,11 @@ class ModuleInstancesController < ApplicationController
 							value = ModuleValue.create( {
 								module_instance_id: @module_instance.id, 
 								module_parameter_id: p.id,
-								value: updated_parameter[:value].to_json
+								value: ActiveSupport::JSON.encode(updated_parameter[:value])
 							})
 							value.save
 						else
-							current_parameter.update_attributes( { value: updated_parameter[:value].to_json } )
+							current_parameter.update_attributes( { value: ActiveSupport::JSON.encode(updated_parameter[:value]) } )
 						end
 					end
 				end
