@@ -135,61 +135,61 @@ class ModuleInstancesController < ApplicationController
 		end
 	end
  
-	# GET /module_instances.json?redirect=template
-	# GET /module_instances/1.json?redirect=template
-	def redirect?( module_template )
-		if params[:redirect] == 'template'
-		
-			# This is an existing instance
-			if ( module_template )
-				respond_to do |format|
-					format.json { redirect_to module_template_path( module_template, :format => 'json' ), :status => :found }
-				end
-				return true
-				
-			# This is a new instance (maybe existing template)
-			else
-				type = params.has_key?(:type) ? params[:type] : ''
-				module_template = ModuleTemplate.where( :javascript_model => type ).first
-				respond_to do |format|
-					if ( module_template )
-						format.json { redirect_to module_template_path( module_template, :format => 'json' ), :status => :found }
-					else
-						format.json { head :no_content } 
-					end
-				end
-				return true
-			end
+	private
+		# GET /module_instances.json?redirect=template
+		# GET /module_instances/1.json?redirect=template
+		def redirect?( module_template )
+			if params[:redirect] == 'template'
 			
-		end
-		return false
-	end
-	
-	# Tries to update the parameters
-	#
-	
-	def parameter_update( parameters )
-	
-		@module_instance.module_parameters
-			.each do |p|
-				updated_parameter = nil
-				parameters.each do |i,u| 
-					updated_parameter = u if u[:key] == p.key
+				# This is an existing instance
+				if ( module_template )
+					respond_to do |format|
+						format.json { redirect_to module_template_path( module_template, :format => 'json' ), :status => :found }
+					end
+					return true
+					
+				# This is a new instance (maybe existing template)
+				else
+					type = params.has_key?(:type) ? params[:type] : ''
+					module_template = ModuleTemplate.where( :javascript_model => type ).first
+					respond_to do |format|
+						if ( module_template )
+							format.json { redirect_to module_template_path( module_template, :format => 'json' ), :status => :found }
+						else
+							format.json { head :no_content } 
+						end
+					end
+					return true
 				end
 				
-				if ( !updated_parameter.nil? )
-					current_parameter = ( @module_instance.module_values.select{ |v| v.module_parameter == p } ).first
-					if ( current_parameter.nil? )
-						value = ModuleValue.create( {
-							module_instance_id: @module_instance.id, 
-							module_parameter_id: p.id,
-							value: updated_parameter[:value].to_json
-						})
-						value.save
-					else
-						current_parameter.update_attributes( { value: updated_parameter[:value].to_json } )
+			end
+			return false
+		end
+	
+		# Tries to update the parameters
+		#
+		def parameter_update( parameters )
+		
+			@module_instance.module_parameters
+				.each do |p|
+					updated_parameter = nil
+					parameters.each do |i,u| 
+						updated_parameter = u if u[:key] == p.key
+					end
+					
+					if ( !updated_parameter.nil? )
+						current_parameter = ( @module_instance.module_values.select{ |v| v.module_parameter == p } ).first
+						if ( current_parameter.nil? )
+							value = ModuleValue.create( {
+								module_instance_id: @module_instance.id, 
+								module_parameter_id: p.id,
+								value: updated_parameter[:value].to_json
+							})
+							value.save
+						else
+							current_parameter.update_attributes( { value: updated_parameter[:value].to_json } )
+						end
 					end
 				end
-			end
-	end
+		end
 end
