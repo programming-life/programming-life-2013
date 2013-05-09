@@ -1,5 +1,7 @@
 ProgrammingLife::Application.routes.draw do
 
+  resources :report
+
   resources :module_instances
 
 
