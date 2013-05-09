@@ -1,2 +1,69 @@
-<h1>Report#show</h1>
-<p>Find me in app/views/report/show.html.erb</p>
+<header class="row">
+	<h1 class="span12">Report #<%= @report.id %>, cell #<%= @report.cell_id %> </h1>
+</header>
+
+<table class="table row">
+	<thead class="span12">
+		<tr>
+			<td class="span2"><strong>Key</strong></td>
+			<td class="span10"><strong>Value</strong></td>
+		</tr>
+	</thead>
+	<tbody class="span12">
+		<tr>
+			<td class="span2">Id</td>
+			<td class="span10"><%= @report.id %></td>
+		</tr>
+
+		<tr>
+			<td> Cell Id </td>
+			<td> <%= @report.cell.id %>
+		</tr>
+
+		<tr>
+			<td> Modules </td>
+			<td> 
+				<% 
+					modules = []
+					@mi.map { |i| 
+						modules.push ModuleTemplate.find(i.module_template.id).name
+					}
+
+					
+				%>
+				<%= listify modules %>
+		</tr>
+		
+		<% @mi.each do |i| @module = ModuleTemplate.find(i.module_template.id) %>
+		<tr>
+			<td> <%= @module.name %> </td>
+			<td>
+				<table class="table row">
+					<thead class="span12">
+						<tr>
+							<td class="span2"><strong>Key</strong></td>
+							<td class="span10"><strong>Value</strong></td>
+						</tr>
+					</thead>
+					<tbody>
+						bladie
+					</tbody>
+					<tbody>
+						nogmeerbla
+					</tbody>
+				</table>
+			</td>
+		</tr>
+		<% end %>
+
+		<tr>
+			<td>Creation</td>
+			<td><%= @report.created_at.strftime("%a %d %B %Y at %H:%M") %></td>
+		</tr>
+		<tr>
+			<td>Updated</td>
+			<td><%= (@report.updated_at == @report.created_at ? "Never" : @report.updated_at.strftime("%a %d %B %Y at %H:%M")  ) %></td>
+		</tr>
+	</tbody>
+	
+</table>

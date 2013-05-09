@@ -1,2 +1,29 @@
-<h1>Report#index</h1>
-<p>Find me in app/views/report/index.html.erb</p>
+<header>
+	<h1>Reports</h1>
+</header>
+
+<table>
+  <tr>
+    <th>Id</th>
+    <th>Cell</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+ 
+<% @reports.each do |report| %>
+  <tr>
+    <td><%= report.id %></td>
+    <td><%= report.cell_id %></td>
+    <td><%= link_to 'Show', report %></td>
+    <td><%= link_to 'Remove', report, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+ 
+<footer>
+ 
+	<%= link_to 'New report', new_report_path %>
+	<%= will_paginate @reports %>
+
+</footer>

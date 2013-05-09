@@ -9,7 +9,7 @@
 class Report < ActiveRecord::Base
 	attr_accessible :id, :cell_id
 
-	has_one :cell
+	belongs_to :cell
 
 	validates :cell_id, :presence => true
 end

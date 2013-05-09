@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130508160008) do
+ActiveRecord::Schema.define(:version => 20130509005755) do
 
   create_table "cells", :force => true do |t|
     t.string   "name"
@@ -59,5 +59,13 @@ ActiveRecord::Schema.define(:version => 20130508160008) do
     t.integer  "module_parameter_id"
     t.integer  "module_instance_id"
   end
+
+  create_table "reports", :force => true do |t|
+    t.integer  "cell_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "reports", ["id"], :name => "index_reports_on_id", :unique => true
 
 end

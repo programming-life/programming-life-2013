@@ -1,13 +1,27 @@
 class ReportController < ApplicationController
-  def index
-  end
+	# GET /report
+	def index
+		@reports = Report.paginate( :page => params[:page], :per_page => 15 )
+		respond_to do |format|
+			format.html
+			format.pdf
+			format.xml
+		end
+	end
 
-  def show
-  end
+	# GET /report/1
+	def show
+		@report = Report.find(params[:id])
+		@mi = @report.cell.module_instances
 
-  def create
-  end
+		respond_to do |format|
+			format.html
+		end
+	end
 
-  def delete
-  end
+	def create
+	end
+
+	def delete
+	end
 end
