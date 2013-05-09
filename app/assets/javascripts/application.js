@@ -27,7 +27,13 @@
 //
 //= require bootstrap
 //= require raphael.min
+//= require g.raphael-min
+//= require g.bar-min
+//= require g.pie-min
+//= require g.dot-min
+//= require g.line-min
 //= require raphael-triangle
+//
 //= require chart
 //= require md5.min
 //= require numeric-1.2.6
