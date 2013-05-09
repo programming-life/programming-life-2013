@@ -6,25 +6,26 @@
 	<thead>
 		<th>Id</th>
 		<th>Cell</th>
-		<th></th>
-		<th></th>
+		<th>Created</th>
+		<th>Last updated</th>
 		<th></th>
 	</thead>
 	<tbody>
 		<% @reports.each do |report| %>
-		  <tr>
-		    <td><%= report.id %></td>
-		    <td><%= report.cell_id %></td>
-		    <td><%= link_to raw('<i class="icon-search"></i> Show'), report, :class => 'btn btn-small' %> </td>
-		    <td><%= link_to raw('<i class="icon-trash"></i> Destroy'), report, :confirm => 'Are you sure?', :method => :delete, :class => 'btn btn-small btn-danger' %></td>
-		  </tr>
+			<tr>
+				<td><%= report.id %></td>
+				<td><%= report.cell_id %></td>
+				<td><%= report.created_at.strftime("%a %d %B %Y at %H:%M") %></td>
+				<td><%= (report.updated_at == report.created_at ? "Never" : report.updated_at.strftime("%a %d %B %Y at %H:%M")  ) %></td>
+				<td><%= link_to raw('<i class="icon-search"></i> Show'), report, :class => 'btn btn-small' %> </td>
+				<td><%= link_to raw('<i class="icon-trash"></i> Destroy'), report, :confirm => 'Are you sure?', :method => :delete, :class => 'btn btn-small btn-danger' %></td>
+			</tr>
 		<% end %>
 	</tbody>
 </table>
  
 <footer>
- 
-	<%= link_to 'New report', new_report_path %>
-	<%= will_paginate @reports %>
-
+	<div class="form-actions">
+		<%= link_to raw('<i class="icon-plus-sign icon-white"></i> New Report'), new_report_path, :class => 'btn btn-small btn-primary' %>
+	</div>
 </footer>

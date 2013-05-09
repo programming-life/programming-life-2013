@@ -34,7 +34,19 @@
 				<%= (listify modules).html_safe %>
 		</tr>
 		
-		<% @mi.each do |i| @module = ModuleTemplate.find(i.module_template.id) %>
+		<% 
+			@mi.each do |i| 
+				@module = ModuleTemplate.find(i.module_template.id)
+
+				@module_parameters = i.module_parameters
+				@module_values = i.module_values
+				@module_hash = Hash[ ( @module_parameters.map { |p| p.key } ).zip( 
+					@module_parameters.map { |p| 
+						( found = ( @module_values.select{ |v| v.module_parameter == p } ).first ).blank? ? nil : found.value
+						}
+					)
+				]
+		%>
 		<tr>
 			<td> <%= @module.name %> </td>
 			<td>
@@ -46,10 +58,13 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr>
-							<td class="span3"> bladie </td>
-							<td class="span9"> blabla </td>
-						</tr>
+						<% @module_hash.each { |key, value| %>
+							<tr>
+								<td class="span3"> <%= key %> </td>
+								<td class="span9"><%= value.nil? ? '<span class="label label-important">missing</span>'.html_safe : value  %>
+								</td>
+							</tr>
+						<% } %>
 					</tbody>
 				</table>
 			</td>
@@ -65,5 +80,10 @@
 			<td><%= (@report.updated_at == @report.created_at ? "Never" : @report.updated_at.strftime("%a %d %B %Y at %H:%M")  ) %></td>
 		</tr>
 	</tbody>
-	
 </table>
+
+<footer class="row">
+	<div class="form-actions span12">
+		<%= link_to 'Back', report_index_path %>
+	</div>
+</footer>
