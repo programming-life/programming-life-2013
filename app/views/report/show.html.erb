@@ -16,8 +16,8 @@
 		</tr>
 
 		<tr>
-			<td> Cell Id </td>
-			<td> <%= @report.cell.id %>
+			<td class="span2"> Cell Id </td>
+			<td class="span10"> <%= @report.cell.id %>
 		</tr>
 
 		<tr>
@@ -26,30 +26,30 @@
 				<% 
 					modules = []
 					@mi.map { |i| 
-						modules.push ModuleTemplate.find(i.module_template.id).name
-					}
-
-					
+						modules.push link_to ModuleTemplate.find( i.
+							module_template.id ).name, i, :class => 'btn btn-mini'
+					}				
 				%>
-				<%= listify modules %>
+
+				<%= (listify modules).html_safe %>
 		</tr>
 		
 		<% @mi.each do |i| @module = ModuleTemplate.find(i.module_template.id) %>
 		<tr>
 			<td> <%= @module.name %> </td>
 			<td>
-				<table class="table row">
-					<thead class="span12">
+				<table class="table-condensed table-striped table">
+					<thead>
 						<tr>
-							<td class="span2"><strong>Key</strong></td>
-							<td class="span10"><strong>Value</strong></td>
+							<td class="span3"><strong> Key </strong></td>
+							<td class="span9"><strong> Value </strong></td>
 						</tr>
 					</thead>
 					<tbody>
-						bladie
-					</tbody>
-					<tbody>
-						nogmeerbla
+						<tr>
+							<td class="span3"> bladie </td>
+							<td class="span9"> blabla </td>
+						</tr>
 					</tbody>
 				</table>
 			</td>

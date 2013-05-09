@@ -22,6 +22,12 @@ class ReportController < ApplicationController
 	def create
 	end
 
-	def delete
+	def destroy
+		@report = Report.find(params[:id])
+		@report.destroy
+		
+		respond_to do |format|
+			format.html { redirect_to report_index_url }
+		end
 	end
 end
