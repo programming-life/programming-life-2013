@@ -38,6 +38,7 @@ class Model.Cell
 		}
 		
 		paramscell = _( paramscell ).defaults( defaults )
+		console.log paramscell
 		for key, value of paramscell
 			# The function to create a property out of param
 			#
@@ -362,7 +363,7 @@ class Model.Cell
 		
 	# Tries to save a module
 	#
-	save : () ->
+	save : ( ) ->
 		
 		save_data = @serialize( false )
 		
@@ -377,6 +378,7 @@ class Model.Cell
 		
 			for module in @_modules
 				module.save @id
+			
 					
 		# This is the create
 		if @isLocal()
@@ -436,6 +438,32 @@ class Model.Cell
 			result._substrates[ substrate ] = object
 			
 		return result
+		
+	@load : ( cell_id, callback ) ->
+		cell = new Model.Cell( undefined, undefined, { id: cell_id } )
+		
+		$.get( cell.url, { all: true } )
+			.done( ( data ) =>
+				result = new Model.Cell( 
+					undefined,
+					undefined,
+					{ 
+						id: data.cell.id
+						name: data.cell.name
+						#creation: new Date(data.created_at).getTime()
+					}
+				)
+				for module in result._modules
+					result.remove module
+				for substrate, object of result._substrates
+					result.removeSubstrate substrate
+					
+				for module_id in data.modules
+					Model.Module.load( module_id, result )
+					
+				callback.apply( @, [ result ] ) if callback?
+			)
+		
 
 # Makes this available globally.
 (exports ? this).Model.Cell = Model.Cell
