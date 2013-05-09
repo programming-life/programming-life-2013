@@ -60,4 +60,12 @@ ActiveRecord::Schema.define(:version => 20130509041842) do
     t.integer  "module_instance_id"
   end
 
+  create_table "reports", :force => true do |t|
+    t.integer  "cell_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "reports", ["id"], :name => "index_reports_on_id", :unique => true
+
 end
