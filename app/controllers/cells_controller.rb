@@ -29,28 +29,10 @@ class CellsController < ApplicationController
 
 		respond_to do |format|
 			if ( params.has_key?(:all) )
-			
-				modules = @module_instances.map do | i | 
-					{ 	
-						template: i.module_template,
-						instance: i,
-						parameters: 
-							Hash[ ( i.module_parameters.map { |p| p.key } ).zip( 
-								i.module_parameters.map { |p| 
-										( found = ( i.module_values.select{ |v| v.module_parameter == p } ).first ).nil? ? nil : found.value
-									} 
-								)
-							]
-					}
-				end
-				all = { 
-					cell: @cell,
-					modules: modules
-				}
 				format.json { 
 					render json: { 
 						cell: @cell,
-						modules: modules
+						modules: @cell.module_instance_ids
 					} 
 				}
 			else
