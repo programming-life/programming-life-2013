@@ -7,7 +7,7 @@
 		<th>Id</th>
 		<th>Cell</th>
 		<th>Created</th>
-		<th>Last updated</th>
+		<th></th>
 		<th></th>
 	</thead>
 	<tbody>
@@ -16,7 +16,6 @@
 				<td><%= report.id %></td>
 				<td><%= report.cell_id %></td>
 				<td><%= report.created_at.strftime("%a %d %B %Y at %H:%M") %></td>
-				<td><%= (report.updated_at == report.created_at ? "Never" : report.updated_at.strftime("%a %d %B %Y at %H:%M")  ) %></td>
 				<td><%= link_to raw('<i class="icon-search"></i> Show'), report, :class => 'btn btn-small' %> </td>
 				<td><%= link_to raw('<i class="icon-trash"></i> Destroy'), report, :confirm => 'Are you sure?', :method => :delete, :class => 'btn btn-small btn-danger' %></td>
 			</tr>
