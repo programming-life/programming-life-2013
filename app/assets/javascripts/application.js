@@ -27,6 +27,7 @@
 //
 //= require bootstrap
 //= require raphael.min
+//= require raphael-triangle
 //= require chart
 //= require md5.min
 //= require numeric-1.2.6
