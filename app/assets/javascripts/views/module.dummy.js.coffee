@@ -10,6 +10,9 @@ class View.DummyModule extends View.Module
 		@_activated = off
 		super paper, module
 		
+	# Activation code
+	# 
+	#
 	onActivate : ( ) ->
 		
 		switch @type
@@ -123,7 +126,6 @@ class View.DummyModule extends View.Module
 		@_contents = @_paper.setFinish()
 		# Draw a box around all contents
 		@_box?.remove()
-		console.log @visible
 		
 		if @visible and @_contents?.length > 0
 				rect = @_contents.getBBox()
