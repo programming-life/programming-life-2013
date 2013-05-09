@@ -1,7 +1,8 @@
 class View.Module
 	
 	# Creates a new module view
-	# 
+	#
+	# @param paper [Raphael.Paper] the raphael paper
 	# @param module [Model.Module] the module to show
 	#
 	constructor: ( paper, module ) ->
@@ -142,6 +143,9 @@ class View.Module
 		@_scale = scale
 		@_color = @hashColor()
 
+		unless @_visible
+			return
+		
 		# If we're either hovered or selected, we will display a bigger version of the view
 		big = @_selected || @_hovered
 		padding = 15 * scale
@@ -156,13 +160,11 @@ class View.Module
 		box = @drawBox(contents, scale)
 		box.insertBefore(contents)
 
-		# Draw closebutton
-		closeButton = @drawCloseButton(box, scale)
-		closeButton.click =>
-			Model.EventManager.trigger('module.set.selected', @module, [ false ])
-
 		# Draw shadow
 		if @_selected
+			closeButton = @drawCloseButton( box, scale )
+			closeButton?.click =>
+				Model.EventManager.trigger('module.set.selected', @module, [ false ])
 			shadow = @drawShadow(box, scale)
 
 		# Draw hitbox
@@ -180,7 +182,13 @@ class View.Module
 		@_view = @_paper.setFinish()
 		@_view.push(contents)
 
-	# Clears the module view
+	# Draws contents
+	#
+	# @param x [Integer] x position
+	# @param y [Integer] y position
+	# @param scale [Integer] box scale
+	# @param big [Boolean] box is selected or hovered
+	# @return [Raphael] the contents
 	#
 	drawContents: ( x, y, scale, padding, big ) ->
 	
@@ -348,7 +356,11 @@ class View.Module
 		rect = elem.getBBox()
 		padding = 15 * scale
 		box = @_paper.rect(rect.x - padding, rect.y - padding, rect.width + 2 * padding, rect.height + 2 * padding)
-		box.node.setAttribute('class', 'module-box')
+		
+		classname = 'module-box'
+		classname += ' hovered' if @_hovered
+		classname += ' selected' if @_selected
+		box.node.setAttribute( 'class', classname )
 		box.attr
 			r: 10 * scale
 
@@ -356,8 +368,8 @@ class View.Module
 
 	# Draws this view close buttons
 	#
-	# @param elem
-	# @param scale
+	# @param elem [Raphael] element to draw for
+	# @param scale [Integer] the scale
 	# @return [Raphael] the contents
 	#
 	drawCloseButton : ( elem, scale ) ->
@@ -365,21 +377,23 @@ class View.Module
 
 		closeButton = @_paper.set()
 
-		circle = @_paper.circle(rect.x + rect.width, rect.y, 15 * scale)
+		circle = @_paper.circle( rect.x + rect.width, rect.y, 15 * scale)
 		circle.node.setAttribute('class', 'module-close')
 			
-		text = @_paper.text(rect.x + rect.width, rect.y, 'x')
+		text = @_paper.text( rect.x + rect.width, rect.y, 'x')
 		text.attr
 			'font-size': 20 * scale
 
-		closeButton.push(circle, text)
-
+		hitbox = @_paper.circle( rect.x + rect.width, rect.y, 15 * scale )
+		hitbox.node.setAttribute('class', 'module-hitbox')		
+		closeButton.push( circle, text, hitbox )
+		
 		return closeButton
 
 	# Draws this view shadow
 	#
-	# @param elem
-	# @param scale
+	# @param elem [Raphael] element to draw for
+	# @param scale [Integer] the scale
 	# @return [Raphael] the contents
 	#
 	drawShadow : ( elem, scale ) ->
@@ -392,8 +406,8 @@ class View.Module
 
 	# Draws this view hitbox
 	#
-	# @param elem
-	# @param scale
+	# @param elem [Raphael] element to draw for
+	# @param scale [Integer] the scale
 	# @return [Raphael] the contents
 	#
 	drawHitbox : ( elem, scale ) ->
