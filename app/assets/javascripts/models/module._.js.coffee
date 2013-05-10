@@ -155,21 +155,34 @@ class Model.Module
 		
 	# Tests if substrates are available
 	#
-	# @todo what to do when value is below 0?
+	# @todo What to do when value is below 0?
 	# @param substrates [Object] the available subs
 	# @param tests... [String] comma delimited list of strings to test
 	# @return [Boolean] true if all are available
 	#
-	_test : ( substrates, tests... ) ->
+	_test : ( compounds, tests... ) ->
 		
-		result = not _( tests ).some( 
-			( anon ) -> return not ( substrates[anon]? ) 
+		result = not _( _( tests ).flatten() ).some( 
+			( test ) -> return not ( compounds[ test ]? ) 
 		)
 		
 		unless result
-			Model.EventManager.trigger( 'notification', @, [ 'module', 'test', [ substrates, tests ] ] )	
+			Model.EventManager.trigger( 'notification', @, [ 'module', 'test', [ compounds, tests ] ] )	
 		
 		return result
+		
+	# Ensures test to be true or notifies with message
+	#
+	# @param test [Function] function in a module to run
+	# @param message [String] string to display when it fails
+	# @return [Boolean] true if test succeeded
+	#
+	_ensure : ( test, message = '' ) ->
+		
+		unless test
+			Model.EventManager.trigger( 'notification', @, [ 'module', 'ensure', [ message ] ] )	
+		
+		return test
 		
 	# Applies a change to the parameters of the module
 	#

@@ -1,0 +1,89 @@
+<header class="row">
+	<h1 class="span12">Report #<%= @report.id %>, cell #<%= @report.cell_id %> </h1>
+</header>
+
+<table class="table row">
+	<thead class="span12">
+		<tr>
+			<td class="span2"><strong>Key</strong></td>
+			<td class="span10"><strong>Value</strong></td>
+		</tr>
+	</thead>
+	<tbody class="span12">
+		<tr>
+			<td class="span2">Id</td>
+			<td class="span10"><%= @report.id %></td>
+		</tr>
+
+		<tr>
+			<td class="span2"> Cell Id </td>
+			<td class="span10"> <%= @report.cell.id %>
+		</tr>
+
+		<tr>
+			<td> Modules </td>
+			<td> 
+				<% 
+					modules = []
+					@mi.map { |i| 
+						modules.push link_to ModuleTemplate.find( i.
+							module_template.id ).name, i, :class => 'btn btn-mini'
+					}				
+				%>
+
+				<%= (listify modules).html_safe %>
+		</tr>
+		
+		<% 
+			@mi.each do |i| 
+				@module = ModuleTemplate.find(i.module_template.id)
+
+				@module_parameters = i.module_parameters
+				@module_values = i.module_values
+				@module_hash = Hash[ ( @module_parameters.map { |p| p.key } ).zip( 
+					@module_parameters.map { |p| 
+						( found = ( @module_values.select{ |v| v.module_parameter == p } ).first ).blank? ? nil : found.value
+						}
+					)
+				]
+		%>
+		<tr>
+			<td> <%= @module.name %> </td>
+			<td>
+				<table class="table-condensed table-striped table">
+					<thead>
+						<tr>
+							<td class="span3"><strong> Key </strong></td>
+							<td class="span9"><strong> Value </strong></td>
+						</tr>
+					</thead>
+					<tbody>
+						<% @module_hash.each { |key, value| %>
+							<tr>
+								<td class="span3"> <%= key %> </td>
+								<td class="span9"><%= value.nil? ? '<span class="label label-important">missing</span>'.html_safe : value  %>
+								</td>
+							</tr>
+						<% } %>
+					</tbody>
+				</table>
+			</td>
+		</tr>
+		<% end %>
+
+		<tr>
+			<td>Creation</td>
+			<td><%= @report.created_at.strftime("%a %d %B %Y at %H:%M") %></td>
+		</tr>
+		<tr>
+			<td>Updated</td>
+			<td><%= (@report.updated_at == @report.created_at ? "Never" : @report.updated_at.strftime("%a %d %B %Y at %H:%M")  ) %></td>
+		</tr>
+	</tbody>
+</table>
+
+<footer class="row">
+	<div class="form-actions span12">
+		<%= link_to 'Back', report_index_path %>
+	</div>
+</footer>

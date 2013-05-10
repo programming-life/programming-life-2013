@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset='UTF-8'>
+  <title>CoffeeScript API Documentation</title>
+  <link rel='stylesheet' href='../../assets/codo.css' type='text/css'>
+  <script src='../../assets/codo.js'></script>
+  <script src='../../assets/search_data.js'></script>
+</head>
+  <body>
+    <div id='base' data-path='../../'></div>
+<div id='header'>
+  <div id='menu'>
+    <a href='../../README.md.html' title='Programming-life'>Programming-life</a>
+    &raquo;
+    <a href='../../class_index.html' title='Index'>Index</a>
+    &raquo;
+    <span class='title'>Model</span>
+    &raquo;
+    <span class='title'>Metabolite</span>
+    <nav>
+      <ul>
+        <li class='noframes'>
+          (<a class='noframes' href='#'>no frames</a>)
+        </li>
+      </ul>
+    </nav>
+    <div id='search'>
+      <a id='class_list_link' href='../../class_list.html'>Classes</a>
+      <a id='file_list_link' href='../../file_list.html'>Files</a>
+      <a id='method_list_link' href='../../method_list.html'>Methods</a>
+      <a id='extra_list_link' href='../../extra_list.html'>Extras</a>
+    </div>
+  </div>
+  <iframe id='search_frame'></iframe>
+  <div id='fuzzySearch'>
+    <input type='text'>
+    <ol></ol>
+  </div>
+  <div id='help'>
+    <p>
+      Quickly fuzzy find classes, mixins, methods, file:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-T</span>
+        Open fuzzy finder dialog
+      </li>
+    </ul>
+    <p>
+      In frame mode you can toggle the list naviation frame on the left side:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-L</span>
+        Toggle list view
+      </li>
+    </ul>
+    <p>
+      You can focus a list in frame mode or toggle a tab in frameless mode:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-C</span>
+        Class list
+      </li>
+      <li>
+        <span>Ctrl-I</span>
+        Mixin list
+      </li>
+      <li>
+        <span>Ctrl-F</span>
+        File list
+      </li>
+      <li>
+        <span>Ctrl-M</span>
+        Method list
+      </li>
+      <li>
+        <span>Ctrl-E</span>
+        Extras list
+      </li>
+    </ul>
+    <p>
+      You can focus and blur the search input:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-S</span>
+        Focus search input
+      </li>
+      <li>
+        <span>Esc</span>
+        Blur search input
+      </li>
+    </ul>
+    <p>
+      In frameless mode you can close the list tab:
+    </p>
+    <ul>
+      <li>
+        <span>Esc</span>
+        Close list tab
+      </li>
+    </ul>
+  </div>
+</div>
+    <div id='content'>
+      <h1>
+        Class:
+        Model.Metabolite
+      </h1>
+      <table class='box'>
+        <tr>
+          <td>Defined in:</td>
+          <td>app&#47;assets&#47;javascripts&#47;models&#47;module.metabolite.js.coffee</td>
+        </tr>
+        <tr>
+          <td>Inherits:</td>
+          <td>
+            <a href='../../classes/Model/Module.html'>Model.Module</a>
+          </td>
+        </tr>
+      </table>
+      <h2>Overview</h2>
+      <div class='docstring'>
+  <p>Simulates substrates/products/metabolites in the cell</p><h2>Parameters</h2>
+<hr><p>supply
+    The supply per time unit</p><h2>Equations</h2>
+<hr><p>this / dt
+supply</p>
+</div>
+<div class='tags'>
+</div>
+      <h2>Class Method Summary</h2>
+      <ul class='summary'>
+  <li>
+    <span class='signature'>
+      <a href='#sext-class'>
+        + (void) <strong>sext</strong>(params = {}, supply = 1, start = 1, name = "s")
+      </a>
+    </span>
+    <span class='desc'>
+      Constructor for External Substrates
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#sint-class'>
+        + (void) <strong>sint</strong>(params = {}, start = 0, name = "s")
+      </a>
+    </span>
+    <span class='desc'>
+      Constructor for Internal Substrates
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#pint-class'>
+        + (void) <strong>pint</strong>(params = {}, start = 0, name = "p")
+      </a>
+    </span>
+    <span class='desc'>
+      Constructor for Internal Products
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#pext-class'>
+        + (void) <strong>pext</strong>(params = {}, start = 0, name = "p")
+      </a>
+    </span>
+    <span class='desc'>
+      Constructor for External Products
+    </span>
+  </li>
+</ul>
+      <h2>Instance Method Summary</h2>
+      <ul class='summary'>
+  <li>
+    <span class='signature'>
+      <a href='#constructor-instance'>
+        - (void) <strong>constructor</strong>(params = {}, start = 1, name, placement = Model.Metabolite.Outside, type = Model.Metabolite.Substrate)
+      </a>
+    </span>
+    <span class='constructor note title'>Constructor</span>
+    <span class='desc'>
+      Constructor for Metabolite
+    </span>
+  </li>
+</ul>
+      <h2>
+        <small>Inherited Method Summary</small>
+      </h2>
+      <h3 class='inherited'>
+        Methods inherited from
+        <a href='../../classes/Model/Module.html'>Model.Module</a>
+      </h3>
+      <p class='inherited'>
+                <a href='../../classes/Model/Module.html#constructor-instance'>#constructor</a>,
+                <a href='../../classes/Model/Module.html#extractId-class'>.extractId</a>,
+                <a href='../../classes/Model/Module.html#isLocal-instance'>#isLocal</a>,
+                <a href='../../classes/Model/Module.html#getSubstrate-instance'>#getSubstrate</a>,
+                <a href='../../classes/Model/Module.html#setSubstrate-instance'>#setSubstrate</a>,
+                <a href='../../classes/Model/Module.html#step-instance'>#step</a>,
+                <a href='../../classes/Model/Module.html#_test-instance'>#_test</a>,
+                <a href='../../classes/Model/Module.html#_ensure-instance'>#_ensure</a>,
+                <a href='../../classes/Model/Module.html#_do-instance'>#_do</a>,
+                <a href='../../classes/Model/Module.html#_addMove-instance'>#_addMove</a>,
+                <a href='../../classes/Model/Module.html#undo-instance'>#undo</a>,
+                <a href='../../classes/Model/Module.html#redo-instance'>#redo</a>,
+                <a href='../../classes/Model/Module.html#serialize-instance'>#serialize</a>,
+                <a href='../../classes/Model/Module.html#save-instance'>#save</a>,
+                <a href='../../classes/Model/Module.html#deserialize-class'>.deserialize</a>,
+        <a href='../../classes/Model/Module.html#load-class'>.load</a>
+      </p>
+      <h2>Class Method Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='sext-class'>
+      + (void) <strong>sext</strong>(params = {}, supply = 1, start = 1, name = "s")
+    </p>
+    <div class='docstring'>
+  <p>Constructor for External Substrates</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>params</span>
+      <span class='type'>
+        (<tt>Object</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>parameters for this module</span>
+    </li>
+    <li>
+      <span class='name'>start</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the initial value of metabolite, defaults to 1</span>
+    </li>
+    <li>
+      <span class='name'>name</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the name to use</span>
+    </li>
+  </ul>
+  <h3>
+    Options Hash:
+    (param):
+  </h3>
+  <ul class='options'>
+    <li>
+      <span class='name'>start</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the start amount of this metabolite</span>
+    </li>
+    <li>
+      <span class='name'>placement</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the placement</span>
+    </li>
+    <li>
+      <span class='name'>type</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the type</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='sint-class'>
+      + (void) <strong>sint</strong>(params = {}, start = 0, name = "s")
+    </p>
+    <div class='docstring'>
+  <p>Constructor for Internal Substrates</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>params</span>
+      <span class='type'>
+        (<tt>Object</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>parameters for this module</span>
+    </li>
+    <li>
+      <span class='name'>start</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the initial value of metabolite, defaults to 0</span>
+    </li>
+    <li>
+      <span class='name'>name</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the name to use</span>
+    </li>
+  </ul>
+  <h3>
+    Options Hash:
+    (param):
+  </h3>
+  <ul class='options'>
+    <li>
+      <span class='name'>start</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the start amount of this metabolite</span>
+    </li>
+    <li>
+      <span class='name'>placement</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the placement</span>
+    </li>
+    <li>
+      <span class='name'>type</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the type</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='pint-class'>
+      + (void) <strong>pint</strong>(params = {}, start = 0, name = "p")
+    </p>
+    <div class='docstring'>
+  <p>Constructor for Internal Products</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>params</span>
+      <span class='type'>
+        (<tt>Object</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>parameters for this module</span>
+    </li>
+    <li>
+      <span class='name'>start</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the initial value of metabolite, defaults to 0</span>
+    </li>
+    <li>
+      <span class='name'>name</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the name to use</span>
+    </li>
+  </ul>
+  <h3>
+    Options Hash:
+    (param):
+  </h3>
+  <ul class='options'>
+    <li>
+      <span class='name'>start</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the start amount of this metabolite</span>
+    </li>
+    <li>
+      <span class='name'>placement</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the placement</span>
+    </li>
+    <li>
+      <span class='name'>type</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the type</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='pext-class'>
+      + (void) <strong>pext</strong>(params = {}, start = 0, name = "p")
+    </p>
+    <div class='docstring'>
+  <p>Constructor for External Products</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>params</span>
+      <span class='type'>
+        (<tt>Object</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>parameters for this module</span>
+    </li>
+    <li>
+      <span class='name'>start</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the initial value of metabolite, defaults to 0</span>
+    </li>
+    <li>
+      <span class='name'>name</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the name to use</span>
+    </li>
+  </ul>
+  <h3>
+    Options Hash:
+    (param):
+  </h3>
+  <ul class='options'>
+    <li>
+      <span class='name'>start</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the start amount of this metabolite</span>
+    </li>
+    <li>
+      <span class='name'>placement</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the placement</span>
+    </li>
+    <li>
+      <span class='name'>type</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the type</span>
+    </li>
+  </ul>
+</div>
+  </div>
+</div>
+      <h2>Constructor Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='constructor-instance'>
+      - (void) <strong>constructor</strong>(params = {}, start = 1, name, placement = Model.Metabolite.Outside, type = Model.Metabolite.Substrate)
+    </p>
+    <div class='docstring'>
+  <p>Constructor for Metabolite</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>params</span>
+      <span class='type'>
+        (<tt>Object</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>parameters for this module</span>
+    </li>
+    <li>
+      <span class='name'>start</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the initial value of metabolite, defaults to 1</span>
+    </li>
+    <li>
+      <span class='name'>name</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the name to use</span>
+    </li>
+    <li>
+      <span class='name'>placement</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>placement of this metabolite, defaults to Model.Metabolite.Outside</span>
+    </li>
+    <li>
+      <span class='name'>type</span>
+      <span class='type'>
+        (<tt>Boolean</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>type of this metabolite, defaults to Model.Metabolite.Substrate</span>
+    </li>
+  </ul>
+  <h3>
+    Options Hash:
+    (param):
+  </h3>
+  <ul class='options'>
+    <li>
+      <span class='name'>start</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the start amount of this metabolite</span>
+    </li>
+    <li>
+      <span class='name'>placement</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the placement</span>
+    </li>
+    <li>
+      <span class='name'>type</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the type</span>
+    </li>
+  </ul>
+</div>
+  </div>
+</div>
+    </div>
+    <div id='footer'>
+  Generated on
+  Fri May 10 2013 08:40:59 GMT+0200 (W. Europe Daylight Time)
+  by
+  <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
+  v1.5.6
+  (Node.js v0.10.4).
+  &#10034;
+  Press Ctrl-h to see the keyboard shortcuts
+  &#10034;
+  <a href='http://twitter.com/#!/netzpirat'>@netzpirat</a>
+  &#10034;
+  <a href='https://mksoft.ch'>mksoft.ch</a>
+</div>
+  </body>
+</html>

@@ -2,7 +2,10 @@ class View.DummyModule extends View.Module
 	
 	# Creates a new module view
 	# 
+	# @param paper [Raphael.Paper] the raphael paper
+	# @param cell [Model.Cell] the cell to show
 	# @param module [Model.Module] the module to show
+	# @param params [Object] the params
 	#
 	constructor: ( paper, cell, module, params ) ->
 		@_cell = cell
@@ -10,6 +13,21 @@ class View.DummyModule extends View.Module
 		@_activated = off
 		super paper, module
 		
+	# Runs if module is selected
+	# 
+	# @param module [Model.Module] the module selected/deslected
+	# @param selected [Mixed] selected state
+	#
+	onModuleSelected: ( module, selected ) =>
+		
+		# If action runs on this module
+		if module is @module 
+			if selected
+				@onActivate() 
+				@redraw()
+		
+	# Activate button action
+	#
 	onActivate : ( ) ->
 		
 		switch @type
@@ -26,27 +44,27 @@ class View.DummyModule extends View.Module
 				
 				@_cell.add( new Model.Lipid() )
 				
-			when "Substrate"
+			when "Metabolite"
 				
 				#@_visible = on
 				#@_activated = off
 				@_visible = off
 				@_activated = on
 				
-				@_cell.addSubstrate( @_params.name, @_params.amount, @_params.inside_cell, @_params.is_product )
+				@_cell.addMetabolite( @_params.name, @_params.amount, @_params.supply, @_params.inside_cell, @_params.is_product )
 				
 			when "Transporter"
 					
 				@_visible = on
 				@_activated = off
 				
-				if @_params.direction is -1
+				if @_params.direction is Model.Transporter.Outward
 					@_cell.add Model.Transporter.ext()
-					@_cell.addSubstrate( 'p_int', 0, true, true )
-					@_cell.addSubstrate( 'p_ext', 0, false, true )
-				if @_params.direction is 1
+					@_cell.addProduct( 'p', 0, true )
+					@_cell.addProduct( 'p', 0, false )
+				if @_params.direction is Model.Transporter.Inward
 					@_cell.add Model.Transporter.int()
-					@_cell.addSubstrate( 's_int', 0, true, false )
+					@_cell.addSubstrate( 's', 0, 0, true )
 					#@_cell.addSubstrate( 's_ext', 0, false, false )
 			
 			when "Metabolism"
@@ -55,106 +73,69 @@ class View.DummyModule extends View.Module
 				@_activated = off
 	
 				@_cell.add new Model.Metabolism()
-				@_cell.addSubstrate( 'p_int', 0, true, true )
-				@_cell.addSubstrate( 's_int', 0, true, false )
+				@_cell.addProduct( 'p', 0, true )
+				@_cell.addSubstrate( 's', 0, 0, true )
 				
 			when "Protein"
 				@_visible = off
 				@_activated = on
 				
 				@_cell.add( new Model.Protein() )
-				
 					
-	# Draws this view and thus the model
+	# Draws contents
 	#
-	# @param x [Integer] the x position
-	# @param y [Integer] the y position
-	# @param scale [Integer] the scale
+	# @param x [Integer] x position
+	# @param y [Integer] y position
+	# @param scale [Integer] box scale
+	# @param big [Boolean] box is selected or hovered
+	# @return [Raphael] the contents
 	#
-	draw: ( x, y, scale ) ->
-	
-		@_x = x
-		@_y = y
-		@_scale = scale
-		@_color = @hashColor()
-
-		padding = 15 * scale
-
-		if @_selected
-			padding = 20 * scale
-
-		@_contents?.remove()
+	drawContents: ( x, y, scale, padding, big ) ->
+		
 		@_paper.setStart()
 		
-		if @visible
-		
-			switch @type
+		switch @type
 									
-				when "DNA"
-							
-					text = @_paper.text( x, y, _.escape "Add #{@type}" )
-					text.attr
-						'font-size': 20 * scale
-					
+			when "DNA"
 						
-				when "Lipid"
-							
-					text = @_paper.text( x, y, _.escape "Add #{@type}" )
-					text.attr
-						'font-size': 20 * scale
-					
-				when "Substrate"
+				text = @_paper.text( x, y, _.escape "Add #{@type}" )
+				text.attr
+					'font-size': 20 * scale
 				
-					text = @_paper.text( x, y, _.escape "Add #{@name}" )
-					text.attr
-						'font-size': 20 * scale
 					
-				when "Transporter"
+			when "Lipid"
+						
+				text = @_paper.text( x, y, _.escape "Add #{@type}" )
+				text.attr
+					'font-size': 20 * scale
 				
-					text = @_paper.text( x, y, _.escape "Add #{@name}" )
-					text.attr
-						'font-size': 20 * scale
-										
-				else
-					text = @_paper.text( x, y, _.escape "Add #{@type}" )
-					text.attr
-						'font-size': 20 * scale
-
-		@_contents = @_paper.setFinish()
-		# Draw a box around all contents
-		@_box?.remove()
-		console.log @visible
+			when "Metabolite"
+			
+				text = @_paper.text( x, y, _.escape "Add #{@name}" )
+				text.attr
+					'font-size': 20 * scale
+				
+			when "Transporter"
+			
+				text = @_paper.text( x, y, _.escape "Add #{@name}" )
+				text.attr
+					'font-size': 20 * scale
+									
+			else
+				text = @_paper.text( x, y, _.escape "Add #{@type}" )
+				text.attr
+					'font-size': 20 * scale
+					
+		return @_paper.setFinish()
+	
+	# Draws the box
+	#
+	# @param elem [Raphael] element to draw for
+	# @param scale [Integer] the scale
+	# @return [Raphael] the box raphael
+	drawBox : ( elem, scale ) ->
+		box = super elem, scale
+		box.node.setAttribute('class', 'module-box inactive')
+		return box
 		
-		if @visible and @_contents?.length > 0
-				rect = @_contents.getBBox()
-				if rect
-					@_box = @_paper.rect(rect.x - padding, rect.y - padding, rect.width + 2 * padding, rect.height + 2 * padding)
-					@_box.node.setAttribute('class', 'module-box inactive')
-					@_box.attr
-						r: 10 * scale
-					@_box.insertBefore(@_contents)
-
-		# Draw close button in the top right corner
-		@_close?.remove()
-		@_closeText?.remove()
-		
-		# Draw shadow around module view
-		@_shadow?.remove()
-		if @visible
-			@_shadow = @_box?.glow
-				width: 35
-				opacity: .125
-			@_shadow?.scale(.8, .8)
-
-		# Draw hitbox in front of module view to detect mouseclicks
-		@_hitBox?.remove()
-		if @visible
-			rect = @_box?.getBBox()
-			if rect
-				@_hitBox = @_paper.rect(rect.x, rect.y, rect.width, rect.height)
-				@_hitBox.node.setAttribute('class', 'module-hitbox inactive')
-				@_hitBox.click => 
-					@onActivate()
-					@draw( @_x, @_y, @_scale )
-
 (exports ? this).View.DummyModule = View.DummyModule

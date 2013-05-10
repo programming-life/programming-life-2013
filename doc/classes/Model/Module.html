@@ -129,21 +129,84 @@ mechanisms and solving of differential equations. </p>
                 <a href='../../classes/Model/DNA.html'>Model.DNA</a>,
                 <a href='../../classes/Model/Lipid.html'>Model.Lipid</a>,
                 <a href='../../classes/Model/Metabolism.html'>Model.Metabolism</a>,
+                <a href='../../classes/Model/Metabolite.html'>Model.Metabolite</a>,
                 <a href='../../classes/Model/Protein.html'>Model.Protein</a>,
-                <a href='../../classes/Model/Substrate.html'>Model.Substrate</a>,
         <a href='../../classes/Model/Transporter.html'>Model.Transporter</a>
       </p>
+      <h2>Class Method Summary</h2>
+      <ul class='summary'>
+  <li>
+    <span class='signature'>
+      <a href='#extractId-class'>
+        + (Object) <strong>extractId</strong>(id)
+      </a>
+    </span>
+    <span class='desc'>
+      Extracts id data from id
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#deserialize-class'>
+        + (Model.Module) <strong>deserialize</strong>(serialized)
+      </a>
+    </span>
+    <span class='desc'>
+      Deserializes a module
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#load-class'>
+        + (void) <strong>load</strong>(module_id, cell, callback)
+      </a>
+    </span>
+    <span class='desc'>
+      
+    </span>
+  </li>
+</ul>
       <h2>Instance Method Summary</h2>
       <ul class='summary'>
   <li>
     <span class='signature'>
       <a href='#constructor-instance'>
-        - (void) <strong>constructor</strong>(params, step)
+        - (void) <strong>constructor</strong>(params = {}, step)
       </a>
     </span>
     <span class='constructor note title'>Constructor</span>
     <span class='desc'>
       Constructor for module
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#isLocal-instance'>
+        - (void) <strong>isLocal</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#getSubstrate-instance'>
+        - (Integer) <strong>getSubstrate</strong>(substrate)
+      </a>
+    </span>
+    <span class='desc'>
+      Gets the substrate start value
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#setSubstrate-instance'>
+        - (void) <strong>setSubstrate</strong>(substrate, value)
+      </a>
+    </span>
+    <span class='desc'>
+      Sets the substrate to the start values @returns [self] for chaining
     </span>
   </li>
   <li>
@@ -159,11 +222,21 @@ mechanisms and solving of differential equations. </p>
   <li>
     <span class='signature'>
       <a href='#_test-instance'>
-        - (Boolean) <strong>_test</strong>(substrates, tests...)
+        - (Boolean) <strong>_test</strong>(compounds, tests...)
       </a>
     </span>
     <span class='desc'>
       Tests if substrates are available
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_ensure-instance'>
+        - (Boolean) <strong>_ensure</strong>(test, message = '')
+      </a>
+    </span>
+    <span class='desc'>
+      Ensures test to be true or notifies with message
     </span>
   </li>
   <li>
@@ -206,12 +279,106 @@ mechanisms and solving of differential equations. </p>
       Redoes the most recently undone move @returns [self] for chaining
     </span>
   </li>
+  <li>
+    <span class='signature'>
+      <a href='#serialize-instance'>
+        - (String,Object) <strong>serialize</strong>(to_string = true)
+      </a>
+    </span>
+    <span class='desc'>
+      Serializes a module
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#save-instance'>
+        - (void) <strong>save</strong>(cell = 1)
+      </a>
+    </span>
+    <span class='desc'>
+      Tries to save a module
+    </span>
+  </li>
 </ul>
+      <h2>Class Method Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='extractId-class'>
+      + (Object) <strong>extractId</strong>(id)
+    </p>
+    <div class='docstring'>
+  <p>Extracts id data from id</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>id</span>
+      <span class='type'>
+        (<tt>Object, Number, String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>id containing id data</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Object</tt>)
+      &mdash;
+      <span class='desc'>extracted id data</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='deserialize-class'>
+      + (Model.Module) <strong>deserialize</strong>(serialized)
+    </p>
+    <div class='docstring'>
+  <div class='note todo'>
+    <strong>TODO:</strong>
+    Safer Eval function
+  </div>
+  <p>Deserializes a module</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>serialized</span>
+      <span class='type'>
+        (<tt>Object, String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the serialized object</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt><a href='../../classes/Model/Module.html'>Model.Module</a></tt>)
+      &mdash;
+      <span class='desc'>the module</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='load-class'>
+      + (void) <strong>load</strong>(module_id, cell, callback)
+    </p>
+    <div class='tags'>
+</div>
+  </div>
+</div>
       <h2>Constructor Details</h2>
       <div class='methods'>
   <div class='method_details'>
     <p class='signature' id='constructor-instance'>
-      - (void) <strong>constructor</strong>(params, step)
+      - (void) <strong>constructor</strong>(params = {}, step)
     </p>
     <div class='docstring'>
   <p>Constructor for module</p>
@@ -241,6 +408,72 @@ mechanisms and solving of differential equations. </p>
 </div>
       <h2>Instance Method Details</h2>
       <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='isLocal-instance'>
+      - (void) <strong>isLocal</strong>()
+    </p>
+    <div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='getSubstrate-instance'>
+      - (Integer) <strong>getSubstrate</strong>(substrate)
+    </p>
+    <div class='docstring'>
+  <p>Gets the substrate start value</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>substrate</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the substrate name</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Integer</tt>)
+      &mdash;
+      <span class='desc'>the value</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='setSubstrate-instance'>
+      - (void) <strong>setSubstrate</strong>(substrate, value)
+    </p>
+    <div class='docstring'>
+  <p>Sets the substrate to the start values</p><p>@returns [self] for chaining</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>substrate</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the substrate name</span>
+    </li>
+    <li>
+      <span class='name'>value</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the value</span>
+    </li>
+  </ul>
+</div>
+  </div>
   <div class='method_details'>
     <p class='signature' id='step-instance'>
       - (any) <strong>step</strong>(t, substrates, mu)
@@ -281,9 +514,13 @@ mechanisms and solving of differential equations. </p>
   </div>
   <div class='method_details'>
     <p class='signature' id='_test-instance'>
-      - (Boolean) <strong>_test</strong>(substrates, tests...)
+      - (Boolean) <strong>_test</strong>(compounds, tests...)
     </p>
     <div class='docstring'>
+  <div class='note todo'>
+    <strong>TODO:</strong>
+    What to do when value is below 0?
+  </div>
   <p>Tests if substrates are available</p>
 </div>
 <div class='tags'>
@@ -313,6 +550,44 @@ mechanisms and solving of differential equations. </p>
       (<tt>Boolean</tt>)
       &mdash;
       <span class='desc'>true if all are available</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_ensure-instance'>
+      - (Boolean) <strong>_ensure</strong>(test, message = '')
+    </p>
+    <div class='docstring'>
+  <p>Ensures test to be true or notifies with message</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>test</span>
+      <span class='type'>
+        (<tt>Function</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>function in a module to run</span>
+    </li>
+    <li>
+      <span class='name'>message</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>string to display when it fails</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Boolean</tt>)
+      &mdash;
+      <span class='desc'>true if test succeeded</span>
     </li>
   </ul>
 </div>
@@ -395,11 +670,51 @@ mechanisms and solving of differential equations. </p>
 <div class='tags'>
 </div>
   </div>
+  <div class='method_details'>
+    <p class='signature' id='serialize-instance'>
+      - (String,Object) <strong>serialize</strong>(to_string = true)
+    </p>
+    <div class='docstring'>
+  <p>Serializes a module</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>to_string</span>
+      <span class='type'>
+        (<tt>Boolean</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>Stringifies object if try, default true</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>String, Object</tt>)
+      &mdash;
+      <span class='desc'>JSON Object or String</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='save-instance'>
+      - (void) <strong>save</strong>(cell = 1)
+    </p>
+    <div class='docstring'>
+  <p>Tries to save a module</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
 </div>
     </div>
     <div id='footer'>
   Generated on
-  Fri May 03 2013 22:38:25 GMT+0200 (W. Europe Daylight Time)
+  Fri May 10 2013 08:40:59 GMT+0200 (W. Europe Daylight Time)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

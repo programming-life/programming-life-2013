@@ -1,5 +1,26 @@
 # Simulates DNA existance and synthesisis in the Cell
 #
+# Parameters
+# ------------------ ------------------ ------------------
+# k
+#	Synthesize rate
+# consume
+#	All the metabolites required for DNA creation
+# 
+# Properties
+# ------------------ ------------------ ------------------
+# vDNASynth
+#	k * this * consume
+# dilution
+#	mu * this
+#
+# Equations
+# ------------------ ------------------ ------------------
+# this / dt
+#	vDNASynth - dilution
+# consume / dt
+#	- vDNASynth
+#
 class Model.DNA extends Model.Module
 
 	# Constructor for DNA
@@ -7,38 +28,64 @@ class Model.DNA extends Model.Module
 	# @param params [Object] parameters for this module
 	# @param start [Integer] the initial value of dna
 	# @param prefix [String] the prefix name to use
-	# @param food [String] the substrate converted to dna
+	# @param consume [String] the metabolite converted to dna
 	# @option params [Integer] k the synth rate, defaults to 1
 	# @option params [String] name the name to use, defaults to prefix_dna or dna if prefix is undefined
-	# @option params [String] consume the food, overides the food parameter, defaults to "s_int"
+	# @option params [String] consume the food, overides the consume parameter, defaults to "p#int"
 	#
-	constructor: ( params = {}, start = 1, prefix, food = "p_int" ) ->
+	constructor: ( params = {}, start = 1, prefix, consume = "p#int" ) ->
 			
-		# Step function for lipids
-		step = ( t, substrates, mu ) ->
+		# Define differential equations here
+		step = ( t, compounds, mu ) ->
 		
 			results = {}
 						
-			# Only calculate vlipid if the components are available
-			if ( @_test( substrates, @name, @consume ) )
-				vdnasynth = @k * substrates[@name] * substrates[@consume]
-				growth = mu * substrates[@name]
+			# Only if the components are available
+			if ( @_test( compounds, @name, @consume ) )
 				
-			if ( vdnasynth? and vdnasynth > 0 )
-				results[@name] = vdnasynth * growth
-				results[@consume] = -vdnasynth	
+				# Rate of synthesization 
+				# - The DNA constant k_dna called k
+				# - The DNA itself ( name refers to the dna id )
+				# - The required metabolites 
+				#
+				vdnasynth = @k * compounds[ @name ]
+				for c in @consume
+					vdnasynth *= compounds[ c ]
+					
+				# Rate of dilution because of cell division
+				# 
+				dilution = mu * compounds[ @name ]
+				
+			# If all components are available 
+			if vdnasynth? 
+				
+				# The DNA increase is the rate minus dilution
+				#
+				results[ @name ] = vdnasynth - dilution
+				
+				# All the metabolites required for synthesisation
+				# are hereby subtracted by the increase in DNA
+				#
+				for c in @consume
+					results[ c ] = -vdnasynth	
 			
 			return results
 		
-		# Default parameters set here
+		# Define default parameters here
 		defaults = { 
+		
+			# Parameters
 			k : 1
-			name : if prefix then "#{prefix}_dna" else "dna"
-			consume: food
+			consume: if _( consume ).isArray() then consume else [ consume ]
+
+			# Start value
 			starts: { name : start }
+			
+			# Display name
+			name : if prefix then "#{prefix}_dna" else "dna"
 		}
 		
-		params = _( defaults ).extend( params )
+		params = _( params ).defaults( defaults )
 		super params, step
 
 (exports ? this).Model.DNA = Model.DNA
