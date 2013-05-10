@@ -171,16 +171,18 @@ class Model.Module
 		
 		return result
 		
+	# Ensures test to be true or notifies with message
 	#
+	# @param test [Function] function in a module to run
+	# @param message [String] string to display when it fails
+	# @return [Boolean] true if test succeeded
 	#
 	_ensure : ( test, message = '' ) ->
 		
-		result = test()
-		
-		unless result
+		unless test
 			Model.EventManager.trigger( 'notification', @, [ 'module', 'ensure', [ message ] ] )	
 		
-		return result
+		return test
 		
 	# Applies a change to the parameters of the module
 	#
