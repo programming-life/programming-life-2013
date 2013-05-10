@@ -15,7 +15,7 @@
     &raquo;
     <a href='../../class_index.html' title='Index'>Index</a>
     &raquo;
-    <span class='title'>View</span>
+    <span class='title'>Controller</span>
     &raquo;
     <span class='title'>Main</span>
     <nav>
@@ -108,14 +108,20 @@
     <div id='content'>
       <h1>
         Class:
-        View.Main
+        Controller.Main
       </h1>
       <table class='box'>
         <tr>
           <td>Defined in:</td>
-          <td>app&#47;assets&#47;javascripts&#47;views&#47;main.js.coffee</td>
+          <td>app&#47;assets&#47;javascripts&#47;controllers&#47;main.js.coffee</td>
         </tr>
       </table>
+      <h2>Overview</h2>
+      <div class='docstring'>
+  <p>The controller for the Main action and view</p>
+</div>
+<div class='tags'>
+</div>
       <h2>Instance Method Summary</h2>
       <ul class='summary'>
   <li>
@@ -126,28 +132,37 @@
     </span>
     <span class='constructor note title'>Constructor</span>
     <span class='desc'>
-      Creates a new Main view
+      Creates a new instance of Main
     </span>
   </li>
   <li>
     <span class='signature'>
-      <a href='#resize-instance'>
-        - (void) <strong>resize</strong>()
+      <a href='#undo-instance'>
+        - (void) <strong>undo</strong>()
       </a>
     </span>
-    <span class='bound note title'>Bound</span>
     <span class='desc'>
-      Resizes the cell to the window size
+      Undoes the last move.
     </span>
   </li>
   <li>
     <span class='signature'>
-      <a href='#draw-instance'>
-        - (void) <strong>draw</strong>()
+      <a href='#redo-instance'>
+        - (void) <strong>redo</strong>()
       </a>
     </span>
     <span class='desc'>
-      Draws the main view
+      Redoes the last move.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#addMove-instance'>
+        - (void) <strong>addMove</strong>(type, module)
+      </a>
+    </span>
+    <span class='desc'>
+      Adds a move to the undotree
     </span>
   </li>
 </ul>
@@ -158,11 +173,7 @@
       - (void) <strong>constructor</strong>()
     </p>
     <div class='docstring'>
-  <div class='note todo'>
-    <strong>TODO:</strong>
-    dummy module inactivate if already in cell
-  </div>
-  <p>Creates a new Main view</p>
+  <p>Creates a new instance of Main</p>
 </div>
 <div class='tags'>
 </div>
@@ -171,24 +182,52 @@
       <h2>Instance Method Details</h2>
       <div class='methods'>
   <div class='method_details'>
-    <p class='signature' id='resize-instance'>
-      - (void) <strong>resize</strong>()
-      (bound)
+    <p class='signature' id='undo-instance'>
+      - (void) <strong>undo</strong>()
     </p>
     <div class='docstring'>
-  <p>Resizes the cell to the window size</p>
+  <p>Undoes the last move.</p>
 </div>
 <div class='tags'>
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='draw-instance'>
-      - (void) <strong>draw</strong>()
+    <p class='signature' id='redo-instance'>
+      - (void) <strong>redo</strong>()
     </p>
     <div class='docstring'>
-  <p>Draws the main view</p>
+  <p>Redoes the last move.</p>
 </div>
 <div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='addMove-instance'>
+      - (void) <strong>addMove</strong>(type, module)
+    </p>
+    <div class='docstring'>
+  <p>Adds a move to the undotree</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>type,</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the type of move. For now, &#39;modify&#39; is implemented.</span>
+    </li>
+    <li>
+      <span class='name'>module,</span>
+      <span class='type'>
+        (<tt>Module</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the module that has done the move.</span>
+    </li>
+  </ul>
 </div>
   </div>
 </div>

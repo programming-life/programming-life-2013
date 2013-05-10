@@ -17,7 +17,7 @@
     &raquo;
     <span class='title'>Model</span>
     &raquo;
-    <span class='title'>Transporter</span>
+    <span class='title'>Metabolite</span>
     <nav>
       <ul>
         <li class='noframes'>
@@ -108,12 +108,12 @@
     <div id='content'>
       <h1>
         Class:
-        Model.Transporter
+        Model.Metabolite
       </h1>
       <table class='box'>
         <tr>
           <td>Defined in:</td>
-          <td>app&#47;assets&#47;javascripts&#47;models&#47;module.transporter.js.coffee</td>
+          <td>app&#47;assets&#47;javascripts&#47;models&#47;module.metabolite.js.coffee</td>
         </tr>
         <tr>
           <td>Inherits:</td>
@@ -124,33 +124,11 @@
       </table>
       <h2>Overview</h2>
       <div class='docstring'>
-  <p>Simulates transporters in the cell.</p><h2>Parameters</h2>
-<hr><p>k
-Synthesize rate
-k_m
-For active transporters
-k_tr
-The transport rate
-consume
-All the metabolites required for Transporter creation
-type
-Model.Transporter.Active or Model.Transporter.Passive</p><h2>Properties</h2>
-<hr><p>vTransporterProd
-k <em> this </em> consume
-dillution
-mu <em> this
-vTransport [active transporter]
-k_tr </em> this <em> ( transported_compound / ( transported_compound + k_m ) ) </em> cell
-vTransport [passive transporter]
-k_tr <em> this </em> transported_compound * cell</p><h2>Equations</h2>
+  <p>Simulates substrates/products/metabolites in the cell</p><h2>Parameters</h2>
+<hr><p>supply
+    The supply per time unit</p><h2>Equations</h2>
 <hr><p>this / dt
-vTransporterProd - dillution
-consume / dt
-- vTransporterProd
-orig / dt
-- vTransport
-dest / dt
-vTransport</p>
+supply</p>
 </div>
 <div class='tags'>
 </div>
@@ -158,22 +136,42 @@ vTransport</p>
       <ul class='summary'>
   <li>
     <span class='signature'>
-      <a href='#int-class'>
-        + (void) <strong>int</strong>(params = {}, start = 1, transported = "s", type = Model.Transporter.Active, consume = "s#int")
+      <a href='#sext-class'>
+        + (void) <strong>sext</strong>(params = {}, supply = 1, start = 1, name = "s")
       </a>
     </span>
     <span class='desc'>
-      Generator for transporter to internal cell
+      Constructor for External Substrates
     </span>
   </li>
   <li>
     <span class='signature'>
-      <a href='#ext-class'>
-        + (void) <strong>ext</strong>(params = { k_m: 0 }, start = 0, transported = "p", type = Model.Transporter.Passive, consume = "s#int")
+      <a href='#sint-class'>
+        + (void) <strong>sint</strong>(params = {}, start = 0, name = "s")
       </a>
     </span>
     <span class='desc'>
-      Generator for transporter from internal cell
+      Constructor for Internal Substrates
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#pint-class'>
+        + (void) <strong>pint</strong>(params = {}, start = 0, name = "p")
+      </a>
+    </span>
+    <span class='desc'>
+      Constructor for Internal Products
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#pext-class'>
+        + (void) <strong>pext</strong>(params = {}, start = 0, name = "p")
+      </a>
+    </span>
+    <span class='desc'>
+      Constructor for External Products
     </span>
   </li>
 </ul>
@@ -182,42 +180,12 @@ vTransport</p>
   <li>
     <span class='signature'>
       <a href='#constructor-instance'>
-        - (void) <strong>constructor</strong>(params = {}, start = 1, transported, name, direction = Model.Transporter.Inward, type = Model.Transporter.Active, consume = "s#int")
+        - (void) <strong>constructor</strong>(params = {}, start = 1, name, placement = Model.Metabolite.Outside, type = Model.Metabolite.Substrate)
       </a>
     </span>
     <span class='constructor note title'>Constructor</span>
     <span class='desc'>
-      Constructor for transporters
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#validate_type-instance'>
-        - (void) <strong>validate_type</strong>()
-      </a>
-    </span>
-    <span class='desc'>
-      
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#validate_direction-instance'>
-        - (void) <strong>validate_direction</strong>()
-      </a>
-    </span>
-    <span class='desc'>
-      
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#getTransportedNames-instance'>
-        - (void) <strong>getTransportedNames</strong>(transported)
-      </a>
-    </span>
-    <span class='desc'>
-      
+      Constructor for Metabolite
     </span>
   </li>
 </ul>
@@ -249,11 +217,11 @@ vTransport</p>
       <h2>Class Method Details</h2>
       <div class='methods'>
   <div class='method_details'>
-    <p class='signature' id='int-class'>
-      + (void) <strong>int</strong>(params = {}, start = 1, transported = "s", type = Model.Transporter.Active, consume = "s#int")
+    <p class='signature' id='sext-class'>
+      + (void) <strong>sext</strong>(params = {}, supply = 1, start = 1, name = "s")
     </p>
     <div class='docstring'>
-  <p>Generator for transporter to internal cell</p>
+  <p>Constructor for External Substrates</p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
@@ -267,36 +235,20 @@ vTransport</p>
       <span class='desc'>parameters for this module</span>
     </li>
     <li>
-      <span class='name'>transported</span>
-      <span class='type'>
-        (<tt>String</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the metabolite to be transported, defaults to &quot;s&quot;</span>
-    </li>
-    <li>
       <span class='name'>start</span>
       <span class='type'>
         (<tt>Integer</tt>)
       </span>
       &mdash;
-      <span class='desc'>the initial value of transporters, defaults to 1</span>
+      <span class='desc'>the initial value of metabolite, defaults to 1</span>
     </li>
     <li>
-      <span class='name'>type</span>
+      <span class='name'>name</span>
       <span class='type'>
-        (<tt>Integer</tt>)
+        (<tt>String</tt>)
       </span>
       &mdash;
-      <span class='desc'>the type of the transporter</span>
-    </li>
-    <li>
-      <span class='name'>consume</span>
-      <span class='type'>
-        (<tt>String, Array&lt;String&gt;</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the metabolite to be consumed</span>
+      <span class='desc'>the name to use</span>
     </li>
   </ul>
   <h3>
@@ -305,68 +257,20 @@ vTransport</p>
   </h3>
   <ul class='options'>
     <li>
-      <span class='name'>k</span>
+      <span class='name'>start</span>
       <span class='type'>
         (<tt>Integer</tt>)
       </span>
       &mdash;
-      <span class='desc'>the subscription rate, defaults to 1</span>
+      <span class='desc'>the start amount of this metabolite</span>
     </li>
     <li>
-      <span class='name'>k_tr</span>
+      <span class='name'>placement</span>
       <span class='type'>
         (<tt>Integer</tt>)
       </span>
       &mdash;
-      <span class='desc'>the transportation rate, defaults to 1</span>
-    </li>
-    <li>
-      <span class='name'>k_m</span>
-      <span class='type'>
-        (<tt>Integer</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the mm constant, defaults to 1</span>
-    </li>
-    <li>
-      <span class='name'>dna</span>
-      <span class='type'>
-        (<tt>String</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the dna to use, defaults to &quot;dna&quot;</span>
-    </li>
-    <li>
-      <span class='name'>transported</span>
-      <span class='type'>
-        (<tt>String</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the metabolite to be transported, overrides transported</span>
-    </li>
-    <li>
-      <span class='name'>name</span>
-      <span class='type'>
-        (<tt>String</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the name of the transporter, defaults to &quot;transported_&#39;substrate&#39;_in&quot;</span>
-    </li>
-    <li>
-      <span class='name'>consume</span>
-      <span class='type'>
-        (<tt>String, Array&lt;String&gt;</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the metabolite to be consumed, overides consume</span>
-    </li>
-    <li>
-      <span class='name'>direction</span>
-      <span class='type'>
-        (<tt>Integer</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the direction of the transporter</span>
+      <span class='desc'>the placement</span>
     </li>
     <li>
       <span class='name'>type</span>
@@ -374,17 +278,17 @@ vTransport</p>
         (<tt>Integer</tt>)
       </span>
       &mdash;
-      <span class='desc'>the type of the transporter</span>
+      <span class='desc'>the type</span>
     </li>
   </ul>
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='ext-class'>
-      + (void) <strong>ext</strong>(params = { k_m: 0 }, start = 0, transported = "p", type = Model.Transporter.Passive, consume = "s#int")
+    <p class='signature' id='sint-class'>
+      + (void) <strong>sint</strong>(params = {}, start = 0, name = "s")
     </p>
     <div class='docstring'>
-  <p>Generator for transporter from internal cell</p>
+  <p>Constructor for Internal Substrates</p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
@@ -398,36 +302,20 @@ vTransport</p>
       <span class='desc'>parameters for this module</span>
     </li>
     <li>
-      <span class='name'>transported</span>
-      <span class='type'>
-        (<tt>String</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the metabolite to be transported, defaults to &quot;p&quot;</span>
-    </li>
-    <li>
       <span class='name'>start</span>
       <span class='type'>
         (<tt>Integer</tt>)
       </span>
       &mdash;
-      <span class='desc'>the initial value of transporters, defaults to 0</span>
+      <span class='desc'>the initial value of metabolite, defaults to 0</span>
     </li>
     <li>
-      <span class='name'>type</span>
+      <span class='name'>name</span>
       <span class='type'>
-        (<tt>Integer</tt>)
+        (<tt>String</tt>)
       </span>
       &mdash;
-      <span class='desc'>the type of the transporter</span>
-    </li>
-    <li>
-      <span class='name'>consume</span>
-      <span class='type'>
-        (<tt>String, Array&lt;String&gt;</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the metabolite to be consumed</span>
+      <span class='desc'>the name to use</span>
     </li>
   </ul>
   <h3>
@@ -436,68 +324,20 @@ vTransport</p>
   </h3>
   <ul class='options'>
     <li>
-      <span class='name'>k</span>
+      <span class='name'>start</span>
       <span class='type'>
         (<tt>Integer</tt>)
       </span>
       &mdash;
-      <span class='desc'>the subscription rate, defaults to 1</span>
+      <span class='desc'>the start amount of this metabolite</span>
     </li>
     <li>
-      <span class='name'>k_tr</span>
+      <span class='name'>placement</span>
       <span class='type'>
         (<tt>Integer</tt>)
       </span>
       &mdash;
-      <span class='desc'>the transportation rate, defaults to 0</span>
-    </li>
-    <li>
-      <span class='name'>k_m</span>
-      <span class='type'>
-        (<tt>Integer</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the mm constant, defaults to 0</span>
-    </li>
-    <li>
-      <span class='name'>dna</span>
-      <span class='type'>
-        (<tt>String</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the dna to use, defaults to &quot;dna&quot;</span>
-    </li>
-    <li>
-      <span class='name'>transported</span>
-      <span class='type'>
-        (<tt>String</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the metabolite to be transported, overrides transported</span>
-    </li>
-    <li>
-      <span class='name'>name</span>
-      <span class='type'>
-        (<tt>String</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the name of the transporter, defaults to &quot;transporter_&#39;substrate&#39;_out&quot;</span>
-    </li>
-    <li>
-      <span class='name'>consume</span>
-      <span class='type'>
-        (<tt>String, Array&lt;String&gt;</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the metabolite to be consumed, overides consume</span>
-    </li>
-    <li>
-      <span class='name'>direction</span>
-      <span class='type'>
-        (<tt>Integer</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the direction of the transporter</span>
+      <span class='desc'>the placement</span>
     </li>
     <li>
       <span class='name'>type</span>
@@ -505,7 +345,141 @@ vTransport</p>
         (<tt>Integer</tt>)
       </span>
       &mdash;
-      <span class='desc'>the type of the transporter</span>
+      <span class='desc'>the type</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='pint-class'>
+      + (void) <strong>pint</strong>(params = {}, start = 0, name = "p")
+    </p>
+    <div class='docstring'>
+  <p>Constructor for Internal Products</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>params</span>
+      <span class='type'>
+        (<tt>Object</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>parameters for this module</span>
+    </li>
+    <li>
+      <span class='name'>start</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the initial value of metabolite, defaults to 0</span>
+    </li>
+    <li>
+      <span class='name'>name</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the name to use</span>
+    </li>
+  </ul>
+  <h3>
+    Options Hash:
+    (param):
+  </h3>
+  <ul class='options'>
+    <li>
+      <span class='name'>start</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the start amount of this metabolite</span>
+    </li>
+    <li>
+      <span class='name'>placement</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the placement</span>
+    </li>
+    <li>
+      <span class='name'>type</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the type</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='pext-class'>
+      + (void) <strong>pext</strong>(params = {}, start = 0, name = "p")
+    </p>
+    <div class='docstring'>
+  <p>Constructor for External Products</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>params</span>
+      <span class='type'>
+        (<tt>Object</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>parameters for this module</span>
+    </li>
+    <li>
+      <span class='name'>start</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the initial value of metabolite, defaults to 0</span>
+    </li>
+    <li>
+      <span class='name'>name</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the name to use</span>
+    </li>
+  </ul>
+  <h3>
+    Options Hash:
+    (param):
+  </h3>
+  <ul class='options'>
+    <li>
+      <span class='name'>start</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the start amount of this metabolite</span>
+    </li>
+    <li>
+      <span class='name'>placement</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the placement</span>
+    </li>
+    <li>
+      <span class='name'>type</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the type</span>
     </li>
   </ul>
 </div>
@@ -515,10 +489,10 @@ vTransport</p>
       <div class='methods'>
   <div class='method_details'>
     <p class='signature' id='constructor-instance'>
-      - (void) <strong>constructor</strong>(params = {}, start = 1, transported, name, direction = Model.Transporter.Inward, type = Model.Transporter.Active, consume = "s#int")
+      - (void) <strong>constructor</strong>(params = {}, start = 1, name, placement = Model.Metabolite.Outside, type = Model.Metabolite.Substrate)
     </p>
     <div class='docstring'>
-  <p>Constructor for transporters</p>
+  <p>Constructor for Metabolite</p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
@@ -532,20 +506,12 @@ vTransport</p>
       <span class='desc'>parameters for this module</span>
     </li>
     <li>
-      <span class='name'>transported</span>
-      <span class='type'>
-        (<tt>String</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the metabolite to be transported</span>
-    </li>
-    <li>
       <span class='name'>start</span>
       <span class='type'>
         (<tt>Integer</tt>)
       </span>
       &mdash;
-      <span class='desc'>the initial value of transporters, defaults to 1</span>
+      <span class='desc'>the initial value of metabolite, defaults to 1</span>
     </li>
     <li>
       <span class='name'>name</span>
@@ -553,31 +519,23 @@ vTransport</p>
         (<tt>String</tt>)
       </span>
       &mdash;
-      <span class='desc'>the name of the transport, defaults to &quot;transporter_transported&#39;&quot;</span>
+      <span class='desc'>the name to use</span>
     </li>
     <li>
-      <span class='name'>consume</span>
-      <span class='type'>
-        (<tt>String, Array&lt;String&gt;</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the metabolite to consume, defauls to &quot;s&quot;</span>
-    </li>
-    <li>
-      <span class='name'>direction</span>
+      <span class='name'>placement</span>
       <span class='type'>
         (<tt>Integer</tt>)
       </span>
       &mdash;
-      <span class='desc'>the direction of the transporter, defaults to Inward</span>
+      <span class='desc'>placement of this metabolite, defaults to Model.Metabolite.Outside</span>
     </li>
     <li>
       <span class='name'>type</span>
       <span class='type'>
-        (<tt>Integer</tt>)
+        (<tt>Boolean</tt>)
       </span>
       &mdash;
-      <span class='desc'>the type of the transporter, defauts to Active</span>
+      <span class='desc'>type of this metabolite, defaults to Model.Metabolite.Substrate</span>
     </li>
   </ul>
   <h3>
@@ -586,68 +544,20 @@ vTransport</p>
   </h3>
   <ul class='options'>
     <li>
-      <span class='name'>k</span>
+      <span class='name'>start</span>
       <span class='type'>
         (<tt>Integer</tt>)
       </span>
       &mdash;
-      <span class='desc'>the subscription rate, defaults to 1</span>
+      <span class='desc'>the start amount of this metabolite</span>
     </li>
     <li>
-      <span class='name'>k_tr</span>
+      <span class='name'>placement</span>
       <span class='type'>
         (<tt>Integer</tt>)
       </span>
       &mdash;
-      <span class='desc'>the transportation rate, defaults to 1</span>
-    </li>
-    <li>
-      <span class='name'>v</span>
-      <span class='type'>
-        (<tt>Integer</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the speed scaler (vmax), defaults to 1</span>
-    </li>
-    <li>
-      <span class='name'>dna</span>
-      <span class='type'>
-        (<tt>String</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the dna to use, defaults to &quot;dna&quot;</span>
-    </li>
-    <li>
-      <span class='name'>transported</span>
-      <span class='type'>
-        (<tt>String</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the metabolite to be transported, overrides transported</span>
-    </li>
-    <li>
-      <span class='name'>name</span>
-      <span class='type'>
-        (<tt>String</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the name of the transporter, overrides name</span>
-    </li>
-    <li>
-      <span class='name'>consume</span>
-      <span class='type'>
-        (<tt>String, Array&lt;String&gt;</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the metabolite to be consumed, overides consume</span>
-    </li>
-    <li>
-      <span class='name'>direction</span>
-      <span class='type'>
-        (<tt>Integer</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the direction of the transporter</span>
+      <span class='desc'>the placement</span>
     </li>
     <li>
       <span class='name'>type</span>
@@ -655,33 +565,9 @@ vTransport</p>
         (<tt>Integer</tt>)
       </span>
       &mdash;
-      <span class='desc'>the type of the transporter</span>
+      <span class='desc'>the type</span>
     </li>
   </ul>
-</div>
-  </div>
-</div>
-      <h2>Instance Method Details</h2>
-      <div class='methods'>
-  <div class='method_details'>
-    <p class='signature' id='validate_type-instance'>
-      - (void) <strong>validate_type</strong>()
-    </p>
-    <div class='tags'>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='validate_direction-instance'>
-      - (void) <strong>validate_direction</strong>()
-    </p>
-    <div class='tags'>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='getTransportedNames-instance'>
-      - (void) <strong>getTransportedNames</strong>(transported)
-    </p>
-    <div class='tags'>
 </div>
   </div>
 </div>
