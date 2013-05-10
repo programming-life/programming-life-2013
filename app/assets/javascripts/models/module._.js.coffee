@@ -231,6 +231,7 @@ class Model.Module
 		type = @constructor.name
 		
 		result = { 
+			name: @name
 			parameters: parameters
 			type: type 
 			step: @_step.toString() if type is "Module" and @_step?
@@ -263,6 +264,7 @@ class Model.Module
 						id: serialized_data.id unless @isLocal()
 						module_template_id: module_template.id
 						cell_id: cell
+						name: serialized_data.name
 				
 				# Define the parameters set function, so we can resuse it
 				update_parameters = () =>
@@ -324,6 +326,7 @@ class Model.Module
 	@deserialize : ( serialized ) ->
 		
 		serialized = JSON.parse( serialized ) if _( serialized ).isString()
+		serialized.parameters.name = serialized.name
 		fn = ( window || @ )["Model"]
 		return new fn[ serialized.type ]( serialized.parameters ) unless serialized.type is "Module"
 		

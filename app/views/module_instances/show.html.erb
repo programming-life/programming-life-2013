@@ -26,6 +26,10 @@
 			<td><%= link_to raw('<i class=" icon-magnet"></i> ' + @cell.name), @cell, :class => 'btn btn-mini' %></td>
 		</tr>
 		<tr>
+			<td>Compound name</td>
+			<td><%= @module_instance.name %></td>
+		</tr>
+		<tr>
 			<td>Parameters</td>
 			<td>
 				<table class="table-condensed table-striped table">
