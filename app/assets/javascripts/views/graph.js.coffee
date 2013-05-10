@@ -1,151 +1,91 @@
 # Class to generate graphs from a set of data points
 #
-class View.Graph
-
-	# The number of datasets visible
+class View.Graph2
+	
 	MAX_DATASETS : 2
 	
-	_chartOptions:
-		pointDot: false
-		bezierCurve: false
-		scaleShowLabels: true
-	
-	# Construct a new Graph
+	# Construct a new Graph object
 	#
-	# @param name [String] the name of this graph
-	# @param options [Object] the options for the graph
-	# @param data [Array] the data for the graph
-	# @options options [Integer] width the width of the canvas
-	# @options options [Integer] height the height of the canvas
-	# @options options [Integer] dt the timestep of the graph
-	# @options options [String] fill the CSS colour for the fill
-	# @options options [String] stroke the CSS colour for the stroke
-	# @options options [String] point.fill the CSS colour for the fill of points
-	# @options options [String] point.stroke the CSS colour for the stroke of points
-	#
-	constructor: ( name, options = {}, data ) ->
-		@_canvas = $("<canvas width='#{ options.width ? 450 }' height='#{ options.height ? 200 }'></canvas>")
-		@_element = $("<div class='graph'></div>")
-		@_element.append $("<h1>#{name}</h1>")
-		@_element.append @_canvas
-		
+	# @param paper [Object] The paper to draw on
+	# @param title [String] The title of the graph	
+	constructor: ( paper, title) ->
+		@_paper = paper
+		@_title = title
 		@_datasets = []
-		@_nPoints = 0		
-		@_dt = options.dt ? 1
-			
-		@addData( data, options ) if data
+
+		@_dt = 1
+		@_options = {
+			smooth: true
+			axis: '0 0 1 1'
+			axisxstep: @_dt
+			shade : true
+			colors: ["blue", "green"]
+		}
 		
-	# Add a data set to the Graph
+	# Add a dataset to visualize in this graphs
 	#
-	# @param data [Array] an array with data points
-	# @param options [Object] the options for the dataset
-	# @options options [String] fill the CSS colour for the fill
-	# @options options [String] stroke the CSS colour for the stroke
-	# @options options [String] point.fill the CSS colour for the fill of points
-	# @options options [String] point.stroke the CSS colour for the stroke of points
-	# @returns [self] returns self for chaining
+	# @param data [Array] An array of datapoints
 	#
-	addData: ( data, options = {} ) ->
+	addData: ( data ) ->
+		@_datasets.push(data)
+		return @
 	
-		@_datasets.push
-			data: data,
-			fill: options.fill ? "rgba(220,220,220,0.5)",
-			stroke: options.stroke ? "rgba(220,220,220,1)",
-			point: 
-				fill : options.point?.fill ? "rgba(220,220,220,1)",
-				stroke : options.point?.stroke ? "#fff"
-
-		@_nPoints = data.length if @_nPoints < data.length				
-		return this
+	# Redraw this component with its current parameters
+	#
+	redraw: () ->
+		@_contents?.remove()
+		@draw(@_x, @_y, @_scale)
 	
-	# Clear all data from the Graph
+	# Draws the graph
 	#
-	# @returns [self] returns self for chaining
+	# @param x [Integer] The x coordinate
+	# @param y [Integer] The y coordinate
+	# @param scale [Integer] The scale
 	#
-	clear: ->
-		@_datasets = []
-		@_nPoints = 0
-		return this
+	draw: ( x, y, scale ) ->
+		@_x = x 
+		@_y = y
+		@_scale = scale
 
-	# Render the Graph into a canvas
-	#
-	# @param elem [Object] optional: an element to append the Graph's canvas to
-	# @returns [Object] returns contained canvas object
-	#
-	render: ( elem ) ->
-		ctx = @_canvas.get(0).getContext("2d")
+		@_contents = @_paper.set()
+
+		@_width = 400 * @_scale
+		@_height = @_width * @_scale
+
+		for set in @_datasets
+			xValues = (num for num in [1..set.length] by 1)
+		yValues = @_datasets
 		
-		duration = ( @_nPoints - 1 ) * @_dt
-		options = _.clone @_chartOptions
-
-		datasets = _( @_datasets ).last @MAX_DATASETS
+		@_text = @_paper.text( @_x, @_y, @_title )
+		@_text.attr
+			'font-size': 42 * @_scale
 		
-		# Get maximum and minimum values
-		for dataset in datasets
-			datamin = _.min dataset.data
-			datamax = _.max dataset.data
-			min = ( if ( min? ) then Math.min( min, datamin ) else datamin )
-			max = ( if ( max? ) then Math.max( max, datamax ) else datamax )
-			
-		console.log datamin, datamax, min, max
-
-		# Adapt scale if max and min are equal
-		if ( max == min )
-			options.scaleOverride = true
-			options.scaleSteps = 3
-			options.scaleStepWidth = 1
-			options.scaleStartValue = max - 2
-			
-			# line will be displayed 1 scaleStep BELOW actual value, so for the
-			# time begin, just indicate it didn't change and don't show labels
-			options.scaleShowLabels = false 
-			 
-		labels = for t in [0 ... @_nPoints ] by 1
-			''
-		labels[ 0 ] = 0
-		labels[ labels.length - 1 ] = duration
-					
-		new Chart( ctx ).Line
-			labels: labels
-			datasets:
-				for dataset in datasets
-					data: dataset.data
-					fillColor : dataset.fill,
-					strokeColor : dataset.stroke,
-					pointColor : dataset.point.fill,
-					pointStrokeColor : dataset.point.stroke
-				
-			, options
+		@_contents.push @_text
 		
-		if elem instanceof jQuery
-			elem.append @_element
+		bbox = @_text.getBBox()
+
+		@_chart = @_paper.linechart(@_x , @_y + bbox.height, @_width, @_height, xValues, yValues, @_options)
+		@_chart.mouseout () => 
+			console.log("Mouse out")
+			@_line?.remove()
+		@_drawGridLines()
+		@_contents.push(@_chart)
+	
+	_drawGridLines: ( ) ->
+		# Draw horizontal gridlines
+		for i in [0..@_chart.axis[1].text.items.length - 1]
+			@_paper.path(['M', @_x, @_chart.axis[1].text.items[i].attrs.y, 'H', @_width + @_x]).attr({
+				stroke : '#EEE'
+			}).toBack();
 		
-		return @_element
 	
-	# Return the canvas object
-	#
-	# @return [Object] the Graph's canvas
-	#
-	getCanvas: ->		
-		return @_canvas
-	
-	# Return the parent object
-	#
-	# @return [Object] the Graph's parent object
-	#
-	getElement: ->
-		return @_element
-	
-	# Set the width en height of the graph
-	#
-	# @param width [Integer] the width of the canvas
-	# @param height [Integer] the height of the canvas
-	# @return [self] returns self for chaining
-	#
-	setDimensions: ( width, height ) ->
-		$(@_canvas, @_element).attr('width', width)
-		$(@_canvas, @_element).attr('height', height)
-		return this
+	_drawRedLine: ( x, y ) ->
+		@_line?.remove()
+		chartY = @_chart.getBBox().y
+		@_line = @_paper.path(['M', x, chartY, 'V', @_chart.axis[0].text.items[0].attrs.y]).attr({
+			stroke : '#F00'
+		}).toFront();
+		
+		@_contents.push(@_line)
 
-
-(exports ? this).View.Graph = View.Graph
+(exports ? this).View.Graph2 = View.Graph2

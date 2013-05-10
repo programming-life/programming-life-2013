@@ -6,6 +6,7 @@ class View.Cell
 
 		@_views = []
 		@_drawn = []
+		@_graphs = {}
 
 		@_width = @_paper.width
 		@_height = @_paper.height
@@ -28,7 +29,8 @@ class View.Cell
 		Model.EventManager.on( 'cell.add.module', @, @onModuleAdd )
 		Model.EventManager.on( 'cell.add.substrate', @, @onModuleAdd )
 		Model.EventManager.on( 'cell.remove.module', @, @onModuleRemove )
-		
+			
+
 	# Draws the cell
 	#
 	draw: (x, y, scale ) ->
@@ -80,7 +82,11 @@ class View.Cell
 			if ( view instanceof View.Play )
 				placement = { x: @_x, y: @_y, @_scale }
 
-			view.draw( placement.x, placement.y, @_scale ) 
+			view.draw( placement.x, placement.y, @_scale )
+		
+		if @_scale? and not @_simulating
+			@startSimulation()
+			@_simulating = true
 			
 		
 
@@ -162,20 +168,12 @@ class View.Cell
 				y = params.cy + ( Math.round( params.count ) * 100 * params.scale )
 				
 		return { x: x, y: y }
-
-	startSimulation: ( ) ->
-		unless @_graphs?
-			@_graphs = {}
-
-		duration = 10
-		container = $(".container")
-		options = {
-			dt: dt
-			"set.fill" : "rgba(220,220,220,0.5)"
-			"set.stroke" : "rgba(220,220,220,1)"
-		}
-		
-
+	
+	# Get the simulation data from the cell
+	# 
+	# @param duration [Integer] The duration of the simulation
+	# @return [Array] An array of datapoints
+	_getCellData: ( duration ) ->
 		cell_run = @_cell.run(duration)
 		results = cell_run.results
 		mapping = cell_run.map
@@ -189,24 +187,57 @@ class View.Cell
 		for time in [ 0 .. duration ] by dt
 			interpolation[ time ] = results.at time;
 
+		datasets = {}
 		# Draw all the substrates
 		for key, value of mapping
 			dataset = []
-			if ( !@_graphs[ key ] )
-				@_graphs[ key ] = new View.Graph( key, options) 
-			else
-				options.fill = "rgba( 240, 180, 180, .7 )"
-				options.stroke = "rgba( 240, 180, 180, .6 )"
-			
 			# Push all the values, but round for float rounding errors
 			for time in [ 0 .. duration ] by dt
 				dataset.push( interpolation[ time ][ value ] ) 
-				
+			datasets[ key ] = dataset
 
-			@_graphs[ key ].addData( dataset, options )
-				.render(container)
+		return datasets
+
+	# Draw the graphs with the data from the datasets
+	#
+	# @param datasets [Array] An array of datasets
+	_drawGraphs: ( datasets ) ->
+		dt = 0.1
+
+		options = {
+			dt: dt
+			"set.fill" : "rgba(220,220,220,0.5)"
+			"set.stroke" : "rgba(220,220,220,1)"
+		}
+
+		# Draw all the substrates
+		for key, dataset of datasets
+			if ( !@_graphs[ key ] )
+				@_graphs[ key ] = new View.Graph2(@_paper, key)
+			else
+				options.fill = "rgba( 240, 180, 180, .7 )"
+				options.stroke = "rgba( 240, 180, 180, .6 )"
+
+			@_graphs[key].addData(dataset)
+			@_graphs[key].draw(100, 100, @_scale)
+			@_graphs[key]._chart.hoverColumn ((event) => @_drawRedLines(event.x, event.y)) 
+
+
+	startSimulation: ( ) ->
+		duration = 10
+		container = $(".container")
+
+		datasets = @_getCellData(duration)
+		
+		@_drawGraphs(datasets)
+		
 		
 
 	stopSimulation: ( ) ->
+
+	_drawRedLines: (x, y) ->
+		for key, graph of @_graphs
+			graph._drawRedLine(event.x, event.y)
+			
 
 (exports ? this).View.Cell = View.Cell
