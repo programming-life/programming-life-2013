@@ -5,21 +5,21 @@
 # k
 #	Synthesize rate
 # k_d
-#	Protein degredation
+#	Protein degradation
 # 
 # Properties
 # ------------------ ------------------ ------------------
 # vEnzymeSynth
 #	k * this 
-# degredation
+# degradation
 #	k_d * this
-# dillution
+# dilution
 # 	mu * this
 #
 # Equations
 # ------------------ ------------------ ------------------
 # this / dt
-#	vEnzymeSynth - dillution - degredation
+#	vEnzymeSynth - dilution - degradation
 # consume / dt
 #	- vEnzymeSynth
 #
@@ -55,13 +55,13 @@ class Model.Metabolism extends Model.Module
 				# - The DNA itself called dna
 				venzymesynth = @k * compounds[ @dna ]
 				
-				# Rate of dillution because of cell division
+				# Rate of dilution because of cell division
 				# 
-				dillution = mu * compounds[ @name ]
+				dilution = mu * compounds[ @name ]
 				
-				# Rate of degration
+				# Rate of degradation
 				# 
-				degration = @k_d * compounds[ @name ]
+				degradation = @k_d * compounds[ @name ]
 				
 			# Only if the components are available 
 			if ( @_test( compounds, @name, @orig, @dest ) )
@@ -77,9 +77,9 @@ class Model.Metabolism extends Model.Module
 			# If all components are available
 			if venzymesynth?
 			
-				# The Enzyme increase is the rate minus dillution and degration
+				# The Enzyme increase is the rate minus dilution and degradation
 				#
-				results[ @name ] = venzymesynth - degration - dillution
+				results[ @name ] = venzymesynth - degradation - dilution
 				
 			# If all components are available
 			if vmetabolism?

@@ -17,7 +17,7 @@
 # ------------------ ------------------ ------------------
 # vTransporterProd
 #	k * this * consume
-# dillution
+# dilution
 #	mu * this
 # vTransport [active transporter]
 #	k_tr * this * ( transported_compound / ( transported_compound + k_m ) ) * cell
@@ -27,7 +27,7 @@
 # Equations
 # ------------------ ------------------ ------------------
 # this / dt
-#	vTransporterProd - dillution
+#	vTransporterProd - dilution
 # consume / dt
 #	- vTransporterProd
 # orig / dt
@@ -89,7 +89,7 @@ class Model.Transporter extends Model.Module
 					
 				# Rate of dillution because of cell division
 				# 
-				dillution = mu * compounds[ @name ]
+				dilution = mu * compounds[ @name ]
 			
 			# Only if the components are available [transport]
 			
@@ -116,19 +116,16 @@ class Model.Transporter extends Model.Module
 					# - The Diffussion kinetics
 					#
 					vtransport = @k_tr * compounds[ @name ] * compounds[ orig ]
-					
-				# The actual amount transported is influenced by the cell growth
-				vtransport *= compounds[ @cell ]
 
 				
 			# If all components are available [production]
 			if vtransporterprod?
 			
-				# The Transporter increase is the rate minus dillution
+				# The Transporter increase is the rate minus dilution
 				#
-				results[ @name ] = vtransporterprod - dillution
+				results[ @name ] = vtransporterprod - dilution
 				
-				# All the metabolites required for synthesisation
+				# All the metabolites required for synthesis
 				# are hereby subtracted by the increase in Transporter
 				#
 				for c in @consume
@@ -137,8 +134,18 @@ class Model.Transporter extends Model.Module
 			# If all components are available
 			if vtransport?
 				
+				# The actual transport
+				#
 				results[ @orig ] = -vtransport
 				results[ @dest ] = vtransport
+				
+				# Modelling correction for inside/outside the cell
+				#
+				if @direction is Model.Transporter.Inward
+					results[ @orig ] *= compounds[ @cell ]
+					
+				if @direction is Model.Transporter.Outward
+					results[ @dest ] *= compounds[ @cell ]
 				
 			return results
 		

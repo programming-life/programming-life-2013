@@ -11,13 +11,13 @@
 # ------------------ ------------------ ------------------
 # vLipidProd
 #	k * this * consume
-# dillution
+# dilution
 #	mu * this
 #
 # Equations
 # ------------------ ------------------ ------------------
 # this / dt
-#	vLipidProd - dillution
+#	vLipidProd - dilution
 # consume / dt
 #	- vLipidProd
 #
@@ -52,16 +52,16 @@ class Model.Lipid extends Model.Module
 				for c in @consume
 					vlipidprod *= compounds[ c ]
 					
-				# Rate of dillution because of cell division
+				# Rate of dilution because of cell division
 				# 
-				dillution = mu * compounds[ @name ]
+				dilution = mu * compounds[ @name ]
 			
 			# If all components are available 
 			if ( vlipidprod? )
 			
-				# The Lipid increase is the rate minus dillution
+				# The Lipid increase is the rate minus dilution
 				#
-				results[ @name ] = vlipidprod - dillution
+				results[ @name ] = vlipidprod - dilution
 				
 				# All the substrates required for synthesisation
 				# are hereby subtracted by the increase in DNA

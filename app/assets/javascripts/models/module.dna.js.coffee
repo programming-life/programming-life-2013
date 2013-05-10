@@ -11,13 +11,13 @@
 # ------------------ ------------------ ------------------
 # vDNASynth
 #	k * this * consume
-# dillution
+# dilution
 #	mu * this
 #
 # Equations
 # ------------------ ------------------ ------------------
 # this / dt
-#	vDNASynth - dillution
+#	vDNASynth - dilution
 # consume / dt
 #	- vDNASynth
 #
@@ -52,16 +52,16 @@ class Model.DNA extends Model.Module
 				for c in @consume
 					vdnasynth *= compounds[ c ]
 					
-				# Rate of dillution because of cell division
+				# Rate of dilution because of cell division
 				# 
-				dillution = mu * compounds[ @name ]
+				dilution = mu * compounds[ @name ]
 				
 			# If all components are available 
 			if vdnasynth? 
 				
-				# The DNA increase is the rate minus dillution
+				# The DNA increase is the rate minus dilution
 				#
-				results[ @name ] = vdnasynth - dillution
+				results[ @name ] = vdnasynth - dilution
 				
 				# All the metabolites required for synthesisation
 				# are hereby subtracted by the increase in DNA

@@ -5,7 +5,7 @@
 # k
 #	Synthesize rate
 # k_d
-#	Protein degredation
+#	Protein degradation
 # consume
 #	All the metabolites required for Protein creation
 # 
@@ -13,15 +13,15 @@
 # ------------------ ------------------ ------------------
 # vProteinSynth
 #	k * this * consume
-# degredation
+# degradation
 #	k_d * this
-# dillution
+# dilution
 # 	mu * this
 #
 # Equations
 # ------------------ ------------------ ------------------
 # this / dt
-#	vProteinSynth - dillution - degredation
+#	vProteinSynth - dilution - degradation
 # consume / dt
 #	- vProteinSynth
 #
@@ -59,20 +59,20 @@ class Model.Protein extends Model.Module
 				for c in @consume
 					vproteinsynth *= compounds[ c ]
 					
-				# Rate of dillution because of cell division
+				# Rate of dilution because of cell division
 				# 
-				dillution = mu * compounds[ @name ]
+				dilution = mu * compounds[ @name ]
 				
-				# Rate of degration
+				# Rate of degradation 
 				# 
-				degration = @k_d * compounds[ @name ]
+				degradation  = @k_d * compounds[ @name ]
 			
 			# If all components are available
 			if vproteinsynth?
 			
-				# The Protein increase is the rate minus dillution and degration
+				# The Protein increase is the rate minus dilution and degradation 
 				#
-				results[ @name ] = vproteinsynth - degration - dillution
+				results[ @name ] = vproteinsynth - degradation  - dilution
 				
 				# All the metabolites required for synthesisation
 				# are hereby subtracted by the increase in Protein
