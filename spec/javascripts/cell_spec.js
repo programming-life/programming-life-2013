@@ -277,8 +277,8 @@ describe("Cell", function() {
 
 		beforeEach(function() {
 			cell = new Model.Cell();
-				.addSubstrate( 'food', food, 0, false )
-				.addSubstrate( 'food', 0, 0, true )
+			cell.addSubstrate( 'food', food, 0, false );
+			cell.addSubstrate( 'food', 0, 0, true );
 				
 			create_transport = new Model.Module(
 				{ 
@@ -297,7 +297,7 @@ describe("Cell", function() {
 				{ rate: 1 },
 				function ( t, compounds ) {
 					transporters = compounds.transp
-					food_out = compounds.food_out
+					food_out = compounds["food#ext"]
 					transport = Math.min( transporters * this.rate, Math.max( 0, food_out ) )
 					return { 
 						'food#ext' : -transport, 
@@ -310,9 +310,9 @@ describe("Cell", function() {
 				{ starts: { name : enzyme }, name: 'enzyme' },
 				function ( t, compounds ) {
 
-					food_in = compounds.food_in
+					food_in = compounds["food#int"]
 					enzyme = compounds.enzyme
-					processed = Math.min( enzym, Math.max( 0, food_in ) )
+					processed = Math.min( enzyme, Math.max( 0, food_in ) )
 					return { 
 						'food#int' : -processed 
 					}
@@ -335,9 +335,9 @@ describe("Cell", function() {
 			
 			it("should have input values", function() {
 				expect( result ).toBeDefined();
-				expect( result.y[ result.y.length - 1 ][ mapping.enzym ] ).toBe( enzym );
-				expect( result.y[ result.y.length - 1 ][ mapping.food_out ] ).toBe( food );
-				expect( result.y[ result.y.length - 1 ][ mapping.food_in ] ).toBe( 0 );
+				expect( result.y[ result.y.length - 1 ][ mapping.enzyme ] ).toBe( enzyme );
+				expect( result.y[ result.y.length - 1 ][ mapping["food#ext"] ] ).toBe( food );
+				expect( result.y[ result.y.length - 1 ][ mapping["food#int"] ] ).toBe( 0 );
 				expect( result.y[ result.y.length - 1 ][ mapping.transp ] ).toBe( 0 );
 			});
 			
@@ -353,7 +353,7 @@ describe("Cell", function() {
 			});
 			
 			it("should have kept all the enzym", function() {
-				expect( result.y[ result.y.length - 1 ][ mapping.enzym ] ).toBe( enzym );
+				expect( result.y[ result.y.length - 1 ][ mapping.enzyme ] ).toBe( enzyme );
 			});
 			
 			it("should have created transporters", function() {
@@ -361,14 +361,14 @@ describe("Cell", function() {
 			});
 			
 			it("should have transported food", function() {
-				expect( result.y[ result.y.length - 1 ][ mapping.food_in ] ).toBeGreaterThan( 0 );
-				expect( result.y[ result.y.length - 1 ][ mapping.food_out ] ).toBeLessThan( food );
+				expect( result.y[ result.y.length - 1 ][ mapping["food#int"] ] ).toBeGreaterThan( 0 );
+				expect( result.y[ result.y.length - 1 ][ mapping["food#ext"] ] ).toBeLessThan( food );
 			});
 			
 			it("should have consumed food", function() {
 				expect( 
-					result.y[ result.y.length - 1 ][ mapping.food_in ] + 
-					result.y[ result.y.length - 1 ][ mapping.food_out ] 
+					result.y[ result.y.length - 1 ][ mapping["food#int"] ] + 
+					result.y[ result.y.length - 1 ][ mapping["food#ext"] ] 
 				).toBeLessThan( food );
 			});
 			
