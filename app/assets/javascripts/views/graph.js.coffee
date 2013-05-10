@@ -69,7 +69,7 @@ class View.Graph
 		@_chart?.remove()
 		@_chart = @_paper.linechart(@_x , @_y + bbox.height, @_width, @_height, xValues, yValues, @_options)
 		@_chart.hoverColumn (event) =>
-			@_parent._drawRedLines(event.x - @_chart.getBBox().x)
+			@_parent._drawRedLines(event.x - @_chart.getBBox().x - @_paper.canvas.offsetLeft)
 		@_chart.mouseout () => 
 			console.log("Mouse out")
 			@_line?.remove()

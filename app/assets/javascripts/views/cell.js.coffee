@@ -3,6 +3,9 @@ class View.Cell
 	constructor: ( paper, cell ) ->
 		@_paper = paper
 		@_cell = cell
+		
+		@_container = Raphael('graphs', 800, 1000)
+		console.log(@_container)
 
 		@_views = []
 		@_drawn = []
@@ -215,7 +218,7 @@ class View.Cell
 		# Draw all the substrates
 		for key, dataset of datasets
 			if ( !@_graphs[ key ] )
-				@_graphs[ key ] = new View.Graph(@_paper, key, @)
+				@_graphs[ key ] = new View.Graph(@_container, key, @)
 
 			@_graphs[key].addData(dataset)
 			placement = @_getGraphPlacement()
