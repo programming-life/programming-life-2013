@@ -51,12 +51,13 @@ class View.Play
 			@_play?.remove()
 			@_play = null
 			@_drawPause()
+			@_text = @_paper.text(@_x, @_y + 2 * @_padding, "Pause Simulation")
 		else
 			@_pause?.remove()
 			@_pause = null
 			@_drawPlay()
+			@_text = @_paper.text(@_x, @_y + 2 * @_padding, "Start Simulation")
 
-		@_text = @_paper.text(@_x, @_y + 2 * @_padding, "Start Simulation")
 		@_text.attr
 			'font-size': 20 * scale
 

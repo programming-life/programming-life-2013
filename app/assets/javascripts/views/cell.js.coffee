@@ -7,6 +7,7 @@ class View.Cell
 		@_views = []
 		@_drawn = []
 		@_graphs = {}
+		@_numGraphs = 0
 
 		@_width = @_paper.width
 		@_height = @_paper.height
@@ -191,31 +192,34 @@ class View.Cell
 			datasets[ key ] = dataset
 
 		return datasets
+	
+	_getGraphPlacement: ( ) ->
+		x = 100
+		y = 100
+		unless @_numGraphs is 0
+			width = 300 * @_scale
+			height = width * @_scale
+			padding = 20 * @_scale
+			x += 1.5 * width * (@_numGraphs % 2)
+			y +=  (height + 30) * Math.floor(@_numGraphs / 2) 
+		@_numGraphs++
+		
+		return {x: x, y: y}
+		
 
 	# Draw the graphs with the data from the datasets
 	#
 	# @param datasets [Array] An array of datasets
 	_drawGraphs: ( datasets ) ->
-		dt = 0.1
-
-		options = {
-			dt: dt
-			"set.fill" : "rgba(220,220,220,0.5)"
-			"set.stroke" : "rgba(220,220,220,1)"
-		}
-
+		@_numGraphs = 0
 		# Draw all the substrates
 		for key, dataset of datasets
 			if ( !@_graphs[ key ] )
-				@_graphs[ key ] = new View.Graph2(@_paper, key)
-			else
-				options.fill = "rgba( 240, 180, 180, .7 )"
-				options.stroke = "rgba( 240, 180, 180, .6 )"
+				@_graphs[ key ] = new View.Graph(@_paper, key, @)
 
 			@_graphs[key].addData(dataset)
-			@_graphs[key].draw(100, 100, @_scale)
-			@_graphs[key]._chart.hoverColumn ((event) => @_drawRedLines(event.x, event.y)) 
-
+			placement = @_getGraphPlacement()
+			@_graphs[key].draw(placement.x, placement.y, @_scale)
 
 	startSimulation: ( ) ->
 		duration = 10
@@ -224,14 +228,14 @@ class View.Cell
 		datasets = @_getCellData(duration)
 		
 		@_drawGraphs(datasets)
+	
+	simulate: ( ) ->
 		
-		
-
 	stopSimulation: ( ) ->
 
-	_drawRedLines: (x, y) ->
+	_drawRedLines: (x) ->
 		for key, graph of @_graphs
-			graph._drawRedLine(event.x, event.y)
+			graph._drawRedLine(x)
 			
 
 (exports ? this).View.Cell = View.Cell

@@ -1,6 +1,6 @@
 # Class to generate graphs from a set of data points
 #
-class View.Graph2
+class View.Graph
 	
 	MAX_DATASETS : 2
 	
@@ -8,10 +8,11 @@ class View.Graph2
 	#
 	# @param paper [Object] The paper to draw on
 	# @param title [String] The title of the graph	
-	constructor: ( paper, title) ->
+	constructor: ( paper, title, parent) ->
 		@_paper = paper
 		@_title = title
 		@_datasets = []
+		@_parent = parent
 
 		@_dt = 1
 		@_options = {
@@ -49,22 +50,26 @@ class View.Graph2
 
 		@_contents = @_paper.set()
 
-		@_width = 400 * @_scale
+		@_width = 200 * @_scale
 		@_height = @_width * @_scale
 
 		for set in @_datasets
 			xValues = (num for num in [1..set.length] by 1)
 		yValues = @_datasets
 		
+		@_text?.remove()
 		@_text = @_paper.text( @_x, @_y, @_title )
 		@_text.attr
-			'font-size': 42 * @_scale
+			'font-size': 32 * @_scale
 		
 		@_contents.push @_text
 		
 		bbox = @_text.getBBox()
 
+		@_chart?.remove()
 		@_chart = @_paper.linechart(@_x , @_y + bbox.height, @_width, @_height, xValues, yValues, @_options)
+		@_chart.hoverColumn (event) =>
+			@_parent._drawRedLines(event.x - @_chart.getBBox().x)
 		@_chart.mouseout () => 
 			console.log("Mouse out")
 			@_line?.remove()
@@ -79,13 +84,16 @@ class View.Graph2
 			}).toBack();
 		
 	
-	_drawRedLine: ( x, y ) ->
+	# Draws a red line over the chart
+	#
+	# @param x [Integer] The x position of the line, relative to the offset of the chart
+	_drawRedLine: ( x ) ->
 		@_line?.remove()
-		chartY = @_chart.getBBox().y
-		@_line = @_paper.path(['M', x, chartY, 'V', @_chart.axis[0].text.items[0].attrs.y]).attr({
+		bbox = @_chart.getBBox()
+		@_line = @_paper.path(['M', x + bbox.x, bbox.y, 'V', @_chart.axis[0].text.items[0].attrs.y]).attr({
 			stroke : '#F00'
 		}).toFront();
 		
 		@_contents.push(@_line)
 
-(exports ? this).View.Graph2 = View.Graph2
+(exports ? this).View.Graph = View.Graph
