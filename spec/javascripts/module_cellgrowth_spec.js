@@ -24,7 +24,12 @@ describe("Module Cell Growth", function() {
 			expect( _(module.starts).size() ).toBe( 1 );
 			expect( module.starts.name ).toBeDefined();
 			expect( module.starts.name ).toBe( 1 );
-		})
+		});
+
+		it( "should have property mu", function() {
+			expect( module.mu ).toBeDefined();
+			expect( module.mu() ).toBe( 1 );
+		});
 		
 		it("should be able to serialize the module", function() {
 			serialized = module.serialize( true )
@@ -76,5 +81,37 @@ describe("Module Cell Growth", function() {
 		});
 
 	});
+
+	describe( "When using params in the constructor", function() {
+
+		var module;
+		beforeEach( function() {
+			module = new Model.CellGrowth( { a: "new", name: "override_cell" }  );
+		});
+
+		it( "should have the new parameters", function() {
+			expect( module.a ).toBeDefined();
+			expect( module.a ).toMatch( 'new' );
+		});
+		
+		it( "should overide default parameters", function() {
+			expect( module.name ).toMatch( 'override_cell' );
+		});
+		
+	});
+
+	describe( "when using start in the constructor", function() {
+		
+		var module;
+		beforeEach( function() {
+			module = new Model.CellGrowth( undefined, 2 );
+		});		
+		
+		it( "should overide the default start value", function() {
+			expect( module.starts.name ).toBe( 2 );
+			expect( module.amount ).toBe( 2 );
+		});
+	});
+
 
 }); 
