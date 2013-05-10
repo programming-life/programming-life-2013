@@ -84,12 +84,6 @@ class View.Cell
 
 			view.draw( placement.x, placement.y, @_scale )
 		
-		if @_scale? and not @_simulating
-			@startSimulation()
-			@_simulating = true
-			
-		
-
 	# On module added, add it from the cell
 	# 
 	# @param cell [Model.Cell] cell added to

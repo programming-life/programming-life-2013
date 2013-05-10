@@ -20,6 +20,8 @@ class View.Play
 			get: ->
 				return @_visible
 		)
+		
+		@_playing = false
 
 	# Clears the module view
 	#
@@ -45,7 +47,7 @@ class View.Play
 		@_contents?.remove()
 		@_contents = @_paper.set()
 
-		if @_play?
+		if @_playing
 			@_play?.remove()
 			@_play = null
 			@_drawPause()
@@ -93,10 +95,12 @@ class View.Play
 						#start simulation
 						console.log("Started simulation")
 						@_cell.startSimulation()
+						@_playing = true
 					else
 						#stop simulation
 						console.log("Paused simulation")
 						@_cell.stopSimulation()
+						@_playing = false
 
 					@_selected = false
 					@draw( @_x, @_y, @_scale )
