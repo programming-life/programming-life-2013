@@ -53,7 +53,7 @@ templates = ModuleTemplate.create(
 			name: 'Transporter',
 			file: 'transporter',
 			javascript_model: 'Transporter'
-			#k, k_tr, k_m, orig, dest, dna,	consume, direction, type
+			#k, k_tr, k_m, transported, dna, consume, direction, type
 		},
 		
 		# Template 6
@@ -169,7 +169,7 @@ parameters = ModuleParameter.create(
 		
 		# parameter 14
 		{ 
-			key: 'substrate', 
+			key: 'consume', 
 			module_template_id: templates.at(3).id 
 			#Protein
 		},
@@ -211,54 +211,47 @@ parameters = ModuleParameter.create(
 		
 		# parameter 20
 		{ 
-			key: 'orig', 
+			key: 'transported', 
 			module_template_id: templates.at(5).id 
 			#Transporter
 		},
 		
 		# parameter 21
 		{ 
-			key: 'dest', 
+			key: 'dna', 
 			module_template_id: templates.at(5).id 
 			#Transporter
 		},
 		
 		# parameter 22
 		{ 
-			key: 'dna', 
-			module_template_id: templates.at(5).id 
-			#Transporter
-		},
-		
-		# parameter 23
-		{ 
 			key: 'consume', 
 			module_template_id: templates.at(5).id 
 			#Transporter
 		},
 		
-		# parameter 24
+		# parameter 23
 		{ 
 			key: 'type', 
 			module_template_id: templates.at(5).id 
 			#Transporter
 		},
 		
-		# parameter 25
+		# parameter 24
 		{ 
 			key: 'direction', 
 			module_template_id: templates.at(5).id 
 			#Transporter
 		},
 		
-		# parameter 22
+		# parameter 25
 		{ 
-			key: 'consume', 
+			key: 'metabolites', 
 			module_template_id: templates.at(6).id 
 			#CellGrowth
 		},
 		
-		# parameter 23
+		# parameter 26
 		{ 
 			key: 'infrastructure', 
 			module_template_id: templates.at(6).id 
