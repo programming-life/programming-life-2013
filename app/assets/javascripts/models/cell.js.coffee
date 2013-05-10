@@ -331,8 +331,10 @@ class Model.Cell
 			modules.push module.serialize( false )
 			
 		metabolites = {}
-		for name, object of @_metabolites
-			metabolites[ name ] = object.serialize( false )
+		for name, packet of @_metabolites
+			for placement, object of packet
+				if object? and object isnt null
+					metabolites[ object.name ] = object.serialize( false )
 		
 		result = { 
 			parameters: parameters
@@ -418,7 +420,9 @@ class Model.Cell
 			
 		for name, object of serialized.metabolites
 			object = Model.Metabolite.deserialize( object )
-			result._metabolites[ name ] = object
+			if ( !result._metabolites[ name ]? )
+				result._metabolites[ name ] = {}
+			result._metabolites[ name ][ object.placement ] = object
 			
 		return result
 		
