@@ -11,8 +11,8 @@ describe("Module Lipid", function() {
 			expect( module.name ).toBe( "lipid" );
 		});
 		
-		it( "should have 's_int' as consume", function() {
-			expect( module.consume ).toBe( "s_int" );
+		it( "should have 's#int' as consume", function() {
+			expect( module.consume ).toMatch( ["s#int"] );
 		});
 		
 		it( "should have 1 as k (transcription value)", function() {
@@ -58,8 +58,8 @@ describe("Module Lipid", function() {
 					expect( module.name ).toBe( "lipid" );
 				});
 				
-				it( "should have 's_int' as consume", function() {
-					expect( module.consume ).toBe( "s_int" );
+				it( "should have 's#int' as consume", function() {
+					expect( module.consume ).toMatch( ["s#int"] );
 				});
 				
 				it( "should have 1 as k (transcription value)", function() {
@@ -147,7 +147,7 @@ describe("Module Lipid", function() {
 		});		
 		
 		it( "should overide the consume with that food", function() {
-			expect( module.consume ).toMatch( 'magix' );
+			expect( module.consume ).toMatch( ['magix'] );
 		});
 	});
 	
@@ -163,6 +163,8 @@ describe("Module Lipid", function() {
 		
 		describe( "with no substrates", function() {
 			
+			substrates[module.name] = 0;
+			
 			beforeEach( function() { 
 				results = module.step( 0, substrates, 0 );
 			});
@@ -176,6 +178,7 @@ describe("Module Lipid", function() {
 			
 			beforeEach( function() { 
 				substrates[module.dna] = 1;
+				substrates[module.name] = 0;
 				results = module.step( 0, substrates, 0 );
 			});
 			
@@ -187,7 +190,7 @@ describe("Module Lipid", function() {
 		describe( "with food substrate", function() {
 			
 			beforeEach( function() { 
-				substrates[module.consume] = 1;
+				substrates[module.consume[0]] = 1;
 				results = module.step( 0, substrates, 0 );
 			});
 			
@@ -200,7 +203,8 @@ describe("Module Lipid", function() {
 		
 			beforeEach( function() {
 				substrates[module.dna] = 1;
-				substrates[module.consume] = 1;
+				substrates[module.name] = 0;
+				substrates[module.consume[0]] = 1;
 			});
 			
 			describe( "with growth_rate > 0", function() {
@@ -218,7 +222,7 @@ describe("Module Lipid", function() {
 				});
 				
 				it( "should decrease food", function() {
-					expect( results[module.consume] ).toBeLessThan( 0 );
+					expect( results[module.consume[0]] ).toBeLessThan( 0 );
 				});
 				
 				it( "should have lipid = -food", function() {
@@ -232,7 +236,7 @@ describe("Module Lipid", function() {
 					});
 					
 					it( "should have lipid < -food", function() {
-						expect( results[module.name] + results[module.consume] ).toBeLessThan( 0 );
+						expect( results[module.name] + results[module.consume[0]] ).toBeLessThan( 0 );
 					});
 				});
 			});
@@ -252,7 +256,7 @@ describe("Module Lipid", function() {
 				});
 				
 				it( "should decrease food", function() {
-					expect( results[module.consume] ).toBeLessThan( 0 );
+					expect( results[module.consume[0]] ).toBeLessThan( 0 );
 				});
 				
 				it( "should have lipid = -food", function() {
@@ -266,12 +270,10 @@ describe("Module Lipid", function() {
 					});
 					
 					it( "should have lipid = -food", function() {
-						expect( results[module.name] + results[module.consume] ).toBe( 0 );
+						expect( results[module.name] + results[module.consume[0]] ).toBe( 0 );
 					});
 				});
 			});
-			
 		});
 	});
-		
 }); 
