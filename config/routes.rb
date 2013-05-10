@@ -1,5 +1,7 @@
 ProgrammingLife::Application.routes.draw do
-   
+
+  resources :report
+
   resources :module_instances
 
 
@@ -8,6 +10,7 @@ ProgrammingLife::Application.routes.draw do
 
   resources :cells
 
+  get "pdftest/test"
 
   post 'hook' => 'hook#post'
   get 'hook' => 'hook#index'

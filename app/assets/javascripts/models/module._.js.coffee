@@ -24,6 +24,7 @@ class Model.Module
 
 		for key, value of params
 		
+			value = parseFloat( value ) if _( value ).isString() and !isNaN( value )
 			# The function to create a property out of param
 			#
 			# @param key [String] the property name
@@ -154,21 +155,34 @@ class Model.Module
 		
 	# Tests if substrates are available
 	#
-	# @todo what to do when value is below 0?
+	# @todo What to do when value is below 0?
 	# @param substrates [Object] the available subs
 	# @param tests... [String] comma delimited list of strings to test
 	# @return [Boolean] true if all are available
 	#
-	_test : ( substrates, tests... ) ->
+	_test : ( compounds, tests... ) ->
 		
-		result = not _( tests ).some( 
-			( anon ) -> return not ( substrates[anon]? ) 
+		result = not _( _( tests ).flatten() ).some( 
+			( test ) -> return not ( compounds[ test ]? ) 
 		)
 		
 		unless result
-			Model.EventManager.trigger( 'notification', @, [ 'module', 'test', [ substrates, tests ] ] )	
+			Model.EventManager.trigger( 'notification', @, [ 'module', 'test', [ compounds, tests ] ] )	
 		
 		return result
+		
+	# Ensures test to be true or notifies with message
+	#
+	# @param test [Function] function in a module to run
+	# @param message [String] string to display when it fails
+	# @return [Boolean] true if test succeeded
+	#
+	_ensure : ( test, message = '' ) ->
+		
+		unless test
+			Model.EventManager.trigger( 'notification', @, [ 'module', 'ensure', [ message ] ] )	
+		
+		return test
 		
 	# Applies a change to the parameters of the module
 	#
@@ -268,7 +282,6 @@ class Model.Module
 				
 					params = []
 					for key, value of serialized_data.parameters
-						console.log key
 						params.push
 							key: key
 							value: value
@@ -276,9 +289,10 @@ class Model.Module
 					module_parameters_data =
 						module_parameters: params
 						
+					console.log module_parameters_data
 					$.ajax( @url, { data: module_parameters_data, type: 'PUT' } )
-						.done( ( data ) => 
-							console.log data 
+						.done( ( data ) =>  
+							# Updated 
 						)
 						
 						.fail( ( data ) => 
@@ -330,6 +344,17 @@ class Model.Module
 		step = null
 		eval( "step = #{serialized.step}" ) if serialized.step?
 		return new fn[ serialized.type ]( serialized.parameters, step )
+		
+	@load : ( module_id, cell, callback ) ->
+		module = new Model.Module( { id: module_id } )
+		$.get( module.url, { all: true } )
+			.done( ( data ) =>
+				result = Model.Module.deserialize( data )
+				
+				console.log result
+				cell.add result
+				callback.apply( @, result ) if callback?
+			)
 	
 		
 

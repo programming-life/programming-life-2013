@@ -16,11 +16,12 @@
 <table class="table table-hover">
 	<thead>
 		<tr>
-			<th>Id</th>
+			<th class="span1">Id</th>
+			<th class="span1">Show</th>
+			<th class="span1">Edit</th>
 			<th><i class="icon-random"></i> Based on</th>
 			<th><i class="icon-magnet"></i> Part of</th>
-			<th></th>
-			<th></th>
+			<th class="span1">Destroy</th>
 		</tr>
 	</thead>
 
@@ -31,15 +32,17 @@
 		cell = Cell.find( module_instance.cell_id )
 		%>
 		<tr>
-			<td><%= module_instance.id %></td>
+			<td class="span1"><%= module_instance.id %></td>
+			<td class="span1">
+				<%= link_to raw('<i class="icon-search"></i>'), module_instance, :class => 'btn btn-small', :title => 'Show' %> 
+			</td>
+			<td class="span1">
+				<%= link_to raw('<i class="icon-pencil"></i>'), edit_module_instance_path( module_instance ), :class => 'btn btn-small', :title => 'Edit' %> 
+			</td>
 			<td><%= link_to module_template.name, module_template  %></td>
 			<td><%= link_to cell.name, cell %></td>
-			<td class="span3">
-				<%= link_to raw('<i class="icon-search"></i> Show'), module_instance, :class => 'btn btn-small' %> 
-				<%= link_to raw('<i class="icon-pencil"></i> Edit'), edit_module_instance_path( module_instance ), :class => 'btn btn-small' %> 
-			</td>
-			<td class="span2">
-				<%= link_to raw('<i class="icon-trash"></i> Destroy'), module_instance, method: :delete, data: { confirm: 'Are you sure?' }, :class => 'btn btn-small btn-danger' %>
+			<td class="span1">
+				<%= link_to raw('<i class="icon-trash"></i>'), module_instance, method: :delete, data: { confirm: 'Are you sure?' }, :class => 'btn btn-small btn-danger', :title => 'Destroy' %>
 			</td>
 		</tr>
 		<% end %>
@@ -47,6 +50,9 @@
 </table>
 
 <footer class="row">
+	<div class="span12">
+		<%= will_paginate %>
+	</div>
 	<div class="form-actions span12">
 		<%= link_to raw('<i class=" icon-plus-sign icon-white"></i> New Module (Instance)'), new_module_instance_path, :class => 'btn btn-small btn-primary' %>
 	</div>

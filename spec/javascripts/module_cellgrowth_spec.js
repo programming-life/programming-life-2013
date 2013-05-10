@@ -11,8 +11,9 @@ describe("Module Cell Growth", function() {
 			expect( module.name ).toBe( "cell" );
 		});
 
-		it( "should have 's_int' as consume", function() {
-			expect( module.consume ).toBe( "s_int" );
+		it( "should have 's#int' as metabolites", function() {
+			expect( module.metabolites ).toBeDefined();
+			expect( module.metabolites).toMatch( ["s#int"] );
 		});
 
 		it( "should have an infrastructure", function() {
@@ -59,8 +60,9 @@ describe("Module Cell Growth", function() {
 					expect( deserialized.name ).toBe( "cell" );
 				});
 
-				it( "should have 's_int' as consume", function() {
-					expect( deserialized.consume ).toBe( "s_int" );
+				it( "should have 's#int' as metabolites", function() {
+					expect( module.metabolites ).toBeDefined();
+					expect( module.metabolites).toMatch( ["s#int"] );
 				});
 
 				it( "should have an infrastructure", function() {
