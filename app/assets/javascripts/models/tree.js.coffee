@@ -18,9 +18,8 @@ class Model.Tree
 	add: ( object, parent = @_root ) ->
 		node = new Model.Node(object, parent)
 		current = node
-		while parent isnt null
+		if parent isnt null
 			parent._branch = current
-			parent = parent._parent
 		return node
 	
 	# Find an objects location in the tree
