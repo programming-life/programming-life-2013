@@ -13,7 +13,6 @@ templates = ModuleTemplate.create(
 			name: 'Lipids',
 			file: 'lipid',
 			javascript_model: 'Lipid'
-			
 			#k, consume, dna
 		},
 		
@@ -22,7 +21,6 @@ templates = ModuleTemplate.create(
 			name: 'DNA',
 			file: 'dna',
 			javascript_model: 'DNA'
-			
 			#k, consume
 		},
 		
@@ -44,9 +42,9 @@ templates = ModuleTemplate.create(
 		
 		# Template 4
 		{
-			name: 'Substrate',
-			file: 'substrate',
-			javascript_model: 'Substrate'
+			name: 'Metabolite',
+			file: 'metabolite',
+			javascript_model: 'Metabolite'
 			#placement, supply
 		},
 		
@@ -55,7 +53,7 @@ templates = ModuleTemplate.create(
 			name: 'Transporter',
 			file: 'transporter',
 			javascript_model: 'Transporter'
-			#k, k_tr, k_m, orig, dest, dna,	consume
+			#k, k_tr, k_m, orig, dest, dna,	consume, direction, type
 		},
 		
 		# Template 6
@@ -180,14 +178,14 @@ parameters = ModuleParameter.create(
 		{ 
 			key: 'placement', 
 			module_template_id: templates.at(4).id 
-			#Substrate
+			#Metabolite
 		},
 		
 		# parameter 16
 		{ 
 			key: 'supply', 
 			module_template_id: templates.at(4).id 
-			#Substrate
+			#Metabolite
 		},
 		
 		# parameter 17
@@ -235,6 +233,20 @@ parameters = ModuleParameter.create(
 		# parameter 23
 		{ 
 			key: 'consume', 
+			module_template_id: templates.at(5).id 
+			#Transporter
+		},
+		
+		# parameter 24
+		{ 
+			key: 'type', 
+			module_template_id: templates.at(5).id 
+			#Transporter
+		},
+		
+		# parameter 25
+		{ 
+			key: 'direction', 
 			module_template_id: templates.at(5).id 
 			#Transporter
 		},
