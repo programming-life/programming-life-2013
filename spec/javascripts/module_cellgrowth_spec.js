@@ -3,6 +3,7 @@ describe("Module Cell Growth", function() {
 	describe( "When using default constructor", function() {
 		
 		var module;
+
 		beforeEach( function() {
 			module = new Model.CellGrowth();
 		});
@@ -29,29 +30,89 @@ describe("Module Cell Growth", function() {
 
 		it( "should have property mu", function() {
 			expect( module.mu ).toBeDefined();
-			expect( module.mu() ).toBe( 1 );
 		});
+
+		describe( "when there are no compounds", function() {
+
+			var compounds, result, module;
+
+			beforeEach( function() {
+				compounds = {};
+				module = new Model.CellGrowth();
+				result = module.mu( compounds );
+			});
+
+			it( "mu should return 0", function() {
+				expect( result ).toBe( 0 );
+			});
+
+			describe( "when there is infrastructure", function() {
+				
+				beforeEach( function() {
+					compounds[ module.infrastructure[0] ] = 2;
+      				compounds[ module.infrastructure[1] ] = 4;
+      				result = module.mu( compounds );
+				});
+
+				it( "should return 0", function() {
+					expect( result ).toBe( 0 );
+				});
+			});
+
+			describe( "when there are metabolites", function() {
+
+				beforeEach( function() {
+					compounds[ module.metabolites[0] ] = 2;
+					result = module.mu( compounds );
+				});
+
+				it( "should return 0", function() {
+					expect( result ).toBe( 0 );
+				});
+			});
+
+			describe( "when there is infrastructure and metabolites", function() {
+
+				beforeEach( function(){
+					compounds[ module.infrastructure[0] ] = 2;
+      				compounds[ module.infrastructure[1] ] = 4;
+      				compounds[ module.metabolites[0] ] = 2;
+					result = module.mu( compounds );
+				});
+
+				it( "should return 64", function() {
+					expect( result ).toBe( 16 );
+				});
+			});
+		});
+
 		
-		it("should be able to serialize the module", function() {
+		
+		it( "should be able to serialize the module", function() {
 			serialized = module.serialize( true )
 			expect( serialized ).toBeDefined();
 			expect( serialized.length ).toBeGreaterThan( 2 )
 		});
+
 		
-		describe("and when serialized", function() {
+		describe( "and when serialized", function() {
+
 			var serialized;
+
 			beforeEach( function() {
 				serialized = module.serialize( true )
 			});
 			
-			it("should be able to deserialize", function() {
+			it( "should be able to deserialize", function() {
 				deserialized = Model.CellGrowth.deserialize( serialized )
 				expect( deserialized ).toBeDefined();
 				expect( deserialized.constructor.name ).toBe( module.constructor.name )
 			});
 			
 			describe("and when deserialized", function() {
+
 				var deserialized;
+
 				beforeEach( function() {
 					deserialized = Model.CellGrowth.deserialize( serialized )
 				});
@@ -87,6 +148,7 @@ describe("Module Cell Growth", function() {
 	describe( "When using params in the constructor", function() {
 
 		var module;
+
 		beforeEach( function() {
 			module = new Model.CellGrowth( { a: "new", name: "override_cell" }  );
 		});
@@ -105,6 +167,7 @@ describe("Module Cell Growth", function() {
 	describe( "when using start in the constructor", function() {
 		
 		var module;
+
 		beforeEach( function() {
 			module = new Model.CellGrowth( undefined, 2 );
 		});		
@@ -115,5 +178,79 @@ describe("Module Cell Growth", function() {
 		});
 	});
 
+	describe( "when stepping", function(){
+
+		var module, result, compounds;
+
+		beforeEach( function() {
+			compounds = {};
+			module = new Model.CellGrowth();
+		});
+
+		describe( "with no compounds", function() {
+
+			beforeEach( function() {
+				result = module.step(0, compounds, 0);
+			});
+
+			it( "should not have results", function() {
+				expect( _(result).isEmpty() ).toBeTruthy();
+			});
+
+		});
+
+		describe( "with an infrastructure", function() {
+
+			beforeEach( function() {
+				compounds[ module.infrastructure[0] ] = 2;
+				compounds[ module.infrastructure[1] ] = 4;
+				result = module.step( 0, compounds, 0 );
+			});
+
+			it( "should not have results", function() {
+				expect( _(result).isEmpty() ).toBeTruthy();
+			});
+			
+		});
+
+		describe( "with metabolites", function() {
+
+			beforeEach( function(){
+				compounds[ module.metabolites[0] ] = 2;
+				result = module.step( 0, compounds, 0 );
+			});
+			
+			it( "should not have results", function() {
+				expect( _(result).isEmpty() ).toBeTruthy();
+			});
+		});
+
+		describe( "with and infrastructure and metabolites", function(){
+
+			beforeEach( function(){
+				compounds[ module.infrastructure[0] ] = 2;
+				compounds[ module.infrastructure[1] ] = 4;
+				compounds[ module.metabolites[0] ] = 2;
+				compounds[ module.name ] = 1;
+			});
+
+			describe( "with growthrate > 0", function(){
+
+				beforeEach( function(){
+					result = module.step( 0, compounds, .5 );
+				});
+
+				it( "should have results", function(){
+					expect( _(result).isEmpty() ).toBeFalsy();
+				});
+
+				it( "should have decreased population size", function() {
+					expect( result[module.name] ).toBeGreaterThan( 0 );
+				});
+				
+			});
+		});
+
+	});
 
 }); 
