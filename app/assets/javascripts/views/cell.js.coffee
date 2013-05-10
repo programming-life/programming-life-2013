@@ -5,7 +5,6 @@ class View.Cell
 		@_cell = cell
 		
 		@_container = Raphael('graphs', 800, 1000)
-		console.log(@_container)
 
 		@_views = []
 		@_drawn = []
@@ -27,8 +26,15 @@ class View.Cell
 		@_views.push new View.DummyModule( @_paper, @_cell, new Model.Protein() )
 		@_views.push new View.DummyModule( @_paper, @_cell, Model.Transporter.ext(), { direction: Model.Transporter.Outward } )
 		
+		tree = new Model.UndoTree(new Model.Node("Root", null))
+		for i in [1..9] by 3
+			tree.add("Node"+i)
+			tree.undo()
+			tree.add("Node"+(i+1))
+			tree.add("Node"+(i+2))
 		
 		@_views.push new View.Play( @_paper, @)
+		@_views.push new View.Tree( @_paper, tree)
 		
 		Model.EventManager.on( 'cell.add.module', @, @onModuleAdd )
 		Model.EventManager.on( 'cell.add.metabolite', @, @onModuleAdd )
@@ -89,7 +95,10 @@ class View.Cell
 				counters[ counter_name ] = ++counter
 				
 			if ( view instanceof View.Play )
-				placement = { x: @_x, y: @_y, @_scale }
+				placement = { x: @_x, y: @_y}
+
+			if (view instanceof View.Tree )
+				placement = {x: 300, y: 100}
 
 			view.draw( placement.x, placement.y, @_scale )
 		

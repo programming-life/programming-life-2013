@@ -1,6 +1,6 @@
 # Tree with explicit undo and redo functionality
 #
-class UndoTree extends Tree
+class Model.UndoTree extends Model.Tree
 
 	# Constructs a new undotree.
 	#
@@ -57,4 +57,4 @@ class UndoTree extends Tree
 			@_root = parent
 		return this
 			
-(exports ? this).UndoTree = UndoTree
+(exports ? this).Model.UndoTree = Model.UndoTree

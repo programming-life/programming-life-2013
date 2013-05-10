@@ -183,75 +183,89 @@ parameters = ModuleParameter.create(
 		
 		# parameter 16
 		{ 
-			key: 'supply', 
+			key: 'type', 
 			module_template_id: templates.at(4).id 
 			#Metabolite
 		},
 		
 		# parameter 17
 		{ 
-			key: 'k', 
-			module_template_id: templates.at(5).id 
-			#Transporter
+			key: 'supply', 
+			module_template_id: templates.at(4).id 
+			#Metabolite
 		},
 		
 		# parameter 18
 		{ 
-			key: 'k_tr', 
-			module_template_id: templates.at(5).id 
-			#Transporter
+			key: 'name', 
+			module_template_id: templates.at(4).id 
+			#Metabolite
 		},
 		
 		# parameter 19
 		{ 
-			key: 'k_m', 
+			key: 'k', 
 			module_template_id: templates.at(5).id 
 			#Transporter
 		},
 		
 		# parameter 20
 		{ 
-			key: 'transported', 
+			key: 'k_tr', 
 			module_template_id: templates.at(5).id 
 			#Transporter
 		},
 		
 		# parameter 21
 		{ 
-			key: 'dna', 
+			key: 'k_m', 
 			module_template_id: templates.at(5).id 
 			#Transporter
 		},
 		
 		# parameter 22
 		{ 
-			key: 'consume', 
+			key: 'transported', 
 			module_template_id: templates.at(5).id 
 			#Transporter
 		},
 		
 		# parameter 23
 		{ 
-			key: 'type', 
+			key: 'dna', 
 			module_template_id: templates.at(5).id 
 			#Transporter
 		},
 		
 		# parameter 24
 		{ 
-			key: 'direction', 
+			key: 'consume', 
 			module_template_id: templates.at(5).id 
 			#Transporter
 		},
 		
 		# parameter 25
 		{ 
+			key: 'type', 
+			module_template_id: templates.at(5).id 
+			#Transporter
+		},
+		
+		# parameter 26
+		{ 
+			key: 'direction', 
+			module_template_id: templates.at(5).id 
+			#Transporter
+		},
+		
+		# parameter 27
+		{ 
 			key: 'metabolites', 
 			module_template_id: templates.at(6).id 
 			#CellGrowth
 		},
 		
-		# parameter 26
+		# parameter 28
 		{ 
 			key: 'infrastructure', 
 			module_template_id: templates.at(6).id 

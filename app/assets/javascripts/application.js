@@ -33,6 +33,7 @@
 //= require g.dot-min
 //= require g.line-min
 //= require raphael-triangle
+//= require raphael-arrow
 //
 //= require chart
 //= require md5.min

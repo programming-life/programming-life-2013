@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130509041842) do
+ActiveRecord::Schema.define(:version => 20130510222748) do
 
   create_table "cells", :force => true do |t|
     t.string   "name"
@@ -27,6 +27,7 @@ ActiveRecord::Schema.define(:version => 20130509041842) do
     t.integer  "module_template_id"
     t.integer  "cell_id"
     t.float    "amount"
+    t.string   "name"
   end
 
   add_index "module_instances", ["id"], :name => "index_module_instances_on_id", :unique => true
@@ -45,7 +46,6 @@ ActiveRecord::Schema.define(:version => 20130509041842) do
     t.datetime "updated_at",       :null => false
     t.string   "name"
     t.text     "step"
-    t.string   "module_template"
     t.string   "file"
     t.string   "javascript_model"
   end

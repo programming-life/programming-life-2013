@@ -81,6 +81,7 @@ class View.DummyModule extends View.Module
 				@_activated = on
 				
 				@_cell.add( new Model.Protein() )
+				
 					
 	# Draws contents
 	#
@@ -138,4 +139,3 @@ class View.DummyModule extends View.Module
 		box.node.setAttribute('class', 'module-box inactive')
 		return box
 		
-(exports ? this).View.DummyModule = View.DummyModule
