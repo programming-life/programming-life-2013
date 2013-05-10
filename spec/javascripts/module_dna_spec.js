@@ -11,8 +11,8 @@ describe("Module DNA", function() {
 			expect( module.name ).toBe( "dna" );
 		});
 		
-		it( "should have 'p_int' as consume", function() {
-			expect( module.consume ).toBe( "p_int" );
+		it( "should have 'p#int' as consume", function() {
+			expect( module.consume ).toMatch( ["p#int"] );
 		});
 		
 		it( "should have 1 as k (transcription value)", function() {
@@ -54,8 +54,8 @@ describe("Module DNA", function() {
 					expect( module.name ).toBe( "dna" );
 				});
 				
-				it( "should have 'p_int' as consume", function() {
-					expect( module.consume ).toBe( "p_int" );
+				it( "should have 'p#int' as consume", function() {
+					expect( module.consume ).toMatch( [ "p#int" );
 				});
 				
 				it( "should have 1 as k (transcription value)", function() {
@@ -191,7 +191,7 @@ describe("Module DNA", function() {
 		describe( "with food substrate", function() {
 			
 			beforeEach( function() { 
-				substrates[module.consume] = 1;
+				substrates[module.consume[0]] = 1;
 				results = module.step( 0, substrates, 0 );
 			});
 			
@@ -204,7 +204,7 @@ describe("Module DNA", function() {
 		
 			beforeEach( function() {
 				substrates[module.name] = 1;
-				substrates[module.consume] = 1;
+				substrates[module.consume[0]] = 1;
 			});
 			
 			describe( "with growth_rate > 0", function() {
@@ -222,7 +222,7 @@ describe("Module DNA", function() {
 				});
 				
 				it( "should decrease food", function() {
-					expect( results[module.consume] ).toBeLessThan( 0 );
+					expect( results[module.consume[0]] ).toBeLessThan( 0 );
 				});
 				
 				it( "should have dna = -food", function() {
@@ -245,7 +245,7 @@ describe("Module DNA", function() {
 				});
 				
 				it( "should decrease food", function() {
-					expect( results[module.consume] ).toBeLessThan( 0 );
+					expect( results[module.consume[0]] ).toBeLessThan( 0 );
 				});
 			});
 			
