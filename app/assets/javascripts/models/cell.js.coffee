@@ -121,8 +121,18 @@ class Model.Cell
 	# @return [self] chainable instance
 	#
 	add: ( module ) ->
-		@_modules.push module
-		Model.EventManager.trigger( 'cell.add.module', @, [ module ] )
+	
+		if module instance of Model.Metabolite
+			if !@_metabolites[ module.name ]? 
+				@_metabolites[ module.name ] = { }
+				@_metabolites[ module.name ][ Model.Metabolite.Inside ] = undefined
+				@_metabolites[ module.name ][ Model.Metabolite.Ouside ] = undefined
+				
+			@_metabolites[ module.name ][ module.placement ] = module
+			Model.EventManager.trigger( 'cell.add.metabolite', @, [ module, module.name, module.amount, module.placement is Model.Metabolite.Inside, module.type is Model.Metabolite.Product ] )
+		else
+			@_modules.push module
+			Model.EventManager.trigger( 'cell.add.module', @, [ module ] )
 		return this
 		
 	# Add metabolite to cell
@@ -339,8 +349,7 @@ class Model.Cell
 		result = { 
 			parameters: parameters
 			type: type
-			modules: modules
-			metabolites: metabolites
+			modules: _( modules ).concat( _( metabolites ).values() )
 		}
 		
 		return JSON.stringify( result ) if to_string
@@ -410,19 +419,12 @@ class Model.Cell
 		fn = ( window || @ )["Model"]
 		
 		result = new fn[serialized.type]( undefined, undefined, serialized.parameters  )
+		
 		for module in result._modules
 			result.remove module
-		for name, object of result._metabolites
-			result.removeMetabolite name
-		
+
 		for module in serialized.modules
 			result.add Model.Module.deserialize( module )
-			
-		for name, object of serialized.metabolites
-			object = Model.Metabolite.deserialize( object )
-			if ( !result._metabolites[ name ]? )
-				result._metabolites[ name ] = {}
-			result._metabolites[ name ][ object.placement ] = object
 			
 		return result
 		
@@ -442,8 +444,6 @@ class Model.Cell
 				)
 				for module in result._modules
 					result.remove module
-				for name, object of result._metabolites
-					result.removeMetabolite name
 					
 				for module_id in data.modules
 					Model.Module.load( module_id, result )
