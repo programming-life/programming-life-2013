@@ -163,9 +163,10 @@ describe("Module Lipid", function() {
 		
 		describe( "with no substrates", function() {
 			
-			substrates[module.name] = 0;
+			
 			
 			beforeEach( function() { 
+				substrates[module.name] = 0;
 				results = module.step( 0, substrates, 0 );
 			});
 			
