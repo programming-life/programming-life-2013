@@ -90,8 +90,9 @@ describe("Module", function() {
 			});
 			
 			describe("and undoing that change", function() {
-			
+				var undone;			
 				beforeEach( function() {
+					undone = module._tree._current;
 					module.undo();
 				});
 
@@ -104,7 +105,6 @@ describe("Module", function() {
 				});
 
 				describe( "and redoing it", function() {
-					
 					beforeEach( function() {
 						module.redo();
 					});
@@ -113,8 +113,8 @@ describe("Module", function() {
 						expect( module.k ).toEqual(8);
 					});
 
-					xit( "should have updated the most recent change", function() {
-						throw 'not implemented'
+					it( "should have updated the most recent change", function() {
+						expect( module._tree._current ).toBe( undone )
 					});
 
 				});
@@ -124,12 +124,12 @@ describe("Module", function() {
 						module.k = 5;
 					});
 					
-					xit( "should have updated the most recent change", function() {
-						throw 'not implemented'
+					it( "should have updated the most recent change", function() {
+						expect( module._tree._current ).not.toBe( undone )
 					});
 
-					xit( "should have kept the old change in a different branch", function() {
-						throw 'not implemented'
+					it( "should have kept the old change in a different branch", function() {
+						expect( module._tree._current._parent._children ).toContain( undone )
 					});
 				});
 			});
