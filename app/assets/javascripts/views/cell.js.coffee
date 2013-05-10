@@ -18,7 +18,7 @@ class View.Cell
 
 		@_views.push new View.DummyModule( @_paper, @_cell, new Model.DNA() )
 		@_views.push new View.DummyModule( @_paper, @_cell, new Model.Lipid() )
-		@_views.push new View.DummyModule( @_paper, @_cell, new Model.Substrate( { placement: -1, name: 's' } ), { name: 's_ext', inside_cell: off, is_product: off, amount: 1 } )
+		@_views.push new View.DummyModule( @_paper, @_cell, new Model.Metabolite( { placement: -1, name: 's' } ), { name: 's_ext', inside_cell: off, is_product: off, amount: 1 } )
 		@_views.push new View.DummyModule( @_paper, @_cell, Model.Transporter.int(), { direction: 1 } )
 		@_views.push new View.DummyModule( @_paper, @_cell, new Model.Metabolism() )
 		@_views.push new View.DummyModule( @_paper, @_cell, new Model.Protein() )
