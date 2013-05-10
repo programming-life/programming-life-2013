@@ -232,20 +232,6 @@ describe("Cell", function() {
 			
 		});
 		
-		describe( "when visualized over 2 second" , function() {
-			var container;
-
-			beforeEach(function() {
-				container = $("<div class='container'></div>");
-				cell.visualize( 2, container );
-			});
-
-			it("the container should have as many graphs as the cell has substrates", function() {
-				expect( container.children().length ).toBe( 5 );
-			});
-
-		});
-		
 		xit( "serialized and deserilized, should retain substrates, modules, cell", function() {
 		
 		});
