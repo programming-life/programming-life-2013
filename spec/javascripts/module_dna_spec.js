@@ -55,7 +55,7 @@ describe("Module DNA", function() {
 				});
 				
 				it( "should have 'p#int' as consume", function() {
-					expect( module.consume ).toMatch( [ "p#int" );
+					expect( module.consume ).toMatch( [ "p#int" ] );
 				});
 				
 				it( "should have 1 as k (transcription value)", function() {
@@ -210,7 +210,7 @@ describe("Module DNA", function() {
 			describe( "with growth_rate > 0", function() {
 			
 				beforeEach( function() {
-					results = module.step( 0, substrates, 1 );
+					results = module.step( 0, substrates, .5 );
 				});
 				
 				it( "should have results", function() {
@@ -225,8 +225,8 @@ describe("Module DNA", function() {
 					expect( results[module.consume[0]] ).toBeLessThan( 0 );
 				});
 				
-				it( "should have dna = -food", function() {
-					expect( results[module.name] + results[module.consume] ).toBe( 0 );
+				it( "should have -food > dna (dillution)", function() {
+					expect( - results[module.consume[0]] + results[module.name]  ).toBeGreaterThan( 0 );
 				});
 			});
 			
@@ -240,12 +240,16 @@ describe("Module DNA", function() {
 					expect( _(results).isEmpty() ).toBeFalsy();
 				});
 				
-				it( "should not increase dna", function() {
-					expect( results[module.name] ).toBe( 0 );
+				it( "should increase dna", function() {
+					expect( results[module.name] ).toBeGreaterThan( 0 );
 				});
 				
 				it( "should decrease food", function() {
 					expect( results[module.consume[0]] ).toBeLessThan( 0 );
+				});
+				
+				it( "should have food = -dna (no dillution)", function() {
+					expect( results[module.consume[0]] + results[module.name]  ).toBe( 0 );
 				});
 			});
 			
