@@ -4,19 +4,19 @@ describe( "Module Substrate", function() {
 
 		var module;
 		beforeEach( function() {
-			module = new Model.Substrate();
+			module = new Model.Metabolite();
 		});
 
 		it( "should have no name", function() {
-			expect( module.name ).toBe( undefined );
+			expect( module.name ).toBe( "undefined#ext" );
 		});
 
 		it( "should be inside the cell", function() {
-			expect( module.placement ).toBeBetween( -1, 1 );
+			expect( module.placement ).toBe( Model.Metabolite.Outside );
 		});
 		
-		it( "should be inside a substrate", function() {
-			expect( module.placement ).toBeAtMost( 0 );
+		it( "should be a substrate", function() {
+			expect( module.type ).toBe( Model.Metabolite.Substrate );
 		});
 
 		it( "should have 1 substrate: name with value 1", function() {
@@ -38,7 +38,7 @@ describe( "Module Substrate", function() {
 			});
 			
 			it("should be able to deserialize", function() {
-				deserialized = Model.Substrate.deserialize( serialized )
+				deserialized = Model.Metabolite.deserialize( serialized )
 				expect( deserialized ).toBeDefined();
 				expect( deserialized.constructor.name ).toBe( module.constructor.name )
 			});
@@ -46,19 +46,19 @@ describe( "Module Substrate", function() {
 			describe("and when deserialized", function() {
 				var deserialized;
 				beforeEach( function() {
-					deserialized = Model.Substrate.deserialize( serialized )
+					deserialized = Model.Metabolite.deserialize( serialized )
 				});
 				
 				it( "should have no name", function() {
-					expect( module.name ).toBe( undefined );
+					expect( module.name ).toBe( "undefined#ext" );
 				});
 
 				it( "should be inside the cell", function() {
-					expect( module.placement ).toBeBetween( -1, 1 );
+					expect( module.placement ).toBe( Model.Metabolite.Outside );
 				});
 				
-				it( "should be inside a substrate", function() {
-					expect( module.placement ).toBeAtMost( 0 );
+				it( "should be a substrate", function() {
+					expect( module.type ).toBe( Model.Metabolite.Substrate );
 				});
 
 				it( "should have 1 substrate: name with value 1", function() {
@@ -79,7 +79,7 @@ describe( "Module Substrate", function() {
 
 		var module;
 		beforeEach( function() {
-			module = new Model.Substrate( { x: "new", name: "override_substrate" } );
+			module = new Model.Metabolite( { x: "new", name: "override_substrate" } );
 		});
 
 		it( "should have the new parameters" , function() {
@@ -88,7 +88,7 @@ describe( "Module Substrate", function() {
 		})
 
 		it( "should override default parameters", function() {
-			expect( module.name ).toBe( "override_substrate" );
+			expect( module.name ).toBe( "override_substrate#ext" );
 		});
 
 	});
@@ -97,11 +97,11 @@ describe( "Module Substrate", function() {
 
 		var module;
 		beforeEach( function() {
-			module = new Model.Substrate( undefined, undefined, "named_substrate");
+			module = new Model.Metabolite( undefined, undefined, "named_substrate");
 		});
 
 		it( "should override the default name", function() {
-			expect( module.name ).toBe( "named_substrate" );
+			expect( module.name ).toBe( "named_substrate#ext" );
 		});
 
 	});
@@ -110,11 +110,11 @@ describe( "Module Substrate", function() {
 
 		var module;
 		beforeEach( function() {
-			module = new Model.Substrate( { name: "param_substrate"}, undefined, "named_substrate" );
+			module = new Model.Metabolite( { name: "param_substrate"}, undefined, "named_substrate" );
 		});
 
 		it( "should not override parameterized name", function() {
-			expect( module.name ).toBe( "param_substrate" );
+			expect( module.name ).toBe( "param_substrate#ext" );
 		});
 	});
 
@@ -122,7 +122,7 @@ describe( "Module Substrate", function() {
 
 		var module;
 		beforeEach( function() {
-			module = new Model.Substrate( undefined, 2 );
+			module = new Model.Metabolite( undefined, 2 );
 		});
 
 		it( "should override the default value", function(){
@@ -131,57 +131,57 @@ describe( "Module Substrate", function() {
 		
 	});
 	
-	describe( "When using the inside_cell option", function() {
+	describe( "When using the placement option", function() {
 
-		describe( "and inside_cell", function() {
+		describe( "and inside cell", function() {
 			
 			var module;
 			beforeEach( function() {
-				module = new Model.Substrate( undefined, 2, undefined, true );
+				module = new Model.Metabolite( undefined, 2, undefined, Model.Metabolite.Inside );
 			});
 
 			it( "should have the correct placement", function(){
-				expect( module.placement ).toBeBetween( -1, 1 );
+				expect( module.placement ).toBe( Model.Metabolite.Inside );
 			});
 		});
 		
-		describe( "and not inside_cell", function() {
+		describe( "and outside cell", function() {
 			
 			var module;
 			beforeEach( function() {
-				module = new Model.Substrate( undefined, 2, undefined, false );
+				module = new Model.Metabolite( undefined, 2, undefined, Model.Metabolite.Outside );
 			});
 
 			it( "should have the correct placement", function(){
-				expect( module.placement ).not.toBeBetween( -1, 1 );
+				expect( module.placement ).toBe( Model.Metabolite.Outside );
 			});
 		});
 		
 	});
 	
-	describe( "When using the is_product option", function() {
+	describe( "When using the type option", function() {
 
-		describe( "and is_product", function() {
+		describe( "and is product", function() {
 			
 			var module;
 			beforeEach( function() {
-				module = new Model.Substrate( undefined, 2, undefined, undefined, true );
+				module = new Model.Metabolite( undefined, 2, undefined, undefined, Model.Metabolite.Product );
 			});
 
-			it( "should have the correct placement", function(){
-				expect( module.placement ).toBeGreaterThan( 0 );
+			it( "should have the correct type", function(){
+				expect( module.type ).toBe( Model.Metabolite.Product );
 			});
 		});
 		
-		describe( "and not is_product", function() {
+		describe( "and is substrate", function() {
 			
 			var module;
 			beforeEach( function() {
-				module = new Model.Substrate( undefined, 2, undefined, undefined, false );
+				module = new Model.Metabolite( undefined, 2, undefined, undefined, Model.Metabolite.Substrate );
 			});
 
-			it( "should have the correct placement", function(){
-				expect( module.placement ).toBeLessThan( 0 );
+			it( "should have the correct type", function(){
+				expect( module.type ).toBe( Model.Metabolite.Substrate );
 			});
 		});
 	});

@@ -227,7 +227,7 @@ class View.Module
 					
 					[ paramsText, paramsLine ] = @drawComponent( 'module', 'Information', x, substrateCircle.getBBox().y + substrateCircle.getBBox().height + 40 * scale , scale, params )
 			
-			when "Substrate"		
+			when "Metabolite"		
 			
 				params =
 					substrate: @module.name ? "..."
@@ -291,7 +291,7 @@ class View.Module
 				if big
 					params = 
 							objRect : substrateCircle.getBBox()
-							text: "name: #{@module.name}\ninitial:  #{@module.starts.name}\nk: #{@module.k}\nk_d: #{@module.k_d}\nsynth: #{@module.substrate}\n#{@module.substrate} > #{@module.name}"
+							text: "name: #{@module.name}\ninitial:  #{@module.starts.name}\nk: #{@module.k}\nk_d: #{@module.k_d}\nsynth: #{@module.consume}\n#{@module.consume} > #{@module.name}"
 							padding: padding
 						
 						[ paramsText, paramsLine ] = @drawComponent( 'module', 'Information', x, substrateCircle.getBBox().y + substrateCircle.getBBox().height + 40 * scale , scale, params )
@@ -336,7 +336,7 @@ class View.Module
 	
 					params = 
 						objRect : text.getBBox()
-						text: "initial cell:  #{@module.starts.name}\ninfrastructure: #{@module.infrastructure.join(', ')}\nsynth: #{@module.consume}\n#{@module.infrastructure.join(', ')}, #{@module.consume} > #{@module.name}"
+						text: "initial cell:  #{@module.starts.name}\ninfrastructure: #{@module.infrastructure}\nsynth: #{@module.metabolites}\n#{@module.infrastructure}, #{@module.metabolites} > #{@module.name}"
 						padding: padding
 					
 					[ paramsText, paramsLine ] = @drawComponent( 'module', 'Information', x, y, scale, params )

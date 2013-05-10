@@ -44,27 +44,27 @@ class View.DummyModule extends View.Module
 				
 				@_cell.add( new Model.Lipid() )
 				
-			when "Substrate"
+			when "Metabolite"
 				
 				#@_visible = on
 				#@_activated = off
 				@_visible = off
 				@_activated = on
 				
-				@_cell.addSubstrate( @_params.name, @_params.amount, @_params.inside_cell, @_params.is_product )
+				@_cell.addMetabolite( @_params.name, @_params.amount, @_params.supply, @_params.inside_cell, @_params.is_product )
 				
 			when "Transporter"
 					
 				@_visible = on
 				@_activated = off
 				
-				if @_params.direction is -1
+				if @_params.direction is Model.Transporter.Outward
 					@_cell.add Model.Transporter.ext()
-					@_cell.addSubstrate( 'p_int', 0, true, true )
-					@_cell.addSubstrate( 'p_ext', 0, false, true )
-				if @_params.direction is 1
+					@_cell.addProduct( 'p', 0, true )
+					@_cell.addProduct( 'p', 0, false )
+				if @_params.direction is Model.Transporter.Inward
 					@_cell.add Model.Transporter.int()
-					@_cell.addSubstrate( 's_int', 0, true, false )
+					@_cell.addSubstrate( 's', 0, 0, true )
 					#@_cell.addSubstrate( 's_ext', 0, false, false )
 			
 			when "Metabolism"
@@ -73,8 +73,8 @@ class View.DummyModule extends View.Module
 				@_activated = off
 	
 				@_cell.add new Model.Metabolism()
-				@_cell.addSubstrate( 'p_int', 0, true, true )
-				@_cell.addSubstrate( 's_int', 0, true, false )
+				@_cell.addProduct( 'p', 0, true )
+				@_cell.addSubstrate( 's', 0, 0, true )
 				
 			when "Protein"
 				@_visible = off
@@ -109,7 +109,7 @@ class View.DummyModule extends View.Module
 				text.attr
 					'font-size': 20 * scale
 				
-			when "Substrate"
+			when "Metabolite"
 			
 				text = @_paper.text( x, y, _.escape "Add #{@name}" )
 				text.attr
