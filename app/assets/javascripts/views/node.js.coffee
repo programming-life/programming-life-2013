@@ -9,7 +9,7 @@ class View.Node
 		for child in @_node._children
 			@_views.push new View.Node( child, @_paper, @ )
 	
-	# Performs the desired action on clik
+	# Performs the desired action on click
 	#
 	onClick: ( ) ->
 		console.log("Clicked " + @_node._object)
@@ -25,7 +25,7 @@ class View.Node
 		@_y = y
 		@_scale = scale
 
-		@_padding = 30 * scale
+		@_padding = 30 * @_scale
 
 		@_contents?.remove()
 		@_contents = @_paper.set()
@@ -40,7 +40,7 @@ class View.Node
 
 		unless @_parent is null
 			@_drawArrow(@_parent)
-		
+
 		@_drawViews()
 
 
@@ -84,8 +84,6 @@ class View.Node
 			@_hitBox?.remove()
 		@_hitBox = @_paper.circle(@_x, @_y, @_radius)
 		@_hitBox.node.setAttribute(	"class","node-hitbox")
-		@_hitBox.click =>
-			@onClick()
 		drag = ( dx, dy, x, y )  =>
 			@_x = x
 			@_y = y

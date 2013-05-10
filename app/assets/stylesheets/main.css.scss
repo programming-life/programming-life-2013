@@ -75,6 +75,13 @@ body {
 	stroke-width: 1px;
 }
 
+.node-hitbox {
+	fill: rgba(255, 0, 0, 0);
+	stroke: rgba(255, 0, 0, 0);
+	stroke-width: 1px;
+	opacity: 0;
+}
+
 .module-label {
 
 	tspan {

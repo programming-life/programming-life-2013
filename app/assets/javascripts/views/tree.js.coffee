@@ -4,12 +4,12 @@ class View.Tree
 	
 	# Creates a new UndoTree view
 	# 
-	# @param tree [Model.UndoTree] The tree to view
 	# @param paper [Object] Raphael paper
+	# @param tree [Model.UndoTree] The tree to view
 	#
-	constructor: ( tree, paper ) ->
-		@_tree = tree
+	constructor: ( paper, tree ) ->
 		@_paper = paper
+		@_tree = tree
 
 		@_visible = on
 
@@ -30,8 +30,8 @@ class View.Tree
 	draw: ( x, y, scale ) ->
 		console.log("Drawing undotree")
 		if @_view._x and @_view._y
-			@_x = @_view.x
-			@_y = @_view.y
+			@_x = @_view._x
+			@_y = @_view._y
 		else
 			@_x = x
 			@_y = y
