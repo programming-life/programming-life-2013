@@ -75,15 +75,14 @@
 			<td>Creation</td>
 			<td><%= @report.created_at.strftime("%a %d %B %Y at %H:%M") %></td>
 		</tr>
-		<tr>
-			<td>Updated</td>
-			<td><%= (@report.updated_at == @report.created_at ? "Never" : @report.updated_at.strftime("%a %d %B %Y at %H:%M")  ) %></td>
-		</tr>
 	</tbody>
 </table>
 
+<% unless request.format.to_sym == :pdf %>
 <footer class="row">
 	<div class="form-actions span12">
+		<%= link_to 'Create PDF', :format => :pdf %> 
 		<%= link_to 'Back', report_index_path %>
 	</div>
 </footer>
+<% end -%>

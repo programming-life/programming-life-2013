@@ -4,8 +4,6 @@ class ReportController < ApplicationController
 		@reports = Report.paginate( :page => params[:page], :per_page => 15 )
 		respond_to do |format|
 			format.html
-			format.pdf
-			format.xml
 		end
 	end
 
@@ -16,6 +14,13 @@ class ReportController < ApplicationController
 
 		respond_to do |format|
 			format.html
+			format.pdf {
+				render 	:pdf => "#{@report.created_at.strftime("%Y-%m-%d")}_report#{@report.id}_cell#{@report.cell.id}",
+						:layout => "pdf.html.erb",
+						:template => "report/show.html.erb",
+						:disable_internal_links => true,
+						:disable_external_links => true
+			}
 		end
 	end
 
