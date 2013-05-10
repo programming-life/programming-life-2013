@@ -122,14 +122,16 @@ class Model.Cell
 	#
 	add: ( module ) ->
 	
-		if module instance of Model.Metabolite
-			if !@_metabolites[ module.name ]? 
-				@_metabolites[ module.name ] = { }
-				@_metabolites[ module.name ][ Model.Metabolite.Inside ] = undefined
-				@_metabolites[ module.name ][ Model.Metabolite.Ouside ] = undefined
+		if module instanceof Model.Metabolite
+			name = _( module.name.split( '#' ) ).first()
+			console.log name
+			if !@_metabolites[ name ]? 
+				@_metabolites[ name ] = { }
+				@_metabolites[ name ][ Model.Metabolite.Inside ] = undefined
+				@_metabolites[ name ][ Model.Metabolite.Ouside ] = undefined
 				
-			@_metabolites[ module.name ][ module.placement ] = module
-			Model.EventManager.trigger( 'cell.add.metabolite', @, [ module, module.name, module.amount, module.placement is Model.Metabolite.Inside, module.type is Model.Metabolite.Product ] )
+			@_metabolites[ name ][ module.placement ] = module
+			Model.EventManager.trigger( 'cell.add.metabolite', @, [ module, name, module.amount, module.placement is Model.Metabolite.Inside, module.type is Model.Metabolite.Product ] )
 		else
 			@_modules.push module
 			Model.EventManager.trigger( 'cell.add.module', @, [ module ] )
@@ -372,6 +374,11 @@ class Model.Cell
 		
 			for module in @_modules
 				module.save @id
+				
+			for name, packet of @_metabolites
+				for placement, object of packet
+					if object? and object isnt null
+						object.save @id
 			
 					
 		# This is the create

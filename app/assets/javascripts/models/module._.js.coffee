@@ -339,7 +339,7 @@ class Model.Module
 	@deserialize : ( serialized ) ->
 		
 		serialized = JSON.parse( serialized ) if _( serialized ).isString()
-		serialized.parameters.name = serialized.name
+		serialized.parameters.name = serialized.parameters.name ? serialized.name
 		fn = ( window || @ )["Model"]
 		return new fn[ serialized.type ]( serialized.parameters ) unless serialized.type is "Module"
 		
