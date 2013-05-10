@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130506210523) do
+ActiveRecord::Schema.define(:version => 20130509041842) do
 
   create_table "cells", :force => true do |t|
     t.string   "name"
@@ -26,6 +26,7 @@ ActiveRecord::Schema.define(:version => 20130506210523) do
     t.datetime "updated_at",         :null => false
     t.integer  "module_template_id"
     t.integer  "cell_id"
+    t.float    "amount"
   end
 
   add_index "module_instances", ["id"], :name => "index_module_instances_on_id", :unique => true
@@ -40,22 +41,31 @@ ActiveRecord::Schema.define(:version => 20130506210523) do
   add_index "module_parameters", ["id"], :name => "index_module_parameters_on_id", :unique => true
 
   create_table "module_templates", :force => true do |t|
-    t.datetime "created_at",      :null => false
-    t.datetime "updated_at",      :null => false
+    t.datetime "created_at",       :null => false
+    t.datetime "updated_at",       :null => false
     t.string   "name"
     t.text     "step"
     t.string   "module_template"
     t.string   "file"
+    t.string   "javascript_model"
   end
 
   add_index "module_templates", ["id"], :name => "index_module_templates_on_id", :unique => true
 
   create_table "module_values", :force => true do |t|
-    t.string   "value"
-    t.datetime "created_at",          :null => false
-    t.datetime "updated_at",          :null => false
+    t.text     "value",               :limit => 255
+    t.datetime "created_at",                         :null => false
+    t.datetime "updated_at",                         :null => false
     t.integer  "module_parameter_id"
     t.integer  "module_instance_id"
   end
+
+  create_table "reports", :force => true do |t|
+    t.integer  "cell_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "reports", ["id"], :name => "index_reports_on_id", :unique => true
 
 end

@@ -19,6 +19,9 @@ class ModuleInstance < ActiveRecord::Base
 
 	accepts_nested_attributes_for :module_values, :allow_destroy => true 
 	
+	validates :module_template_id, :presence => true
+	validates :cell_id, :presence => true
+	
 	after_create :create_parameters
 	
 	private

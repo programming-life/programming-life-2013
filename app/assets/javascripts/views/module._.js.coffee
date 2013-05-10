@@ -1,7 +1,8 @@
 class View.Module
 	
 	# Creates a new module view
-	# 
+	#
+	# @param paper [Raphael.Paper] the raphael paper
 	# @param module [Model.Module] the module to show
 	#
 	constructor: ( paper, module ) ->
@@ -19,6 +20,8 @@ class View.Module
 		@_visible = on
 
 		Model.EventManager.on( 'module.set.property', @, @onModuleInvalidated )
+		Model.EventManager.on( 'module.set.selected', @, @onModuleSelected )
+		Model.EventManager.on( 'module.set.hovered', @, @onModuleHovered )
 		
 		Object.defineProperty( @, 'visible',
 			# @property [Function] the step function
@@ -70,17 +73,349 @@ class View.Module
 	# Runs if module is invalidated
 	# 
 	# @param module [Model.Module] the module invalidated
+	# @param params [Mixed] parameters pushed by event
 	#
 	onModuleInvalidated: ( module, params... ) =>
 		if module is @module
-			@draw( @_x, @_y, @_scale )
+			@redraw()
 
-	moduleSelected: ( event, module ) =>
-		console.log 'yolo'
-		if not @_selected and @_hovered and module isnt @module
+	# Runs if module is selected
+	# 
+	# @param module [Model.Module] the module selected/deslected
+	# @param selected [Mixed] selected state
+	#
+	onModuleSelected: ( module, selected ) =>
+		
+		# If action runs on this module
+		if module is @module 
+		
+			# State changed
+			if selected isnt @_selected
+				@_selected = selected
+				@redraw()
+			
+		# Deselect if was selected 
+		else if selected is @_selected is true
 			@_selected = false
-			@draw(@_x, @_y, @_scale)
+			@redraw()
 
+	# Runs if module is hovered
+	# 
+	# @param module [Model.Module] the module hovered/dehovered
+	# @param selected [Mixed] hovered state
+	#
+	onModuleHovered: ( module, hovered ) =>
+		
+		if module is @module 
+		
+			if hovered isnt @_hovered
+				@_hovered = hovered
+				@redraw()
+
+		else if hovered is @_hovered is true
+			@_hovered = false
+			@redraw()	
+
+	# Clears the module view
+	#
+	clear: () ->
+		@_view?.remove()
+
+	# Redraws this view iff it has been drawn before
+	#
+	redraw: ( ) ->
+		if @_x and @_y and @_scale
+			@draw(@_x, @_y, @_scale)
+			
+	# Draws this view and thus the model
+	#
+	# @param x [Integer] the x position
+	# @param y [Integer] the y position
+	# @param scale [Integer] the scale
+	#
+	draw: ( x, y, scale ) ->
+		# Clear all existing content
+		@clear()
+
+		# Store x, y, and scale values for further redraws
+		@_x = x
+		@_y = y
+		@_scale = scale
+		@_color = @hashColor()
+
+		unless @_visible
+			return
+		
+		# If we're either hovered or selected, we will display a bigger version of the view
+		big = @_selected || @_hovered
+		padding = 15 * scale
+
+		# Start a set for contents
+		contents = @drawContents( x, y, scale, padding, big )
+
+		# Start a new set for the entire view
+		@_paper.setStart()
+
+		# Draw box
+		box = @drawBox(contents, scale)
+		box.insertBefore(contents)
+
+		# Draw shadow
+		if @_selected
+			closeButton = @drawCloseButton( box, scale )
+			closeButton?.click =>
+				Model.EventManager.trigger('module.set.selected', @module, [ false ])
+			shadow = @drawShadow(box, scale)
+
+		# Draw hitbox
+		hitbox = @drawHitbox(box, scale)
+		hitbox.click =>
+			Model.EventManager.trigger('module.set.selected', @module, [ true ])
+
+		if @_hovered
+			hitbox.mouseout =>			
+				Model.EventManager.trigger('module.set.hovered', @module, [ false ])		
+		else 
+			hitbox.mouseover =>
+				Model.EventManager.trigger('module.set.hovered', @module, [ true ])
+
+		@_view = @_paper.setFinish()
+		@_view.push(contents)
+
+	# Draws contents
+	#
+	# @param x [Integer] x position
+	# @param y [Integer] y position
+	# @param scale [Integer] box scale
+	# @param big [Boolean] box is selected or hovered
+	# @return [Raphael] the contents
+	#
+	drawContents: ( x, y, scale, padding, big ) ->
+	
+		@_paper.setStart()		
+		switch @type
+		
+			when 'Transporter'
+			
+				[ arrow ] = @drawComponent( 'transporter', 'ProcessArrow', x, y, scale, { } )
+				
+				params =
+					substrate: @module.orig ? "..."
+					showText: off
+				
+				[ substrateCircle ] = @drawComponent( 'transporter', 'SubstrateCircle', x, y, scale, params )
+					
+				if big
+					params = 
+						objRect : arrow.getBBox()
+						title: _.escape @type
+						padding: padding
+					
+					[ titleText, titleLine ] = @drawComponent( 'module', 'ModuleTitle', x, y, scale, params )
+					
+					params = 
+						objRect : arrow.getBBox()
+						title: _.escape @type
+						padding: padding
+					
+					[ titleText, titleLine ] = @drawComponent( 'module', 'ModuleTitle', x, y, scale, params )
+					
+					params = 
+						objRect : arrow.getBBox()
+						text: "name: #{@module.name}\ninitial:  #{@module.starts.name}\nk: #{@module.k}\nk_tr: #{@module.k_tr}\nk_m: #{@module.k_m}\nsynth: #{@module.consume}\n#{@module.orig} > #{@module.dest}"
+						padding: padding
+					
+					[ paramsText, paramsLine ] = @drawComponent( 'module', 'Information', x, substrateCircle.getBBox().y + substrateCircle.getBBox().height + 40 * scale , scale, params )
+			
+			when "Metabolite"		
+			
+				params =
+					substrate: @module.name ? "..."
+					showText: on
+					
+				[ substrateCircle, substrateText ] = @drawComponent( 
+					'substrate', 
+					'SubstrateCircle', 
+					x, y, scale, params )
+					
+				if big
+	
+					params = 
+						objRect : substrateCircle.getBBox()
+						text: "name: #{@module.name}\ninitial:  #{@module.starts.name}"
+						padding: padding
+					
+					[ paramsText, paramsLine ] = @drawComponent( 'module', 'Information', x, y, scale, params )
+				
+
+			when "Metabolism"
+			
+				[ arrow ] = @drawComponent( 'transporter', 'ProcessArrow', x, y, scale, { } )
+				
+				params =
+					orig: @module.orig ? "..."
+					dest: @module.dest ? "..."
+					showText: off
+				
+				[ enzymCircleOrig, enzymCircleDest ] = @drawComponent( 'enzym', 'EnzymCircle', x, y, scale, params )
+					
+				if big
+								
+					params = 
+						objRect : arrow.getBBox()
+						title: _.escape @type
+						padding: padding
+					
+					[ titleText, titleLine ] = @drawComponent( 'module', 'ModuleTitle', x, y, scale, params )
+					
+					params = 
+						objRect : arrow.getBBox()
+						text: "name: #{@module.name}\ninitial:  #{@module.starts.name}\nk: #{@module.k}\nk_m: #{@module.k_m}\nk_d: #{@module.k_d}\nv: #{@module.v}\n#{@module.orig} > #{@module.dest}"
+						padding: padding
+					
+					[ paramsText, paramsLine ] = @drawComponent( 'module', 'Information', x, enzymCircleOrig.getBBox().y + enzymCircleOrig.getBBox().height + 40 * scale , scale, params )
+				
+			when "Protein"	
+			
+				params =
+					substrate: @module.name ? "..."
+					showText: on
+					useFullName : on
+					r: 45
+					
+				[ substrateCircle, substrateText ] = @drawComponent( 
+					'protein', 
+					'SubstrateCircle', 
+					x, y, scale, params )
+					
+				if big
+					params = 
+							objRect : substrateCircle.getBBox()
+							text: "name: #{@module.name}\ninitial:  #{@module.starts.name}\nk: #{@module.k}\nk_d: #{@module.k_d}\nsynth: #{@module.consume}\n#{@module.consume} > #{@module.name}"
+							padding: padding
+						
+						[ paramsText, paramsLine ] = @drawComponent( 'module', 'Information', x, substrateCircle.getBBox().y + substrateCircle.getBBox().height + 40 * scale , scale, params )
+					
+			when "DNA"
+						
+				text = @_paper.text(x, y, _.escape @type)
+				text.attr
+					'font-size': 20 * scale
+				
+				if big
+	
+					params = 
+						objRect : text.getBBox()
+						text: "initial:  #{@module.starts.name}\nk: #{@module.k}\nsynth: #{@module.consume}\n#{@module.consume} > #{@module.name}"
+						padding: padding
+					
+					[ paramsText, paramsLine ] = @drawComponent( 'module', 'Information', x, y, scale, params )
+					
+			when "Lipid"
+						
+				text = @_paper.text(x, y, _.escape @type)
+				text.attr
+					'font-size': 20 * scale
+				
+				if big
+	
+					params = 
+						objRect : text.getBBox()
+						text: "initial:  #{@module.starts.name}\nk: #{@module.k}\nsynth: #{@module.consume}\n#{@module.consume} > #{@module.name}"
+						padding: padding
+					
+					[ paramsText, paramsLine ] = @drawComponent( 'module', 'Information', x, y, scale, params )
+					
+			when "CellGrowth"
+						
+				text = @_paper.text(x, y, _.escape @type)
+				text.attr
+					'font-size': 20 * scale
+				
+				if big
+	
+					params = 
+						objRect : text.getBBox()
+						text: "initial cell:  #{@module.starts.name}\ninfrastructure: #{@module.infrastructure}\nsynth: #{@module.metabolites}\n#{@module.infrastructure}, #{@module.metabolites} > #{@module.name}"
+						padding: padding
+					
+					[ paramsText, paramsLine ] = @drawComponent( 'module', 'Information', x, y, scale, params )
+					
+			else
+				text = @_paper.text(x, y, _.escape @type)
+				text.attr
+					'font-size': 20 * scale
+
+		return @_paper.setFinish()
+
+	# Draws this view bounding box
+	#
+	# @return [Raphael] the contents
+	#
+	drawBox : ( elem, scale ) ->
+		rect = elem.getBBox()
+		padding = 15 * scale
+		box = @_paper.rect(rect.x - padding, rect.y - padding, rect.width + 2 * padding, rect.height + 2 * padding)
+		
+		classname = 'module-box'
+		classname += ' hovered' if @_hovered
+		classname += ' selected' if @_selected
+		box.node.setAttribute( 'class', classname )
+		box.attr
+			r: 10 * scale
+
+		return box
+
+	# Draws this view close buttons
+	#
+	# @param elem [Raphael] element to draw for
+	# @param scale [Integer] the scale
+	# @return [Raphael] the contents
+	#
+	drawCloseButton : ( elem, scale ) ->
+		rect = elem.getBBox()
+
+		closeButton = @_paper.set()
+
+		circle = @_paper.circle( rect.x + rect.width, rect.y, 15 * scale)
+		circle.node.setAttribute('class', 'module-close')
+			
+		text = @_paper.text( rect.x + rect.width, rect.y, 'x')
+		text.attr
+			'font-size': 20 * scale
+
+		hitbox = @_paper.circle( rect.x + rect.width, rect.y, 15 * scale )
+		hitbox.node.setAttribute('class', 'module-hitbox')		
+		closeButton.push( circle, text, hitbox )
+		
+		return closeButton
+
+	# Draws this view shadow
+	#
+	# @param elem [Raphael] element to draw for
+	# @param scale [Integer] the scale
+	# @return [Raphael] the contents
+	#
+	drawShadow : ( elem, scale ) ->
+		shadow = elem.glow
+			width: 35
+			opacity: .125
+		shadow.scale(.8, .8)
+
+		return shadow
+
+	# Draws this view hitbox
+	#
+	# @param elem [Raphael] element to draw for
+	# @param scale [Integer] the scale
+	# @return [Raphael] the contents
+	#
+	drawHitbox : ( elem, scale ) ->
+		rect = elem.getBBox()
+		hitbox = @_paper.rect(rect.x, rect.y, rect.width, rect.height)
+		hitbox.node.setAttribute('class', 'module-hitbox')	
+
+		return hitbox
 
 	# Draw a component
 	#
@@ -193,260 +528,7 @@ class View.Module
 				
 				return [ text, line ]
 		
-		return []
-
-	# Clears the module view
-	#
-	clear: () ->
-		@_contents?.remove()
-		@_box?.remove()
-		@_close?.remove()
-		@_closeText?.remove()
-		@_shadow?.remove()
-		@_hitBox?.remove()
-		console.log 'cleared' 
-			
-	# Draws this view and thus the model
-	#
-	# @param x [Integer] the x position
-	# @param y [Integer] the y position
-	# @param scale [Integer] the scale
-	#
-	draw: ( x, y, scale ) ->
-		big = @_selected || @_hovered
-
-
-		@_x = x
-		@_y = y
-		@_scale = scale
-		@_color = @hashColor()
-
-		padding = 8 * scale
-
-		if big
-			padding = 20 * scale
-
-		@_contents?.remove()
-		@_paper.setStart()
-		
-		switch @type
-		
-			when 'Transporter'
-			
-				[ arrow ] = @drawComponent( 'transporter', 'ProcessArrow', x, y, scale, { } )
-				
-				params =
-					substrate: @module.orig ? "..."
-					showText: off
-				
-				[ substrateCircle ] = @drawComponent( 'transporter', 'SubstrateCircle', x, y, scale, params )
-					
-				if big
-					params = 
-						objRect : arrow.getBBox()
-						title: _.escape @type
-						padding: padding
-					
-					[ titleText, titleLine ] = @drawComponent( 'module', 'ModuleTitle', x, y, scale, params )
-					
-					params = 
-						objRect : arrow.getBBox()
-						title: _.escape @type
-						padding: padding
-					
-					[ titleText, titleLine ] = @drawComponent( 'module', 'ModuleTitle', x, y, scale, params )
-					
-					params = 
-						objRect : arrow.getBBox()
-						text: "name: #{@module.name}\ninitial:  #{@module.starts.name}\nk: #{@module.k}\nk_tr: #{@module.k_tr}\nk_m: #{@module.k_m}\nsynth: #{@module.consume}\n#{@module.orig} > #{@module.dest}"
-						padding: padding
-					
-					[ paramsText, paramsLine ] = @drawComponent( 'module', 'Information', x, substrateCircle.getBBox().y + substrateCircle.getBBox().height + 40 * scale , scale, params )
-			
-			when "Substrate"		
-			
-				params =
-					substrate: @module.name ? "..."
-					showText: on
-					
-				[ substrateCircle, substrateText ] = @drawComponent( 
-					'substrate', 
-					'SubstrateCircle', 
-					x, y, scale, params )
-					
-				if big
-	
-					params = 
-						objRect : substrateCircle.getBBox()
-						text: "name: #{@module.name}\ninitial:  #{@module.starts.name}"
-						padding: padding
-					
-					[ paramsText, paramsLine ] = @drawComponent( 'module', 'Information', x, y, scale, params )
-				
-
-			when "Metabolism"
-			
-				[ arrow ] = @drawComponent( 'transporter', 'ProcessArrow', x, y, scale, { } )
-				
-				params =
-					orig: @module.orig ? "..."
-					dest: @module.dest ? "..."
-					showText: off
-				
-				[ enzymCircleOrig, enzymCircleDest ] = @drawComponent( 'enzym', 'EnzymCircle', x, y, scale, params )
-					
-				if big
-								
-					params = 
-						objRect : arrow.getBBox()
-						title: _.escape @type
-						padding: padding
-					
-					[ titleText, titleLine ] = @drawComponent( 'module', 'ModuleTitle', x, y, scale, params )
-					
-					params = 
-						objRect : arrow.getBBox()
-						text: "name: #{@module.name}\ninitial:  #{@module.starts.name}\nk: #{@module.k}\nk_m: #{@module.k_m}\nk_d: #{@module.k_d}\nv: #{@module.v}\n#{@module.orig} > #{@module.dest}"
-						padding: padding
-					
-					[ paramsText, paramsLine ] = @drawComponent( 'module', 'Information', x, enzymCircleOrig.getBBox().y + enzymCircleOrig.getBBox().height + 40 * scale , scale, params )
-				
-			when "Protein"	
-			
-				params =
-					substrate: @module.name ? "..."
-					showText: on
-					useFullName : on
-					r: 45
-					
-				[ substrateCircle, substrateText ] = @drawComponent( 
-					'protein', 
-					'SubstrateCircle', 
-					x, y, scale, params )
-					
-				if big
-					params = 
-							objRect : substrateCircle.getBBox()
-							text: "name: #{@module.name}\ninitial:  #{@module.starts.name}\nk: #{@module.k}\nk_d: #{@module.k_d}\nsynth: #{@module.substrate}\n#{@module.substrate} > #{@module.name}"
-							padding: padding
-						
-						[ paramsText, paramsLine ] = @drawComponent( 'module', 'Information', x, substrateCircle.getBBox().y + substrateCircle.getBBox().height + 40 * scale , scale, params )
-					
-			when "DNA"
-						
-				text = @_paper.text(x, y, _.escape @type)
-				text.attr
-					'font-size': 20 * scale
-				
-				if big
-	
-					params = 
-						objRect : text.getBBox()
-						text: "initial:  #{@module.starts.name}\nk: #{@module.k}\nsynth: #{@module.consume}\n#{@module.consume} > #{@module.name}"
-						padding: padding
-					
-					[ paramsText, paramsLine ] = @drawComponent( 'module', 'Information', x, y, scale, params )
-					
-			when "Lipid"
-						
-				text = @_paper.text(x, y, _.escape @type)
-				text.attr
-					'font-size': 20 * scale
-				
-				if big
-	
-					params = 
-						objRect : text.getBBox()
-						text: "initial:  #{@module.starts.name}\nk: #{@module.k}\nsynth: #{@module.consume}\n#{@module.consume} > #{@module.name}"
-						padding: padding
-					
-					[ paramsText, paramsLine ] = @drawComponent( 'module', 'Information', x, y, scale, params )
-					
-			when "CellGrowth"
-						
-				text = @_paper.text(x, y, _.escape @type)
-				text.attr
-					'font-size': 20 * scale
-				
-				if big
-	
-					params = 
-						objRect : text.getBBox()
-						text: "initial cell:  #{@module.starts.name}\ninfrastructure: #{@module.infrastructure.join(', ')}\nsynth: #{@module.consume}\n#{@module.infrastructure.join(', ')}, #{@module.consume} > #{@module.name}"
-						padding: padding
-					
-					[ paramsText, paramsLine ] = @drawComponent( 'module', 'Information', x, y, scale, params )
-					
-			else
-				text = @_paper.text(x, y, _.escape @type)
-				text.attr
-					'font-size': 20 * scale
-
-		@_contents = @_paper.setFinish()
-
-		# Draw a box around all contents
-		@_box?.remove()
-		if @_contents?.length > 0
-			rect = @_contents.getBBox()
-			if rect
-				@_box = @_paper.rect(rect.x - padding, rect.y - padding, rect.width + 2 * padding, rect.height + 2 * padding)
-				@_box.node.setAttribute('class', 'module-box')
-				@_box.attr
-					r: 10 * scale
-				@_box.insertBefore(@_contents)
-
-		# Draw close button in the top right corner
-		@_close?.remove()
-		@_closeText?.remove()
-		
-		if @_selected
-			rect = @_box?.getBBox()
-			if rect
-						
-				@_close = @_paper.circle(rect.x + rect.width, rect.y, 15 * scale)
-				@_close.node.setAttribute('class', 'module-close')
-				@_close.click =>
-					@_selected = false
-					@draw(@_x, @_y, @_scale)
-					
-				@_closeText = @_paper.text(rect.x + rect.width, rect.y, 'x')
-				@_closeText.attr
-					'font-size': 20 * scale
-				@_closeText.click =>
-					@_selected = false
-					@draw(@_x, @_y, @_scale)
-					
-				#@_close.insertBefore(@_contents)
-
-		# Draw shadow around module view
-		@_shadow?.remove()
-		@_shadow = @_box?.glow
-			width: 35
-			opacity: .125
-		@_shadow?.scale(.8, .8)
-
-		# Draw hitbox in front of module view to detect mouseclicks
-		@_hitBox?.remove()
-		if not @_selected
-			rect = @_box?.getBBox()
-			if rect
-				@_hitBox = @_paper.rect(rect.x, rect.y, rect.width, rect.height)
-				@_hitBox.node.setAttribute('class', 'module-hitbox')
-				@_hitBox.insertAfter(@_contents)
-
-				if @_hovered
-					@_hitBox.mouseout =>
-						@_hovered = false
-						@draw(@_x, @_y, @_scale)
-				else
-					@_hitBox.mouseover =>
-						$(document).trigger('moduleSelected', @module)
-						@_hovered = true
-						@draw(@_x, @_y, @_scale)
-
-				@_hitBox.click =>
-					$(document).trigger('moduleSelected', @module)
-					@_selected = true
-					@draw(@_x, @_y, @_scale)				
+		return []			
 
 (exports ? this).View.Module = View.Module
+

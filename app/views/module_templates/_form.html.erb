@@ -1,7 +1,7 @@
 <%= nested_form_for(@module_template, :html => {:class => "form-horizontal"} ) do |f| %>
 	<% if @module_template.errors.any? %>
-	<div id="error_explanation">
-		<h2><%= pluralize(@module_template.errors.count, "error") %> prohibited this Module (Template) from being saved:</h2>
+	<div class="alert alert-block alert-error">
+		<h2><%= pluralize(@module_template.errors.count, "error") %></h2>
 
 		<ul>
 			<% @module_template.errors.full_messages.each do |msg| %>
@@ -15,7 +15,7 @@
 		<%= f.label :id, :class => "control-label" %>
 		<div class="controls">
 			<div>
-				<%= (@module_template.new_record? ? "new unique id" : @module_template.id) %>
+				<%= (@module_template.new_record? ? '<span class="label label-info">new unique id</span>'.html_safe : @module_template.id) %>
 			</div>
 		</div>
 	</div>
@@ -31,6 +31,13 @@
 		<%= f.label :file, :class => "control-label" %>
 		<div class="controls">
 			<%= f.text_field :file %>
+		</div>
+	</div>
+	
+	<div class="control-group">
+		<%= f.label :javascript_model, :class => "control-label" %>
+		<div class="controls">
+			<%= f.text_field :javascript_model %>
 		</div>
 	</div>
 	

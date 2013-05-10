@@ -113,7 +113,7 @@
       <table class='box'>
         <tr>
           <td>Defined in:</td>
-          <td>app&#47;assets&#47;javascripts&#47;views&#47;view.main.js.coffee</td>
+          <td>app&#47;assets&#47;javascripts&#47;views&#47;main.js.coffee</td>
         </tr>
       </table>
       <h2>Instance Method Summary</h2>
@@ -147,28 +147,7 @@
       </a>
     </span>
     <span class='desc'>
-      Draws the cell
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#moduleInit-instance'>
-        - (void) <strong>moduleInit</strong>(event, module)
-      </a>
-    </span>
-    <span class='bound note title'>Bound</span>
-    <span class='desc'>
-      On module initialization add it to the cell
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#getLocationForModule-instance'>
-        - (void) <strong>getLocationForModule</strong>(module, params)
-      </a>
-    </span>
-    <span class='desc'>
-      Returns the location for a module @returns [Object] the size as an object with x, y
+      Draws the main view
     </span>
   </li>
 </ul>
@@ -179,6 +158,10 @@
       - (void) <strong>constructor</strong>()
     </p>
     <div class='docstring'>
+  <div class='note todo'>
+    <strong>TODO:</strong>
+    dummy module inactivate if already in cell
+  </div>
   <p>Creates a new Main view</p>
 </div>
 <div class='tags'>
@@ -203,67 +186,16 @@
       - (void) <strong>draw</strong>()
     </p>
     <div class='docstring'>
-  <p>Draws the cell</p>
+  <p>Draws the main view</p>
 </div>
 <div class='tags'>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='moduleInit-instance'>
-      - (void) <strong>moduleInit</strong>(event, module)
-      (bound)
-    </p>
-    <div class='docstring'>
-  <p>On module initialization add it to the cell</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>event</span>
-      <span class='type'>
-        (<tt>Object</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>event raised</span>
-    </li>
-    <li>
-      <span class='name'>module</span>
-      <span class='type'>
-        (<tt><a href='../../classes/Model/Module.html'>Model.Module</a></tt>)
-      </span>
-      &mdash;
-      <span class='desc'>module added</span>
-    </li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='getLocationForModule-instance'>
-      - (void) <strong>getLocationForModule</strong>(module, params)
-    </p>
-    <div class='docstring'>
-  <p>Returns the location for a module</p><p>@returns [Object] the size as an object with x, y</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>module</span>
-      <span class='type'>
-        (<tt><a href='../../classes/Model/Module.html'>Model.Module</a></tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the module to get the location for</span>
-    </li>
-  </ul>
 </div>
   </div>
 </div>
     </div>
     <div id='footer'>
   Generated on
-  Fri May 03 2013 22:38:25 GMT+0200 (W. Europe Daylight Time)
+  Fri May 10 2013 08:40:59 GMT+0200 (W. Europe Daylight Time)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

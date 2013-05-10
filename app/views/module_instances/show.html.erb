@@ -1,6 +1,8 @@
 <header class="row">
 	<h1 class="span12">Module (Instance) #<%= @module_instance.id %></h1>
-	<p class="span12" id="notice"><%= notice %></p>
+	<% if (notice.present?) %>
+		<p class="span12 alert alert-success" id="notice"><%= notice %></p>
+	<% end %>
 </header>
 
 <table class="table row">

@@ -1,7 +1,7 @@
 <%= nested_form_for(@module_instance, :html => {:class => "form-horizontal"} ) do |f| %>
 	<% if @module_instance.errors.any? %>
-	<div id="error_explanation">
-		<h2><%= pluralize(@module_instance.errors.count, "error") %> prohibited this Module (Instance) from being saved:</h2>
+	<div class="alert alert-block alert-error">
+		<h2><%= pluralize(@module_instance.errors.count, "error") %></h2>
 
 		<ul>
 			<% @module_instance.errors.full_messages.each do |msg| %>
@@ -15,7 +15,7 @@
 		<%= f.label :id, :class => "control-label" %>
 		<div class="controls">
 			<div>
-				<%= (@module_instance.new_record? ? "new unique id" : @module_instance.id) %>
+				<%= (@module_instance.new_record? ? '<span class="label label-info">new unique id</span>'.html_safe : @module_instance.id) %>
 			</div>
 		</div>
 	</div>

@@ -113,15 +113,19 @@
       <table class='box'>
         <tr>
           <td>Defined in:</td>
-          <td>app&#47;assets&#47;javascripts&#47;views&#47;view.module.js.coffee</td>
+          <td>app&#47;assets&#47;javascripts&#47;views&#47;module._.js.coffee</td>
         </tr>
       </table>
+      <h2>Direct Known Subclasses</h2>
+      <p class='children'>
+        <a href='../../classes/View/DummyModule.html'>View.DummyModule</a>
+      </p>
       <h2>Instance Method Summary</h2>
       <ul class='summary'>
   <li>
     <span class='signature'>
       <a href='#constructor-instance'>
-        - (void) <strong>constructor</strong>(module)
+        - (void) <strong>constructor</strong>(paper, module)
       </a>
     </span>
     <span class='constructor note title'>Constructor</span>
@@ -161,8 +165,8 @@
   </li>
   <li>
     <span class='signature'>
-      <a href='#moduleInvalidated-instance'>
-        - (void) <strong>moduleInvalidated</strong>(event, module)
+      <a href='#onModuleInvalidated-instance'>
+        - (void) <strong>onModuleInvalidated</strong>(module, params...)
       </a>
     </span>
     <span class='bound note title'>Bound</span>
@@ -172,12 +176,44 @@
   </li>
   <li>
     <span class='signature'>
-      <a href='#drawComponent-instance'>
-        - (void) <strong>drawComponent</strong>(module, component, x, y, scale, params = {})
+      <a href='#onModuleSelected-instance'>
+        - (void) <strong>onModuleSelected</strong>(module, selected)
+      </a>
+    </span>
+    <span class='bound note title'>Bound</span>
+    <span class='desc'>
+      Runs if module is selected
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#onModuleHovered-instance'>
+        - (void) <strong>onModuleHovered</strong>(module, hovered)
+      </a>
+    </span>
+    <span class='bound note title'>Bound</span>
+    <span class='desc'>
+      Runs if module is hovered
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#clear-instance'>
+        - (void) <strong>clear</strong>()
       </a>
     </span>
     <span class='desc'>
-      Draw a component @returns [Array<Object>] The drawn components
+      Clears the module view
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#redraw-instance'>
+        - (void) <strong>redraw</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Redraws this view iff it has been drawn before
     </span>
   </li>
   <li>
@@ -190,12 +226,72 @@
       Draws this view and thus the model
     </span>
   </li>
+  <li>
+    <span class='signature'>
+      <a href='#drawContents-instance'>
+        - (Raphael) <strong>drawContents</strong>(x, y, scale, padding, big)
+      </a>
+    </span>
+    <span class='desc'>
+      Draws contents
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#drawBox-instance'>
+        - (Raphael) <strong>drawBox</strong>(elem, scale)
+      </a>
+    </span>
+    <span class='desc'>
+      Draws this view bounding box
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#drawCloseButton-instance'>
+        - (Raphael) <strong>drawCloseButton</strong>(elem, scale)
+      </a>
+    </span>
+    <span class='desc'>
+      Draws this view close buttons
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#drawShadow-instance'>
+        - (Raphael) <strong>drawShadow</strong>(elem, scale)
+      </a>
+    </span>
+    <span class='desc'>
+      Draws this view shadow
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#drawHitbox-instance'>
+        - (Raphael) <strong>drawHitbox</strong>(elem, scale)
+      </a>
+    </span>
+    <span class='desc'>
+      Draws this view hitbox
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#drawComponent-instance'>
+        - (void) <strong>drawComponent</strong>(module, component, x, y, scale, params = {})
+      </a>
+    </span>
+    <span class='desc'>
+      Draw a component @returns [Array<Object>] The drawn components
+    </span>
+  </li>
 </ul>
       <h2>Constructor Details</h2>
       <div class='methods'>
   <div class='method_details'>
     <p class='signature' id='constructor-instance'>
-      - (void) <strong>constructor</strong>(module)
+      - (void) <strong>constructor</strong>(paper, module)
     </p>
     <div class='docstring'>
   <p>Creates a new module view</p>
@@ -203,6 +299,14 @@
 <div class='tags'>
   <h3>Parameters:</h3>
   <ul class='param'>
+    <li>
+      <span class='name'>paper</span>
+      <span class='type'>
+        (<tt>Raphael.Paper</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the raphael paper</span>
+    </li>
     <li>
       <span class='name'>module</span>
       <span class='type'>
@@ -297,8 +401,8 @@
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='moduleInvalidated-instance'>
-      - (void) <strong>moduleInvalidated</strong>(event, module)
+    <p class='signature' id='onModuleInvalidated-instance'>
+      - (void) <strong>onModuleInvalidated</strong>(module, params...)
       (bound)
     </p>
     <div class='docstring'>
@@ -308,20 +412,324 @@
   <h3>Parameters:</h3>
   <ul class='param'>
     <li>
-      <span class='name'>event</span>
-      <span class='type'>
-        (<tt>Object</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the event raised</span>
-    </li>
-    <li>
       <span class='name'>module</span>
       <span class='type'>
         (<tt><a href='../../classes/Model/Module.html'>Model.Module</a></tt>)
       </span>
       &mdash;
       <span class='desc'>the module invalidated</span>
+    </li>
+    <li>
+      <span class='name'>params</span>
+      <span class='type'>
+        (<tt>Mixed</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>parameters pushed by event</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='onModuleSelected-instance'>
+      - (void) <strong>onModuleSelected</strong>(module, selected)
+      (bound)
+    </p>
+    <div class='docstring'>
+  <p>Runs if module is selected</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>module</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Model/Module.html'>Model.Module</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the module selected/deslected</span>
+    </li>
+    <li>
+      <span class='name'>selected</span>
+      <span class='type'>
+        (<tt>Mixed</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>selected state</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='onModuleHovered-instance'>
+      - (void) <strong>onModuleHovered</strong>(module, hovered)
+      (bound)
+    </p>
+    <div class='docstring'>
+  <p>Runs if module is hovered</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>module</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Model/Module.html'>Model.Module</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the module hovered/dehovered</span>
+    </li>
+    <li>
+      <span class='name'>selected</span>
+      <span class='type'>
+        (<tt>Mixed</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>hovered state</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='clear-instance'>
+      - (void) <strong>clear</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Clears the module view</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='redraw-instance'>
+      - (void) <strong>redraw</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Redraws this view iff it has been drawn before</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='draw-instance'>
+      - (void) <strong>draw</strong>(x, y, scale)
+    </p>
+    <div class='docstring'>
+  <p>Draws this view and thus the model</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>x</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the x position</span>
+    </li>
+    <li>
+      <span class='name'>y</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the y position</span>
+    </li>
+    <li>
+      <span class='name'>scale</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the scale</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='drawContents-instance'>
+      - (Raphael) <strong>drawContents</strong>(x, y, scale, padding, big)
+    </p>
+    <div class='docstring'>
+  <p>Draws contents</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>x</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>x position</span>
+    </li>
+    <li>
+      <span class='name'>y</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>y position</span>
+    </li>
+    <li>
+      <span class='name'>scale</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>box scale</span>
+    </li>
+    <li>
+      <span class='name'>big</span>
+      <span class='type'>
+        (<tt>Boolean</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>box is selected or hovered</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Raphael</tt>)
+      &mdash;
+      <span class='desc'>the contents</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='drawBox-instance'>
+      - (Raphael) <strong>drawBox</strong>(elem, scale)
+    </p>
+    <div class='docstring'>
+  <p>Draws this view bounding box</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Raphael</tt>)
+      &mdash;
+      <span class='desc'>the contents</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='drawCloseButton-instance'>
+      - (Raphael) <strong>drawCloseButton</strong>(elem, scale)
+    </p>
+    <div class='docstring'>
+  <p>Draws this view close buttons</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>elem</span>
+      <span class='type'>
+        (<tt>Raphael</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>element to draw for</span>
+    </li>
+    <li>
+      <span class='name'>scale</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the scale</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Raphael</tt>)
+      &mdash;
+      <span class='desc'>the contents</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='drawShadow-instance'>
+      - (Raphael) <strong>drawShadow</strong>(elem, scale)
+    </p>
+    <div class='docstring'>
+  <p>Draws this view shadow</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>elem</span>
+      <span class='type'>
+        (<tt>Raphael</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>element to draw for</span>
+    </li>
+    <li>
+      <span class='name'>scale</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the scale</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Raphael</tt>)
+      &mdash;
+      <span class='desc'>the contents</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='drawHitbox-instance'>
+      - (Raphael) <strong>drawHitbox</strong>(elem, scale)
+    </p>
+    <div class='docstring'>
+  <p>Draws this view hitbox</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>elem</span>
+      <span class='type'>
+        (<tt>Raphael</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>element to draw for</span>
+    </li>
+    <li>
+      <span class='name'>scale</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the scale</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Raphael</tt>)
+      &mdash;
+      <span class='desc'>the contents</span>
     </li>
   </ul>
 </div>
@@ -387,48 +795,11 @@
   </ul>
 </div>
   </div>
-  <div class='method_details'>
-    <p class='signature' id='draw-instance'>
-      - (void) <strong>draw</strong>(x, y, scale)
-    </p>
-    <div class='docstring'>
-  <p>Draws this view and thus the model</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>x</span>
-      <span class='type'>
-        (<tt>Integer</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the x position</span>
-    </li>
-    <li>
-      <span class='name'>y</span>
-      <span class='type'>
-        (<tt>Integer</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the y position</span>
-    </li>
-    <li>
-      <span class='name'>scale</span>
-      <span class='type'>
-        (<tt>Integer</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the scale</span>
-    </li>
-  </ul>
-</div>
-  </div>
 </div>
     </div>
     <div id='footer'>
   Generated on
-  Fri May 03 2013 22:38:25 GMT+0200 (W. Europe Daylight Time)
+  Fri May 10 2013 08:40:59 GMT+0200 (W. Europe Daylight Time)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6
