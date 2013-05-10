@@ -17,15 +17,11 @@ class View.Main
 		
 		@_views.push new View.DummyModule( @paper, @cell, new Model.DNA() )
 		@_views.push new View.DummyModule( @paper, @cell, new Model.Lipid() )
-		@_views.push new View.DummyModule( @paper, @cell, new Model.Substrate( { placement: -1, name: 's' } ), { name: 's_ext', inside_cell: off, is_product: off, amount: 1 } )
+		@_views.push new View.DummyModule( @paper, @cell, new Model.Metabolite.sext(), { name: 's', inside_cell: off, is_product: off, amount: 1, supply: 1 } )
 		@_views.push new View.DummyModule( @paper, @cell, Model.Transporter.int(), { direction: 1 } )
 		@_views.push new View.DummyModule( @paper, @cell, new Model.Metabolism() )
 		@_views.push new View.DummyModule( @paper, @cell, new Model.Protein() )
 		@_views.push new View.DummyModule( @paper, @cell, Model.Transporter.ext(), { direction: -1 } )
-		
-		#@_views.push new View.DummyModule( @paper, @cell, new Model.Substrate( { placement: -.5, name: 's' } ), { name: 's_int', inside_cell: on, is_product: off, amount: 1 } )
-		#@_views.push new View.DummyModule( @paper, @cell, new Model.Substrate( { placement: 1, name: 'p' } ), { name: 'p_ext', inside_cell: off, is_product: on, amount: 1 } )
-		#@_views.push new View.DummyModule( @paper, @cell, new Model.Substrate( { placement: .5, name: 'p' } ), { name: 'p_int', inside_cell: on, is_product: on, amount: 1 } )
 		
 		if ( @cell? )
 			for module in @cell._modules
@@ -64,7 +60,7 @@ class View.Main
 		
 		$( window ).on( 'resize', @resize )
 		Model.EventManager.on( 'cell.add.module', @, @onModuleAdd )
-		Model.EventManager.on( 'cell.add.substrate', @, @onModuleAdd )
+		Model.EventManager.on( 'cell.add.metabolite', @, @onModuleAdd )
 		Model.EventManager.on( 'cell.remove.module', @, @onModuleRemove )
 		
 		@draw()
@@ -111,8 +107,11 @@ class View.Main
 			
 			if ( view instanceof View.Module )
 				type = view.module.constructor.name
-				direction = view.module.direction ? view.module.placement ? 0
-				counter = counters[ "#{type}_#{direction}" ] ? 0
+				direction = if view.module.direction? then view.module.direction else 0
+				placement = if view.module.placement? then view.module.placement else 0
+				placement_type = if view.module.type? then view.module.type else 0
+				counter_name = "#{type}_#{direction}_#{placement}_#{placement_type}"
+				counter = counters[ counter_name ] ? 0
 				
 				# Send all the parameters through so the location
 				# method becomes functional. Easier to test and debug.
@@ -120,7 +119,9 @@ class View.Main
 					count: counter
 					view: view
 					type: type 
-					placement: direction
+					direction: direction
+					placement: placement
+					placement_type: placement_type
 					cx: centerX
 					cy: centerY
 					r: radius
@@ -129,7 +130,7 @@ class View.Main
 				
 				placement = @getLocationForModule( view.module, params )
 				
-				counters[ "#{type}_#{direction}" ] = ++counter
+				counters[ counter_name ] = ++counter
 				
 			if ( view instanceof View.Action )
 				placement = { x: centerX, y: centerY, scale }
@@ -189,9 +190,10 @@ class View.Main
 			when "Transporter"
 				dx = 60 * params.count * params.scale
 				
-				if params.placement is 1					
+				alpha = 0
+				if params.direction is Model.Transporter.Inward				
 					alpha = Math.PI - Math.asin( dx / params.r )
-				else				
+				if params.direction is Model.Transporter.Outward					
 					alpha = 0 + Math.asin( dx / params.r )
 
 				x = params.cx + params.r * Math.cos( alpha )
@@ -209,10 +211,20 @@ class View.Main
 				x = params.cx + params.r / 2 + ( params.count % 3 * 40 )
 				y = params.cy - params.r / 2 + ( Math.floor( params.count / 3 ) * 40 )
 				
-			when "Substrate"
-				x = ( params.cx + params.placement * 200 )
-				x = ( params.cx - params.r - 130 ) if params.placement is -1
-				x = ( params.cx + params.r + 130 ) if params.placement is 1 
+			when "Metabolite"
+				
+				x = params.cx
+				if params.placement is Model.Metabolite.Inside
+					if params.placement_type is Model.Metabolite.Substrate
+						x = x - 200 * params.scale
+					if params.placement_type is Model.Metabolite.Product
+						x = x + 200 * params.scale
+				else if params.placement is Model.Metabolite.Outside
+					if params.placement_type is Model.Metabolite.Substrate
+						x = x - params.r - 200 * params.scale
+					if params.placement_type is Model.Metabolite.Product
+						x = x + params.r + 200 * params.scale
+						
 				y = params.cy + ( Math.round( params.count ) * 100 * params.scale )
 				
 		return { x: x, y: y }

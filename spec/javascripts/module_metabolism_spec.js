@@ -11,12 +11,12 @@ describe("Module Metabolism", function() {
 			expect( module.name ).toBe( "enzyme" );
 		});
 		
-		it( "should have 's_int' as substrate", function() {
-			expect( module.orig ).toBe( "s_int" );
+		it( "should have 's#int' as substrate", function() {
+			expect( module.orig ).toBe( "s#int" );
 		});
 		
-		it( "should have 'p_int' as product", function() {
-			expect( module.dest ).toBe( "p_int" );
+		it( "should have 'p#int' as product", function() {
+			expect( module.dest ).toBe( "p#int" );
 		});
 		
 		it( "should have 1 as k (transcription value)", function() {
@@ -76,12 +76,12 @@ describe("Module Metabolism", function() {
 					expect( module.name ).toBe( "enzyme" );
 				});
 				
-				it( "should have 's_int' as substrate", function() {
-					expect( module.orig ).toBe( "s_int" );
+				it( "should have 's#int' as substrate", function() {
+					expect( module.orig ).toBe( "s#int" );
 				});
 				
-				it( "should have 'p_int' as product", function() {
-					expect( module.dest ).toBe( "p_int" );
+				it( "should have 'p#int' as product", function() {
+					expect( module.dest ).toBe( "p#int" );
 				});
 				
 				it( "should have 1 as k (transcription value)", function() {
@@ -225,6 +225,7 @@ describe("Module Metabolism", function() {
 		describe( "with no substrates", function() {
 			
 			beforeEach( function() { 
+				substrates[module.name] = 0;
 				results = module.step( 0, substrates, 0 );
 			});
 			
@@ -236,6 +237,7 @@ describe("Module Metabolism", function() {
 		describe( "with dna substrate", function() {
 			
 			beforeEach( function() { 
+				substrates[module.name] = 0;
 				substrates[module.dna] = 1;
 				results = module.step( 0, substrates, 0 );
 			});
@@ -252,6 +254,7 @@ describe("Module Metabolism", function() {
 		describe( "with enzym substrate", function() {
 			
 			beforeEach( function() { 
+				substrates[module.name] = 0;
 				substrates[module.name] = 1;
 				results = module.step( 0, substrates, 0 );
 			});
@@ -266,6 +269,7 @@ describe("Module Metabolism", function() {
 			beforeEach( function() { 
 				substrates[module.name] = 1;
 				substrates[module.orig] = 1;
+				substrates[module.dest] = 0;
 				results = module.step( 0, substrates, 0 );
 			});
 			
