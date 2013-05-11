@@ -98,12 +98,12 @@ describe("UndoTree", function() {
 						redone = tree.redo();
 					});
 
-					it("should have the last node as current", function() {
-						expect( tree._current ).toBe( node[5] );
+					it("should have the second last node as current", function() {
+						expect( tree._current ).toBe( node[4] );
 					});
 
-					it("should have returned the next action", function() {
-						expect( redone ).toBe( object[5] );
+					it("should have returned the second last action", function() {
+						expect( redone ).toBe( object[4] );
 					});
 				});
 
