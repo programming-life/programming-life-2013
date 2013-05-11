@@ -105,6 +105,10 @@ describe("UndoTree", function() {
 					it("should have returned the second last action", function() {
 						expect( redone ).toBe( object[4] );
 					});
+
+					it("should have returned the same action as the object of the node that is now current", function() {
+						expect( tree._current._object ).toBe( redone)
+					});
 				});
 
 				describe("when a new node is added to the tree", function() {
