@@ -62,8 +62,10 @@ describe("Module", function() {
 	describe( "when a property is changed", function() { 
 	
 		describe( "and it was present", function() {
+			var oldNode;
 			beforeEach( function() {
 				module.k = 8;
+				oldNode = module._tree._current;
 			});
 		
 		
@@ -72,7 +74,7 @@ describe("Module", function() {
 			});
 
 			it( "should have stored that change", function() {
-				expect( module._tree._current._object ).toEqual( ["_k",3, 8] );
+				expect( module._tree._current._object ).not.toEqual( oldNode );
 			});
 			
 			describe( "and module was serialized and deserialized", function() { 

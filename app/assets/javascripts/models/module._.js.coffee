@@ -45,7 +45,7 @@ class Model.Module
 					set: ( param ) ->
 						console.log "I am setting #{key}", @["_#{key}"], param
 						Model.EventManager.trigger( 'module.set.property', @, [ "_#{key}", @["_#{key}"], param ] )
-						@_do( "_#{key}", param )
+						@[ "_#{key}"] = param
 					get: ->
 						return @["_#{key}"]
 					enumerable: true
@@ -95,7 +95,7 @@ class Model.Module
 		context = @
 		addmove = ( caller, key, value, param ) ->
 			unless caller isnt context
-				@_addMove key, value, param
+				@_addToTree key, value, param
 						
 		Model.EventManager.on( 'module.set.property', @, addmove )
 		Model.EventManager.trigger( 'module.creation', @, [ @creation, @id ] )	
@@ -202,8 +202,14 @@ class Model.Module
 	# @param [val] value, the value of the changed property 
 	# @returns [self] for chaining
 	#
-	_addMove: ( key, value, param ) ->
-		@_tree.add [ key, value, param ]
+	_addToTree: ( key, value, param ) ->
+		func = (key, value ) => 
+			@["#{key}"] = value
+		todo = _( func ).bind(@, key, param)
+		redo = _( func ).bind(@, key, value)
+		action = new Model.Action(@, todo, redo)
+
+		@_tree.add(action)
 		return this
 
 	# Undoes the most recent move
@@ -211,11 +217,10 @@ class Model.Module
 	# @returns [self] for chaining
 	#
 	undo: ( ) ->
-		result = @_tree.undo()
-		console.log "I would like to undo: ", result
-		if result isnt null
-			[ key, value, param ] = result
-			@_do( key, value )
+		action = @_tree.undo()
+		console.log "I would like to undo: ", action
+		if action isnt null
+			action.undo()
 		return this
 
 	# Redoes the most recently undone move
@@ -223,11 +228,10 @@ class Model.Module
 	# @returns [self] for chaining
 	#
 	redo : ( ) ->
-		result = @_tree.redo()
-		console.log "I would like to redo: ", result
-		if result isnt null
-			[ key, value, param ] = result
-			@_do( key, param )
+		action = @_tree.redo()
+		console.log "I would like to redo: ", action
+		if action isnt null
+			action.redo()
 		return this
 		
 	# Serializes a module

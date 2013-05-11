@@ -10,6 +10,22 @@ describe("Cell", function() {
 		expect( cell.creation ).toBeDefined();
 	});
 
+	it("should have an undotree", function() {
+		expect( cell._tree ).toBeDefined();
+	});
+	
+	describe("the tree", function() {
+		var tree;
+		beforeEach( function() {
+			tree = cell._tree;
+		});
+
+		it("should have only a root node", function() {
+			expect( tree._root ).toBeDefined();
+
+		});
+	});
+
 	it("should accept custom params", function() {
 		cell = new Model.Cell( { name: "custom_name"} );
 		expect( cell ).toBeDefined();
@@ -27,8 +43,15 @@ describe("Cell", function() {
 	});
   
 	describe("when a module has been added", function() {
+		var oldLength;
 		beforeEach(function() {
-			module = jasmine.createSpy('ModuleStub');
+			module = new Model.Module()
+
+			if (cell._tree._current._parent != null)
+				oldLength = cell._tree._current._parent._children._length;
+			else
+				oldLength = 0
+
 			cell.add( module );
 		});
 
@@ -40,6 +63,11 @@ describe("Cell", function() {
 			cell.remove( module );
 			expect( cell.has( module ) ).toBeFalsy();
 		});
+
+		it("should have added a node to the undotree", function() {
+			expect( cell._tree._current._parent._children.length ).toBe( oldLength + 1 );
+		});
+
 	});
 	
 	describe("when a metabolite has been added", function() {
@@ -193,7 +221,7 @@ describe("Cell", function() {
 			expect( cell.amountOf( substrate_name, placement ) ).toBe( substrate_amount + 1 );
 			expect( substrate.amount ).toBe( substrate_amount + 1 );
 		});
-		
+
 	});
 		
 	describe("when a metabolite is added", function() {
@@ -374,7 +402,7 @@ describe("Cell", function() {
 			
 		});
 		
-		xit( "serialized and deserilized, should retain substrates, modules, cell", function() {
+		xdescribe( "serialized and deserilized, should retain substrates, modules, cell", function() {
 		
 		});
 	});

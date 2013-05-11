@@ -19,6 +19,13 @@ class Model.Cell
 	#
 	constructor: ( params = {}, start = 1, paramscell = {} ) ->
 		
+		Object.defineProperty( @, '_tree',
+			value: new Model.UndoTree()
+			configurable: false
+			enumerable: false
+			writable: true
+		)
+		
 		Object.defineProperty( @, '_modules',
 			value: []
 			configurable: false
@@ -96,8 +103,9 @@ class Model.Cell
 		Object.seal @
 		
 		Model.EventManager.trigger( 'cell.creation', @, [ @creation, @id ] )
+		Model.EventManager.on( 'cell.add.module', @, @_addToTree )
 		@add new Model.CellGrowth( params, start )
-		
+	
 	# Extracts id data from id
 	#
 	# @param id [Object,Number,String] id containing id data
@@ -450,7 +458,36 @@ class Model.Cell
 					
 				callback.apply( @, [ result ] ) if callback?
 			)
+
+	# Add a new node to the undotree for an action that occured in the cell.
+	#
+	# @param cell [Model.Cell] The cell the action occured in.
+	# @param module [Model.Module] The module that was created or altered by the action.
+	#
+	_addToTree: ( cell, module ) ->
+		unless cell isnt @ or not (module instanceof Model.Module)
+			unless module instanceof Model.CellGrowth
+				node = @_tree.addNode(module._tree._root)
+	
+	# Undo the most recent change to the cell
+	#
+	undo: ( ) ->
+		action = _tree.undo()
+		if action isnt null
+			action.undo()
 		
+		return @
+		
+
+	# Redo the most recent change to the cell if there is one
+	#
+	redo: ( ) ->
+		action = _tree.redo()
+		if action isnt null
+			action.undo()
+		
+		return @
+
 
 # Makes this available globally.
 (exports ? this).Model.Cell = Model.Cell
