@@ -125,32 +125,77 @@
       <h2>Overview</h2>
       <div class='docstring'>
   <p>Simulates transporters in the cell.</p><h2>Parameters</h2>
-<hr><p>k
-Synthesize rate
-k_m
-For active transporters
-k_tr
-The transport rate
-consume
-All the metabolites required for Transporter creation
-type
-Model.Transporter.Active or Model.Transporter.Passive</p><h2>Properties</h2>
-<hr><p>vTransporterProd
-k <em> this </em> consume
-dillution
-mu <em> this
-vTransport [active transporter]
-k_tr </em> this <em> ( transported_compound / ( transported_compound + k_m ) ) </em> cell
-vTransport [passive transporter]
-k_tr <em> this </em> transported_compound * cell</p><h2>Equations</h2>
-<hr><p>this / dt
-vTransporterProd - dillution
-consume / dt
-- vTransporterProd
-orig / dt
-- vTransport
-dest / dt
-vTransport</p>
+<ul>
+<li>k<ul>
+<li>Synthesize rate</li>
+</ul>
+</li>
+<li>k_m<ul>
+<li>For active transporters, MM kinetics constant</li>
+</ul>
+</li>
+<li>k_tr<ul>
+<li>The transport rate</li>
+</ul>
+</li>
+<li>consume<ul>
+<li>All the metabolites required for Transporter creation</li>
+</ul>
+</li>
+<li>type<ul>
+<li>Model.Transporter.Active or Model.Transporter.Passive</li>
+</ul>
+</li>
+<li>transported<ul>
+<li>The transported compound, a metabolite</li>
+</ul>
+</li>
+</ul>
+<h2>Properties</h2>
+<ul>
+<li>vTransporterProd<ul>
+<li>k <em> this </em> consume</li>
+</ul>
+</li>
+<li>dilution<ul>
+<li>mu * this</li>
+</ul>
+</li>
+<li>vTransport <ul>
+<li>[active transporter]<ul>
+<li>k_tr <em> this </em> ( transported_compound / ( transported_compound + k_m ) ) * cell</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>vTransport<ul>
+<li>[passive transporter]<ul>
+<li>k_tr <em> this </em> transported_compound * cell</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2>Equations</h2>
+<ul>
+<li>this / dt<ul>
+<li>vTransporterProd - dilution</li>
+</ul>
+</li>
+<li>consume / dt<ul>
+<li>vTransporterProd</li>
+</ul>
+</li>
+<li>orig / dt<ul>
+<li>-vTransport</li>
+</ul>
+</li>
+<li>dest / dt<ul>
+<li>vTransport</li>
+</ul>
+</li>
+</ul>
+
 </div>
 <div class='tags'>
 </div>
@@ -688,7 +733,7 @@ vTransport</p>
     </div>
     <div id='footer'>
   Generated on
-  Fri May 10 2013 08:40:59 GMT+0200 (W. Europe Daylight Time)
+  Sat May 11 2013 07:38:00 GMT+0200 (W. Europe Daylight Time)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

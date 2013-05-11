@@ -125,22 +125,47 @@
       <h2>Overview</h2>
       <div class='docstring'>
   <p>Simulates protein synthesization.</p><h2>Parameters</h2>
-<hr><p>k
-Synthesize rate
-k_d
-Protein degredation
-consume
-All the metabolites required for Protein creation</p><h2>Properties</h2>
-<hr><p>vProteinSynth
-k <em> this </em> consume
-degredation
-k_d <em> this
-dillution
-    mu </em> this</p><h2>Equations</h2>
-<hr><p>this / dt
-vProteinSynth - dillution - degredation
-consume / dt
-- vProteinSynth</p>
+<ul>
+<li>k<ul>
+<li>Synthesize rate</li>
+</ul>
+</li>
+<li>k_d<ul>
+<li>Protein degradation</li>
+</ul>
+</li>
+<li>consume<ul>
+<li>All the metabolites required for Protein creation</li>
+</ul>
+</li>
+</ul>
+<h2>Properties</h2>
+<ul>
+<li>vProteinSynth<ul>
+<li>k <em> this </em> consume</li>
+</ul>
+</li>
+<li>degradation<ul>
+<li>k_d * this</li>
+</ul>
+</li>
+<li>dilution<ul>
+<li>mu * this</li>
+</ul>
+</li>
+</ul>
+<h2>Equations</h2>
+<ul>
+<li>this / dt<ul>
+<li>vProteinSynth - dilution - degradation</li>
+</ul>
+</li>
+<li>consume / dt<ul>
+<li>vProteinSynth</li>
+</ul>
+</li>
+</ul>
+
 </div>
 <div class='tags'>
 </div>
@@ -288,7 +313,7 @@ consume / dt
     </div>
     <div id='footer'>
   Generated on
-  Fri May 10 2013 08:40:59 GMT+0200 (W. Europe Daylight Time)
+  Sat May 11 2013 07:38:00 GMT+0200 (W. Europe Daylight Time)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

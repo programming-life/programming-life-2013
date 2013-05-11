@@ -124,19 +124,40 @@
       </table>
       <h2>Overview</h2>
       <div class='docstring'>
-  <p>Simulates DNA existance and synthesisis in the Cell</p><h2>Parameters</h2>
-<hr><p>k
-Synthesize rate
-consume
-All the metabolites required for DNA creation</p><h2>Properties</h2>
-<hr><p>vDNASynth
-k <em> this </em> consume
-dillution
-mu * this</p><h2>Equations</h2>
-<hr><p>this / dt
-vDNASynth - dillution
-consume / dt
-- vDNASynth</p>
+  <p>Simulates DNA existance and synthesis in the Cell</p><h2>Parameters</h2>
+<ul>
+<li>k<ul>
+<li>Synthesize rate</li>
+</ul>
+</li>
+<li>consume<ul>
+<li>All the metabolites required for DNA creation</li>
+</ul>
+</li>
+</ul>
+<h2>Properties</h2>
+<ul>
+<li>vDNASynth<ul>
+<li>k <em> this </em> consume</li>
+</ul>
+</li>
+<li>dilution<ul>
+<li>mu * this</li>
+</ul>
+</li>
+</ul>
+<h2>Equations</h2>
+<ul>
+<li>this / dt<ul>
+<li>vDNASynth - dilution</li>
+</ul>
+</li>
+<li>consume / dt<ul>
+<li>vDNASynth</li>
+</ul>
+</li>
+</ul>
+
 </div>
 <div class='tags'>
 </div>
@@ -260,7 +281,7 @@ consume / dt
     </div>
     <div id='footer'>
   Generated on
-  Fri May 10 2013 08:40:59 GMT+0200 (W. Europe Daylight Time)
+  Sat May 11 2013 07:38:00 GMT+0200 (W. Europe Daylight Time)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

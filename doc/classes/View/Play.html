@@ -116,6 +116,12 @@
           <td>app&#47;assets&#47;javascripts&#47;views&#47;play.js.coffee</td>
         </tr>
       </table>
+      <h2>Overview</h2>
+      <div class='docstring'>
+  <p>The play view adds controlls to a cell&#39;s simulation.</p>
+</div>
+<div class='tags'>
+</div>
       <h2>Instance Method Summary</h2>
       <ul class='summary'>
   <li>
@@ -152,21 +158,21 @@
   <li>
     <span class='signature'>
       <a href='#_drawPlay-instance'>
-        - (void) <strong>_drawPlay</strong>()
+        - (Raphael) <strong>_drawPlay</strong>(x, y, scale, size)
       </a>
     </span>
     <span class='desc'>
-      
+      Draws a play button
     </span>
   </li>
   <li>
     <span class='signature'>
       <a href='#_drawPause-instance'>
-        - (void) <strong>_drawPause</strong>()
+        - (Raphael) <strong>_drawPause</strong>(x, y, scale, size)
       </a>
     </span>
     <span class='desc'>
-      
+      Draws a pause button
     </span>
   </li>
 </ul>
@@ -253,23 +259,117 @@
   </div>
   <div class='method_details'>
     <p class='signature' id='_drawPlay-instance'>
-      - (void) <strong>_drawPlay</strong>()
+      - (Raphael) <strong>_drawPlay</strong>(x, y, scale, size)
     </p>
-    <div class='tags'>
+    <div class='docstring'>
+  <p>Draws a play button</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>x</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the x position</span>
+    </li>
+    <li>
+      <span class='name'>y</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the y position</span>
+    </li>
+    <li>
+      <span class='name'>scale</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the scale</span>
+    </li>
+    <li>
+      <span class='name'>size</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the size</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Raphael</tt>)
+      &mdash;
+      <span class='desc'>contents</span>
+    </li>
+  </ul>
 </div>
   </div>
   <div class='method_details'>
     <p class='signature' id='_drawPause-instance'>
-      - (void) <strong>_drawPause</strong>()
+      - (Raphael) <strong>_drawPause</strong>(x, y, scale, size)
     </p>
-    <div class='tags'>
+    <div class='docstring'>
+  <p>Draws a pause button</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>x</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the x position</span>
+    </li>
+    <li>
+      <span class='name'>y</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the y position</span>
+    </li>
+    <li>
+      <span class='name'>scale</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the scale</span>
+    </li>
+    <li>
+      <span class='name'>size</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the size</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Raphael</tt>)
+      &mdash;
+      <span class='desc'>contents</span>
+    </li>
+  </ul>
 </div>
   </div>
 </div>
     </div>
     <div id='footer'>
   Generated on
-  Fri May 10 2013 08:40:59 GMT+0200 (W. Europe Daylight Time)
+  Sat May 11 2013 07:38:00 GMT+0200 (W. Europe Daylight Time)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

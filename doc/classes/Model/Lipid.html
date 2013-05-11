@@ -124,19 +124,40 @@
       </table>
       <h2>Overview</h2>
       <div class='docstring'>
-  <p>Simulates a cell border from lipids</p><h2>Parameters</h2>
-<hr><p>k
-Synthesize rate
-consume
-All the substrates required for DNA creation</p><h2>Properties</h2>
-<hr><p>vLipidProd
-k <em> this </em> consume
-dillution
-mu * this</p><h2>Equations</h2>
-<hr><p>this / dt
-vLipidProd - dillution
-consume / dt
-- vLipidProd</p>
+  <p>Simulates a cell border of lipids</p><h2>Parameters</h2>
+<ul>
+<li>k<ul>
+<li>Synthesize rate</li>
+</ul>
+</li>
+<li>consume<ul>
+<li>All the metabolites required for Lipid creation</li>
+</ul>
+</li>
+</ul>
+<h2>Properties</h2>
+<ul>
+<li>vLipidProd<ul>
+<li>k <em> this </em> consume</li>
+</ul>
+</li>
+<li>dilution<ul>
+<li>mu * this</li>
+</ul>
+</li>
+</ul>
+<h2>Equations</h2>
+<ul>
+<li>this / dt<ul>
+<li>vLipidProd - dilution</li>
+</ul>
+</li>
+<li>consume / dt<ul>
+<li>vLipidProd</li>
+</ul>
+</li>
+</ul>
+
 </div>
 <div class='tags'>
 </div>
@@ -260,7 +281,7 @@ consume / dt
     </div>
     <div id='footer'>
   Generated on
-  Fri May 10 2013 08:40:59 GMT+0200 (W. Europe Daylight Time)
+  Sat May 11 2013 07:38:00 GMT+0200 (W. Europe Daylight Time)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6
