@@ -131,7 +131,7 @@ class Model.Cell
 	add: ( module ) ->
 		todo = _( (module) => @_modules.push module).bind(@, module)
 		undo = _( (module) => @_modules = _( @_modules ).without module).bind(@, module)
-		action = new Model.Action(@, todo, undo)
+		action = new Model.Action(@, todo, undo, "Added "+module.name)
 		action.do()
 
 		Model.EventManager.trigger( 'cell.add.module', @, [ action, module ] )
@@ -474,6 +474,8 @@ class Model.Cell
 			unless module instanceof Model.CellGrowth
 				node = @_tree.add(action)
 				module._tree.setRoot(node)
+				if @_tree._root._object is null
+					@_tree.setRoot(node)
 
 	
 	# Undo the most recent change to the cell

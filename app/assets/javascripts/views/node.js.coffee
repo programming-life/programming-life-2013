@@ -27,13 +27,13 @@ class View.Node
 		@_y = y
 		@_scale = scale
 
-		@_padding = 30 * @_scale
+		@_padding = 10 * @_scale
 
 		@_contents?.remove()
 		@_contents = @_paper.set()
 
 		@_drawText()
-		@_radius = Math.max( @_text.getBBox().width, @_text.getBBox().height ) * scale
+		@_radius = Math.max( @_text.getBBox().width, @_text.getBBox().height ) * @_scale
 
 
 		@_drawCircle()
@@ -49,10 +49,9 @@ class View.Node
 	#
 	# @param node [Model.Node] The node to add the view of
 	_addNode: ( node ) ->
-		console.log(node)
 		if node in @_node._children
 			@_views.push new View.Node( node, @_paper, @ )
-
+			@_drawViews()
 
 	_drawViews: ( ) ->
 		scalar = (@_views.length - 1) * 0.5
@@ -83,11 +82,14 @@ class View.Node
 	_drawText: ( ) ->
 		@_text?.remove()
 		id = new Date() - @_node._creation + "\n"
-		id += @_node._object
+		if @_node._object instanceof Model.Action
+			id += @_node._object._description
+		else
+			id += "Cell creation"
 
 		@_text = @_paper.text(@_x, @_y, id)
 		@_text.attr
-			'font-size': 20 * @_scale
+			'font-size': 16 * @_scale
 	
 	_drawHitBox: ( ) ->
 		unless @_dragging
