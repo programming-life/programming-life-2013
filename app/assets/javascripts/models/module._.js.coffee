@@ -43,9 +43,16 @@ class Model.Module
 				# those values.
 				Object.defineProperty( @ , key,
 					set: ( param ) ->
+						func = (key, value ) => 
+							@["_#{key}"] = value
+						oldValue = @["#{key}"] 
+						todo = _( func ).bind(@, key, param )
+						undo = _( func ).bind(@, key, oldValue)
+						action = new Model.Action(@, todo, undo)
+
 						console.log "I am setting #{key}", @["_#{key}"], param
-						Model.EventManager.trigger( 'module.set.property', @, [ "_#{key}", @["_#{key}"], param ] )
-						@[ "_#{key}"] = param
+						action.do()
+						Model.EventManager.trigger( 'module.set.property', @, [ action ] )
 					get: ->
 						return @["_#{key}"]
 					enumerable: true
@@ -93,9 +100,9 @@ class Model.Module
 					
 		# Bind the events
 		context = @
-		addmove = ( caller, key, value, param ) ->
+		addmove = ( caller, action ) ->
 			unless caller isnt context
-				@_addToTree key, value, param
+				@_addToTree action
 						
 		Model.EventManager.on( 'module.set.property', @, addmove )
 		Model.EventManager.trigger( 'module.creation', @, [ @creation, @id ] )	
@@ -196,20 +203,14 @@ class Model.Module
 		console.log "Done: #{key}", @[ key ], value
 		return this
 
-	# Adds a move to the undotree
+	# Adds an action to the undotree
 	#
-	# @param [String] key, the changed property
-	# @param [val] value, the value of the changed property 
+	# @param action [Model.Action] The action to add to the tree
 	# @returns [self] for chaining
 	#
-	_addToTree: ( key, value, param ) ->
-		func = (key, value ) => 
-			@["#{key}"] = value
-		todo = _( func ).bind(@, key, param)
-		redo = _( func ).bind(@, key, value)
-		action = new Model.Action(@, todo, redo)
-
-		@_tree.add(action)
+	_addToTree: ( action ) ->
+		node = @_tree.add(action)
+		console.log( node )
 		return this
 
 	# Undoes the most recent move

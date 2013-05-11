@@ -16,6 +16,8 @@ class Model.Node
 
 		@_parent._children.push(this) if @_parent
 
+		Model.EventManager.trigger( 'node.creation', @, [] )
+
 	# Rebase this branch on a different node than its current parent.
 	#
 	# @param parent [Node] The new parent for the branch.

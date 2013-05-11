@@ -8,6 +8,15 @@ class Model.Tree
 	constructor: ( root = new Model.Node( null, null ) ) -> 
 		@_root = root
 		@_current = @_root
+
+	# Set a new root for the tree
+	#
+	# @param root [Model.Node] The new root
+	setRoot: ( root ) ->
+		if @_current is @_root
+			@_current = root
+
+		@_root.rebase( root )
 	
 	# Add an object to the tree
 	#

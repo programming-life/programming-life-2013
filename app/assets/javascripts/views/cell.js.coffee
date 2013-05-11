@@ -32,6 +32,8 @@ class View.Cell
 			tree.undo()
 			tree.add("Node"+(i+1))
 			tree.add("Node"+(i+2))
+
+		tree = @_cell._tree
 		
 		@_views.push new View.Play( @_paper, @)
 		@_views.push new View.Tree( @_paper, tree)

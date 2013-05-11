@@ -129,8 +129,12 @@ class Model.Cell
 	# @return [self] chainable instance
 	#
 	add: ( module ) ->
-		@_modules.push module
-		Model.EventManager.trigger( 'cell.add.module', @, [ module ] )
+		todo = _( (module) => @_modules.push module).bind(@, module)
+		undo = _( (module) => @_modules = _( @_modules ).without module).bind(@, module)
+		action = new Model.Action(@, todo, undo)
+		action.do()
+
+		Model.EventManager.trigger( 'cell.add.module', @, [ action, module ] )
 		return this
 		
 	# Add metabolite to cell
@@ -462,12 +466,15 @@ class Model.Cell
 	# Add a new node to the undotree for an action that occured in the cell.
 	#
 	# @param cell [Model.Cell] The cell the action occured in.
+	# @param action [Model.Action] The action
 	# @param module [Model.Module] The module that was created or altered by the action.
 	#
-	_addToTree: ( cell, module ) ->
-		unless cell isnt @ or not (module instanceof Model.Module)
+	_addToTree: ( cell, action, module ) ->
+		unless cell isnt @
 			unless module instanceof Model.CellGrowth
-				node = @_tree.addNode(module._tree._root)
+				node = @_tree.add(action)
+				module._tree.setRoot(node)
+
 	
 	# Undo the most recent change to the cell
 	#

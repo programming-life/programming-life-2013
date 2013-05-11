@@ -8,6 +8,8 @@ class View.Node
 
 		for child in @_node._children
 			@_views.push new View.Node( child, @_paper, @ )
+
+		Model.EventManager.on( 'node.creation', @, @_addNode)
 	
 	# Performs the desired action on click
 	#
@@ -42,6 +44,14 @@ class View.Node
 			@_drawArrow(@_parent)
 
 		@_drawViews()
+	
+	# Adds a node view to the children of this node view
+	#
+	# @param node [Model.Node] The node to add the view of
+	_addNode: ( node ) ->
+		console.log(node)
+		if node in @_node._children
+			@_views.push new View.Node( node, @_paper, @ )
 
 
 	_drawViews: ( ) ->

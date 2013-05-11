@@ -65,6 +65,7 @@ describe("Cell", function() {
 		});
 
 		it("should have added a node to the undotree", function() {
+			console.log( cell._tree )
 			expect( cell._tree._current._parent._children.length ).toBe( oldLength + 1 );
 		});
 
