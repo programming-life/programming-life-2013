@@ -80,7 +80,20 @@ describe("Cell", function() {
 			metabolite = cell.getMetabolite( metabolite_name, placement );
 			expect( metabolite.placement ).toBe( placement );
 		});
+
+		describe( "when a metabolite without parameters is added", function() {
+
+			beforeEach( function() {
+				cell.addMetabolite( metabolite_name );
+			});
+			it( "it should add that metabolite with default parameters", function(){
+				expect( cell.getMetabolite( metabolite_name, placement ) ).toBeDefined();
+			});
+		});
+
 	});
+
+	
 		
 	describe("when an external substrate has been added", function() {
 	
@@ -135,6 +148,17 @@ describe("Cell", function() {
 			expect( substrate ).toBe( cell.getSubstrate( substrate_name, placement ) );
 			expect( cell.amountOf( substrate_name, placement ) ).toBe( substrate_amount + 1 );
 			expect( substrate.amount ).toBe( substrate_amount + 1 );
+		});
+
+		describe( "when an external substrate without parameters has been added", function() {
+
+			beforeEach( function() {
+				cell.addSubstrate( substrate_name );
+			});
+
+			it( "should add that substrate with default parameters", function() {
+				expect( cell.getSubstrate( substrate_name ) ).toBeDefined();
+			});
 		});
 		
 	});
@@ -398,10 +422,32 @@ describe("Cell", function() {
 			
 		});
 		
-		xit( "serialized and deserilized, should retain substrates, modules, cell", function() {
+		it( "serialized and deserilized, should retain substrates, modules, cell", function() {
 		
 		});
-	});
-	
-	
+
+		it( "should be able to serialize the Cell", function() {
+			var serialized;
+			serialized = cell.serialize( true );
+			expect( serialized ).toBeDefined();
+			expect( serialized.length ).toBeGreaterThan( 2 );
+		});
+
+		describe( "and when serialized", function() {
+
+			var serialized;
+
+			beforeEach( function() {
+				serialized = cell.serialize( true );
+			});
+			
+			it( "should be able to deserialize", function() {
+				deserialized = Model.Cell.deserialize( serialized );
+				expect( deserialized ).toBeDefined();
+				expect( deserialized.constructor.name ).toBe( cell.constructor.name );
+			});
+		});
+
+	});	
+
 });
