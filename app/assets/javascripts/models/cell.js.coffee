@@ -111,7 +111,9 @@ class Model.Cell
 		return { id: parseInt( data[0] ), origin: "server" } if data.length is 1
 		return { id: parseInt( data[2] ), origin: data[0] }
 		
-	# 
+	# Returns true if local cell
+	#
+	# @return [Boolean] true if local, false if synced
 	#
 	isLocal : () ->
 		return Model.Cell.extractId( @id ).origin isnt "server"
@@ -123,9 +125,9 @@ class Model.Cell
 	#
 	add: ( module ) ->
 	
+		# Transparent adding of metabolites
 		if module instanceof Model.Metabolite
 			name = _( module.name.split( '#' ) ).first()
-			console.log name
 			if !@_metabolites[ name ]? 
 				@_metabolites[ name ] = { }
 				@_metabolites[ name ][ Model.Metabolite.Inside ] = undefined
@@ -133,6 +135,7 @@ class Model.Cell
 				
 			@_metabolites[ name ][ module.placement ] = module
 			Model.EventManager.trigger( 'cell.add.metabolite', @, [ module, name, module.amount, module.placement is Model.Metabolite.Inside, module.type is Model.Metabolite.Product ] )
+	
 		else
 			@_modules.push module
 			Model.EventManager.trigger( 'cell.add.module', @, [ module ] )
@@ -142,6 +145,7 @@ class Model.Cell
 	#
 	# @param name [String] name of the metabolite to add
 	# @param amount [Integer] amount of metabolite to add
+	# @param supply [Integer] supply of param of metabolite
 	# @param inside_cell [Boolean] if true is placed inside the cell
 	# @param is_product [Boolean] if true is placed right of the cell
 	# @return [self] chainable instance
@@ -162,9 +166,24 @@ class Model.Cell
 			Model.EventManager.trigger( 'cell.add.metabolite', @, [ @_metabolites[ name ][ placement ], name, amount, inside_cell, is_product ] )
 		return this
 		
+	# Add metabolite substrate to cell
+	#
+	# @param name [String] name of the metabolite to add
+	# @param amount [Integer] amount of metabolite to add
+	# @param supply [Integer] supply of param of metabolite
+	# @param inside_cell [Boolean] if true is placed inside the cell
+	# @return [self] chainable instance
+	#
 	addSubstrate: ( name, amount, supply = 1, inside_cell = off ) ->
 		return @addMetabolite( name, amount, supply, inside_cell, off )
 		
+	# Add metabolite product to cell
+	#
+	# @param name [String] name of the metabolite to add
+	# @param amount [Integer] amount of metabolite to add
+	# @param inside_cell [Boolean] if true is placed inside the cell
+	# @return [self] chainable instance
+	#
 	addProduct: ( name, amount, inside_cell = on ) ->
 		return @addMetabolite( name, amount, 0, inside_cell, on )
 		
@@ -181,6 +200,7 @@ class Model.Cell
 	# Removes this metabolite from cell
 	#
 	# @param name [String] metabolites to remove from this cell
+	# @param placement [Integer] metabolite placement to remove from this cell
 	# @return [self] chainable instance
 	#
 	removeMetabolite: ( name, placement ) ->
@@ -188,9 +208,21 @@ class Model.Cell
 		Model.EventManager.trigger( 'cell.remove.metabolite', @, [ name, placement ] )
 		return this
 		
+	# Removes this substrate from cell (alias for removeMetabolite)
+	#
+	# @param name [String] substrate to remove from this cell
+	# @param placement [Integer] substrate placement to remove from this cell
+	# @return [self] chainable instance
+	#
 	removeSubstrate: ( name, placement ) ->
 		return @removeMetabolite( name, placement )
 		
+	# Removes this product from cell (alias for removeProduct)
+	#
+	# @param name [String] product to remove from this cell
+	# @param placement [Integer] product placement to remove from this cell
+	# @return [self] chainable instance
+	#
 	removeProduct: ( name, placement ) ->
 		return @removeMetabolite( name, placement )
 		
@@ -205,28 +237,54 @@ class Model.Cell
 	# Checks if this cell has this metabolite
 	# 
 	# @param name [String] the name of the metabolite
+	# @param placement [Integer] metabolite placement
 	# @return [Boolean] true if contains
 	#
 	hasMetabolite: ( name, placement ) ->
 		return @_metabolites[ name ][ placement ]?
 		
+	# Checks if this cell has this substrate (alias for hasMetabolite)
+	# 
+	# @param name [String] the name of the substrate
+	# @param placement [Integer] substrate placement
+	# @return [Boolean] true if contains
+	#
 	hasSubstrate: ( name, placement ) ->
 		return @hasMetabolite( name, placement )
 		
+	# Checks if this cell has this product (alias for hasMetabolite)
+	# 
+	# @param name [String] the name of the product
+	# @param placement [Integer] product placement
+	# @return [Boolean] true if contains
+	#
 	hasProduct: ( name, placement ) ->
 		return @hasMetabolite( name, placement )
 		
 	# Gets a metabolite
 	# 
 	# @param name [String] the name of the metabolite
-	# @return [Model.Metabolite] the substrate
+	# @param placement [Integer] metabolite placement
+	# @return [Model.Metabolite] the metabolite
 	#
 	getMetabolite: ( name, placement ) ->
 		return @_metabolites[ name ][ placement ] ? null
 		
+	# Gets a substrate (alias for getMetabolite)
+	# 
+	# @param name [String] the name of the substrate
+	# @param placement [Integer] substrate placement
+	# @return [Model.Metabolite] the substrate
+	#
 	getSubstrate: ( name, placement ) ->
 		return @getMetabolite( name, placement )
 		
+	# Gets a product (alias for getMetabolite)
+	# 
+	# @param name [String] the name of the product
+	# @param placement [Integer] product placement
+	# @return [Model.Metabolite] the product
+	#
 	getProduct: ( name, placement ) ->
 		return @getMetabolite( name, placement )
 	
