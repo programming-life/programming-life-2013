@@ -531,4 +531,3 @@ class View.Module
 		return []			
 
 (exports ? this).View.Module = View.Module
-

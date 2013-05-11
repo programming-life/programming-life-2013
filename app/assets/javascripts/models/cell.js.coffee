@@ -104,6 +104,8 @@ class Model.Cell
 		
 		Model.EventManager.trigger( 'cell.creation', @, [ @creation, @id ] )
 		Model.EventManager.on( 'cell.add.module', @, @_addToTree )
+		Model.EventManager.on( 'cell.add.metabolite', @, @_addToTree )
+		
 		@add new Model.CellGrowth( params, start )
 	
 	# Extracts id data from id
@@ -146,19 +148,40 @@ class Model.Cell
 	# @return [self] chainable instance
 	#
 	addMetabolite: ( name, amount, supply = 1, inside_cell = off, is_product = off ) ->
+		placement = if inside_cell then Model.Metabolite.Inside else Model.Metabolite.Outside
+
 		if !@_metabolites[ name ]? 
 			@_metabolites[ name ] = { }
 			@_metabolites[ name ][ Model.Metabolite.Inside ] = undefined
 			@_metabolites[ name ][ Model.Metabolite.Ouside ] = undefined
 
-		placement = if inside_cell then Model.Metabolite.Inside else Model.Metabolite.Outside
 		
 		if @_metabolites[ name ][ placement ]? 
-			@_metabolites[ name ][ placement ].amount = amount
+			func = (name, value, placement) =>
+				@_metabolites[ name ][ placement ].amount = value
+
+			oldValue = @_metabolites[ name ]
+			todo = _( func ).bind(@, name, amount, placement)
+			undo = _( func ).bind(@, name, oldValue, placement)
+			action = new Model.Action(@, todo, undo, "Added "+name)
 		else
 			type = if is_product then Model.Metabolite.Product else Model.Metabolite.Substrate
-			@_metabolites[ name ][ placement ] = new Model.Metabolite( { supply: supply }, amount, name, placement, type )
-			Model.EventManager.trigger( 'cell.add.metabolite', @, [ @_metabolites[ name ][ placement ], name, amount, inside_cell, is_product ] )
+			
+			met = new Model.Metabolite({ supply: supply}, amount, name, placement, type)
+
+			func1 = (name, placement, met) =>
+				@_metabolites[ name ][ placement ] = met
+			func2 = (name, placement) =>
+				delete @_metabolites[ name ][ placement ]
+
+			todo = _( func1 ).bind(@, name, placement, met)
+			undo = _( func2 ).bind(@, name, placement)
+			action = new Model.Action(@, todo, undo, "Added "+name+" with amount " +amount)
+
+			Model.EventManager.trigger( 'cell.add.metabolite', @, [ action, met] )
+
+		action.do()
+
 		return this
 		
 	addSubstrate: ( name, amount, supply = 1, inside_cell = off ) ->
@@ -470,6 +493,7 @@ class Model.Cell
 	# @param module [Model.Module] The module that was created or altered by the action.
 	#
 	_addToTree: ( cell, action, module ) ->
+		console.log(module)
 		unless cell isnt @
 			unless module instanceof Model.CellGrowth
 				node = @_tree.add(action)

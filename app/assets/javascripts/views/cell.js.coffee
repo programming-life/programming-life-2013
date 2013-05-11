@@ -93,6 +93,7 @@ class View.Cell
 				}
 				
 				placement = @getLocationForModule( view.module, params )
+
 				
 				counters[ counter_name ] = ++counter
 				
@@ -109,7 +110,7 @@ class View.Cell
 	# @param cell [Model.Cell] cell added to
 	# @param module [Model.Module] module added
 	#
-	onModuleAdd: ( cell, module ) =>
+	onModuleAdd: ( cell, action, module ) =>
 		unless cell isnt @_cell
 			unless _( @_drawn ).indexOf( module.id ) isnt -1
 				@_drawn.unshift module.id
