@@ -30,6 +30,8 @@ class View.Play
 		@_box?.remove()
 		@_shadow?.remove()
 		@_hitBox?.remove() 
+		@_play?.remove()
+		@_pause?.remove()
 			
 	# Draws this view and thus the model
 	#
@@ -43,39 +45,28 @@ class View.Play
 		@_scale = scale
 
 		@_padding = 15 * scale
+		@_size = 10 * scale
 		
-		@_contents?.remove()
+		@clear()
+		
 		@_contents = @_paper.set()
 
 		if @_playing
-			@_play?.remove()
-			@_play = null
-			@_drawPause()
-			@_text = @_paper.text(@_x, @_y + 2 * @_padding, "Pause Simulation")
+			@_contents.push @_drawPause( x, y, scale, @_size )...
 		else
-			@_pause?.remove()
-			@_pause = null
-			@_drawPlay()
-			@_text = @_paper.text(@_x, @_y + 2 * @_padding, "Start Simulation")
-
-		@_text.attr
-			'font-size': 20 * scale
-
-		@_contents.push @_text
+			@_contents.push @_drawPlay( x, y, scale, @_size )
 
 		# Draw a box around all contents
-		@_box?.remove()
 		if @_contents?.length > 0
 			rect = @_contents.getBBox()
 			if rect
-				@_box = @_paper.rect(rect.x - @_padding, rect.y - @_padding, rect.width + 2 * @_padding, rect.height + 2 * @_padding)
+				@_box = @_paper.rect( rect.x - @_padding, rect.y - @_padding, rect.width + 2 * @_padding, rect.height + 2 * @_padding )
 				@_box.node.setAttribute('class', 'module-box')
 				@_box.attr
 					r: 10 * scale
-				@_box.insertBefore(@_contents)
+				@_box.insertBefore( @_contents )
 
 		# Draw shadow around module view
-		@_shadow?.remove()
 		@_shadow = @_box?.glow
 			width: 35
 			opacity: .125
@@ -83,42 +74,59 @@ class View.Play
 
 
 		# Draw hitbox in front of module view to detect mouseclicks
-		@_hitBox?.remove()
-		if not @_selected
-			rect = @_box?.getBBox()
-			if rect
-				@_hitBox = @_paper.rect(rect.x, rect.y, rect.width, rect.height)
-				@_hitBox.node.setAttribute('class', 'module-hitbox')
-				@_hitBox.click => 
-					@_selected = true
+		rect = @_box?.getBBox()
+		if rect
+			@_hitBox = @_paper.rect(rect.x, rect.y, rect.width, rect.height)
+			@_hitBox.node.setAttribute('class', 'module-hitbox')
+			@_hitBox.click => 
+				
+				unless @_playing 
+					@_cell.startSimulation()
+					@_playing = true
+				else
+					@_cell.stopSimulation()
+					@_playing = false
 
-					if @_play
-						#start simulation
-						console.log("Started simulation")
-						@_cell.startSimulation()
-						@_playing = true
-					else
-						#stop simulation
-						console.log("Paused simulation")
-						@_cell.stopSimulation()
-						@_playing = false
+				@draw( @_x, @_y, @_scale )
 
-					@_selected = false
-					@draw( @_x, @_y, @_scale )
+	# Draws a play button
+	#
+	# @param x [Integer] the x position
+	# @param y [Integer] the y position
+	# @param scale [Integer] the scale
+	# @param size [Integer] the size
+	# @return [Raphael] contents
+	#
+	_drawPlay: ( x, y, scale, size ) ->
+		@_play = @_paper.triangle( x , y - size, size * 2 ).rotate( 90 )
+		@_play.attr
+			fill: "black"
+			
+		return @_play
 
-	_drawPlay: ( ) ->
-		@_play = @_paper.triangle(@_x, @_y - @_padding, 2* @_padding).rotate(90)
-		@_play.attr({
-			"fill" : "black"
-		})
-
-		@_contents.push @_play
-
-	_drawPause: ( ) ->
+	# Draws a pause button
+	#
+	# @param x [Integer] the x position
+	# @param y [Integer] the y position
+	# @param scale [Integer] the scale
+	# @param size [Integer] the size
+	# @return [Raphael] contents
+	#
+	_drawPause: ( x, y, scale, size ) ->
 		@_pause = @_paper.set()
-		@_pause.push @_paper.rect(@_x - @_padding, @_y - @_padding, @_padding, 2*@_padding).attr({"fill": "black"})
-		@_pause.push @_paper.rect(@_x + 0.5* @_padding, @_y - @_padding, @_padding , 2*@_padding).attr({"fill": "black"})
-
-		@_contents.push @_pause...
+		@_pause.push(
+			@_paper
+				.rect( x - size, y - size, size, 2 * size )
+				.attr
+					fill: "black"
+		)
+		@_pause.push(
+			@_paper
+				.rect( x + size / 2, y - size, size, 2 * size )
+				.attr
+					fill: "black"
+		)
+					
+		return @_pause
 		
-(exports ? this).View.Action = View.Action
+(exports ? this).View.Play = View.Play
