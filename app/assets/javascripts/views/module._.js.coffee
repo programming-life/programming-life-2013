@@ -34,7 +34,7 @@ class View.Module
 	# Generates a hashcode based on the module name
 	#
 	# @param hashee [String] the name to use as hash
-	# @returns [Integer] the hashcode
+	# @return [Integer] the hashcode
 	#
 	hashCode : ( hashee = @name ) ->
 		hash = 0
@@ -48,7 +48,7 @@ class View.Module
 	# Generates a colour based on the module name
 	#
 	# @param hashee [String] the name to use as hash
-	# @returns [String] the CSS color
+	# @return [String] the CSS color
 	#
 	hashColor : ( hashee = @name ) ->
 		return '#' + md5( hashee ).slice(0, 6) #@numToColor @hashCode hashee
@@ -59,7 +59,7 @@ class View.Module
 	# @param num [Integer] the seed for the colour
 	# @param alpha [Boolean] if on, uses rgba, else rgb defaults to off
 	# @param minalpha [Integer] the minimum alpha if on, defaults to 127
-	# @returns [String] the CSS color
+	# @return [String] the CSS color
 	#
 	numToColor : ( num, alpha = off, minalpha = 127 ) ->
 		num >>>= 0
@@ -427,7 +427,7 @@ class View.Module
 	# @param y [Integer] y position
 	# @param scale [Integer] scale
 	# @param params [Object] options
-	# @returns [Array<Object>] The drawn components
+	# @return [Array<Object>] The drawn components
 	#
 	drawComponent : ( module, component, x, y, scale, params = {} ) ->
 		switch component
