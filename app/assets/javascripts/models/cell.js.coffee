@@ -41,6 +41,7 @@ class Model.Cell
 		
 		paramscell = _( paramscell ).defaults( defaults )
 		for key, value of paramscell
+		
 			# The function to create a property out of param
 			#
 			# @param key [String] the property name
@@ -435,6 +436,11 @@ class Model.Cell
 			
 		return result
 		
+	# Loads a cell
+	# 
+	# @param cell_id [Integer] the id of the cell
+	# @param callback [Function] function to call on completion
+	#
 	@load : ( cell_id, callback ) ->
 		cell = new Model.Cell( undefined, undefined, { id: cell_id } )
 		

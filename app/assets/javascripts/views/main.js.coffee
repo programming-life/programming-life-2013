@@ -1,3 +1,6 @@
+# The main view is the view used on the main page. It shows
+# A cell and allows interaction on this cell.
+#
 class View.Main
 
 	# Creates a new Main view

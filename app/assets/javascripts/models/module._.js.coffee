@@ -1,5 +1,4 @@
-# Baseclass of all modules. Defines basic behaviour like undo and redo 
-# mechanisms and solving of differential equations. 
+# Baseclass of all modules. 
 #
 class Model.Module
 
@@ -104,6 +103,7 @@ class Model.Module
 	#
 	# @param id [Object,Number,String] id containing id data
 	# @return [Object] extracted id data
+	#
 	@extractId: ( id ) ->
 		return id if _( id ).isObject()
 		return { id: id, origin: "server" } if _( id ).isNumber()
@@ -112,7 +112,9 @@ class Model.Module
 		return { id: parseInt( data[0] ), origin: "server" } if data.length is 1
 		return { id: parseInt( data[2] ), origin: data[0] }
 		
+	# Returns true if this is a local instance
 	# 
+	# @return [Boolean] true if local, false if synced instance
 	#
 	isLocal : () ->
 		return Model.Module.extractId( @id ).origin isnt "server"
@@ -129,7 +131,7 @@ class Model.Module
 	#
 	# @param substrate [String] the substrate name
 	# @param value [Integer] the value
-	# @returns [self] for chaining
+	# @return [self] for chaining
 	#
 	setSubstrate: ( substrate, value ) ->
 		Model.EventManager.trigger( 'module.set.substrate', @, [ substrate, @starts[ substrate ] ? undefined, value ] )	
@@ -167,7 +169,13 @@ class Model.Module
 		)
 		
 		unless result
-			Model.EventManager.trigger( 'notification', @, [ 'module', 'test', [ compounds, tests ] ] )	
+			Model.EventManager.trigger( 'notification', @, 
+				[ 
+					'module', 'test',
+					"I need compounds in #{ @constructor.name }:#{ @name } but they are not available.",
+					[ compounds, tests ] 
+				] 
+			)	
 		
 		return result
 		
@@ -180,7 +188,13 @@ class Model.Module
 	_ensure : ( test, message = '' ) ->
 		
 		unless test
-			Model.EventManager.trigger( 'notification', @, [ 'module', 'ensure', [ message ] ] )	
+			Model.EventManager.trigger( 'notification', @, 
+				[ 
+					'module', 'test',
+					"In #{ @constructor.name }:#{ @name } an ensure failed: #{ message }",
+					[] 
+				] 
+			)		
 		
 		return test
 		
@@ -188,19 +202,17 @@ class Model.Module
 	#
 	# @param [String] key The changed property
 	# @param [val] value The value of the changed property
-	# @returns [self] for chaining
+	# @return [self] for chaining
 	#
 	_do : ( key, value ) ->
-		console.log "Doing: #{key}", @[ key ], value
 		@[ key ] = value
-		console.log "Done: #{key}", @[ key ], value
 		return this
 
 	# Adds a move to the undotree
 	#
 	# @param [String] key, the changed property
 	# @param [val] value, the value of the changed property 
-	# @returns [self] for chaining
+	# @return [self] for chaining
 	#
 	_addMove: ( key, value, param ) ->
 		@_tree.add [ key, value, param ]
@@ -208,11 +220,10 @@ class Model.Module
 
 	# Undoes the most recent move
 	#
-	# @returns [self] for chaining
+	# @return [self] for chaining
 	#
 	undo: ( ) ->
 		result = @_tree.undo()
-		console.log "I would like to undo: ", result
 		if result isnt null
 			[ key, value, param ] = result
 			@_do( key, value )
@@ -220,11 +231,10 @@ class Model.Module
 
 	# Redoes the most recently undone move
 	#
-	# @returns [self] for chaining
+	# @return [self] for chaining
 	#
 	redo : ( ) ->
 		result = @_tree.redo()
-		console.log "I would like to redo: ", result
 		if result isnt null
 			[ key, value, param ] = result
 			@_do( key, param )
@@ -255,7 +265,7 @@ class Model.Module
 		
 	# Tries to save a module
 	#
-	save : ( cell = 1 ) ->
+	save : ( cell ) ->
 		
 		serialized_data = @serialize( false )
 		
@@ -316,7 +326,16 @@ class Model.Module
 						
 						.fail( ( data ) => 
 							Model.EventManager.trigger( 
-								'notification', @, [ 'module', 'save', [ 'create instance', data, module_instance_data ] ] )	
+								'notification', @, 
+								[ 
+									'module', 'save', 
+									[ 
+										'create instance', 
+										data, 
+										module_instance_data 
+									] 
+								] 
+							)	
 						)
 				
 				# This is the update
@@ -327,7 +346,16 @@ class Model.Module
 			
 			.fail( ( data ) => 
 				Model.EventManager.trigger( 
-					'notification', @, [ 'module', 'save', [ 'get template', data, module_template_data ] ] )	
+					'notification', @, 
+					[ 
+						'module', 'save', 
+						[ 
+							'get template', 
+							data, 
+							module_template_data 
+						] 
+					] 
+				)	
 			)
 		
 	# Deserializes a module
@@ -348,6 +376,12 @@ class Model.Module
 		eval( "step = #{serialized.step}" ) if serialized.step?
 		return new fn[ serialized.type ]( serialized.parameters, step )
 		
+	# Loads a module
+	# 
+	# @param module_id [Integer] the id of the module
+	# @param cell [Model.Cell] the cell to load to
+	# @param callback [Function] function to call on completion
+	#
 	@load : ( module_id, cell, callback ) ->
 		module = new Model.Module( { id: module_id } )
 		$.get( module.url, { all: true } )

@@ -1,25 +1,28 @@
-# Simulates a cell border from lipids
+# Simulates a cell border of lipids
 #
 # Parameters
-# ------------------ ------------------ ------------------
-# k
-#	Synthesize rate
-# consume
-#	All the substrates required for DNA creation
+# --------------------------------------------------------
+#
+# - k
+#    - Synthesize rate
+# - consume
+#    - All the metabolites required for Lipid creation
 # 
 # Properties
-# ------------------ ------------------ ------------------
-# vLipidProd
-#	k * this * consume
-# dilution
-#	mu * this
+# --------------------------------------------------------
+#
+# - vLipidProd
+#    - k * this * consume
+# - dilution
+#    - mu * this
 #
 # Equations
-# ------------------ ------------------ ------------------
-# this / dt
-#	vLipidProd - dilution
-# consume / dt
-#	- vLipidProd
+# --------------------------------------------------------
+# 
+# - this / dt
+#    - vLipidProd - dilution
+# - consume / dt
+#    - vLipidProd
 #
 class Model.Lipid extends Model.Module
 

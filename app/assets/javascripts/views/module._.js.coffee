@@ -1,3 +1,5 @@
+# The module view shows a module
+#
 class View.Module
 	
 	# Creates a new module view
@@ -531,4 +533,3 @@ class View.Module
 		return []			
 
 (exports ? this).View.Module = View.Module
-
