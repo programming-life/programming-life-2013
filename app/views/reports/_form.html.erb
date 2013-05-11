@@ -1,0 +1,33 @@
+<%= nested_form_for(@report, :html => {:class => "form-horizontal"} ) do |f| %>
+	<% if @report.errors.any? %>
+    <div class="alert alert-block alert-error">
+		<h2><%= pluralize(@report.errors.count, "error") %></h2>
+
+		<ul>
+		<% @report.errors.full_messages.each do |msg| %>
+			<li><%= msg %></li>
+		<% end %>
+		</ul>
+    </div>
+	<% end %>
+
+	<div class="control-group">
+		<%= f.label :id, :class => "control-label" %>
+		<div class="controls">
+			<div>
+				<%= (@report.new_record? ? '<span class="label label-info">new unique id</span>'.html_safe : @report.id) %>
+			</div>
+		</div>
+	</div>
+	
+	<div class="control-group">
+		<%= f.label :cell_id, 'Reports on', :class => "control-label" %>
+		<div class="controls">
+			<%= f.select :cell_id, Cell.all.collect {|x| [ x.name, x.id ] }, {}, :multiple => false, :disabled => !@report.new_record?  %>
+		</div>
+	</div>
+	
+	<div class="form-actions">
+		<%= f.submit :class => "btn btn-primary" %>
+	</div>
+<% end %>
