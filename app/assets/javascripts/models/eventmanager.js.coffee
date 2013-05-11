@@ -1,6 +1,4 @@
-# This is the model of a cell. It holds modules and substrates and is capable
-# of simulating the modules for a timespan. A cell comes with one default 
-# module which is the Cell Growth.
+# This is the event manager to bind events
 #
 class Model.EventManager
 	
