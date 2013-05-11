@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class ReportControllerTest < ActionController::TestCase
+class ReportsControllerTest < ActionController::TestCase
   setup do
     @report = reports(:one)
   end
@@ -26,7 +26,7 @@ class ReportControllerTest < ActionController::TestCase
       delete :destroy, id: @report
     end
 
-    assert_redirected_to report_index_path
+    assert_redirected_to reports_path
   end
 
 end

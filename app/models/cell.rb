@@ -13,6 +13,7 @@ class Cell < ActiveRecord::Base
   
 	has_many :module_instances, :dependent => :destroy
 	has_many :module_templates, :through => :module_instances
+	has_one :report, :dependent => :destroy
  
 	accepts_nested_attributes_for :module_instances, :reject_if => proc { |attr| attr[:module_template_id].to_i == 0 }, :allow_destroy => true
 
