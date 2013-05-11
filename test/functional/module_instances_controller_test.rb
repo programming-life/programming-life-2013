@@ -20,7 +20,8 @@ class ModuleInstancesControllerTest < ActionController::TestCase
 		assert_difference('ModuleInstance.count') do
 			post :create, module_instance: { 
 					:module_template_id => @module_instance.module_template_id,
-					:cell_id => @module_instance.cell_id
+					:cell_id => @module_instance.cell_id,
+					:name => @module_instance.name
 				}
 		end
 

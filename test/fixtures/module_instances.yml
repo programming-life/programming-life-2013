@@ -16,8 +16,10 @@ one:
   id: 1
   cell_id: 1
   module_template_id: 1
+  name: 'foo'
 
 two: 
   id: 2
   cell_id: 1
   module_template_id: 2
+  name: 'bar'
