@@ -196,17 +196,24 @@ class Model.Transporter extends Model.Module
 		super params, step
 		
 	
-	#
+	# Validates that the type is set
+	# 
+	# @return [Boolean] true if validation passes
 	#
 	validate_type: () -> 
 		return ( @type is Model.Transporter.Active or @type is Model.Transporter.Passive )
 	
-	#
+	# Validates that the direction is set
+	# 
+	# @return [Boolean] true if validation passes
 	#
 	validate_direction: () ->
 		return ( @direction is Model.Transporter.Inward or @direction is Model.Transporter.Outward )
 	
+	# Gets the names of the transported metabolites
 	#
+	# @param transported [String] base name of the metabolite
+	# @return [Array<String>] an array with [ origin name, destination name ]
 	#
 	getTransportedNames: ( transported ) ->
 		result = [ "#{transported}#int", "#{transported}#ext" ]

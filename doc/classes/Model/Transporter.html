@@ -238,31 +238,31 @@
   <li>
     <span class='signature'>
       <a href='#validate_type-instance'>
-        - (void) <strong>validate_type</strong>()
+        - (Boolean) <strong>validate_type</strong>()
       </a>
     </span>
     <span class='desc'>
-      
+      Validates that the type is set
     </span>
   </li>
   <li>
     <span class='signature'>
       <a href='#validate_direction-instance'>
-        - (void) <strong>validate_direction</strong>()
+        - (Boolean) <strong>validate_direction</strong>()
       </a>
     </span>
     <span class='desc'>
-      
+      Validates that the direction is set
     </span>
   </li>
   <li>
     <span class='signature'>
       <a href='#getTransportedNames-instance'>
-        - (void) <strong>getTransportedNames</strong>(transported)
+        - (Array&lt;String&gt;) <strong>getTransportedNames</strong>(transported)
       </a>
     </span>
     <span class='desc'>
-      
+      Gets the names of the transported metabolites
     </span>
   </li>
 </ul>
@@ -716,30 +716,77 @@
       <div class='methods'>
   <div class='method_details'>
     <p class='signature' id='validate_type-instance'>
-      - (void) <strong>validate_type</strong>()
+      - (Boolean) <strong>validate_type</strong>()
     </p>
-    <div class='tags'>
+    <div class='docstring'>
+  <p>Validates that the type is set</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Boolean</tt>)
+      &mdash;
+      <span class='desc'>true if validation passes</span>
+    </li>
+  </ul>
 </div>
   </div>
   <div class='method_details'>
     <p class='signature' id='validate_direction-instance'>
-      - (void) <strong>validate_direction</strong>()
+      - (Boolean) <strong>validate_direction</strong>()
     </p>
-    <div class='tags'>
+    <div class='docstring'>
+  <p>Validates that the direction is set</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Boolean</tt>)
+      &mdash;
+      <span class='desc'>true if validation passes</span>
+    </li>
+  </ul>
 </div>
   </div>
   <div class='method_details'>
     <p class='signature' id='getTransportedNames-instance'>
-      - (void) <strong>getTransportedNames</strong>(transported)
+      - (Array&lt;String&gt;) <strong>getTransportedNames</strong>(transported)
     </p>
-    <div class='tags'>
+    <div class='docstring'>
+  <p>Gets the names of the transported metabolites</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>transported</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>base name of the metabolite</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Array&lt;String&gt;</tt>)
+      &mdash;
+      <span class='desc'>an array with [ origin name, destination name ]</span>
+    </li>
+  </ul>
 </div>
   </div>
 </div>
     </div>
     <div id='footer'>
   Generated on
-  Sun May 12 2013 04:46:18 GMT+0200 (W. Europe Daylight Time)
+  Sun May 12 2013 04:54:49 GMT+0200 (W. Europe Daylight Time)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6
