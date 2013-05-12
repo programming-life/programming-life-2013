@@ -299,11 +299,11 @@ class Model.Cell
 	# @param timespan [Integer] the time it should run for
 	# @return [self] chainable instance
 	#
-	run : ( timespan ) ->
+	run : ( timespan, base_values = [] ) ->
 		
 		Model.EventManager.trigger( 'cell.before.run', @, [ timespan ] )
 		
-		substrates = {}
+		substrates = { }
 		variables = [ ]
 		values = [ ]
 						
@@ -325,7 +325,22 @@ class Model.Cell
 					variables.push name
 					values.push value
 				else
-					values[index] += value
+					values[ index ] += value
+	
+		# If we got a pre set of values, we can use that
+		if base_values.length is values.length
+			values = base_values
+		else if base_values.length > 0
+			Model.EventManager.trigger( 'notification', @, 
+				[ 
+					'cell', 'run', 'cell:basevalues',
+					'Compounds have been added or removed since the last run, so I can not continue the calculation.',
+					[
+						values,
+						base_values
+					]
+				] 
+			)
 	
 		# Create the mapping from variable to value index
 		mapping = { }
@@ -454,7 +469,17 @@ class Model.Cell
 				
 				.fail( ( data ) => 
 					Model.EventManager.trigger( 
-						'notification', @, [ 'cell', 'save', [ 'create', data, module_instance_data ] ] )	
+						'notification', @, 
+						[ 
+							'cell', 'save', 'cell.save',
+							"I am trying to save the cell #{ @id } but an error occured: #{ data }",
+							[ 
+								'create', 
+								data, 
+								module_instance_data 
+							] 
+						] 
+					)	
 				)
 		
 		# This is the update
@@ -467,8 +492,19 @@ class Model.Cell
 				)
 				
 				.fail( ( data ) => 
+				
 					Model.EventManager.trigger( 
-						'notification', @, [ 'cell', 'save', [ 'update', data, module_instance_data ] ] )	
+						'notification', @, 
+						[ 
+							'cell', 'save', 'cell.save',
+							"I am trying to update the cell #{ @id } but an error occured: #{ data }",
+							[ 
+								'update', 
+								data, 
+								module_instance_data 
+							] 
+						] 
+					)	
 				)
 	
 		subsequent_calls = []
