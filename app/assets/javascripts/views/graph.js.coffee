@@ -2,9 +2,13 @@
 #
 class View.Graph
 	
-	# Maximum number of simultainiously displayed data sets
+	# @property [Integer] Maximum number of simultainiously displayed data sets
 	#
 	MAX_DATASETS : 2
+	
+	# @property [Integer] Maximum length of a set
+	#
+	MAX_LENGTH : 100
 	
 	# Construct a new Graph object
 	#
@@ -12,6 +16,7 @@ class View.Graph
 	# @param title [String] The title of the graph	
 	#
 	constructor: ( paper, title, parent) ->
+	
 		@_paper = paper
 		@_title = title
 		@_datasets = []
@@ -32,7 +37,16 @@ class View.Graph
 	# @return [self] chainable self
 	#
 	addData: ( data ) ->
-		@_datasets.push( data )
+		@_datasets.push data
+		return @
+		
+	appendData: ( data ) ->
+		
+		if @_datasets.length is 0
+			addData data
+			return @
+
+		@_datasets[ @_datasets.length - 1 ]  = @_datasets[ @_datasets.length - 1 ].concat _( data ).rest()
 		return @
 		
 	# Clears the view
@@ -61,12 +75,15 @@ class View.Graph
 
 		@_contents = @_paper.set()
 
-		width = 200 * scale
-		height = width * scale
+		width = 300 * scale
+		height = 150 * scale
 
 		for set in @_datasets
-			xValues = ( num for num in [ 1..set.length ] by 1 )
-		yValues = @_datasets
+			max = set.length
+			min = Math.max( max - @MAX_LENGTH, 0 )
+			xValues = ( num for num in [ min..max ] by 1 )
+			
+		yValues = _( @_datasets ).map( ( set ) -> _( set ).rest( min ) )
 		
 		# Show the title
 		text = @_drawTitle( x, y, scale )
