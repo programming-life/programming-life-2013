@@ -329,8 +329,12 @@ class Model.Cell
 	
 		# If we got a pre set of values, we can use that
 		if base_values.length is values.length
+			
 			values = base_values
+			append = on
+			
 		else if base_values.length > 0
+		
 			Model.EventManager.trigger( 'notification', @, 
 				[ 
 					'cell', 'run', 'cell:basevalues',
@@ -341,6 +345,7 @@ class Model.Cell
 					]
 				] 
 			)
+			append = off
 	
 		# Create the mapping from variable to value index
 		mapping = { }
@@ -398,7 +403,7 @@ class Model.Cell
 		Model.EventManager.trigger( 'cell.after.run', @, [ timespan, sol, mapping ] )
 		
 		# Return the system results
-		return { results: sol, map: mapping }
+		return { results: sol, map: mapping, append: append }
 	
 	# Serializes a cell
 	# 
