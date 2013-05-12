@@ -4,8 +4,8 @@ class View.Cell
 
 	# Constructor for this view
 	# 
-	# @params paper [Raphael] paper parent
-	# @params cell [Model.Cell] cell to view
+	# @param paper [Raphael] paper parent
+	# @param cell [Model.Cell] cell to view
 	# 	
 	constructor: ( paper, cell ) ->
 		@_paper = paper
@@ -153,7 +153,7 @@ class View.Cell
 	# Returns the location for a module
 	#
 	# @param module [Model.Module] the module to get the location for
-	# @returns [Object] the size as an object with x, y
+	# @return [Object] the size as an object with x, y
 	#
 	getLocationForModule: ( module, params ) ->
 		x = 0
@@ -386,7 +386,7 @@ class View.Cell
 
 	# Draws red lines
 	#
-	# @params x [Integer] x position
+	# @param x [Integer] x position
 	#
 	_drawRedLines: ( x ) ->
 		for key, graph of @_graphs

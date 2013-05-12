@@ -132,7 +132,7 @@
     </span>
     <span class='constructor note title'>Constructor</span>
     <span class='desc'>
-      Constructor for this view @params paper [Raphael] paper parent @params cell [Model.Cell] cell to view
+      Constructor for this view
     </span>
   </li>
   <li>
@@ -180,11 +180,11 @@
   <li>
     <span class='signature'>
       <a href='#getLocationForModule-instance'>
-        - (void) <strong>getLocationForModule</strong>(module, params)
+        - (Object) <strong>getLocationForModule</strong>(module, params)
       </a>
     </span>
     <span class='desc'>
-      Returns the location for a module @returns [Object] the size as an object with x, y
+      Returns the location for a module
     </span>
   </li>
   <li>
@@ -264,7 +264,7 @@
       </a>
     </span>
     <span class='desc'>
-      Draws red lines @params x [Integer] x position
+      Draws red lines
     </span>
   </li>
 </ul>
@@ -275,10 +275,28 @@
       - (void) <strong>constructor</strong>(paper, cell)
     </p>
     <div class='docstring'>
-  <p>Constructor for this view</p><p>@params paper [Raphael] paper parent
-@params cell [Model.Cell] cell to view</p>
+  <p>Constructor for this view</p>
 </div>
 <div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>paper</span>
+      <span class='type'>
+        (<tt>Raphael</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>paper parent</span>
+    </li>
+    <li>
+      <span class='name'>cell</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Model/Cell.html'>Model.Cell</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>cell to view</span>
+    </li>
+  </ul>
 </div>
   </div>
 </div>
@@ -393,10 +411,10 @@
   </div>
   <div class='method_details'>
     <p class='signature' id='getLocationForModule-instance'>
-      - (void) <strong>getLocationForModule</strong>(module, params)
+      - (Object) <strong>getLocationForModule</strong>(module, params)
     </p>
     <div class='docstring'>
-  <p>Returns the location for a module</p><p>@returns [Object] the size as an object with x, y</p>
+  <p>Returns the location for a module</p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
@@ -408,6 +426,15 @@
       </span>
       &mdash;
       <span class='desc'>the module to get the location for</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Object</tt>)
+      &mdash;
+      <span class='desc'>the size as an object with x, y</span>
     </li>
   </ul>
 </div>
@@ -648,16 +675,27 @@ and gracefully defers execution of this step function. </p>
       - (void) <strong>_drawRedLines</strong>(x)
     </p>
     <div class='docstring'>
-  <p>Draws red lines</p><p>@params x [Integer] x position</p>
+  <p>Draws red lines</p>
 </div>
 <div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>x</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>x position</span>
+    </li>
+  </ul>
 </div>
   </div>
 </div>
     </div>
     <div id='footer'>
   Generated on
-  Sun May 12 2013 04:43:44 GMT+0200 (W. Europe Daylight Time)
+  Sun May 12 2013 04:46:18 GMT+0200 (W. Europe Daylight Time)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6
