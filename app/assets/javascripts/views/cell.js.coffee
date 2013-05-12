@@ -11,7 +11,8 @@ class View.Cell
 		@_paper = paper
 		@_cell = cell
 		
-		@_container = Raphael( 'graphs', 800, 1000 )
+		@_container = Raphael( 'graphs', "100%", 1 )
+		@_container.setViewBox( 0, 0, 1000, 1000 ) # 1000 pixels, 1000 pixels
 
 		@_views = []
 		@_drawn = []
@@ -59,6 +60,7 @@ class View.Cell
 	# @param scale [Integer] scale
 	#
 	draw: ( x, y, scale ) ->
+	
 		@_x = x
 		@_y = y
 		@_scale = scale
@@ -116,9 +118,9 @@ class View.Cell
 					y: y
 
 			if (view instanceof View.Tree )
-				placement =
-					x: 300
-					y: 100
+				counter = counters[ 'graphs' ] ? 0
+				placement = @_getGraphPlacement( 0, 0, scale, counter )
+				counters[ 'graphs' ]++
 
 			view.draw( placement.x, placement.y, scale )
 		
@@ -266,15 +268,17 @@ class View.Cell
 	#
 	_getGraphPlacement: ( basex, basey, scale, graph_num ) ->
 	
-		x = 100
-		y = 100
+		console.log basex, basey
+		x = basex + 100
+		y = basey + 50
 		
 		unless graph_num is 0
-			width = 300 * scale
-			height = 150 * scale
-			padding = 150 * scale
-			x += ( width + padding ) * ( graph_num % 2 )
-			y += ( height + padding ) * Math.floor( graph_num / 2 ) 
+			width = 350 
+			height = 175
+			padding_x = 200
+			padding_y = 100
+			x += ( width + padding_x ) * ( graph_num % 2 )
+			y += ( height + padding_y ) * Math.floor( graph_num / 2 ) 
 		
 		return {
 			x: x
@@ -304,7 +308,11 @@ class View.Cell
 			
 			placement = @_getGraphPlacement( x, y, scale, graph_num++ )
 			@_graphs[ key ].draw( placement.x, placement.y, scale )
+			
 		
+		height = y + 100 + Math.ceil( graph_num / 2 ) * 175 + ( Math.ceil( graph_num / 2 ) - 1 ) * 100
+		@_container.setViewBox( 0, 0, 1000, height )
+		@_container.setSize( "100%", height )
 		return @_graphs
 	
 	# Starts drawing the simulation
@@ -348,7 +356,7 @@ class View.Cell
 		@_iteration = cell_data.iteration
 		
 		console.log 'step', "#{ cell_data.from } -> #{ cell_data.to }"
-		@_drawGraphs( cell_data.datasets, @_x, @_y, @_scale, @_iteration > 1  )
+		@_drawGraphs( cell_data.datasets, 0, 0, @_scale, @_iteration > 1  )
 		
 		return _( cell_data.results.y ).last()
 	

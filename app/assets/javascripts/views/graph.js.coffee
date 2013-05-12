@@ -75,8 +75,8 @@ class View.Graph
 
 		@_contents = @_paper.set()
 
-		width = 300 * scale
-		height = 150 * scale
+		width = 350
+		height = 175
 
 		for set in @_datasets
 			max = set.length
