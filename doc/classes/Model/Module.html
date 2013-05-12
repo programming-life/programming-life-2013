@@ -190,12 +190,62 @@
   </li>
   <li>
     <span class='signature'>
+      <a href='#getCompound-instance'>
+        - (Integer) <strong>getCompound</strong>(compound)
+      </a>
+    </span>
+    <span class='desc'>
+      Gets the compounds start value
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#getMetabolite-instance'>
+        - (Integer) <strong>getMetabolite</strong>(metabolite)
+      </a>
+    </span>
+    <span class='desc'>
+      Gets the metabolite start value (alias for getCompound)
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
       <a href='#getSubstrate-instance'>
         - (Integer) <strong>getSubstrate</strong>(substrate)
       </a>
     </span>
     <span class='desc'>
-      Gets the substrate start value
+      Gets the substrate start value (alias for getCompound)
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#getProduct-instance'>
+        - (Integer) <strong>getProduct</strong>(product)
+      </a>
+    </span>
+    <span class='desc'>
+      Gets the product start value (alias for getCompound)
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#setCompound-instance'>
+        - (self) <strong>setCompound</strong>(compound, value)
+      </a>
+    </span>
+    <span class='desc'>
+      Sets the compound to the start values
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#setMetabolite-instance'>
+        - (self) <strong>setMetabolite</strong>(metabolite, value)
+      </a>
+    </span>
+    <span class='desc'>
+      Sets the metabolite to the start values (alias for setCompound)
     </span>
   </li>
   <li>
@@ -205,7 +255,17 @@
       </a>
     </span>
     <span class='desc'>
-      Sets the substrate to the start values
+      Sets the substrate to the start values (alias for setCompound)
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#setProduct-instance'>
+        - (self) <strong>setProduct</strong>(product, value)
+      </a>
+    </span>
+    <span class='desc'>
+      Sets the product to the start values (alias for setCompound)
     </span>
   </li>
   <li>
@@ -231,7 +291,7 @@
   <li>
     <span class='signature'>
       <a href='#_ensure-instance'>
-        - (Boolean) <strong>_ensure</strong>(test, message = '')
+        - (Boolean) <strong>_ensure</strong>(test, message)
       </a>
     </span>
     <span class='desc'>
@@ -457,11 +517,71 @@
 </div>
   </div>
   <div class='method_details'>
+    <p class='signature' id='getCompound-instance'>
+      - (Integer) <strong>getCompound</strong>(compound)
+    </p>
+    <div class='docstring'>
+  <p>Gets the compounds start value</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>compound</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the compound name</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Integer</tt>)
+      &mdash;
+      <span class='desc'>the value</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='getMetabolite-instance'>
+      - (Integer) <strong>getMetabolite</strong>(metabolite)
+    </p>
+    <div class='docstring'>
+  <p>Gets the metabolite start value (alias for getCompound)</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>metabolite</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the metabolite name</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Integer</tt>)
+      &mdash;
+      <span class='desc'>the value</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
     <p class='signature' id='getSubstrate-instance'>
       - (Integer) <strong>getSubstrate</strong>(substrate)
     </p>
     <div class='docstring'>
-  <p>Gets the substrate start value</p>
+  <p>Gets the substrate start value (alias for getCompound)</p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
@@ -487,11 +607,117 @@
 </div>
   </div>
   <div class='method_details'>
+    <p class='signature' id='getProduct-instance'>
+      - (Integer) <strong>getProduct</strong>(product)
+    </p>
+    <div class='docstring'>
+  <p>Gets the product start value (alias for getCompound)</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>product</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the product name</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Integer</tt>)
+      &mdash;
+      <span class='desc'>the value</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='setCompound-instance'>
+      - (self) <strong>setCompound</strong>(compound, value)
+    </p>
+    <div class='docstring'>
+  <p>Sets the compound to the start values</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>compound</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the compound name</span>
+    </li>
+    <li>
+      <span class='name'>value</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the value</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>self</tt>)
+      &mdash;
+      <span class='desc'>for chaining</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='setMetabolite-instance'>
+      - (self) <strong>setMetabolite</strong>(metabolite, value)
+    </p>
+    <div class='docstring'>
+  <p>Sets the metabolite to the start values (alias for setCompound)</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>metabolite</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the metabolite name</span>
+    </li>
+    <li>
+      <span class='name'>value</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the value</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>self</tt>)
+      &mdash;
+      <span class='desc'>for chaining</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
     <p class='signature' id='setSubstrate-instance'>
       - (self) <strong>setSubstrate</strong>(substrate, value)
     </p>
     <div class='docstring'>
-  <p>Sets the substrate to the start values</p>
+  <p>Sets the substrate to the start values (alias for setCompound)</p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
@@ -503,6 +729,44 @@
       </span>
       &mdash;
       <span class='desc'>the substrate name</span>
+    </li>
+    <li>
+      <span class='name'>value</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the value</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>self</tt>)
+      &mdash;
+      <span class='desc'>for chaining</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='setProduct-instance'>
+      - (self) <strong>setProduct</strong>(product, value)
+    </p>
+    <div class='docstring'>
+  <p>Sets the product to the start values (alias for setCompound)</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>product</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the product name</span>
     </li>
     <li>
       <span class='name'>value</span>
@@ -606,7 +870,7 @@
   </div>
   <div class='method_details'>
     <p class='signature' id='_ensure-instance'>
-      - (Boolean) <strong>_ensure</strong>(test, message = '')
+      - (Boolean) <strong>_ensure</strong>(test, message)
     </p>
     <div class='docstring'>
   <p>Ensures test to be true or notifies with message</p>
@@ -791,6 +1055,14 @@
       - (void) <strong>save</strong>(cell)
     </p>
     <div class='docstring'>
+  <div class='note todo'>
+    <strong>TODO:</strong>
+    if dynamic, also needs to save the template
+  </div>
+  <div class='note todo'>
+    <strong>TODO:</strong>
+    error handling
+  </div>
   <p>Tries to save a module</p>
 </div>
 <div class='tags'>
@@ -800,7 +1072,7 @@
     </div>
     <div id='footer'>
   Generated on
-  Sat May 11 2013 07:56:50 GMT+0200 (W. Europe Daylight Time)
+  Sun May 12 2013 04:43:44 GMT+0200 (W. Europe Daylight Time)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6
