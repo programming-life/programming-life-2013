@@ -1,7 +1,10 @@
+# The module view shows a module
+#
 class View.Module
 	
 	# Creates a new module view
-	# 
+	#
+	# @param paper [Raphael.Paper] the raphael paper
 	# @param module [Model.Module] the module to show
 	#
 	constructor: ( paper, module ) ->
@@ -31,7 +34,7 @@ class View.Module
 	# Generates a hashcode based on the module name
 	#
 	# @param hashee [String] the name to use as hash
-	# @returns [Integer] the hashcode
+	# @return [Integer] the hashcode
 	#
 	hashCode : ( hashee = @name ) ->
 		hash = 0
@@ -45,7 +48,7 @@ class View.Module
 	# Generates a colour based on the module name
 	#
 	# @param hashee [String] the name to use as hash
-	# @returns [String] the CSS color
+	# @return [String] the CSS color
 	#
 	hashColor : ( hashee = @name ) ->
 		return '#' + md5( hashee ).slice(0, 6) #@numToColor @hashCode hashee
@@ -56,7 +59,7 @@ class View.Module
 	# @param num [Integer] the seed for the colour
 	# @param alpha [Boolean] if on, uses rgba, else rgb defaults to off
 	# @param minalpha [Integer] the minimum alpha if on, defaults to 127
-	# @returns [String] the CSS color
+	# @return [String] the CSS color
 	#
 	numToColor : ( num, alpha = off, minalpha = 127 ) ->
 		num >>>= 0
@@ -72,26 +75,44 @@ class View.Module
 	# Runs if module is invalidated
 	# 
 	# @param module [Model.Module] the module invalidated
+	# @param params [Mixed] parameters pushed by event
 	#
 	onModuleInvalidated: ( module, params... ) =>
 		if module is @module
 			@redraw()
 
+	# Runs if module is selected
+	# 
+	# @param module [Model.Module] the module selected/deslected
+	# @param selected [Mixed] selected state
+	#
 	onModuleSelected: ( module, selected ) =>
-		if module is @module and selected isnt @_selected
-			console.log 'a'
-			@_selected = selected
-			@redraw()
-
+		
+		# If action runs on this module
+		if module is @module 
+		
+			# State changed
+			if selected isnt @_selected
+				@_selected = selected
+				@redraw()
+			
+		# Deselect if was selected 
 		else if selected is @_selected is true
 			@_selected = false
 			@redraw()
 
+	# Runs if module is hovered
+	# 
+	# @param module [Model.Module] the module hovered/dehovered
+	# @param selected [Mixed] hovered state
+	#
 	onModuleHovered: ( module, hovered ) =>
-		if module is @module and hovered isnt @_hovered
-			console.log hovered
-			@_hovered = hovered
-			@redraw()
+		
+		if module is @module 
+		
+			if hovered isnt @_hovered
+				@_hovered = hovered
+				@redraw()
 
 		else if hovered is @_hovered is true
 			@_hovered = false
@@ -124,11 +145,55 @@ class View.Module
 		@_scale = scale
 		@_color = @hashColor()
 
+		unless @_visible
+			return
+		
 		# If we're either hovered or selected, we will display a bigger version of the view
 		big = @_selected || @_hovered
 		padding = 15 * scale
 
 		# Start a set for contents
+		contents = @drawContents( x, y, scale, padding, big )
+
+		# Start a new set for the entire view
+		@_paper.setStart()
+
+		# Draw box
+		box = @drawBox(contents, scale)
+		box.insertBefore(contents)
+
+		# Draw shadow
+		if @_selected
+			closeButton = @drawCloseButton( box, scale )
+			closeButton?.click =>
+				Model.EventManager.trigger('module.set.selected', @module, [ false ])
+			shadow = @drawShadow(box, scale)
+
+		# Draw hitbox
+		hitbox = @drawHitbox(box, scale)
+		hitbox.click =>
+			Model.EventManager.trigger('module.set.selected', @module, [ true ])
+
+		if @_hovered
+			hitbox.mouseout =>			
+				Model.EventManager.trigger('module.set.hovered', @module, [ false ])		
+		else 
+			hitbox.mouseover =>
+				Model.EventManager.trigger('module.set.hovered', @module, [ true ])
+
+		@_view = @_paper.setFinish()
+		@_view.push(contents)
+
+	# Draws contents
+	#
+	# @param x [Integer] x position
+	# @param y [Integer] y position
+	# @param scale [Integer] box scale
+	# @param big [Boolean] box is selected or hovered
+	# @return [Raphael] the contents
+	#
+	drawContents: ( x, y, scale, padding, big ) ->
+	
 		@_paper.setStart()		
 		switch @type
 		
@@ -164,7 +229,7 @@ class View.Module
 					
 					[ paramsText, paramsLine ] = @drawComponent( 'module', 'Information', x, substrateCircle.getBBox().y + substrateCircle.getBBox().height + 40 * scale , scale, params )
 			
-			when "Substrate"		
+			when "Metabolite"		
 			
 				params =
 					substrate: @module.name ? "..."
@@ -228,7 +293,7 @@ class View.Module
 				if big
 					params = 
 							objRect : substrateCircle.getBBox()
-							text: "name: #{@module.name}\ninitial:  #{@module.starts.name}\nk: #{@module.k}\nk_d: #{@module.k_d}\nsynth: #{@module.substrate}\n#{@module.substrate} > #{@module.name}"
+							text: "name: #{@module.name}\ninitial:  #{@module.starts.name}\nk: #{@module.k}\nk_d: #{@module.k_d}\nsynth: #{@module.consume}\n#{@module.consume} > #{@module.name}"
 							padding: padding
 						
 						[ paramsText, paramsLine ] = @drawComponent( 'module', 'Information', x, substrateCircle.getBBox().y + substrateCircle.getBBox().height + 40 * scale , scale, params )
@@ -273,7 +338,7 @@ class View.Module
 	
 					params = 
 						objRect : text.getBBox()
-						text: "initial cell:  #{@module.starts.name}\ninfrastructure: #{@module.infrastructure.join(', ')}\nsynth: #{@module.consume}\n#{@module.infrastructure.join(', ')}, #{@module.consume} > #{@module.name}"
+						text: "initial cell:  #{@module.starts.name}\ninfrastructure: #{@module.infrastructure}\nsynth: #{@module.metabolites}\n#{@module.infrastructure}, #{@module.metabolites} > #{@module.name}"
 						padding: padding
 					
 					[ paramsText, paramsLine ] = @drawComponent( 'module', 'Information', x, y, scale, params )
@@ -283,68 +348,56 @@ class View.Module
 				text.attr
 					'font-size': 20 * scale
 
-		contents = @_paper.setFinish()
+		return @_paper.setFinish()
 
-		# Start a new set for the entire view
-		@_paper.setStart()
-
-		# Draw box
-		box = @drawBox(contents, scale)
-		box.insertBefore(contents)
-
-		# Draw closebutton
-		closeButton = @drawCloseButton(box, scale)
-		closeButton.click =>
-			Model.EventManager.trigger('module.set.selected', @module, [ false ])
-
-		# Draw shadow
-		if @_selected
-			shadow = @drawShadow(box, scale)
-
-		# Draw hitbox
-		hitbox = @drawHitbox(box, scale)
-		hitbox.click =>
-			Model.EventManager.trigger('module.set.selected', @module, [ true ])
-
-		if @_hovered
-			hitbox.mouseout =>			
-				Model.EventManager.trigger('module.set.hovered', @module, [ false ])		
-		else 
-			hitbox.mouseover =>
-				Model.EventManager.trigger('module.set.hovered', @module, [ true ])
-
-
-		@_view = @_paper.setFinish()
-		@_view.push(contents)
-
-		
-
+	# Draws this view bounding box
+	#
+	# @return [Raphael] the contents
+	#
 	drawBox : ( elem, scale ) ->
 		rect = elem.getBBox()
 		padding = 15 * scale
 		box = @_paper.rect(rect.x - padding, rect.y - padding, rect.width + 2 * padding, rect.height + 2 * padding)
-		box.node.setAttribute('class', 'module-box')
+		
+		classname = 'module-box'
+		classname += ' hovered' if @_hovered
+		classname += ' selected' if @_selected
+		box.node.setAttribute( 'class', classname )
 		box.attr
 			r: 10 * scale
 
 		return box
 
+	# Draws this view close buttons
+	#
+	# @param elem [Raphael] element to draw for
+	# @param scale [Integer] the scale
+	# @return [Raphael] the contents
+	#
 	drawCloseButton : ( elem, scale ) ->
 		rect = elem.getBBox()
 
 		closeButton = @_paper.set()
 
-		circle = @_paper.circle(rect.x + rect.width, rect.y, 15 * scale)
+		circle = @_paper.circle( rect.x + rect.width, rect.y, 15 * scale)
 		circle.node.setAttribute('class', 'module-close')
 			
-		text = @_paper.text(rect.x + rect.width, rect.y, 'x')
+		text = @_paper.text( rect.x + rect.width, rect.y, 'x')
 		text.attr
 			'font-size': 20 * scale
 
-		closeButton.push(circle, text)
-
+		hitbox = @_paper.circle( rect.x + rect.width, rect.y, 15 * scale )
+		hitbox.node.setAttribute('class', 'module-hitbox')		
+		closeButton.push( circle, text, hitbox )
+		
 		return closeButton
 
+	# Draws this view shadow
+	#
+	# @param elem [Raphael] element to draw for
+	# @param scale [Integer] the scale
+	# @return [Raphael] the contents
+	#
 	drawShadow : ( elem, scale ) ->
 		shadow = elem.glow
 			width: 35
@@ -353,6 +406,12 @@ class View.Module
 
 		return shadow
 
+	# Draws this view hitbox
+	#
+	# @param elem [Raphael] element to draw for
+	# @param scale [Integer] the scale
+	# @return [Raphael] the contents
+	#
 	drawHitbox : ( elem, scale ) ->
 		rect = elem.getBBox()
 		hitbox = @_paper.rect(rect.x, rect.y, rect.width, rect.height)
@@ -368,7 +427,7 @@ class View.Module
 	# @param y [Integer] y position
 	# @param scale [Integer] scale
 	# @param params [Object] options
-	# @returns [Array<Object>] The drawn components
+	# @return [Array<Object>] The drawn components
 	#
 	drawComponent : ( module, component, x, y, scale, params = {} ) ->
 		switch component
@@ -474,4 +533,3 @@ class View.Module
 		return []			
 
 (exports ? this).View.Module = View.Module
-

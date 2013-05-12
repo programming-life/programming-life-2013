@@ -1,43 +1,105 @@
 # Simulates protein synthesization.
 #
+# Parameters
+# --------------------------------------------------------
+# 
+# - k
+#    - Synthesize rate
+# - k_d
+#    - Protein degradation
+# - consume
+#    - All the metabolites required for Protein creation
+# 
+# Properties
+# --------------------------------------------------------
+# 
+# - vProteinSynth
+#    - k * this * consume
+# - degradation
+#    - k_d * this
+# - dilution
+#    - mu * this
+#
+# Equations
+# --------------------------------------------------------
+# 
+# - this / dt
+#    - vProteinSynth - dilution - degradation
+# - consume / dt
+#    - vProteinSynth
+#
 class Model.Protein extends Model.Module
 
 	# Constructor for Protein
 	#
 	# @param params [Object] parameters for this module
-	# @param substrate [String] the substrate to be converted
+	# @param consume [String, Array<String>] the metabolite to be converted
 	# @param product [String] the product after conversion
 	# @param start [Integer] the initial value of metabolism, defaults to 0
 	# @param name [String] the name of the metabolism, defaults to "enzym"
 	# @option params [Integer] k the subscription rate, defaults to 1
 	# @option params [Integer] k_d the degration rate, defaults to 1
 	# @option params [String] dna the dna to use, defaults to "dna"
-	# @option params [String] substrate the substrate to convert, overrides food
+	# @option params [Array<String>] consume the metabolite to convert, overrides consume
 	# @option params [String] name the name of the protein, overrides name
 	#
-	constructor: ( params = {}, start = 0, food = "p_int", name = "protein" ) ->			
-		# Step function for lipids
-		step = ( t, substrates, mu ) ->
+	constructor: ( params = {}, start = 0, consume = "p#int", name = "protein" ) ->			
+		
+		# Define differential equations here
+		step = ( t, compounds, mu ) ->
 		
 			results = {}
-			if ( @_test( substrates, @dna, @substrate ) )
-				vprotsynth = @k * substrates[@dna] * substrates[@substrate]
-				degrade = @k_d * ( substrates[@name] ? 0 )
-				growth = mu * ( substrates[@name] ? 0 )
 			
-			if ( vprotsynth? and vprotsynth > 0 )
-				results[@name] = vprotsynth - growth - degrade
-				results[@substrate] = -vprotsynth
+			# Only if the components are available 
+			if ( @_test( compounds, @dna, @consume, @name  ) )
 				
+				# Rate of synthesization 
+				# - The DNA constant k_dna called k
+				# - The DNA itself called dna
+				# - The required metabolites 
+				#
+				vproteinsynth = @k * compounds[ @dna ]
+				for c in @consume
+					vproteinsynth *= compounds[ c ]
+					
+				# Rate of dilution because of cell division
+				# 
+				dilution = mu * compounds[ @name ]
+				
+				# Rate of degradation 
+				# 
+				degradation  = @k_d * compounds[ @name ]
+			
+			# If all components are available
+			if vproteinsynth?
+			
+				# The Protein increase is the rate minus dilution and degradation 
+				#
+				results[ @name ] = vproteinsynth - degradation  - dilution
+				
+				# All the metabolites required for synthesisation
+				# are hereby subtracted by the increase in Protein
+				#
+				for c in @consume
+					results[ c ] = - vproteinsynth
+					
 			return results
 		
 		# Default parameters set here
-		defaults = { 
+		defaults = {
+
+			# Parameters
 			k : 1
 			k_d : 1
+			consume: if _( consume ).isArray() then consume else [ consume ]
+			
+			# Meta-parameters
 			dna: "dna"
-			substrate: food
+			
+			# The name 
 			name : name
+			
+			# The start values
 			starts: { name : start }
 		}
 		

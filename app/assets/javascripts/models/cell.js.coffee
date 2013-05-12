@@ -10,10 +10,12 @@ class Model.Cell
 	# @param start [Integer] the initial value of cell
 	# @param paramscell [Object] parameters for the cell
 	# @param start [Integer] the initial value of cell
-	# @option params [String] lipid the name of lipid to consume
-	# @option params [String] protein the name of protein to consume
-	# @option params [String] consume the consume substrate to consume
+	# @option params [String] lipid the name of lipid for mu
+	# @option params [String] protein the name of protein for mu
+	# @option params [String] consume the consume metabolite for mu
 	# @option params [String] name the name, defaults to "cell"
+	# @option paramscell [Integer] id the id
+	# @option paramscell [Integer] creation the creation time
 	#
 	constructor: ( params = {}, start = 1, paramscell = {} ) ->
 		
@@ -24,7 +26,7 @@ class Model.Cell
 			writable: true
 		)
 		
-		Object.defineProperty( @, '_substrates',
+		Object.defineProperty( @, '_metabolites',
 			value: {}
 			configurable: false
 			enumerable: false
@@ -39,6 +41,7 @@ class Model.Cell
 		
 		paramscell = _( paramscell ).defaults( defaults )
 		for key, value of paramscell
+		
 			# The function to create a property out of param
 			#
 			# @param key [String] the property name
@@ -108,7 +111,9 @@ class Model.Cell
 		return { id: parseInt( data[0] ), origin: "server" } if data.length is 1
 		return { id: parseInt( data[2] ), origin: data[0] }
 		
-	# 
+	# Returns true if local cell
+	#
+	# @return [Boolean] true if local, false if synced
 	#
 	isLocal : () ->
 		return Model.Cell.extractId( @id ).origin isnt "server"
@@ -119,25 +124,68 @@ class Model.Cell
 	# @return [self] chainable instance
 	#
 	add: ( module ) ->
-		@_modules.push module
-		Model.EventManager.trigger( 'cell.add.module', @, [ module ] )
+	
+		# Transparent adding of metabolites
+		if module instanceof Model.Metabolite
+			name = _( module.name.split( '#' ) ).first()
+			if !@_metabolites[ name ]? 
+				@_metabolites[ name ] = { }
+				@_metabolites[ name ][ Model.Metabolite.Inside ] = undefined
+				@_metabolites[ name ][ Model.Metabolite.Ouside ] = undefined
+				
+			@_metabolites[ name ][ module.placement ] = module
+			Model.EventManager.trigger( 'cell.add.metabolite', @, [ module, name, module.amount, module.placement is Model.Metabolite.Inside, module.type is Model.Metabolite.Product ] )
+	
+		else
+			@_modules.push module
+			Model.EventManager.trigger( 'cell.add.module', @, [ module ] )
 		return this
 		
-	# Add substrate to cell
+	# Add metabolite to cell
 	#
-	# @param substrate [String] substrate to add
-	# @param amount [Integer] amount of substrate to add
+	# @param name [String] name of the metabolite to add
+	# @param amount [Integer] amount of metabolite to add
+	# @param supply [Integer] supply of param of metabolite
 	# @param inside_cell [Boolean] if true is placed inside the cell
 	# @param is_product [Boolean] if true is placed right of the cell
 	# @return [self] chainable instance
 	#
-	addSubstrate: ( substrate, amount, inside_cell = on, is_product = off ) ->
-		if ( @_substrates[ substrate ]? )
-			@_substrates[ substrate ].amount = amount
+	addMetabolite: ( name, amount, supply = 1, inside_cell = off, is_product = off ) ->
+		if !@_metabolites[ name ]? 
+			@_metabolites[ name ] = { }
+			@_metabolites[ name ][ Model.Metabolite.Inside ] = undefined
+			@_metabolites[ name ][ Model.Metabolite.Ouside ] = undefined
+
+		placement = if inside_cell then Model.Metabolite.Inside else Model.Metabolite.Outside
+		
+		if @_metabolites[ name ][ placement ]? 
+			@_metabolites[ name ][ placement ].amount = amount
 		else
-			@_substrates[ substrate ] = new Model.Substrate( {}, amount, substrate, inside_cell, is_product )
-			Model.EventManager.trigger( 'cell.add.substrate', @, [ @_substrates[ substrate ], substrate, amount, inside_cell, is_product ] )
+			type = if is_product then Model.Metabolite.Product else Model.Metabolite.Substrate
+			@_metabolites[ name ][ placement ] = new Model.Metabolite( { supply: supply }, amount, name, placement, type )
+			Model.EventManager.trigger( 'cell.add.metabolite', @, [ @_metabolites[ name ][ placement ], name, amount, inside_cell, is_product ] )
 		return this
+		
+	# Add metabolite substrate to cell
+	#
+	# @param name [String] name of the metabolite to add
+	# @param amount [Integer] amount of metabolite to add
+	# @param supply [Integer] supply of param of metabolite
+	# @param inside_cell [Boolean] if true is placed inside the cell
+	# @return [self] chainable instance
+	#
+	addSubstrate: ( name, amount, supply = 1, inside_cell = off ) ->
+		return @addMetabolite( name, amount, supply, inside_cell, off )
+		
+	# Add metabolite product to cell
+	#
+	# @param name [String] name of the metabolite to add
+	# @param amount [Integer] amount of metabolite to add
+	# @param inside_cell [Boolean] if true is placed inside the cell
+	# @return [self] chainable instance
+	#
+	addProduct: ( name, amount, inside_cell = on ) ->
+		return @addMetabolite( name, amount, 0, inside_cell, on )
 		
 	# Remove module from cell
 	#
@@ -149,15 +197,34 @@ class Model.Cell
 		Model.EventManager.trigger( 'cell.remove.module', @, [ module ] )
 		return this
 		
-	# Removes this substrate from cell
+	# Removes this metabolite from cell
 	#
-	# @param substrate [String] substrate to remove from this cell
+	# @param name [String] metabolites to remove from this cell
+	# @param placement [Integer] metabolite placement to remove from this cell
 	# @return [self] chainable instance
 	#
-	removeSubstrate: ( substrate ) ->
-		delete @_substrates[ substrate ]
-		Model.EventManager.trigger( 'cell.remove.substrate', @, [ substrate ] )
+	removeMetabolite: ( name, placement ) ->
+		delete @_metabolites[ name ][ placement ]
+		Model.EventManager.trigger( 'cell.remove.metabolite', @, [ name, placement ] )
 		return this
+		
+	# Removes this substrate from cell (alias for removeMetabolite)
+	#
+	# @param name [String] substrate to remove from this cell
+	# @param placement [Integer] substrate placement to remove from this cell
+	# @return [self] chainable instance
+	#
+	removeSubstrate: ( name, placement ) ->
+		return @removeMetabolite( name, placement )
+		
+	# Removes this product from cell (alias for removeProduct)
+	#
+	# @param name [String] product to remove from this cell
+	# @param placement [Integer] product placement to remove from this cell
+	# @return [self] chainable instance
+	#
+	removeProduct: ( name, placement ) ->
+		return @removeMetabolite( name, placement )
 		
 	# Checks if this cell has a module
 	#
@@ -167,55 +234,118 @@ class Model.Cell
 	has: ( module ) ->
 		return @_modules.indexOf( module ) isnt -1
 		
-	# Checks if this cell has this substrate
+	# Checks if this cell has this metabolite
 	# 
-	# @param substrate [String] the name of the substrate
+	# @param name [String] the name of the metabolite
+	# @param placement [Integer] metabolite placement
 	# @return [Boolean] true if contains
 	#
-	hasSubstrate : ( substrate ) ->
-		return @_substrates[ substrate ]?
+	hasMetabolite: ( name, placement ) ->
+		return @_metabolites[ name ][ placement ]?
 		
-	# Gets a substrate
+	# Checks if this cell has this substrate (alias for hasMetabolite)
 	# 
-	# @param substrate [String] the name of the substrate
-	# @return [Model.Substrate] the substrate
+	# @param name [String] the name of the substrate
+	# @param placement [Integer] substrate placement
+	# @return [Boolean] true if contains
 	#
-	getSubstrate : ( substrate ) ->
-		return @_substrates[ substrate ] ? null
-	
-	# Returns the amount of substrate in this cell
-	# @param substrate [String] substrate to check
-	# @return [Integer] amount of substrate
-	amountOf: ( substrate ) ->
-		return @_substrates[ substrate ]?.amount
-	
+	hasSubstrate: ( name, placement ) ->
+		return @hasMetabolite( name, placement )
 		
+	# Checks if this cell has this product (alias for hasMetabolite)
+	# 
+	# @param name [String] the name of the product
+	# @param placement [Integer] product placement
+	# @return [Boolean] true if contains
+	#
+	hasProduct: ( name, placement ) ->
+		return @hasMetabolite( name, placement )
+		
+	# Gets a metabolite
+	# 
+	# @param name [String] the name of the metabolite
+	# @param placement [Integer] metabolite placement
+	# @return [Model.Metabolite] the metabolite
+	#
+	getMetabolite: ( name, placement ) ->
+		return @_metabolites[ name ][ placement ] ? null
+		
+	# Gets a substrate (alias for getMetabolite)
+	# 
+	# @param name [String] the name of the substrate
+	# @param placement [Integer] substrate placement
+	# @return [Model.Metabolite] the substrate
+	#
+	getSubstrate: ( name, placement ) ->
+		return @getMetabolite( name, placement )
+		
+	# Gets a product (alias for getMetabolite)
+	# 
+	# @param name [String] the name of the product
+	# @param placement [Integer] product placement
+	# @return [Model.Metabolite] the product
+	#
+	getProduct: ( name, placement ) ->
+		return @getMetabolite( name, placement )
+	
+	# Returns the amount of metabolite in this cell
+	# @param name [String] metabolite to check
+	# @return [Integer] amount of metabolite
+	amountOf: ( name, placement ) ->
+		return @_metabolites[ name ][ placement ]?.amount
+	
 	# Runs this cell
 	#
 	# @param timespan [Integer] the time it should run for
 	# @return [self] chainable instance
 	#
-	run : ( timespan ) ->
+	run : ( timespan, base_values = [] ) ->
 		
 		Model.EventManager.trigger( 'cell.before.run', @, [ timespan ] )
 		
-		substrates = {}
+		substrates = { }
 		variables = [ ]
 		values = [ ]
 						
 		# We would like to get all the variables in all the equations, so
 		# that's what we are going to do. Then we can insert the value indices
 		# into the equations.
-		modules = _( @_modules ).concat( _.values( @_substrates ) )
+		modules = _( @_metabolites ).chain()
+			.map( ( ms ) -> _( ms ).values() )
+			.flatten()
+			.filter( ( ms ) -> ms instanceof Model.Metabolite )
+			.concat( @_modules )
+			.value()
+
 		for module in modules
-			for substrate, value of module.starts
-				name = module[substrate]
-				index = _(variables).indexOf( name ) 
+			for metabolite, value of module.starts
+				name = module[ metabolite ]
+				index = _( variables ).indexOf( name ) 
 				if ( index is -1 )
 					variables.push name
 					values.push value
 				else
-					values[index] += value
+					values[ index ] += value
+	
+		# If we got a pre set of values, we can use that
+		if base_values.length is values.length
+			
+			values = base_values
+			append = on
+			
+		else if base_values.length > 0
+		
+			Model.EventManager.trigger( 'notification', @, 
+				[ 
+					'cell', 'run', 'cell:basevalues',
+					'Compounds have been added or removed since the last run, so I can not continue the calculation.',
+					[
+						values,
+						base_values
+					]
+				] 
+			)
+			append = off
 	
 		# Create the mapping from variable to value index
 		mapping = { }
@@ -258,7 +388,7 @@ class Model.Cell
 			Model.EventManager.trigger( 'cell.before.step', @, [ t, v, mu, mapped ] )
 			
 			# Run all the equations
-			for module in @_modules
+			for module in modules
 				module_results = module.step( t, mapped, mu )
 				for variable, result of module_results
 					results[ mapping[ variable ] ] += result
@@ -273,63 +403,8 @@ class Model.Cell
 		Model.EventManager.trigger( 'cell.after.run', @, [ timespan, sol, mapping ] )
 		
 		# Return the system results
-		return { results: sol, map: mapping }
+		return { results: sol, map: mapping, append: append }
 	
-	# Visualizes this cell
-	#
-	# @param duration [Integer] A duration for the simulation.
-	# @param container [Object] A container for the graphs.
-	# @param options [Object] the options for this visualisation
-	# @option options [Integer] dt the timestep, defaults to 1
-	# @option options [Object] graph the graph options
-	# @option options [Object] graph.key the graph options for that key
-	# @option options [Object] graphs the original graphs
-	# 
-	# @return [Object] Returns the graphs
-	#
-	visualize: ( duration, container, options = { } ) ->
-		
-		cell_run = @run duration
-		results = cell_run.results
-		mapping = cell_run.map
-		
-		dt = options.dt ? 1
-		
-		# Get the interpolation for a fixed timestep instead of the adaptive timestep
-		# generated by the ODE. This should be fairly fast, since the values all 
-		# already there ( ymid and f )
-		interpolation = []
-		for time in [ 0 .. duration ] by dt
-			interpolation[ time ] = results.at time;
- 
-		graphs = options.graphs ? { }
-		
-		Model.EventManager.trigger( 'cell.before.visualize', @, [ duration, container, graphs ] )	
-		
-		# Draw all the substrates
-		for key, value of mapping
-		
-			# Get the options for this graph
-			graph_options = { dt : dt }
-			if ( options.graph )
-				graph_options = _( options.graph[ key ] ? options.graph ).extend( graph_options  ) 
-		
-			dataset = []
-			if ( !graphs[ key ] )
-				graphs[ key ] = new View.Graph( key, graph_options ) 
-			
-			# Push all the values, but round for float rounding errors
-			for time in [ 0 .. duration ] by dt
-				dataset.push( interpolation[ time ][ value ] ) 
-				
-			graphs[ key ].addData( dataset, graph_options )
-				.render(container)
-
-		Model.EventManager.trigger( 'cell.after.visualize', @, [ duration, container, graphs ] )		
-		
-		# Return graphs
-		return graphs		
-		
 	# Serializes a cell
 	# 
 	# @param to_string [Boolean] Stringifies object if try, default true
@@ -346,15 +421,16 @@ class Model.Cell
 		for module in @_modules
 			modules.push module.serialize( false )
 			
-		substrates = {}
-		for substrate, object of @_substrates
-			substrates[ substrate ] = object.serialize( false )
+		metabolites = {}
+		for name, packet of @_metabolites
+			for placement, object of packet
+				if object? and object isnt null
+					metabolites[ object.name ] = object.serialize( false )
 		
 		result = { 
 			parameters: parameters
 			type: type
-			modules: modules
-			substrates: substrates
+			modules: _( modules ).concat( _( metabolites ).values() )
 		}
 		
 		return JSON.stringify( result ) if to_string
@@ -362,7 +438,7 @@ class Model.Cell
 		
 	# Tries to save a module
 	#
-	save : () ->
+	save : ( ) ->
 		
 		save_data = @serialize( false )
 		
@@ -377,6 +453,12 @@ class Model.Cell
 		
 			for module in @_modules
 				module.save @id
+				
+			for name, packet of @_metabolites
+				for placement, object of packet
+					if object? and object isnt null
+						object.save @id
+			
 					
 		# This is the create
 		if @isLocal()
@@ -392,7 +474,17 @@ class Model.Cell
 				
 				.fail( ( data ) => 
 					Model.EventManager.trigger( 
-						'notification', @, [ 'cell', 'save', [ 'create', data, module_instance_data ] ] )	
+						'notification', @, 
+						[ 
+							'cell', 'save', 'cell.save',
+							"I am trying to save the cell #{ @id } but an error occured: #{ data }",
+							[ 
+								'create', 
+								data, 
+								module_instance_data 
+							] 
+						] 
+					)	
 				)
 		
 		# This is the update
@@ -405,8 +497,19 @@ class Model.Cell
 				)
 				
 				.fail( ( data ) => 
+				
 					Model.EventManager.trigger( 
-						'notification', @, [ 'cell', 'save', [ 'update', data, module_instance_data ] ] )	
+						'notification', @, 
+						[ 
+							'cell', 'save', 'cell.save',
+							"I am trying to update the cell #{ @id } but an error occured: #{ data }",
+							[ 
+								'update', 
+								data, 
+								module_instance_data 
+							] 
+						] 
+					)	
 				)
 	
 		subsequent_calls = []
@@ -423,19 +526,43 @@ class Model.Cell
 		fn = ( window || @ )["Model"]
 		
 		result = new fn[serialized.type]( undefined, undefined, serialized.parameters  )
+		
 		for module in result._modules
 			result.remove module
-		for substrate, object of result._substrates
-			result.removeSubstrate substrate
-		
+
 		for module in serialized.modules
 			result.add Model.Module.deserialize( module )
 			
-		for substrate, object of serialized.substrates
-			object = Model.Module.deserialize( object )
-			result._substrates[ substrate ] = object
-			
 		return result
+		
+	# Loads a cell
+	# 
+	# @param cell_id [Integer] the id of the cell
+	# @param callback [Function] function to call on completion
+	#
+	@load : ( cell_id, callback ) ->
+		cell = new Model.Cell( undefined, undefined, { id: cell_id } )
+		
+		$.get( cell.url, { all: true } )
+			.done( ( data ) =>
+				result = new Model.Cell( 
+					undefined,
+					undefined,
+					{ 
+						id: data.cell.id
+						name: data.cell.name
+						#creation: new Date(data.created_at).getTime()
+					}
+				)
+				for module in result._modules
+					result.remove module
+					
+				for module_id in data.modules
+					Model.Module.load( module_id, result )
+					
+				callback.apply( @, [ result ] ) if callback?
+			)
+		
 
 # Makes this available globally.
 (exports ? this).Model.Cell = Model.Cell

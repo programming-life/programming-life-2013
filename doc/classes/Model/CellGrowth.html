@@ -124,7 +124,32 @@
       </table>
       <h2>Overview</h2>
       <div class='docstring'>
-  <p>Simulates Cell Growth</p>
+  <p>Simulates Cell Growth / Population size</p><h2>Parameters</h2>
+<ul>
+<li>infrastructure<ul>
+<li>Infrastructure for population growth</li>
+</ul>
+</li>
+<li>metabolites<ul>
+<li>All the metabolites required for population growth</li>
+</ul>
+</li>
+</ul>
+<h2>Properties</h2>
+<ul>
+<li>mu<ul>
+<li>infrastructure * metabolites</li>
+</ul>
+</li>
+</ul>
+<h2>Equations</h2>
+<ul>
+<li>this / dt<ul>
+<li>mu * this</li>
+</ul>
+</li>
+</ul>
+
 </div>
 <div class='tags'>
 </div>
@@ -151,12 +176,27 @@
       </h3>
       <p class='inherited'>
                 <a href='../../classes/Model/Module.html#constructor-instance'>#constructor</a>,
+                <a href='../../classes/Model/Module.html#extractId-class'>.extractId</a>,
+                <a href='../../classes/Model/Module.html#isLocal-instance'>#isLocal</a>,
+                <a href='../../classes/Model/Module.html#getCompound-instance'>#getCompound</a>,
+                <a href='../../classes/Model/Module.html#getMetabolite-instance'>#getMetabolite</a>,
+                <a href='../../classes/Model/Module.html#getSubstrate-instance'>#getSubstrate</a>,
+                <a href='../../classes/Model/Module.html#getProduct-instance'>#getProduct</a>,
+                <a href='../../classes/Model/Module.html#setCompound-instance'>#setCompound</a>,
+                <a href='../../classes/Model/Module.html#setMetabolite-instance'>#setMetabolite</a>,
+                <a href='../../classes/Model/Module.html#setSubstrate-instance'>#setSubstrate</a>,
+                <a href='../../classes/Model/Module.html#setProduct-instance'>#setProduct</a>,
                 <a href='../../classes/Model/Module.html#step-instance'>#step</a>,
                 <a href='../../classes/Model/Module.html#_test-instance'>#_test</a>,
+                <a href='../../classes/Model/Module.html#_ensure-instance'>#_ensure</a>,
                 <a href='../../classes/Model/Module.html#_do-instance'>#_do</a>,
                 <a href='../../classes/Model/Module.html#_addMove-instance'>#_addMove</a>,
                 <a href='../../classes/Model/Module.html#undo-instance'>#undo</a>,
-        <a href='../../classes/Model/Module.html#redo-instance'>#redo</a>
+                <a href='../../classes/Model/Module.html#redo-instance'>#redo</a>,
+                <a href='../../classes/Model/Module.html#serialize-instance'>#serialize</a>,
+                <a href='../../classes/Model/Module.html#save-instance'>#save</a>,
+                <a href='../../classes/Model/Module.html#deserialize-class'>.deserialize</a>,
+        <a href='../../classes/Model/Module.html#load-class'>.load</a>
       </p>
       <h2>Constructor Details</h2>
       <div class='methods'>
@@ -193,12 +233,20 @@
   </h3>
   <ul class='options'>
     <li>
-      <span class='name'>consume</span>
+      <span class='name'>metabolites</span>
       <span class='type'>
-        (<tt>String</tt>)
+        (<tt>Array&lt;String&gt;</tt>)
       </span>
       &mdash;
-      <span class='desc'>the substrate to use for cell growth</span>
+      <span class='desc'>the metabolites to use for cell growth</span>
+    </li>
+    <li>
+      <span class='name'>infrastructure</span>
+      <span class='type'>
+        (<tt>Array&lt;String&gt;</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the compounds to use for cell growth</span>
     </li>
     <li>
       <span class='name'>name</span>
@@ -215,7 +263,7 @@
     </div>
     <div id='footer'>
   Generated on
-  Fri May 03 2013 22:38:25 GMT+0200 (W. Europe Daylight Time)
+  Sun May 12 2013 04:54:49 GMT+0200 (W. Europe Daylight Time)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

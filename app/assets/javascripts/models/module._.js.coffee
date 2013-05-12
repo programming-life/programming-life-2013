@@ -1,5 +1,4 @@
-# Baseclass of all modules. Defines basic behaviour like undo and redo 
-# mechanisms and solving of differential equations. 
+# Baseclass of all modules. 
 #
 class Model.Module
 
@@ -11,7 +10,7 @@ class Model.Module
 	constructor: ( params = {}, step ) -> 
 		
 		Object.defineProperty( @ , "_tree",
-			value: new UndoTree()
+			value: new Model.UndoTree()
 			configurable: false
 			enumerable: false
 			writable: true
@@ -24,6 +23,7 @@ class Model.Module
 
 		for key, value of params
 		
+			value = parseFloat( value ) if _( value ).isString() and !isNaN( value )
 			# The function to create a property out of param
 			#
 			# @param key [String] the property name
@@ -67,10 +67,10 @@ class Model.Module
 			
 			# @property [Integer] the amount of this substrate at start
 			get: ->
-				return @getSubstrate 'name'
+				return @getCompound 'name'
 				
 			set: ( value ) ->
-				@setSubstrate 'name', value
+				@setCompound 'name', value
 				
 			configurable: false
 			enumerable: false
@@ -103,6 +103,7 @@ class Model.Module
 	#
 	# @param id [Object,Number,String] id containing id data
 	# @return [Object] extracted id data
+	#
 	@extractId: ( id ) ->
 		return id if _( id ).isObject()
 		return { id: id, origin: "server" } if _( id ).isNumber()
@@ -111,34 +112,87 @@ class Model.Module
 		return { id: parseInt( data[0] ), origin: "server" } if data.length is 1
 		return { id: parseInt( data[2] ), origin: data[0] }
 		
+	# Returns true if this is a local instance
 	# 
+	# @return [Boolean] true if local, false if synced instance
 	#
 	isLocal : () ->
 		return Model.Module.extractId( @id ).origin isnt "server"
 		
-	# Gets the substrate start value
+	# Gets the compounds start value
+	#
+	# @param compound [String] the compound name
+	# @return [Integer] the value
+	#
+	getCompound: ( compound ) ->
+		return @starts[ compound ] ? 0	
+		
+	# Gets the metabolite start value (alias for getCompound)
+	#
+	# @param metabolite [String] the metabolite name
+	# @return [Integer] the value
+	#
+	getMetabolite: ( metabolite ) ->
+		return @getCompound( metabolite )
+		
+	# Gets the substrate start value (alias for getCompound)
 	#
 	# @param substrate [String] the substrate name
 	# @return [Integer] the value
 	#
 	getSubstrate: ( substrate ) ->
-		return @starts[ substrate ] ? false	
+		return @getCompound( substrate )
 		
-	# Sets the substrate to the start values
+	# Gets the product start value (alias for getCompound)
 	#
-	# @param substrate [String] the substrate name
+	# @param product [String] the product name
+	# @return [Integer] the value
+	#
+	getProduct: ( product ) ->
+		return @getCompound( product )
+		
+	# Sets the compound to the start values
+	#
+	# @param compound [String] the compound name
 	# @param value [Integer] the value
-	# @returns [self] for chaining
+	# @return [self] for chaining
 	#
-	setSubstrate: ( substrate, value ) ->
-		Model.EventManager.trigger( 'module.set.substrate', @, [ substrate, @starts[ substrate ] ? undefined, value ] )	
+	setCompound: ( compound, value ) ->
+		Model.EventManager.trigger( 'module.set.compound', @, [ compound, @starts[ compound ] ? 0, value ] )	
 		
 		changes = { }
-		changes[ substrate ] = value
+		changes[ compound ] = value
 		changed = _( { } ).extend @starts, changes
 		
 		@starts = changed
 		return this
+		
+	# Sets the metabolite to the start values (alias for setCompound)
+	#
+	# @param metabolite [String] the metabolite name
+	# @param value [Integer] the value
+	# @return [self] for chaining
+	#
+	setMetabolite: ( metabolite, value ) ->
+		return @setCompound( metabolite, value )
+		
+	# Sets the substrate to the start values (alias for setCompound)
+	#
+	# @param substrate [String] the substrate name
+	# @param value [Integer] the value
+	# @return [self] for chaining
+	#
+	setSubstrate: ( substrate, value ) ->
+		return @setCompound( substrate, value )
+		
+	# Sets the product to the start values (alias for setCompound)
+	#
+	# @param product [String] the product name
+	# @param value [Integer] the value
+	# @return [self] for chaining
+	#
+	setProduct: ( product, value ) ->
+		return @setCompound( product, value )
 		
 	# Runs the step function in the correct context
 	# 
@@ -154,39 +208,63 @@ class Model.Module
 		
 	# Tests if substrates are available
 	#
-	# @todo what to do when value is below 0?
+	# @todo What to do when value is below 0?
 	# @param substrates [Object] the available subs
 	# @param tests... [String] comma delimited list of strings to test
 	# @return [Boolean] true if all are available
 	#
-	_test : ( substrates, tests... ) ->
+	_test : ( compounds, tests... ) ->
 		
-		result = not _( tests ).some( 
-			( anon ) -> return not ( substrates[anon]? ) 
+		result = not _( _( tests ).flatten() ).some( 
+			( test ) -> return not ( compounds[ test ]? ) 
 		)
 		
 		unless result
-			Model.EventManager.trigger( 'notification', @, [ 'module', 'test', [ substrates, tests ] ] )	
+			Model.EventManager.trigger( 'notification', @, 
+				[ 
+					# section, method, message-id
+					'module', 'test', "#{ @constructor.name }:#{ @name }:#{ id ? 1 }",
+					"I need compounds in #{ @constructor.name }:#{ @name } but they are not available. #{ message ? '' }",
+					[ compounds, tests ] 
+				] 
+			)	
 		
 		return result
+		
+	# Ensures test to be true or notifies with message
+	#
+	# @param test [Function] function in a module to run
+	# @param message [String] string to display when it fails
+	# @return [Boolean] true if test succeeded
+	#
+	_ensure : ( test, message ) ->
+		
+		unless test
+			Model.EventManager.trigger( 'notification', @, 
+				[ 
+					'module', 'ensure', "#{ @constructor.name }:#{ @name }:#{ id ? 1 }",
+					"In #{ @constructor.name }:#{ @name } an ensure failed: #{ message ? '' }",
+					[] 
+				] 
+			)		
+		
+		return test
 		
 	# Applies a change to the parameters of the module
 	#
 	# @param [String] key The changed property
 	# @param [val] value The value of the changed property
-	# @returns [self] for chaining
+	# @return [self] for chaining
 	#
 	_do : ( key, value ) ->
-		console.log "Doing: #{key}", @[ key ], value
 		@[ key ] = value
-		console.log "Done: #{key}", @[ key ], value
 		return this
 
 	# Adds a move to the undotree
 	#
 	# @param [String] key, the changed property
 	# @param [val] value, the value of the changed property 
-	# @returns [self] for chaining
+	# @return [self] for chaining
 	#
 	_addMove: ( key, value, param ) ->
 		@_tree.add [ key, value, param ]
@@ -194,11 +272,10 @@ class Model.Module
 
 	# Undoes the most recent move
 	#
-	# @returns [self] for chaining
+	# @return [self] for chaining
 	#
 	undo: ( ) ->
 		result = @_tree.undo()
-		console.log "I would like to undo: ", result
 		if result isnt null
 			[ key, value, param ] = result
 			@_do( key, value )
@@ -206,11 +283,10 @@ class Model.Module
 
 	# Redoes the most recently undone move
 	#
-	# @returns [self] for chaining
+	# @return [self] for chaining
 	#
 	redo : ( ) ->
 		result = @_tree.redo()
-		console.log "I would like to redo: ", result
 		if result isnt null
 			[ key, value, param ] = result
 			@_do( key, param )
@@ -230,6 +306,7 @@ class Model.Module
 		type = @constructor.name
 		
 		result = { 
+			name: @name
 			parameters: parameters
 			type: type 
 			step: @_step.toString() if type is "Module" and @_step?
@@ -240,7 +317,10 @@ class Model.Module
 		
 	# Tries to save a module
 	#
-	save : ( cell = 1 ) ->
+	# @todo if dynamic, also needs to save the template
+	# @todo error handling
+	#
+	save : ( cell ) ->
 		
 		serialized_data = @serialize( false )
 		
@@ -254,6 +334,7 @@ class Model.Module
 			type: serialized_data.type
 			
 		$.get( @url, data )
+		
 			.done( ( module_template ) =>
 		
 				# Next map data for this object
@@ -262,13 +343,13 @@ class Model.Module
 						id: serialized_data.id unless @isLocal()
 						module_template_id: module_template.id
 						cell_id: cell
+						name: serialized_data.name
 				
 				# Define the parameters set function, so we can resuse it
 				update_parameters = () =>
 				
 					params = []
 					for key, value of serialized_data.parameters
-						console.log key
 						params.push
 							key: key
 							value: value
@@ -277,17 +358,29 @@ class Model.Module
 						module_parameters: params
 						
 					$.ajax( @url, { data: module_parameters_data, type: 'PUT' } )
-						.done( ( data ) => 
-							console.log data 
+						.done( ( data ) =>  
+							# Updated 
 						)
 						
 						.fail( ( data ) => 
-							Model.EventManager.trigger( 
-								'notification', @, [ 'module', 'save', [ 'update parameters', data, module_parameters_data ] ] )	
+							
+							Model.EventManager.trigger( 'notification', @, 
+								[ 
+									'module', 'save', "#{ @constructor.name }:#{ @name }:#{ serialized_data.name }",
+									"While saving parameters for #{ serialized_data.name } an error occured: #{ data ? '' }",
+									[ 
+										'update parameters',
+										data,
+										module_instance_data, 
+										module_parameters_data, 
+									] 
+								] 
+							)		
 						)
 				
 				# This is the create
 				if @isLocal()
+				
 					$.post( @url, module_instance_data )
 						.done( ( data ) => 
 							
@@ -299,8 +392,19 @@ class Model.Module
 						)
 						
 						.fail( ( data ) => 
-							Model.EventManager.trigger( 
-								'notification', @, [ 'module', 'save', [ 'create instance', data, module_instance_data ] ] )	
+						
+							Model.EventManager.trigger( 'notification', @, 
+								[ 
+									'module', 'save', "#{ @constructor.name }:#{ @name }:#{ module_instance_data.name }",
+									"While creating module instance #{ serialized_data.name } an error occured: #{ data ? '' }",
+									[ 
+										'create instance',
+										data,
+										module_instance_data, 
+										module_parameters_data
+									] 
+								] 
+							)		
 						)
 				
 				# This is the update
@@ -310,8 +414,18 @@ class Model.Module
 			)
 			
 			.fail( ( data ) => 
-				Model.EventManager.trigger( 
-					'notification', @, [ 'module', 'save', [ 'get template', data, module_template_data ] ] )	
+			
+				Model.EventManager.trigger( 'notification', @, 
+					[ 
+						'module', 'save', "#{ @constructor.name }:#{ @name }:#{ serialized_data.type }",
+						"While retrieving module template #{ serialized_data.type } an error occured: #{ data ? '' }",
+						[ 
+							'get instance',
+							data,
+							serialized_data
+						] 
+					] 
+				)		
 			)
 		
 	# Deserializes a module
@@ -323,6 +437,7 @@ class Model.Module
 	@deserialize : ( serialized ) ->
 		
 		serialized = JSON.parse( serialized ) if _( serialized ).isString()
+		serialized.parameters.name = serialized.parameters.name ? serialized.name
 		fn = ( window || @ )["Model"]
 		return new fn[ serialized.type ]( serialized.parameters ) unless serialized.type is "Module"
 		
@@ -330,7 +445,20 @@ class Model.Module
 		step = null
 		eval( "step = #{serialized.step}" ) if serialized.step?
 		return new fn[ serialized.type ]( serialized.parameters, step )
-	
 		
-
+	# Loads a module
+	# 
+	# @param module_id [Integer] the id of the module
+	# @param cell [Model.Cell] the cell to load to
+	# @param callback [Function] function to call on completion
+	#
+	@load : ( module_id, cell, callback ) ->
+		module = new Model.Module( { id: module_id } )
+		$.get( module.url, { all: true } )
+			.done( ( data ) =>
+				result = Model.Module.deserialize( data )
+				cell.add result
+				callback.apply( @, result ) if callback?
+			)
+	
 (exports ? this).Model.Module = Model.Module

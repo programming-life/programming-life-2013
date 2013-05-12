@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset='UTF-8'>
+  <title>CoffeeScript API Documentation</title>
+  <link rel='stylesheet' href='../../assets/codo.css' type='text/css'>
+  <script src='../../assets/codo.js'></script>
+  <script src='../../assets/search_data.js'></script>
+</head>
+  <body>
+    <div id='base' data-path='../../'></div>
+<div id='header'>
+  <div id='menu'>
+    <a href='../../README.md.html' title='Programming-life'>Programming-life</a>
+    &raquo;
+    <a href='../../class_index.html' title='Index'>Index</a>
+    &raquo;
+    <span class='title'>View</span>
+    &raquo;
+    <span class='title'>Cell</span>
+    <nav>
+      <ul>
+        <li class='noframes'>
+          (<a class='noframes' href='#'>no frames</a>)
+        </li>
+      </ul>
+    </nav>
+    <div id='search'>
+      <a id='class_list_link' href='../../class_list.html'>Classes</a>
+      <a id='file_list_link' href='../../file_list.html'>Files</a>
+      <a id='method_list_link' href='../../method_list.html'>Methods</a>
+      <a id='extra_list_link' href='../../extra_list.html'>Extras</a>
+    </div>
+  </div>
+  <iframe id='search_frame'></iframe>
+  <div id='fuzzySearch'>
+    <input type='text'>
+    <ol></ol>
+  </div>
+  <div id='help'>
+    <p>
+      Quickly fuzzy find classes, mixins, methods, file:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-T</span>
+        Open fuzzy finder dialog
+      </li>
+    </ul>
+    <p>
+      In frame mode you can toggle the list naviation frame on the left side:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-L</span>
+        Toggle list view
+      </li>
+    </ul>
+    <p>
+      You can focus a list in frame mode or toggle a tab in frameless mode:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-C</span>
+        Class list
+      </li>
+      <li>
+        <span>Ctrl-I</span>
+        Mixin list
+      </li>
+      <li>
+        <span>Ctrl-F</span>
+        File list
+      </li>
+      <li>
+        <span>Ctrl-M</span>
+        Method list
+      </li>
+      <li>
+        <span>Ctrl-E</span>
+        Extras list
+      </li>
+    </ul>
+    <p>
+      You can focus and blur the search input:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-S</span>
+        Focus search input
+      </li>
+      <li>
+        <span>Esc</span>
+        Blur search input
+      </li>
+    </ul>
+    <p>
+      In frameless mode you can close the list tab:
+    </p>
+    <ul>
+      <li>
+        <span>Esc</span>
+        Close list tab
+      </li>
+    </ul>
+  </div>
+</div>
+    <div id='content'>
+      <h1>
+        Class:
+        View.Cell
+      </h1>
+      <table class='box'>
+        <tr>
+          <td>Defined in:</td>
+          <td>app&#47;assets&#47;javascripts&#47;views&#47;cell.js.coffee</td>
+        </tr>
+      </table>
+      <h2>Overview</h2>
+      <div class='docstring'>
+  <p>Class to generate a view for a cell model</p>
+</div>
+<div class='tags'>
+</div>
+      <h2>Instance Method Summary</h2>
+      <ul class='summary'>
+  <li>
+    <span class='signature'>
+      <a href='#constructor-instance'>
+        - (void) <strong>constructor</strong>(paper, cell)
+      </a>
+    </span>
+    <span class='constructor note title'>Constructor</span>
+    <span class='desc'>
+      Constructor for this view
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#redraw-instance'>
+        - (void) <strong>redraw</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Redraws the cell
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#draw-instance'>
+        - (void) <strong>draw</strong>(x, y, scale)
+      </a>
+    </span>
+    <span class='desc'>
+      Draws the cell
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#onModuleAdd-instance'>
+        - (void) <strong>onModuleAdd</strong>(cell, module)
+      </a>
+    </span>
+    <span class='bound note title'>Bound</span>
+    <span class='desc'>
+      On module added, add it from the cell
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#onModuleRemove-instance'>
+        - (void) <strong>onModuleRemove</strong>(cell, module)
+      </a>
+    </span>
+    <span class='bound note title'>Bound</span>
+    <span class='desc'>
+      On module removed, removed it from the cell
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#getLocationForModule-instance'>
+        - (Object) <strong>getLocationForModule</strong>(module, params)
+      </a>
+    </span>
+    <span class='desc'>
+      Returns the location for a module
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_getCellData-instance'>
+        - (Object) <strong>_getCellData</strong>(duration, base_values = [], dt = 1, iteration = 0)
+      </a>
+    </span>
+    <span class='desc'>
+      Get the simulation data from the cell
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_getGraphPlacement-instance'>
+        - (Object) <strong>_getGraphPlacement</strong>(basex, basey, scale, graph_num)
+      </a>
+    </span>
+    <span class='desc'>
+      Get the graph placement
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_drawGraphs-instance'>
+        - (Object) <strong>_drawGraphs</strong>(datasets, x, y, scale, append = false)
+      </a>
+    </span>
+    <span class='desc'>
+      Draw the graphs with the data from the datasets
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#startSimulation-instance'>
+        - (void) <strong>startSimulation</strong>(step_duration = 20, step_update = 2000, dt = 1)
+      </a>
+    </span>
+    <span class='desc'>
+      Starts drawing the simulation
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_step-instance'>
+        - (Array&lt;Float&gt;) <strong>_step</strong>(duration, dt, base_values)
+      </a>
+    </span>
+    <span class='desc'>
+      Steps the simulation
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_simulate-instance'>
+        - (void) <strong>_simulate</strong>(step)
+      </a>
+    </span>
+    <span class='desc'>
+      Simulation handler Actually loops the simulation.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#stopSimulation-instance'>
+        - (void) <strong>stopSimulation</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Stops the simulation
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_drawRedLines-instance'>
+        - (void) <strong>_drawRedLines</strong>(x)
+      </a>
+    </span>
+    <span class='desc'>
+      Draws red lines
+    </span>
+  </li>
+</ul>
+      <h2>Constructor Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='constructor-instance'>
+      - (void) <strong>constructor</strong>(paper, cell)
+    </p>
+    <div class='docstring'>
+  <p>Constructor for this view</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>paper</span>
+      <span class='type'>
+        (<tt>Raphael</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>paper parent</span>
+    </li>
+    <li>
+      <span class='name'>cell</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Model/Cell.html'>Model.Cell</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>cell to view</span>
+    </li>
+  </ul>
+</div>
+  </div>
+</div>
+      <h2>Instance Method Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='redraw-instance'>
+      - (void) <strong>redraw</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Redraws the cell</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='draw-instance'>
+      - (void) <strong>draw</strong>(x, y, scale)
+    </p>
+    <div class='docstring'>
+  <p>Draws the cell</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>x</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>x location</span>
+    </li>
+    <li>
+      <span class='name'>y</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>y location</span>
+    </li>
+    <li>
+      <span class='name'>scale</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>scale</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='onModuleAdd-instance'>
+      - (void) <strong>onModuleAdd</strong>(cell, module)
+      (bound)
+    </p>
+    <div class='docstring'>
+  <p>On module added, add it from the cell</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>cell</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Model/Cell.html'>Model.Cell</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>cell added to</span>
+    </li>
+    <li>
+      <span class='name'>module</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Model/Module.html'>Model.Module</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>module added</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='onModuleRemove-instance'>
+      - (void) <strong>onModuleRemove</strong>(cell, module)
+      (bound)
+    </p>
+    <div class='docstring'>
+  <p>On module removed, removed it from the cell</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>cell</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Model/Cell.html'>Model.Cell</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>cell removed from</span>
+    </li>
+    <li>
+      <span class='name'>module</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Model/Module.html'>Model.Module</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>module removed</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='getLocationForModule-instance'>
+      - (Object) <strong>getLocationForModule</strong>(module, params)
+    </p>
+    <div class='docstring'>
+  <p>Returns the location for a module</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>module</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Model/Module.html'>Model.Module</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the module to get the location for</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Object</tt>)
+      &mdash;
+      <span class='desc'>the size as an object with x, y</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_getCellData-instance'>
+      - (Object) <strong>_getCellData</strong>(duration, base_values = [], dt = 1, iteration = 0)
+    </p>
+    <div class='docstring'>
+  <p>Get the simulation data from the cell</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>duration</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The duration of the simulation</span>
+    </li>
+    <li>
+      <span class='name'>dt</span>
+      <span class='type'>
+        (<tt>Float</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The timestep for the graphs</span>
+    </li>
+    <li>
+      <span class='name'>base_values</span>
+      <span class='type'>
+        (<tt>Array</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>continuation values</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Object</tt>)
+      &mdash;
+      <span class='desc'>Object with data such as An array of datapoints</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_getGraphPlacement-instance'>
+      - (Object) <strong>_getGraphPlacement</strong>(basex, basey, scale, graph_num)
+    </p>
+    <div class='docstring'>
+  <div class='note todo'>
+    <strong>TODO:</strong>
+    why is there width/height code here? should come from graph
+  </div>
+  <p>Get the graph placement</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Object</tt>)
+      &mdash;
+      <span class='desc'>A placement object</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_drawGraphs-instance'>
+      - (Object) <strong>_drawGraphs</strong>(datasets, x, y, scale, append = false)
+    </p>
+    <div class='docstring'>
+  <p>Draw the graphs with the data from the datasets</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>datasets</span>
+      <span class='type'>
+        (<tt>Object</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>An object of datasets</span>
+    </li>
+    <li>
+      <span class='name'>x</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>x location to draw</span>
+    </li>
+    <li>
+      <span class='name'>y</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>y location to draw</span>
+    </li>
+    <li>
+      <span class='name'>scale</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>scale</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Object</tt>)
+      &mdash;
+      <span class='desc'>graphs</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='startSimulation-instance'>
+      - (void) <strong>startSimulation</strong>(step_duration = 20, step_update = 2000, dt = 1)
+    </p>
+    <div class='docstring'>
+  <p>Starts drawing the simulation</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>step_duration</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>duration of each step call</span>
+    </li>
+    <li>
+      <span class='name'>step_update</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>time between steps</span>
+    </li>
+    <li>
+      <span class='name'>dt</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>graph dt</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_step-instance'>
+      - (Array&lt;Float&gt;) <strong>_step</strong>(duration, dt, base_values)
+    </p>
+    <div class='docstring'>
+  <div class='note todo'>
+    <strong>TODO:</strong>
+    append data instead of replace data
+  </div>
+  <p>Steps the simulation</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>duration</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the duration of this step</span>
+    </li>
+    <li>
+      <span class='name'>dt</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the dt of the graphs</span>
+    </li>
+    <li>
+      <span class='name'>base_values</span>
+      <span class='type'>
+        (<tt>Array&lt;Float&gt;</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the previous values</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Array&lt;Float&gt;</tt>)
+      &mdash;
+      <span class='desc'>the new values</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_simulate-instance'>
+      - (void) <strong>_simulate</strong>(step)
+    </p>
+    <div class='docstring'>
+  <p>Simulation handler</p><p>Actually loops the simulation. Expects step to be a throttled function
+and gracefully defers execution of this step function. </p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='stopSimulation-instance'>
+      - (void) <strong>stopSimulation</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Stops the simulation</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_drawRedLines-instance'>
+      - (void) <strong>_drawRedLines</strong>(x)
+    </p>
+    <div class='docstring'>
+  <p>Draws red lines</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>x</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>x position</span>
+    </li>
+  </ul>
+</div>
+  </div>
+</div>
+    </div>
+    <div id='footer'>
+  Generated on
+  Sun May 12 2013 04:54:49 GMT+0200 (W. Europe Daylight Time)
+  by
+  <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
+  v1.5.6
+  (Node.js v0.10.4).
+  &#10034;
+  Press Ctrl-h to see the keyboard shortcuts
+  &#10034;
+  <a href='http://twitter.com/#!/netzpirat'>@netzpirat</a>
+  &#10034;
+  <a href='https://mksoft.ch'>mksoft.ch</a>
+</div>
+  </body>
+</html>

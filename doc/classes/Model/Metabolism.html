@@ -124,7 +124,76 @@
       </table>
       <h2>Overview</h2>
       <div class='docstring'>
-  <p>Simulates cell metabolism. Converts substrate into product.</p>
+  <p>Simulates cell metabolism. Converts substrate into product.</p><h2>Parameters</h2>
+<ul>
+<li>k<ul>
+<li>Synthesize rate</li>
+</ul>
+</li>
+<li>k_d<ul>
+<li>Protein degradation</li>
+</ul>
+</li>
+<li>k_m<ul>
+<li>MM kinetics constante</li>
+</ul>
+</li>
+<li>v<ul>
+<li>v max for metabolism</li>
+</ul>
+</li>
+<li>consume<ul>
+<li>All the metabolites required for Enzyme creation</li>
+</ul>
+</li>
+<li>orig<ul>
+<li>The metabolite before metabolism</li>
+</ul>
+</li>
+<li>dest<ul>
+<li>The metabolite after metabolism</li>
+</ul>
+</li>
+</ul>
+<h2>Properties</h2>
+<ul>
+<li>vEnzymeSynth<ul>
+<li>k * this </li>
+</ul>
+</li>
+<li>degradation<ul>
+<li>k_d * this</li>
+</ul>
+</li>
+<li>dilution<ul>
+<li>mu * this</li>
+</ul>
+</li>
+<li>vMetabolism<ul>
+<li>v <em> this </em> ( orig / ( orig + k_m ) )</li>
+</ul>
+</li>
+</ul>
+<h2>Equations</h2>
+<ul>
+<li>this / dt<ul>
+<li>vEnzymeSynth - dilution - degradation</li>
+</ul>
+</li>
+<li>consume / dt<ul>
+<li>vEnzymeSynth</li>
+</ul>
+</li>
+<li>orig / dt<ul>
+<li>-vMetabolism</li>
+</ul>
+</li>
+<li>dest / dt<ul>
+<li>vMetabolism</li>
+</ul>
+</li>
+</ul>
+
 </div>
 <div class='tags'>
 </div>
@@ -133,7 +202,7 @@
   <li>
     <span class='signature'>
       <a href='#constructor-instance'>
-        - (void) <strong>constructor</strong>(params = {}, start = 0, substrate = "s_int", product = "p_int", name = "enzym")
+        - (void) <strong>constructor</strong>(params = {}, start = 0, orig = "s#int", dest = "p#int", name = "enzyme")
       </a>
     </span>
     <span class='constructor note title'>Constructor</span>
@@ -151,18 +220,33 @@
       </h3>
       <p class='inherited'>
                 <a href='../../classes/Model/Module.html#constructor-instance'>#constructor</a>,
+                <a href='../../classes/Model/Module.html#extractId-class'>.extractId</a>,
+                <a href='../../classes/Model/Module.html#isLocal-instance'>#isLocal</a>,
+                <a href='../../classes/Model/Module.html#getCompound-instance'>#getCompound</a>,
+                <a href='../../classes/Model/Module.html#getMetabolite-instance'>#getMetabolite</a>,
+                <a href='../../classes/Model/Module.html#getSubstrate-instance'>#getSubstrate</a>,
+                <a href='../../classes/Model/Module.html#getProduct-instance'>#getProduct</a>,
+                <a href='../../classes/Model/Module.html#setCompound-instance'>#setCompound</a>,
+                <a href='../../classes/Model/Module.html#setMetabolite-instance'>#setMetabolite</a>,
+                <a href='../../classes/Model/Module.html#setSubstrate-instance'>#setSubstrate</a>,
+                <a href='../../classes/Model/Module.html#setProduct-instance'>#setProduct</a>,
                 <a href='../../classes/Model/Module.html#step-instance'>#step</a>,
                 <a href='../../classes/Model/Module.html#_test-instance'>#_test</a>,
+                <a href='../../classes/Model/Module.html#_ensure-instance'>#_ensure</a>,
                 <a href='../../classes/Model/Module.html#_do-instance'>#_do</a>,
                 <a href='../../classes/Model/Module.html#_addMove-instance'>#_addMove</a>,
                 <a href='../../classes/Model/Module.html#undo-instance'>#undo</a>,
-        <a href='../../classes/Model/Module.html#redo-instance'>#redo</a>
+                <a href='../../classes/Model/Module.html#redo-instance'>#redo</a>,
+                <a href='../../classes/Model/Module.html#serialize-instance'>#serialize</a>,
+                <a href='../../classes/Model/Module.html#save-instance'>#save</a>,
+                <a href='../../classes/Model/Module.html#deserialize-class'>.deserialize</a>,
+        <a href='../../classes/Model/Module.html#load-class'>.load</a>
       </p>
       <h2>Constructor Details</h2>
       <div class='methods'>
   <div class='method_details'>
     <p class='signature' id='constructor-instance'>
-      - (void) <strong>constructor</strong>(params = {}, start = 0, substrate = "s_int", product = "p_int", name = "enzym")
+      - (void) <strong>constructor</strong>(params = {}, start = 0, orig = "s#int", dest = "p#int", name = "enzyme")
     </p>
     <div class='docstring'>
   <p>Constructor for Metabolism</p>
@@ -179,7 +263,7 @@
       <span class='desc'>parameters for this module</span>
     </li>
     <li>
-      <span class='name'>substrate</span>
+      <span class='name'>orig</span>
       <span class='type'>
         (<tt>String</tt>)
       </span>
@@ -187,7 +271,7 @@
       <span class='desc'>the substrate to be converted</span>
     </li>
     <li>
-      <span class='name'>product</span>
+      <span class='name'>dest</span>
       <span class='type'>
         (<tt>String</tt>)
       </span>
@@ -208,7 +292,7 @@
         (<tt>String</tt>)
       </span>
       &mdash;
-      <span class='desc'>the name of the metabolism, defaults to &quot;enzym&quot;</span>
+      <span class='desc'>the name of the metabolism, defaults to &quot;enzyme&quot;</span>
     </li>
   </ul>
   <h3>
@@ -239,14 +323,6 @@
       </span>
       &mdash;
       <span class='desc'>the degredation rate, defaults to 1</span>
-    </li>
-    <li>
-      <span class='name'>v</span>
-      <span class='type'>
-        (<tt>Integer</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the speed scaler (vmax), defaults to 1</span>
     </li>
     <li>
       <span class='name'>dna</span>
@@ -287,7 +363,7 @@
     </div>
     <div id='footer'>
   Generated on
-  Fri May 03 2013 22:38:25 GMT+0200 (W. Europe Daylight Time)
+  Sun May 12 2013 04:54:49 GMT+0200 (W. Europe Daylight Time)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

@@ -13,11 +13,12 @@
 <table class="table table-hover">
 	<thead>
 		<tr>
-			<th>Id</th>
+			<th class="span1">Id</th>
+			<th class="span1">Show</th>
+			<th class="span1">Edit</th>
 			<th>Name</th>
 			<th>Contains</th>
-			<th></th>
-			<th></th>
+			<th class="span1">Destroy</th>
 		</tr>
 	</thead>
 
@@ -25,14 +26,16 @@
 		<% @cells.each do |cell| %>
 		<tr>
 			<td><%= cell.id %></td>
+			<td class="span1">
+				<%= link_to raw('<i class="icon-search"></i>'), cell, :class => 'btn btn-small', :title => 'Show' %> 
+			</td>
+			<td class="span1">
+				<%= link_to raw('<i class="icon-pencil"></i>'), edit_cell_path(cell), :class => 'btn btn-small', :title => 'Edit' %> 
+			</td>
 			<td><%= cell.name %></td>
 			<td><%= link_to pluralize( ModuleInstance.where( :cell_id => cell.id ).count, 'module'), module_instances_path( :cell => cell.id ) %></td>
-			<td class="span3">
-				<%= link_to raw('<i class="icon-search"></i> Show'), cell, :class => 'btn btn-small' %> 
-				<%= link_to raw('<i class="icon-pencil"></i> Edit'), edit_cell_path(cell), :class => 'btn btn-small' %> 
-			</td>
-			<td class="span2">
-				<%= link_to raw('<i class="icon-trash"></i> Destroy'), cell, method: :delete, data: { confirm: 'Are you sure?' }, :class => 'btn btn-small btn-danger' %>
+			<td class="span1">
+				<%= link_to raw('<i class="icon-trash"></i>'), cell, method: :delete, data: { confirm: 'Are you sure?' }, :class => 'btn btn-small btn-danger', :title => 'Destroy' %>
 			</td>
 		</tr>
 		<% end %>

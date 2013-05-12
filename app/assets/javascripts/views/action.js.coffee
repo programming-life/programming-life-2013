@@ -1,3 +1,5 @@
+# Action views are simulated buttons
+#
 class View.Action
 	
 	# Creates a new action view

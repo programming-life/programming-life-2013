@@ -1,5 +1,9 @@
 class ChangeModuleValueTypeToString < ActiveRecord::Migration
-  def change
-	change_column :module_values, :value, :string
-  end
+	def up
+		change_column :module_values, :value, :string
+	end
+	
+	def down
+		change_column :module_values, :value, :float
+	end
 end
