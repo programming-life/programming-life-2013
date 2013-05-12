@@ -172,6 +172,11 @@ class View.Module
 			closeButton = @drawCloseButton( box, scale )
 			closeButton?.click =>
 				Model.EventManager.trigger('module.set.selected', @module, [ false ])
+
+			deleteButton = @drawDeleteButton( box, scale )
+			deleteButton?.click =>
+				Model.EventManager.trigger('module.set.selected', @module, [ false ])
+				
 			shadow = @drawShadow(box, scale)
 
 		# Draw hitbox
@@ -386,10 +391,6 @@ class View.Module
 
 		circle = @_paper.circle( rect.x + rect.width, rect.y, 16 * scale)
 		circle.node.setAttribute('class', 'module-close')
-			
-		#text = @_paper.text( rect.x + rect.width, rect.y, 'x')
-		#text.attr
-		#	'font-size': 20 * scale
 
 		image = @_paper.image('/assets/icon-resize-small.png', rect.x + rect.width - 12 * scale, rect.y - 12 * scale, 24 * scale, 24 * scale)
 
@@ -398,6 +399,23 @@ class View.Module
 		closeButton.push( circle, image, hitbox )
 		
 		return closeButton
+
+	drawDeleteButton : ( elem, scale ) ->
+		rect = elem.getBBox()
+
+		deleteButton = @_paper.set()
+
+		circle = @_paper.circle( rect.x, rect.y, 16 * scale)
+		circle.node.setAttribute('class', 'module-close')
+			
+		image = @_paper.image('/assets/icon-trash.png', rect.x - 12 * scale, rect.y - 12 * scale, 24 * scale, 24 * scale)
+
+		hitbox = @_paper.circle( rect.x + rect.width, rect.y, 16 * scale )
+		hitbox.node.setAttribute('class', 'module-hitbox')		
+		deleteButton.push( circle, image, hitbox )
+		
+		return deleteButton
+
 
 	# Draws this view shadow
 	#
