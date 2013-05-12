@@ -116,7 +116,12 @@ class View.Module
 
 		else if hovered is @_hovered is true
 			@_hovered = false
-			@redraw()	
+			@redraw()
+
+		# Make sure a selected module is always placed at the front
+		# no longer hovering a module.
+		else if hovered is false and @_selected is true
+			_.defer(=> @_view.toFront())
 
 	# Clears the module view
 	#
@@ -518,9 +523,10 @@ class View.Module
 				objRect = params.objRect
 				
 				# Add params text
-				text = @_paper.text( x, y + params.padding * 3, params.text )
+				text = @_paper.text( objRect.x, y + params.padding * 3, params.text )
 				text.attr
 					'font-size': 18 * scale
+					'text-anchor': 'start'
 
 				textRect = text.getBBox()
 				
