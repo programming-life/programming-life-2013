@@ -384,16 +384,18 @@ class View.Module
 
 		closeButton = @_paper.set()
 
-		circle = @_paper.circle( rect.x + rect.width, rect.y, 15 * scale)
+		circle = @_paper.circle( rect.x + rect.width, rect.y, 16 * scale)
 		circle.node.setAttribute('class', 'module-close')
 			
-		text = @_paper.text( rect.x + rect.width, rect.y, 'x')
-		text.attr
-			'font-size': 20 * scale
+		#text = @_paper.text( rect.x + rect.width, rect.y, 'x')
+		#text.attr
+		#	'font-size': 20 * scale
 
-		hitbox = @_paper.circle( rect.x + rect.width, rect.y, 15 * scale )
+		image = @_paper.image('/assets/icon-resize-small.png', rect.x + rect.width - 12 * scale, rect.y - 12 * scale, 24 * scale, 24 * scale)
+
+		hitbox = @_paper.circle( rect.x + rect.width, rect.y, 16 * scale )
 		hitbox.node.setAttribute('class', 'module-hitbox')		
-		closeButton.push( circle, text, hitbox )
+		closeButton.push( circle, image, hitbox )
 		
 		return closeButton
 
