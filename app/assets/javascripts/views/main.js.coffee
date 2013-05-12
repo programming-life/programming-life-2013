@@ -21,6 +21,7 @@ class View.Main
 		@_height = $( window ).height() - 5 
 		@_paper.setSize( @_width, @_height )
 		@draw()
+		Model.EventManager.trigger( 'paper.resize', @_paper )
 
 	# Draws the main view
 	#

@@ -24,6 +24,7 @@ class View.Module
 		Model.EventManager.on( 'module.set.property', @, @onModuleInvalidated )
 		Model.EventManager.on( 'module.set.selected', @, @onModuleSelected )
 		Model.EventManager.on( 'module.set.hovered', @, @onModuleHovered )
+		Model.EventManager.on( 'paper.resize', @, @onPaperResize)
 		
 		Object.defineProperty( @, 'visible',
 			# @property [Function] the step function
@@ -123,6 +124,13 @@ class View.Module
 		else if hovered is false and @_selected is true
 			_.defer(=> @_view.toFront())
 
+	# Runs if paper is resized
+	#
+	onPaperResize: ( ) =>
+		if @_selected
+			@_view.toFront()
+
+
 	# Clears the module view
 	#
 	clear: () ->
@@ -176,7 +184,7 @@ class View.Module
 			deleteButton = @drawDeleteButton( box, scale )
 			deleteButton?.click =>
 				Model.EventManager.trigger('module.set.selected', @module, [ false ])
-				
+
 			shadow = @drawShadow(box, scale)
 
 		# Draw hitbox
