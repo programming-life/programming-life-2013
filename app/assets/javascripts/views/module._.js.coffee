@@ -7,8 +7,9 @@ class View.Module
 	# @param paper [Raphael.Paper] the raphael paper
 	# @param module [Model.Module] the module to show
 	#
-	constructor: ( paper, module ) ->
+	constructor: ( paper, cell, module ) ->
 		@_paper = paper
+		@_cell = cell
 
 		@module = module		
 		@type = module.constructor.name
@@ -183,7 +184,7 @@ class View.Module
 
 			deleteButton = @drawDeleteButton( box, scale )
 			deleteButton?.click =>
-				Model.EventManager.trigger('module.set.selected', @module, [ false ])
+				@_cell.remove(@module)
 
 			shadow = @drawShadow(box, scale)
 

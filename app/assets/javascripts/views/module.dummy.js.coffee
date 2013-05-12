@@ -14,7 +14,7 @@ class View.DummyModule extends View.Module
 		@_cell = cell
 		@_params = params
 		@_activated = off
-		super paper, module
+		super paper, cell, module
 		
 	# Runs if module is selected
 	# 
