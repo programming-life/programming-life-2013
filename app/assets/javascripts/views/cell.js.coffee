@@ -34,15 +34,7 @@ class View.Cell
 		@_views.push new View.DummyModule( @_paper, @_cell, new Model.Protein() )
 		@_views.push new View.DummyModule( @_paper, @_cell, Model.Transporter.ext(), { direction: Model.Transporter.Outward } )
 		
-		tree = new Model.UndoTree(new Model.Node("Root", null))
-		for i in [1..9] by 3
-			tree.add("Node"+i)
-			tree.undo()
-			tree.add("Node"+(i+1))
-			tree.add("Node"+(i+2))
-		
 		@_views.push new View.Play( @_paper, @)
-		#@_views.push new View.Tree( @_paper, tree)
 		
 		Model.EventManager.on( 'cell.add.module', @, @onModuleAdd )
 		Model.EventManager.on( 'cell.add.metabolite', @, @onModuleAdd )
@@ -79,10 +71,7 @@ class View.Cell
 		counters = {}
 		
 		# Draw each module
-		for view in @_views
-			
-			unless view.visible
-				continue
+		for view in @_views when view.visible
 			
 			if ( view instanceof View.Module )
 				
@@ -117,11 +106,6 @@ class View.Cell
 					x: x
 					y: y
 
-			if (view instanceof View.Tree )
-				counter = counters[ 'graphs' ] ? 0
-				placement = @_getGraphPlacement( 0, 0, scale, counter )
-				counters[ 'graphs' ]++
-
 			view.draw( placement.x, placement.y, scale )
 		
 	# On module added, add it from the cell
@@ -146,8 +130,7 @@ class View.Cell
 	
 		index = _( @_drawn ).indexOf( module.id )
 		if index isnt -1
-			view = @_views[ index ]
-			view.clear()
+			view = @_views[ index ].kill()
 			@_views = _( @_views ).without view
 			@_drawn = _( @_drawn ).without module.id
 			@redraw()
@@ -164,7 +147,7 @@ class View.Cell
 		switch params.type
 		
 			when "CellGrowth"
-				alpha = 3 * Math.PI / 4 + ( params.count * Math.PI / 12 )
+				alpha = -3 * Math.PI / 4 + ( ( params.count + 1 ) * Math.PI / 12 )
 				x = params.cx + params.r * Math.cos( alpha )
 				y = params.cy + params.r * Math.sin( alpha )
 			
@@ -174,13 +157,13 @@ class View.Cell
 				y = params.cy + params.r * Math.sin( alpha )
 
 			when "Transporter"
-				dx = 60 * params.count * params.scale
+				dx = 80 * params.count * params.scale
 				
 				alpha = 0
 				if params.direction is Model.Transporter.Inward					
 					alpha = Math.PI - Math.asin( dx / params.r )
 				if params.direction is Model.Transporter.Outward		
-					alpha = 0 + Math.asin( dx / params.r )
+					alpha = Math.asin( dx / params.r )
 
 				x = params.cx + params.r * Math.cos( alpha )
 				y = params.cy + params.r * Math.sin( alpha )
@@ -190,8 +173,8 @@ class View.Cell
 				y = params.cy - params.r / 2 + ( Math.floor( params.count / 3 ) * 40 )
 
 			when "Metabolism"
-				x = params.cx + ( params.count % 2 * 80 )
-				y = params.cy + params.r / 2 + ( Math.floor( params.count / 2 ) * 40 )
+				x = params.cx + ( params.count % 2 * 130 )
+				y = params.cy + params.r / 2 + ( Math.floor( params.count / 2 ) * 60 )
 
 			when "Protein"
 				x = params.cx + params.r / 2 + ( params.count % 3 * 40 )
@@ -300,6 +283,9 @@ class View.Cell
 		
 		for key, dataset of datasets
 			if ( !@_graphs[ key ]? )
+				height = y + 100 + Math.ceil( (graph_num + 1) / 2 ) * 175 + ( Math.ceil( (graph_num + 1) / 2 ) - 1 ) * 100
+				@_container.setViewBox( 0, 0, 1000, height )
+				@_container.setSize( "100%", height )
 				@_graphs[ key ] = new View.Graph( @_container, key, @ )
 
 			
@@ -310,9 +296,6 @@ class View.Cell
 			@_graphs[ key ].draw( placement.x, placement.y, scale )
 			
 		
-		height = y + 100 + Math.ceil( graph_num / 2 ) * 175 + ( Math.ceil( graph_num / 2 ) - 1 ) * 100
-		@_container.setViewBox( 0, 0, 1000, height )
-		@_container.setSize( "100%", height )
 		return @_graphs
 	
 	# Starts drawing the simulation
