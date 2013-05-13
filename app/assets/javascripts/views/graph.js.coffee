@@ -2,7 +2,7 @@
 #
 class View.Graph
 	
-	# @property [Integer] Maximum number of simultainiously displayed data sets
+	# @property [Integer] Maximum number of simultaneously displayed data sets
 	#
 	MAX_DATASETS : 2
 	
@@ -27,7 +27,7 @@ class View.Graph
 			smooth: true
 			axis: '0 0 1 1'
 			axisxstep: @_dt
-			shade : true
+			shade : false
 			colors: [ "blue", "red" ]
 		}
 		
@@ -77,11 +77,11 @@ class View.Graph
 		# Show the title
 		text = @_drawTitle( @_x, @_y, @_scale )
 		bbox = text.getBBox()
-		@_contents.push text;
+		@_contents.push text
 
 		# Draw the chart
 		set = @_drawChart(@_x, @_y + bbox.height, @_scale)
-		@_chart = set[0]
+		@_chart = set[ 0 ]
 		@_contents.push set
 
 			
@@ -92,15 +92,40 @@ class View.Graph
 	# @param scale [Float] the scale
 	# @retun [Raphael] The chart object
 	_drawChart: (x, y, scale ) ->
+		
 		width = 350
 		height = 175
-
-		for set in @_datasets
-			max = set.length
+		
+		# Only show the last MAX_DATASETS of data
+		max = @_datasets.length
+		min = Math.max( max - @MAX_DATASETS, 0 )
+		datasets = _( @_datasets ).rest min
+		
+		# Only show the last MAX_LENGTH of xvalues
+		for set in datasets
+			max = set.length - 1
 			min = Math.max( max - @MAX_LENGTH, 0 )
+			#console.log "x: #{min} > #{max}"
 			xValues = ( num for num in [ min..max ] by 1 )
 			
-		yValues = _( @_datasets ).map( ( set ) -> _( set ).rest( min ) )
+		# Make sure the yvalues are valid
+		yValues = _( datasets )
+			.chain()
+			.map( ( set ) -> 
+				set =  _( set ).rest( min )
+				set_min = _( set ).min()
+			#	console.log "set: #{set_min} > #{_( set ).max()} | diff: #{  _( set ).max() - set_min }"
+				return set unless ( diff = Math.abs( _( set ).max() - set_min ) ) < 1e-12
+				return [ set_min ] 
+			)
+			.map( ( set ) ->	
+				return set if xValues.length is set.length
+				#console.log "y: #{set.length} != #{xValues.length}"
+				set_min = _( set ).min()
+				while set.length < xValues.length
+					set.push set_min
+				return set
+			).value()
 
 		set = @_paper.set()
 
