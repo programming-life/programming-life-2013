@@ -1,0 +1,25 @@
+# == Schema Information
+#
+# Table name: module_values
+#
+#  id                  :integer          not null, primary key
+#  value               :text(255)
+#  created_at          :datetime         not null
+#  updated_at          :datetime         not null
+#  module_parameter_id :integer
+#  module_instance_id  :integer
+#
+
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  value: 1
+  id: 1
+  module_instance_id: 1
+  module_parameter_id: 1
+
+two:
+  value: 'dolor'
+  id: 2
+  module_instance_id: 2
+  module_parameter_id: 2

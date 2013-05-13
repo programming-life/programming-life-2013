@@ -11,12 +11,12 @@ describe("Module Metabolism", function() {
 			expect( module.name ).toBe( "enzyme" );
 		});
 		
-		it( "should have 's_int' as substrate", function() {
-			expect( module.orig ).toBe( "s_int" );
+		it( "should have 's#int' as substrate", function() {
+			expect( module.orig ).toBe( "s#int" );
 		});
 		
-		it( "should have 'p_int' as product", function() {
-			expect( module.dest ).toBe( "p_int" );
+		it( "should have 'p#int' as product", function() {
+			expect( module.dest ).toBe( "p#int" );
 		});
 		
 		it( "should have 1 as k (transcription value)", function() {
@@ -46,6 +46,77 @@ describe("Module Metabolism", function() {
 			expect( module.amount ).toBe( 0 );
 			expect( module.starts.dest ).toBeDefined();
 			expect( module.starts.dest ).toBe( 0 );
+		});
+		
+		it("should be able to serialize the module", function() {
+			serialized = module.serialize( true )
+			expect( serialized ).toBeDefined();
+			expect( serialized.length ).toBeGreaterThan( 2 )
+		});
+		
+		describe("and when serialized", function() {
+			var serialized;
+			beforeEach( function() {
+				serialized = module.serialize( true )
+			});
+			
+			it("should be able to deserialize", function() {
+				deserialized = Model.Metabolism.deserialize( serialized )
+				expect( deserialized ).toBeDefined();
+				expect( deserialized.constructor.name ).toBe( module.constructor.name )
+			});
+			
+			describe("and when deserialized", function() {
+				var deserialized;
+				beforeEach( function() {
+					deserialized = Model.Metabolism.deserialize( serialized )
+				});
+				
+				it( "should have 'enzyme' as name", function() {
+					expect( module.name ).toBe( "enzyme" );
+				});
+				
+				it( "should have 's#int' as substrate", function() {
+					expect( module.orig ).toBe( "s#int" );
+				});
+				
+				it( "should have 'p#int' as product", function() {
+					expect( module.dest ).toBe( "p#int" );
+				});
+				
+				it( "should have 1 as k (transcription value)", function() {
+					expect( module.k ).toBe( 1 );
+				});
+				
+				it( "should have 1 as k_m (reaction value)", function() {
+					expect( module.k_m ).toBe( 1 );
+				});
+				
+				it( "should have 1 as k_d (degration value)", function() {
+					expect( module.k_d ).toBe( 1 );
+				});
+				
+				it( "should have 1 as v (speed scale vmax)", function() {
+					expect( module.v ).toBe( 1 );
+				});
+				
+				it( "should have 'dna' as dna", function() {
+					expect( module.dna ).toBe( "dna" );
+				});
+				
+				it( "should have 2 substrates: dest and enzym", function() {
+					expect( _(module.starts).size() ).toBe( 2 );
+					expect( module.starts.name ).toBeDefined();
+					expect( module.starts.name ).toBe( 0 );
+					expect( module.amount ).toBe( 0 );
+					expect( module.starts.dest ).toBeDefined();
+					expect( module.starts.dest ).toBe( 0 );
+				});
+		
+				it( "should have a _step function", function() {
+					expect( deserialized._step ).toBeDefined();
+				});
+			});
 		});
 		
 	});
@@ -154,6 +225,7 @@ describe("Module Metabolism", function() {
 		describe( "with no substrates", function() {
 			
 			beforeEach( function() { 
+				substrates[module.name] = 0;
 				results = module.step( 0, substrates, 0 );
 			});
 			
@@ -165,6 +237,7 @@ describe("Module Metabolism", function() {
 		describe( "with dna substrate", function() {
 			
 			beforeEach( function() { 
+				substrates[module.name] = 0;
 				substrates[module.dna] = 1;
 				results = module.step( 0, substrates, 0 );
 			});
@@ -181,6 +254,7 @@ describe("Module Metabolism", function() {
 		describe( "with enzym substrate", function() {
 			
 			beforeEach( function() { 
+				substrates[module.name] = 0;
 				substrates[module.name] = 1;
 				results = module.step( 0, substrates, 0 );
 			});
@@ -195,6 +269,7 @@ describe("Module Metabolism", function() {
 			beforeEach( function() { 
 				substrates[module.name] = 1;
 				substrates[module.orig] = 1;
+				substrates[module.dest] = 0;
 				results = module.step( 0, substrates, 0 );
 			});
 			

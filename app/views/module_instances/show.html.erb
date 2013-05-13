@@ -1,0 +1,70 @@
+<header class="row">
+	<h1 class="span12">Module (Instance) #<%= @module_instance.id %></h1>
+	<% if (notice.present?) %>
+		<p class="span12 alert alert-success" id="notice"><%= notice %></p>
+	<% end %>
+</header>
+
+<table class="table row">
+	<thead class="span12">
+		<tr>
+			<td class="span2"><strong>Key</strong></td>
+			<td class="span10"><strong>Value</strong></td>
+		</tr>
+	</thead>
+	<tbody class="span12">
+		<tr>
+			<td class="span2">Id</td>
+			<td class="span10"><%= @module_instance.id %></td>
+		</tr>
+		<tr>
+			<td>Based on</td>
+			<td><%= link_to raw('<i class=" icon-random"></i> ' + @module_template.name + ' template'), @module_template, :class => 'btn btn-mini' %> <span class="label label-info">module.<%= @module_template.file %>.js</span></td>
+		</tr>
+		<tr>
+			<td>Part of</td>
+			<td><%= link_to raw('<i class=" icon-magnet"></i> ' + @cell.name), @cell, :class => 'btn btn-mini' %></td>
+		</tr>
+		<tr>
+			<td>Compound name</td>
+			<td><%= @module_instance.name %></td>
+		</tr>
+		<tr>
+			<td>Parameters</td>
+			<td>
+				<table class="table-condensed table-striped table">
+					<thead>
+						<tr>
+							<th class="span3">Key</th>
+							<th class="span9">Value</th>
+						</tr>
+					</thead>
+					<tbody
+					<% @module_hash.each { |key, value| %>
+						<tr>
+							<td class="span3"><%= key %></td>
+							<td class="span9"><%= value.nil? ? '<span class="label label-important">missing</span>'.html_safe : value  %></td>
+						</tr>
+					<% } %>
+					</tbody>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td>Creation</td>
+			<td><%= @module_instance.created_at.strftime("%a %d %B %Y at %H:%M") %></td>
+		</tr>
+		<tr>
+			<td>Updated</td>
+			<td><%= (@module_instance.updated_at == @module_instance.created_at ? "Never" : @module_instance.updated_at.strftime("%a %d %B %Y at %H:%M")  ) %></td>
+		</tr>
+	</tbody>
+</table>
+
+<footer class="row">
+	<div class="form-actions span12">
+		<%= link_to raw('<i class="icon-pencil icon-white"></i> Edit'), edit_module_instance_path(@module_instance), :class => 'btn btn-primary' %> 
+		<%= link_to raw('<i class="icon-trash"></i> Destroy'), @module_instance, method: :delete, data: { confirm: 'Are you sure?' }, :class => 'btn btn-danger' %>  
+		<%= link_to 'Back', module_instances_path %>
+	</div>
+</footer>

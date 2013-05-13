@@ -1,0 +1,61 @@
+<header class="row">
+	<h1 class="span12">Cell #<%= @cell.id %></h1>
+	<% if (notice.present?) %>
+		<p class="span12 alert alert-success" id="notice"><%= notice %></p>
+	<% end %>
+</header>
+
+<table class="table row">
+	<thead class="span12">
+		<tr>
+			<td class="span2"><strong>Key</strong></td>
+			<td class="span10"><strong>Value</strong></td>
+		</tr>
+	</thead>
+	<tbody class="span12">
+		<tr>
+			<td class="span2">Id</td>
+			<td class="span10"><%= @cell.id %></td>
+		</tr>
+		<tr>
+			<td>Name</td>
+			<td><%= @cell.name %></td>
+		</tr>
+		
+		<tr>
+			<td>Modules</td>
+			<td>
+				<i class="icon-magnet"></i> 
+				<% 
+					modules = []
+					@module_instances.each do |module_instance| 
+						modules.push link_to ModuleTemplate.find( module_instance.module_template_id).name, module_instance, :class => 'btn btn-mini'
+					end
+				%>
+				
+				<%= (listify modules).html_safe %>
+			</td>
+		</tr>
+		
+		<tr>
+			<td>Creation</td>
+			<td><%= @cell.created_at.strftime("%a %d %B %Y at %H:%M") %></td>
+		</tr>
+		<tr>
+			<td>Updated</td>
+			<td><%= (@cell.updated_at == @cell.created_at ? "Never" : @cell.updated_at.strftime("%a %d %B %Y at %H:%M")  ) %></td>
+		</tr>
+	</tbody>
+	
+</table>
+
+<footer class="row">
+	<div class="link-actions span12">
+		<%= link_to raw('<i class="icon-magnet"></i> Modules linked'), module_instances_path( :cell => @cell.id ), :class => 'btn' %> 
+	</div>
+	<div class="form-actions span12">
+		<%= link_to raw('<i class="icon-pencil icon-white"></i> Edit'), edit_cell_path(@cell), :class => 'btn btn-primary' %> 
+		<%= link_to raw('<i class="icon-trash"></i> Destroy'), @cell, method: :delete, data: { confirm: 'Are you sure?' }, :class => 'btn btn-danger' %>  
+		<%= link_to 'Back', cells_path %>
+	</div>
+</footer>

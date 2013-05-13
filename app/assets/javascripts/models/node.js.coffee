@@ -1,5 +1,6 @@
 # Basic node class
-class Node
+#
+class Model.Node
 
 	# Constructor for node
 	#
@@ -12,8 +13,9 @@ class Node
 		@_parent = parent
 		@_children = children
 		@_branch = null
+		@_creation = new Date()
 
-		@_parent._children.push(this) if @_parent
+		@_parent._children.push( this ) if @_parent
 
 	# Rebase this branch on a different node than its current parent.
 	#
@@ -25,10 +27,10 @@ class Node
 		parent._branch = this if not parent._branch
 
 		if @_parent isnt null
-			index = @_parent._children.indexOf(this)
-			@_parent._children.splice(index, 1);
+			index = @_parent._children.indexOf this
+			@_parent._children.splice( index, 1 )
 
 		@_parent = parent
 		return this
 
-(exports ? this).Node = Node
+(exports ? this).Model.Node = Model.Node

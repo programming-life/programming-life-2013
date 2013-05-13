@@ -38,20 +38,29 @@ body {
 }
 
 .module-box {
-	stroke:#ababab;
-	stroke-width:1px;
-	fill: #fff;
-
+	stroke: #cacaca;
+	stroke-width: 1px;
+	fill: rgba( 255, 255, 255, 1 );
+	
 	&.inactive {
 		stroke-dasharray: 5,5;
 		fill: rgba( 255, 255, 255, 0.6 );
+		
+	}
+	
+	&.hovered {
+		stroke: rgb( 100, 200, 100 );
+	}
+	
+	&.selected {
+		stroke: rgb( 100, 100, 200 );
 	}
 }
 
 .module-close {
 	fill: #fff;
-	stroke:#ababab;
-	stroke-width:1px;
+	stroke:#333333;
+	stroke-width:2px;
 }
 
 .module-seperator {
@@ -61,12 +70,19 @@ body {
 }
 
 .module-hitbox {
-	fill: none;
-	stroke: rgba(0, 0, 0, 0);
-	stroke-width: 0px;
+	fill: rgba(255, 0, 0, 0);
+	stroke: rgba(255, 0, 0, 0);
+	stroke-width: 1px;
 }
 
-text.module-label {
+.node-hitbox {
+	fill: rgba(255, 0, 0, 0);
+	stroke: rgba(255, 0, 0, 0);
+	stroke-width: 1px;
+	opacity: 0;
+}
+
+.module-label {
 
 	tspan {
 		font-family: sans-serif !important;

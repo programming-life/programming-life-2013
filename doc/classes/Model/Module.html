@@ -118,8 +118,7 @@
       </table>
       <h2>Overview</h2>
       <div class='docstring'>
-  <p>Baseclass of all modules. Defines basic behaviour like undo and redo 
-mechanisms and solving of differential equations. </p>
+  <p>Baseclass of all modules. </p>
 </div>
 <div class='tags'>
 </div>
@@ -129,21 +128,144 @@ mechanisms and solving of differential equations. </p>
                 <a href='../../classes/Model/DNA.html'>Model.DNA</a>,
                 <a href='../../classes/Model/Lipid.html'>Model.Lipid</a>,
                 <a href='../../classes/Model/Metabolism.html'>Model.Metabolism</a>,
+                <a href='../../classes/Model/Metabolite.html'>Model.Metabolite</a>,
                 <a href='../../classes/Model/Protein.html'>Model.Protein</a>,
-                <a href='../../classes/Model/Substrate.html'>Model.Substrate</a>,
         <a href='../../classes/Model/Transporter.html'>Model.Transporter</a>
       </p>
+      <h2>Class Method Summary</h2>
+      <ul class='summary'>
+  <li>
+    <span class='signature'>
+      <a href='#extractId-class'>
+        + (Object) <strong>extractId</strong>(id)
+      </a>
+    </span>
+    <span class='desc'>
+      Extracts id data from id
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#deserialize-class'>
+        + (Model.Module) <strong>deserialize</strong>(serialized)
+      </a>
+    </span>
+    <span class='desc'>
+      Deserializes a module
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#load-class'>
+        + (void) <strong>load</strong>(module_id, cell, callback)
+      </a>
+    </span>
+    <span class='desc'>
+      Loads a module
+    </span>
+  </li>
+</ul>
       <h2>Instance Method Summary</h2>
       <ul class='summary'>
   <li>
     <span class='signature'>
       <a href='#constructor-instance'>
-        - (void) <strong>constructor</strong>(params, step)
+        - (void) <strong>constructor</strong>(params = {}, step)
       </a>
     </span>
     <span class='constructor note title'>Constructor</span>
     <span class='desc'>
       Constructor for module
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#isLocal-instance'>
+        - (Boolean) <strong>isLocal</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Returns true if this is a local instance
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#getCompound-instance'>
+        - (Integer) <strong>getCompound</strong>(compound)
+      </a>
+    </span>
+    <span class='desc'>
+      Gets the compounds start value
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#getMetabolite-instance'>
+        - (Integer) <strong>getMetabolite</strong>(metabolite)
+      </a>
+    </span>
+    <span class='desc'>
+      Gets the metabolite start value (alias for getCompound)
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#getSubstrate-instance'>
+        - (Integer) <strong>getSubstrate</strong>(substrate)
+      </a>
+    </span>
+    <span class='desc'>
+      Gets the substrate start value (alias for getCompound)
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#getProduct-instance'>
+        - (Integer) <strong>getProduct</strong>(product)
+      </a>
+    </span>
+    <span class='desc'>
+      Gets the product start value (alias for getCompound)
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#setCompound-instance'>
+        - (self) <strong>setCompound</strong>(compound, value)
+      </a>
+    </span>
+    <span class='desc'>
+      Sets the compound to the start values
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#setMetabolite-instance'>
+        - (self) <strong>setMetabolite</strong>(metabolite, value)
+      </a>
+    </span>
+    <span class='desc'>
+      Sets the metabolite to the start values (alias for setCompound)
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#setSubstrate-instance'>
+        - (self) <strong>setSubstrate</strong>(substrate, value)
+      </a>
+    </span>
+    <span class='desc'>
+      Sets the substrate to the start values (alias for setCompound)
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#setProduct-instance'>
+        - (self) <strong>setProduct</strong>(product, value)
+      </a>
+    </span>
+    <span class='desc'>
+      Sets the product to the start values (alias for setCompound)
     </span>
   </li>
   <li>
@@ -159,7 +281,7 @@ mechanisms and solving of differential equations. </p>
   <li>
     <span class='signature'>
       <a href='#_test-instance'>
-        - (Boolean) <strong>_test</strong>(substrates, tests...)
+        - (Boolean) <strong>_test</strong>(compounds, tests...)
       </a>
     </span>
     <span class='desc'>
@@ -168,50 +290,184 @@ mechanisms and solving of differential equations. </p>
   </li>
   <li>
     <span class='signature'>
-      <a href='#_do-instance'>
-        - (void) <strong>_do</strong>(key, value)
+      <a href='#_ensure-instance'>
+        - (Boolean) <strong>_ensure</strong>(test, message)
       </a>
     </span>
     <span class='desc'>
-      Applies a change to the parameters of the module @returns [self] for chaining
+      Ensures test to be true or notifies with message
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_do-instance'>
+        - (self) <strong>_do</strong>(key, value)
+      </a>
+    </span>
+    <span class='desc'>
+      Applies a change to the parameters of the module
     </span>
   </li>
   <li>
     <span class='signature'>
       <a href='#_addMove-instance'>
-        - (void) <strong>_addMove</strong>(key, value, param)
+        - (self) <strong>_addMove</strong>(key, value, param)
       </a>
     </span>
     <span class='desc'>
-      Adds a move to the undotree @returns [self] for chaining
+      Adds a move to the undotree
     </span>
   </li>
   <li>
     <span class='signature'>
       <a href='#undo-instance'>
-        - (void) <strong>undo</strong>()
+        - (self) <strong>undo</strong>()
       </a>
     </span>
     <span class='desc'>
-      Undoes the most recent move @returns [self] for chaining
+      Undoes the most recent move
     </span>
   </li>
   <li>
     <span class='signature'>
       <a href='#redo-instance'>
-        - (void) <strong>redo</strong>()
+        - (self) <strong>redo</strong>()
       </a>
     </span>
     <span class='desc'>
-      Redoes the most recently undone move @returns [self] for chaining
+      Redoes the most recently undone move
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#serialize-instance'>
+        - (String,Object) <strong>serialize</strong>(to_string = true)
+      </a>
+    </span>
+    <span class='desc'>
+      Serializes a module
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#save-instance'>
+        - (void) <strong>save</strong>(cell)
+      </a>
+    </span>
+    <span class='desc'>
+      Tries to save a module
     </span>
   </li>
 </ul>
+      <h2>Class Method Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='extractId-class'>
+      + (Object) <strong>extractId</strong>(id)
+    </p>
+    <div class='docstring'>
+  <p>Extracts id data from id</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>id</span>
+      <span class='type'>
+        (<tt>Object, Number, String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>id containing id data</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Object</tt>)
+      &mdash;
+      <span class='desc'>extracted id data</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='deserialize-class'>
+      + (Model.Module) <strong>deserialize</strong>(serialized)
+    </p>
+    <div class='docstring'>
+  <div class='note todo'>
+    <strong>TODO:</strong>
+    Safer Eval function
+  </div>
+  <p>Deserializes a module</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>serialized</span>
+      <span class='type'>
+        (<tt>Object, String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the serialized object</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt><a href='../../classes/Model/Module.html'>Model.Module</a></tt>)
+      &mdash;
+      <span class='desc'>the module</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='load-class'>
+      + (void) <strong>load</strong>(module_id, cell, callback)
+    </p>
+    <div class='docstring'>
+  <p>Loads a module</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>module_id</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the id of the module</span>
+    </li>
+    <li>
+      <span class='name'>cell</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Model/Cell.html'>Model.Cell</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the cell to load to</span>
+    </li>
+    <li>
+      <span class='name'>callback</span>
+      <span class='type'>
+        (<tt>Function</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>function to call on completion</span>
+    </li>
+  </ul>
+</div>
+  </div>
+</div>
       <h2>Constructor Details</h2>
       <div class='methods'>
   <div class='method_details'>
     <p class='signature' id='constructor-instance'>
-      - (void) <strong>constructor</strong>(params, step)
+      - (void) <strong>constructor</strong>(params = {}, step)
     </p>
     <div class='docstring'>
   <p>Constructor for module</p>
@@ -241,6 +497,297 @@ mechanisms and solving of differential equations. </p>
 </div>
       <h2>Instance Method Details</h2>
       <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='isLocal-instance'>
+      - (Boolean) <strong>isLocal</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Returns true if this is a local instance</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Boolean</tt>)
+      &mdash;
+      <span class='desc'>true if local, false if synced instance</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='getCompound-instance'>
+      - (Integer) <strong>getCompound</strong>(compound)
+    </p>
+    <div class='docstring'>
+  <p>Gets the compounds start value</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>compound</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the compound name</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Integer</tt>)
+      &mdash;
+      <span class='desc'>the value</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='getMetabolite-instance'>
+      - (Integer) <strong>getMetabolite</strong>(metabolite)
+    </p>
+    <div class='docstring'>
+  <p>Gets the metabolite start value (alias for getCompound)</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>metabolite</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the metabolite name</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Integer</tt>)
+      &mdash;
+      <span class='desc'>the value</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='getSubstrate-instance'>
+      - (Integer) <strong>getSubstrate</strong>(substrate)
+    </p>
+    <div class='docstring'>
+  <p>Gets the substrate start value (alias for getCompound)</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>substrate</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the substrate name</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Integer</tt>)
+      &mdash;
+      <span class='desc'>the value</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='getProduct-instance'>
+      - (Integer) <strong>getProduct</strong>(product)
+    </p>
+    <div class='docstring'>
+  <p>Gets the product start value (alias for getCompound)</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>product</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the product name</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Integer</tt>)
+      &mdash;
+      <span class='desc'>the value</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='setCompound-instance'>
+      - (self) <strong>setCompound</strong>(compound, value)
+    </p>
+    <div class='docstring'>
+  <p>Sets the compound to the start values</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>compound</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the compound name</span>
+    </li>
+    <li>
+      <span class='name'>value</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the value</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>self</tt>)
+      &mdash;
+      <span class='desc'>for chaining</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='setMetabolite-instance'>
+      - (self) <strong>setMetabolite</strong>(metabolite, value)
+    </p>
+    <div class='docstring'>
+  <p>Sets the metabolite to the start values (alias for setCompound)</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>metabolite</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the metabolite name</span>
+    </li>
+    <li>
+      <span class='name'>value</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the value</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>self</tt>)
+      &mdash;
+      <span class='desc'>for chaining</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='setSubstrate-instance'>
+      - (self) <strong>setSubstrate</strong>(substrate, value)
+    </p>
+    <div class='docstring'>
+  <p>Sets the substrate to the start values (alias for setCompound)</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>substrate</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the substrate name</span>
+    </li>
+    <li>
+      <span class='name'>value</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the value</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>self</tt>)
+      &mdash;
+      <span class='desc'>for chaining</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='setProduct-instance'>
+      - (self) <strong>setProduct</strong>(product, value)
+    </p>
+    <div class='docstring'>
+  <p>Sets the product to the start values (alias for setCompound)</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>product</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the product name</span>
+    </li>
+    <li>
+      <span class='name'>value</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the value</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>self</tt>)
+      &mdash;
+      <span class='desc'>for chaining</span>
+    </li>
+  </ul>
+</div>
+  </div>
   <div class='method_details'>
     <p class='signature' id='step-instance'>
       - (any) <strong>step</strong>(t, substrates, mu)
@@ -281,9 +828,13 @@ mechanisms and solving of differential equations. </p>
   </div>
   <div class='method_details'>
     <p class='signature' id='_test-instance'>
-      - (Boolean) <strong>_test</strong>(substrates, tests...)
+      - (Boolean) <strong>_test</strong>(compounds, tests...)
     </p>
     <div class='docstring'>
+  <div class='note todo'>
+    <strong>TODO:</strong>
+    What to do when value is below 0?
+  </div>
   <p>Tests if substrates are available</p>
 </div>
 <div class='tags'>
@@ -318,11 +869,49 @@ mechanisms and solving of differential equations. </p>
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='_do-instance'>
-      - (void) <strong>_do</strong>(key, value)
+    <p class='signature' id='_ensure-instance'>
+      - (Boolean) <strong>_ensure</strong>(test, message)
     </p>
     <div class='docstring'>
-  <p>Applies a change to the parameters of the module</p><p>@returns [self] for chaining</p>
+  <p>Ensures test to be true or notifies with message</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>test</span>
+      <span class='type'>
+        (<tt>Function</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>function in a module to run</span>
+    </li>
+    <li>
+      <span class='name'>message</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>string to display when it fails</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Boolean</tt>)
+      &mdash;
+      <span class='desc'>true if test succeeded</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_do-instance'>
+      - (self) <strong>_do</strong>(key, value)
+    </p>
+    <div class='docstring'>
+  <p>Applies a change to the parameters of the module</p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
@@ -344,14 +933,23 @@ mechanisms and solving of differential equations. </p>
       <span class='desc'>The value of the changed property</span>
     </li>
   </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>self</tt>)
+      &mdash;
+      <span class='desc'>for chaining</span>
+    </li>
+  </ul>
 </div>
   </div>
   <div class='method_details'>
     <p class='signature' id='_addMove-instance'>
-      - (void) <strong>_addMove</strong>(key, value, param)
+      - (self) <strong>_addMove</strong>(key, value, param)
     </p>
     <div class='docstring'>
-  <p>Adds a move to the undotree</p><p>@returns [self] for chaining</p>
+  <p>Adds a move to the undotree</p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
@@ -373,24 +971,99 @@ mechanisms and solving of differential equations. </p>
       <span class='desc'>the value of the changed property </span>
     </li>
   </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>self</tt>)
+      &mdash;
+      <span class='desc'>for chaining</span>
+    </li>
+  </ul>
 </div>
   </div>
   <div class='method_details'>
     <p class='signature' id='undo-instance'>
-      - (void) <strong>undo</strong>()
+      - (self) <strong>undo</strong>()
     </p>
     <div class='docstring'>
-  <p>Undoes the most recent move</p><p>@returns [self] for chaining</p>
+  <p>Undoes the most recent move</p>
 </div>
 <div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>self</tt>)
+      &mdash;
+      <span class='desc'>for chaining</span>
+    </li>
+  </ul>
 </div>
   </div>
   <div class='method_details'>
     <p class='signature' id='redo-instance'>
-      - (void) <strong>redo</strong>()
+      - (self) <strong>redo</strong>()
     </p>
     <div class='docstring'>
-  <p>Redoes the most recently undone move</p><p>@returns [self] for chaining</p>
+  <p>Redoes the most recently undone move</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>self</tt>)
+      &mdash;
+      <span class='desc'>for chaining</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='serialize-instance'>
+      - (String,Object) <strong>serialize</strong>(to_string = true)
+    </p>
+    <div class='docstring'>
+  <p>Serializes a module</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>to_string</span>
+      <span class='type'>
+        (<tt>Boolean</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>Stringifies object if try, default true</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>String, Object</tt>)
+      &mdash;
+      <span class='desc'>JSON Object or String</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='save-instance'>
+      - (void) <strong>save</strong>(cell)
+    </p>
+    <div class='docstring'>
+  <div class='note todo'>
+    <strong>TODO:</strong>
+    if dynamic, also needs to save the template
+  </div>
+  <div class='note todo'>
+    <strong>TODO:</strong>
+    error handling
+  </div>
+  <p>Tries to save a module</p>
 </div>
 <div class='tags'>
 </div>
@@ -399,7 +1072,7 @@ mechanisms and solving of differential equations. </p>
     </div>
     <div id='footer'>
   Generated on
-  Fri May 03 2013 22:38:25 GMT+0200 (W. Europe Daylight Time)
+  Sun May 12 2013 04:54:49 GMT+0200 (W. Europe Daylight Time)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

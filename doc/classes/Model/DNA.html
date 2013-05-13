@@ -124,7 +124,40 @@
       </table>
       <h2>Overview</h2>
       <div class='docstring'>
-  <p>Simulates DNA existance and synthesisis in the Cell</p>
+  <p>Simulates DNA existance and synthesis in the Cell</p><h2>Parameters</h2>
+<ul>
+<li>k<ul>
+<li>Synthesize rate</li>
+</ul>
+</li>
+<li>consume<ul>
+<li>All the metabolites required for DNA creation</li>
+</ul>
+</li>
+</ul>
+<h2>Properties</h2>
+<ul>
+<li>vDNASynth<ul>
+<li>k <em> this </em> consume</li>
+</ul>
+</li>
+<li>dilution<ul>
+<li>mu * this</li>
+</ul>
+</li>
+</ul>
+<h2>Equations</h2>
+<ul>
+<li>this / dt<ul>
+<li>vDNASynth - dilution</li>
+</ul>
+</li>
+<li>consume / dt<ul>
+<li>vDNASynth</li>
+</ul>
+</li>
+</ul>
+
 </div>
 <div class='tags'>
 </div>
@@ -133,7 +166,7 @@
   <li>
     <span class='signature'>
       <a href='#constructor-instance'>
-        - (void) <strong>constructor</strong>(params = {}, start = 1, prefix, food = "p_int")
+        - (void) <strong>constructor</strong>(params = {}, start = 1, prefix, consume = "p#int")
       </a>
     </span>
     <span class='constructor note title'>Constructor</span>
@@ -151,18 +184,33 @@
       </h3>
       <p class='inherited'>
                 <a href='../../classes/Model/Module.html#constructor-instance'>#constructor</a>,
+                <a href='../../classes/Model/Module.html#extractId-class'>.extractId</a>,
+                <a href='../../classes/Model/Module.html#isLocal-instance'>#isLocal</a>,
+                <a href='../../classes/Model/Module.html#getCompound-instance'>#getCompound</a>,
+                <a href='../../classes/Model/Module.html#getMetabolite-instance'>#getMetabolite</a>,
+                <a href='../../classes/Model/Module.html#getSubstrate-instance'>#getSubstrate</a>,
+                <a href='../../classes/Model/Module.html#getProduct-instance'>#getProduct</a>,
+                <a href='../../classes/Model/Module.html#setCompound-instance'>#setCompound</a>,
+                <a href='../../classes/Model/Module.html#setMetabolite-instance'>#setMetabolite</a>,
+                <a href='../../classes/Model/Module.html#setSubstrate-instance'>#setSubstrate</a>,
+                <a href='../../classes/Model/Module.html#setProduct-instance'>#setProduct</a>,
                 <a href='../../classes/Model/Module.html#step-instance'>#step</a>,
                 <a href='../../classes/Model/Module.html#_test-instance'>#_test</a>,
+                <a href='../../classes/Model/Module.html#_ensure-instance'>#_ensure</a>,
                 <a href='../../classes/Model/Module.html#_do-instance'>#_do</a>,
                 <a href='../../classes/Model/Module.html#_addMove-instance'>#_addMove</a>,
                 <a href='../../classes/Model/Module.html#undo-instance'>#undo</a>,
-        <a href='../../classes/Model/Module.html#redo-instance'>#redo</a>
+                <a href='../../classes/Model/Module.html#redo-instance'>#redo</a>,
+                <a href='../../classes/Model/Module.html#serialize-instance'>#serialize</a>,
+                <a href='../../classes/Model/Module.html#save-instance'>#save</a>,
+                <a href='../../classes/Model/Module.html#deserialize-class'>.deserialize</a>,
+        <a href='../../classes/Model/Module.html#load-class'>.load</a>
       </p>
       <h2>Constructor Details</h2>
       <div class='methods'>
   <div class='method_details'>
     <p class='signature' id='constructor-instance'>
-      - (void) <strong>constructor</strong>(params = {}, start = 1, prefix, food = "p_int")
+      - (void) <strong>constructor</strong>(params = {}, start = 1, prefix, consume = "p#int")
     </p>
     <div class='docstring'>
   <p>Constructor for DNA</p>
@@ -195,12 +243,12 @@
       <span class='desc'>the prefix name to use</span>
     </li>
     <li>
-      <span class='name'>food</span>
+      <span class='name'>consume</span>
       <span class='type'>
         (<tt>String</tt>)
       </span>
       &mdash;
-      <span class='desc'>the substrate converted to dna</span>
+      <span class='desc'>the metabolite converted to dna</span>
     </li>
   </ul>
   <h3>
@@ -230,7 +278,7 @@
         (<tt>String</tt>)
       </span>
       &mdash;
-      <span class='desc'>the food, overides the food parameter, defaults to &quot;s_int&quot;</span>
+      <span class='desc'>the food, overides the consume parameter, defaults to &quot;p#int&quot;</span>
     </li>
   </ul>
 </div>
@@ -239,7 +287,7 @@
     </div>
     <div id='footer'>
   Generated on
-  Fri May 03 2013 22:38:25 GMT+0200 (W. Europe Daylight Time)
+  Sun May 12 2013 04:54:49 GMT+0200 (W. Europe Daylight Time)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

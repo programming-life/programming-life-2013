@@ -2,8 +2,8 @@ describe("UndoTree", function() {
 	var tree, root;
 	
 	beforeEach( function() {
-		root = new Node({root: "test"}, null);
-		tree = new UndoTree(root);
+		root = new Model.Node({root: "test"}, null);
+		tree = new Model.UndoTree(root);
 	});
 
 	describe("when constructed with only a root node", function() {
@@ -35,7 +35,7 @@ describe("UndoTree", function() {
 		describe("when rebasing the tree to a new node", function() {
 			var newNode;
 			beforeEach( function() {
-				newNode = new Node({base: "base"},null);
+				newNode = new Model.Node({base: "base"},null);
 				tree.rebase(tree._root, newNode);
 			});
 
@@ -98,12 +98,16 @@ describe("UndoTree", function() {
 						redone = tree.redo();
 					});
 
-					it("should have the last node as current", function() {
-						expect( tree._current ).toBe( node[5] );
+					it("should have the second last node as current", function() {
+						expect( tree._current ).toBe( node[4] );
 					});
 
-					it("should have returned the next action", function() {
-						expect( redone ).toBe( object[5] );
+					it("should have returned the second last action", function() {
+						expect( redone ).toBe( object[4] );
+					});
+
+					it("should have returned the same action as the object of the node that is now current", function() {
+						expect( tree._current._object ).toBe( redone)
 					});
 				});
 
@@ -159,7 +163,7 @@ describe("UndoTree", function() {
 			
 			beforeEach( function() {
 				branch = node[2];
-				base = new Node({rebase: "base"});
+				base = new Model.Node({rebase: "base"});
 				oldParent = branch._parent;
 				tree.rebase( branch, base );
 			});

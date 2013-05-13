@@ -11,8 +11,8 @@ describe("Module Protein", function() {
 			expect( module.name ).toBe( "protein" );
 		});
 		
-		it( "should have 'p_int' as substrate", function() {
-			expect( module.substrate ).toBe( "p_int" );
+		it( "should have 'p#int' as consume", function() {
+			expect( module.consume ).toMatch( ["p#int"] );
 		});
 		
 		it( "should have 1 as k (transcription value)", function() {
@@ -32,6 +32,69 @@ describe("Module Protein", function() {
 			expect( module.starts.name ).toBeDefined();
 			expect( module.starts.name ).toBe( 0 );
 			expect( module.amount ).toBe( 0 );
+		});
+		
+		it("should be able to serialize the module", function() {
+			serialized = module.serialize( true )
+			expect( serialized ).toBeDefined();
+			expect( serialized.length ).toBeGreaterThan( 2 )
+		});
+		
+		describe("and when serialized", function() {
+			var serialized;
+			beforeEach( function() {
+				serialized = module.serialize( true )
+			});
+			
+			it("should be able to deserialize", function() {
+				deserialized = Model.Protein.deserialize( serialized )
+				expect( deserialized ).toBeDefined();
+				expect( deserialized.constructor.name ).toBe( module.constructor.name )
+			});
+			
+			describe("and when deserialized", function() {
+				var deserialized;
+				beforeEach( function() {
+					deserialized = Model.Protein.deserialize( serialized )
+				});
+				
+				it( "should have 'protein' as name", function() {
+					expect( module.name ).toBe( "protein" );
+				});
+				
+				it( "should have 'p#int' as consume", function() {
+					expect( module.consume ).toMatch( ["p#int"] );
+				});
+				
+				it( "should have 1 as k (transcription value)", function() {
+					expect( module.k ).toBe( 1 );
+				});
+				
+				it( "should have 1 as k_d (degrade value)", function() {
+					expect( module.k_d ).toBe( 1 );
+				});
+				
+				it( "should have 'dna' as dna", function() {
+					expect( module.dna ).toBe( "dna" );
+				});
+				
+				it( "should have 1 substrate: name with value 0", function() {
+					expect( _(module.starts).size() ).toBe( 1 );
+					expect( module.starts.name ).toBeDefined();
+					expect( module.starts.name ).toBe( 0 );
+					expect( module.amount ).toBe( 0 );
+				});
+				
+				it("should be able to serialize the module", function() {
+					serialized = module.serialize( true )
+					expect( serialized ).toBeDefined();
+					expect( serialized.length ).toBeGreaterThan( 2 )
+				});
+		
+				it( "should have a _step function", function() {
+					expect( deserialized._step ).toBeDefined();
+				});
+			});
 		});
 		
 	});
@@ -59,7 +122,7 @@ describe("Module Protein", function() {
 			});
 			
 			it( "should override default parameters", function() {
-				expect( module.substrate ).toMatch( 'food' );
+				expect( module.consume ).toMatch( ['food'] );
 			});
 			
 		});
@@ -67,11 +130,11 @@ describe("Module Protein", function() {
 		describe( "and using named option in the constructor, also as params", function() {
 			
 			beforeEach( function() {
-				module = new Model.Protein( { a: 'new', substrate: 'winner' }, undefined, "loser" );
+				module = new Model.Protein( { a: 'new', consume: ['winner'] }, undefined, "loser" );
 			});
 			
 			it( "should not override given params ", function() {
-				expect( module.substrate ).toMatch( 'winner' );
+				expect( module.consume ).toMatch( ['winner'] );
 			});
 			
 		});
@@ -98,7 +161,7 @@ describe("Module Protein", function() {
 		});		
 		
 		it( "should overide the default food with 'magix'", function() {
-			expect( module.substrate ).toMatch( 'magix' );
+			expect( module.consume ).toMatch( ['magix'] );
 		});
 	});
 	
@@ -127,6 +190,7 @@ describe("Module Protein", function() {
 		describe( "with no substrates", function() {
 			
 			beforeEach( function() { 
+				substrates[module.name] = 0
 				results = module.step( 0, substrates, 0 );
 			});
 			
@@ -138,6 +202,7 @@ describe("Module Protein", function() {
 		describe( "with dna substrate", function() {
 			
 			beforeEach( function() { 
+				substrates[module.name] = 0
 				substrates[module.dna] = 1;
 				results = module.step( 0, substrates, 0 );
 			});
@@ -150,7 +215,8 @@ describe("Module Protein", function() {
 		describe( "with food substrate", function() {
 			
 			beforeEach( function() { 
-				substrates[module.substrate] = 1;
+				substrates[module.name] = 0
+				substrates[module.consume[0]] = 1;
 				results = module.step( 0, substrates, 0 );
 			});
 			
@@ -162,8 +228,9 @@ describe("Module Protein", function() {
 		describe( "with dna and food substrate", function() {
 		
 			beforeEach( function() {
+				substrates[module.name] = 0
 				substrates[module.dna] = 1;
-				substrates[module.substrate] = 1;
+				substrates[module.consume[0]] = 1;
 			});
 			
 			describe( "with growth_rate > 0", function() {
@@ -181,11 +248,11 @@ describe("Module Protein", function() {
 				});
 				
 				it( "should decrease substrate", function() {
-					expect( results[module.substrate] ).toBeLessThan( 0 );
+					expect( results[module.consume[0]] ).toBeLessThan( 0 );
 				});
 				
 				it( "should have substrate = -protein", function() {
-					expect( results[module.name] + results[module.substrate] ).toBe( 0 );
+					expect( results[module.name] + results[module.consume[0]] ).toBe( 0 );
 				});
 				
 				describe( "and protein > 0", function() {
@@ -207,8 +274,8 @@ describe("Module Protein", function() {
 						expect( results[module.name] ).toBeLessThan( 0 );
 					});
 					
-					it( "should decrease substrate", function() {
-						expect( results[module.substrate] ).toBeLessThan( 0 );
+					it( "should decrease consume", function() {
+						expect( results[module.consume[0]] ).toBeLessThan( 0 );
 					});					
 				});
 			});
@@ -228,11 +295,11 @@ describe("Module Protein", function() {
 				});
 				
 				it( "should decrease food", function() {
-					expect( results[module.substrate] ).toBeLessThan( 0 );
+					expect( results[module.consume[0]] ).toBeLessThan( 0 );
 				});
 				
 				it( "should have substrate = -protein", function() {
-					expect( results[module.name] + results[module.substrate] ).toBe( 0 );
+					expect( results[module.name] + results[module.consume[0]] ).toBe( 0 );
 				});
 				
 				describe( "and protein > 0", function() {
@@ -254,8 +321,8 @@ describe("Module Protein", function() {
 						expect( results[module.name] ).toBeGreaterThan( 0 );
 					});
 					
-					it( "should decrease substrate", function() {
-						expect( results[module.substrate] ).toBeLessThan( 0 );
+					it( "should decrease consume", function() {
+						expect( results[module.consume[0]] ).toBeLessThan( 0 );
 					});					
 				});
 			});

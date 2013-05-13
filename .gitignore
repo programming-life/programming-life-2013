@@ -167,13 +167,11 @@ pip-log.txt
 
 # Ignore the default SQLite database.
 /db/*.sqlite3
+/db/*.sqlite3-*
 
 # Ignore tmp and log folders
 log
 tmp
-
-# Ignore Gemfile.lock
-Gemfile.lock
 
 # Ignore all logfiles and tempfiles.
 /log/*.log
