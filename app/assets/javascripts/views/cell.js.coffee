@@ -71,10 +71,7 @@ class View.Cell
 		counters = {}
 		
 		# Draw each module
-		for view in @_views
-			
-			unless view.visible
-				continue
+		for view in @_views when view.visible
 			
 			if ( view instanceof View.Module )
 				
@@ -133,8 +130,7 @@ class View.Cell
 	
 		index = _( @_drawn ).indexOf( module.id )
 		if index isnt -1
-			view = @_views[ index ]
-			view.clear()
+			view = @_views[ index ].kill()
 			@_views = _( @_views ).without view
 			@_drawn = _( @_drawn ).without module.id
 			@redraw()
