@@ -188,7 +188,7 @@ class View.Module
 			deleteButton?.click =>
 				@_cell.remove(@module)
 
-			shadow = @drawShadow(box, scale)
+		shadow = @drawShadow(box, scale)
 
 		# Draw hitbox
 		hitbox = @drawHitbox(box, scale)
@@ -423,7 +423,7 @@ class View.Module
 			
 		image = @_paper.image('/assets/icon-trash.png', rect.x - 12 * scale, rect.y - 12 * scale, 24 * scale, 24 * scale)
 
-		hitbox = @_paper.circle( rect.x + rect.width, rect.y, 16 * scale )
+		hitbox = @_paper.circle( rect.x, rect.y, 16 * scale )
 		hitbox.node.setAttribute('class', 'module-hitbox')		
 		deleteButton.push( circle, image, hitbox )
 		
