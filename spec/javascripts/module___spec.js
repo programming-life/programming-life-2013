@@ -2,9 +2,14 @@ describe("Module", function() {
 	var module, step;
 	
 	beforeEach(function() {
-		params = { k: 3, b: 5 };
+		params = { k: 3, b: "5" };
 		step = function( t, substrates ) { return { 'a' : this.k + this.b } };
 		module = new Model.Module( params, step );
+	});
+
+	it("should be able to be created without params or step function", function() {
+		module = new Model.Module( null, null );
+		expect( module ).toBeDefined();
 	});
 
 	it("should be able to set its properties to its params", function() {
@@ -30,12 +35,20 @@ describe("Module", function() {
 		expect( serialized.length ).toBeGreaterThan( 2 )
 	});
 
+	it("should be able to get its url", function() {
+		expect( module.url ).toBe("/module_instances.json");
+	});
+
+	it("should not be able to add compounds if not predefined in params", function() {
+		expect( function() { module.setCompound("foo", 42) } ).toThrow();		
+	});
+
 	describe( "when serialized and deserialized", function() { 
 		var serialized;
 		var deserialized;
 		
 		beforeEach( function() {
-			serialized = module.serialize( true )
+			serialized = module.serialize( )
 			deserialized = Model.Module.deserialize( serialized );
 		});
 		
@@ -49,7 +62,7 @@ describe("Module", function() {
 			expect( module._step ).toEqual( step );
 		});
 		
-		it("should be able to a date of creation", function() {
+		it("should be able to get the date of creation", function() {
 			expect( deserialized.creation ).toBeDefined();
 		});
 		
@@ -142,7 +155,7 @@ describe("Module", function() {
 				module.c = 10;
 			});
 			
-			it("should not have applied tha change", function() {
+			it("should not have applied that change", function() {
 				expect(module.c).toEqual(undefined)
 			});	
 
@@ -152,5 +165,44 @@ describe("Module", function() {
 		});
 
 	});
-	
+
+	describe( "when compounds has been added", function () {
+		var aName, aValue;
+
+		beforeEach( function() {
+			aName = "a";
+			aValue = 2;
+			var starts = { };
+			starts[ aName ] = aValue
+			var params = { "starts": starts }
+			module = new Model.Module(params, step);
+		});
+
+		it("should be able to set the compounds with values", function() {
+			expect( module.getProduct( aName ) ).toEqual( aValue );
+		});
+
+		it("should be able to add an additional, new compound", function() {
+			module.setCompound( "newone", 14 );
+			expect( module.getCompound( "newone" ) ).toEqual( 14 );
+		})
+
+		it("should return 0 if the compound doesn't exist", function() {
+			expect( module.getCompound( "Obviously not there" ) ).toEqual( 0 );
+		})
+
+		it("should be able to handle the aliases", function() {
+			module.setProduct( aName, 3 );
+			expect( module.getCompound( aName ) ).toEqual( 3 );
+
+			module.setMetabolite( aName, 4 );
+			expect( module.getProduct( aName ) ).toEqual( 4 );
+
+			module.setSubstrate( aName, 5 );
+			expect( module.getMetabolite( aName ) ).toEqual( 5 );
+
+			module.setCompound( aName, 6 );
+			expect( module.getSubstrate( aName ) ).toEqual( 6 );
+		});
+	});
 }); 
