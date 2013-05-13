@@ -283,6 +283,10 @@ class View.Cell
 	
 		graph_num = 0
 		
+		for key, graph of @_graphs
+			graph.clear()
+			delete @_graphs[ key ] unless datasets[ key ]?
+		
 		for key, dataset of datasets
 			if ( !@_graphs[ key ]? )
 				height = y + 100 + Math.ceil( (graph_num + 1) / 2 ) * 175 + ( Math.ceil( (graph_num + 1) / 2 ) - 1 ) * 100
