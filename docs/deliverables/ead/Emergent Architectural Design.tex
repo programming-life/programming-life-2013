@@ -51,7 +51,13 @@
 	\section{Software architecture views}
 		This section contains all the information about the software architecture of the application. The section is divided into several subsections to group together interesting information and improve readability.
 		\subsection{Subsystem Decomposition}
+
+		
+		
 			This section describes the key subsystems in the application. It is divided into two sections, because the application is divided this way as well. The first subsection is about the server-side subsystems and the second one is about the client-side subsystems.
+			
+			\includegraphics[scale=0.8]{EAD.png} 
+			
 			\subsubsection{Server-side}
 				The server subsystems consist of two key parts: the server back end and the database. The server keeps an up-to-date copy of the database and sychronises with the client side when possible. It can also be used to do calculations that are too complicated for the client-side of the application (Calculations are deemed too complicated when they take a notable amount of time to complete). It is dependent upon the database, to synchronise the appropriate data to the appropriate client back end corresponding with a user.
 				The database is used for storage of user data, modules for cell design, as well as cell models created using the application. It provides a centralised storage so the client-side application can function on any platform without a persistent internet connection. It is not dependent upon anything, although every function using persistent data is dependent on it. 
@@ -77,18 +83,13 @@
 			\subsubsection{Client-side}
 				The client-side subsystems contain most of the applications functionality. These subsystems are responsible for displaying the graphical environment with all its modules, as well as doing the basic simulating. If the simulation becomes too complex, the complicated calculations can be sent to the sever to be processed on the server-side. If used locally, the client-side subsystems function independently of the server. If used on multiple machines, the client-side can be made dependent on the server and the database to synchronise user data.
 				\paragraph{Local storage}
-					: Javascript determines the local storage engine that is availabe and uses that to maintain an offline copy of the application. This makes it very easy to design new cells. 
+					: Javascript determines the local storage engine that is availabe and uses that to maintain an offline copy of the application and the created cells/modules. This makes it very easy to design new cells or edit saved cells even when the user isn't connected to the internet.
 				\paragraph{Interaction by Javascript}
 					: Javascript facilitates interaction and processes all the differential equations. It generates the graphs and the reports with the help of the canvas element, part of HTML5.
 
 		\subsection{Hardware/software mapping}
-			The hardware/software mapping is illustrated by \hyperref[fig:csillustration]{figure \ref*{fig:csillustration}}. The server-side is a non-client piece of hardware, and can therefore be chosen specifically to suit the clients needs. Tasks of the server-side include, but are not limited to the compilation of source files and providing a SQL enabled database. The client-side hardware is required to support current webbuilding standards, which qualifies almost every machine from almost every platform to run the application. It's also possible for the client to work locally without internet connection, using the local storage.\\
-			\begin{figure}
-			\centering
-				\includegraphics[scale=0.8]{EAD.png}
-			\caption{Server and client illustrated}
-			\label{fig:csillustration}
-			\end{figure}
+			The server-side is a non-client piece of hardware, and can therefore be chosen specifically to suit the clients needs. Tasks of the server-side include, but are not limited to the compilation of source files and providing a SQL enabled database. The client-side hardware is required to support current webbuilding standards, which qualifies almost every machine from almost every platform to run the application. It's also possible for the client to work locally without internet connection, using the local storage.\\
+			
 \clearpage
 		\subsection{Ordinary Differential Equation Solver}
 			All computations are performed by our ODE Solver, which is built upon the numericjs library. This is a library which makes it possible to perform sophisticated numerical computations in pure javascript and thus is able to run in the browser.
@@ -99,6 +100,8 @@
 			The locally stored data is synchronized with the database upon connection. 
 		\subsection{Concurrency}
 			Each client runs independently and uses asynchronous communication with the server through \emph{REST} and \emph{AJAX}. Because of this, concurrency issues are very improbable. The client-side application is web-based, and uses only one process. Shared resources are retrieved directly from and synchronised directly with the database.
+		\subsection{API}
+			The API can be found online here: http://coffeedoc.info/github/Derkje-J/programming-life/develop/
 	\clearpage
 	\section{Summary}
 		The application is a lightweight, cross-platform graphical design tool with a centralised storage database. The architecture ensures its functionality on different kinds of machines as well as the ease of simulating complex cell models. It not only offers stability, ease and intuitive design, it offers it on every machine.

@@ -24,7 +24,7 @@ class View.Cell
 
 		if ( @_cell? )
 			for module in @_cell._modules
-				@_views.push new View.Module( @_paper, module)
+				@_views.push new View.Module( @_paper, @_cell, module)
 
 		@_views.push new View.DummyModule( @_paper, @_cell, new Model.DNA() )
 		@_views.push new View.DummyModule( @_paper, @_cell, new Model.Lipid() )
@@ -134,7 +134,7 @@ class View.Cell
 		unless cell isnt @_cell
 			unless _( @_drawn ).indexOf( module.id ) isnt -1
 				@_drawn.unshift module.id
-				@_views.unshift new View.Module( @_paper, module )
+				@_views.unshift new View.Module( @_paper, @_cell, module )
 				@redraw()
 			
 	# On module removed, removed it from the cell
