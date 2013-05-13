@@ -37,7 +37,7 @@ class Model.EventManager
 		
 		if @_events[ event ]?
 			trigger = ( element, index, list ) ->
-				element.apply( element, _( [ caller ] ).concat args )
+				element[ 1 ].apply( element[ 0 ], _( [ caller ] ).concat args )
 			_( @_events[ event ] ).each trigger
 			
 		return this
@@ -55,34 +55,37 @@ class Model.EventManager
 	# Unbinds an event (alias for unbind)
 	#
 	# @param event [String] event name
+	# @param context [Context] context
 	# @param func [Function] the event
 	# @return [self] chaining self
 	#
-	off : ( event, func ) ->
-		return @unbind event, func
+	off : ( event, context, func ) ->
+		return @unbind event, context, func
 		
 	# Binds an event
 	#
 	# @param event [String] event name
-	# @param context [Context] will serve as this
+	# @param context [Context] context
 	# @param func [Function] the event
 	# @return [self] chaining self
 	#
 	bind : ( event, context, func ) ->
 		unless @_events[ event ]?
 			@_events[ event ] = []
-		@_events[ event ].push _( func ).bind context
+		@_events[ event ].push [ context, func ]
 		return this
 		
 	# Unbinds an event
 	#
 	# @param event [String] event name
 	# @param func [Function] the event
+	# @param context [Context] will serve as this
 	# @return [self] chaining self
 	#
-	unbind : ( event, func ) ->
+	unbind : ( event, context, func ) ->
 		if @_events[ event ]?
-			@_events[ event ] = _( @_events[ event ] ).without func
+			for binding in @_events[ event ] when binding[ 0 ] is context and binding[ 1 ] is func
+				@_events[ event ] = _( @_events[ event ] ).without binding
 		return this
 	
 	# Bindings for an event
