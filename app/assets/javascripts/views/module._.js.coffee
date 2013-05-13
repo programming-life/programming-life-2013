@@ -237,7 +237,7 @@ class View.Module
 			closeButton = @drawCloseButton( box, scale )
 			closeButton?.click =>
 				console.log @module.id, 'close'
-				Model.EventManager.trigger( 'module.set.selected' , @module, [ false ])
+				Model.EventManager.trigger( 'module.set.selected' , @module, [ off ])
 
 			deleteButton = @drawDeleteButton( box, scale )
 			deleteButton?.click =>
@@ -249,14 +249,14 @@ class View.Module
 		# Draw hitbox
 		hitbox = @drawHitbox(box, scale)
 		hitbox.click =>
-			Model.EventManager.trigger( 'module.set.selected', @module, [ true ])
+			Model.EventManager.trigger( 'module.set.selected', @module, [ on ] )
 
 		if @_hovered
 			hitbox.mouseout =>			
-				_( Model.EventManager.trigger( 'module.set.hovered', @module, [ false ]) ).debounce( 100 )
+				_( Model.EventManager.trigger( 'module.set.hovered', @module, [ off ]) ).debounce( 100 )
 		else 
 			hitbox.mouseover =>
-				_( Model.EventManager.trigger( 'module.set.hovered', @module, [ true ]) ).debounce( 100 )
+				_( Model.EventManager.trigger( 'module.set.hovered', @module, [ on ]) ).debounce( 100 )
 
 		@_view = @_paper.setFinish()
 		@_view.push( contents )
@@ -456,12 +456,18 @@ class View.Module
 
 		closeButton = @_paper.set()
 
-		circle = @_paper.circle( rect.x + rect.width, rect.y, 16 * scale)
+		circle = @_paper.circle( rect.x + rect.width, rect.y, 16 * scale )
 		circle.node.setAttribute('class', 'module-close')
 
-		image = @_paper.image('/assets/icon-resize-small.png', rect.x + rect.width - 12 * scale, rect.y - 12 * scale, 24 * scale, 24 * scale)
+		image = @_paper.image( 
+			'/assets/icon-resize-small.png', 
+			rect.x + rect.width - 12 * scale, 
+			rect.y - 12 * scale, 
+			24 * scale, 
+			24 * scale
+		)
 
-		hitbox = @_paper.circle( rect.x + rect.width, rect.y, 16 * scale )
+		hitbox = @_paper.circle( rect.x + rect.width , rect.y, 16 * scale )
 		hitbox.node.setAttribute('class', 'module-hitbox')		
 		closeButton.push( circle, image, hitbox )
 		
@@ -481,7 +487,13 @@ class View.Module
 		circle = @_paper.circle( rect.x, rect.y, 16 * scale )
 		circle.node.setAttribute('class', 'module-close')
 			
-		image = @_paper.image('/assets/icon-trash.png', rect.x - 12 * scale, rect.y - 12 * scale, 24 * scale, 24 * scale)
+		image = @_paper.image(
+			'/assets/icon-trash.png', 
+			rect.x - 12 * scale, 
+			rect.y - 12 * scale, 
+			24 * scale, 
+			24 * scale
+		)
 
 		hitbox = @_paper.circle( rect.x, rect.y, 16 * scale )
 		hitbox.node.setAttribute('class', 'module-hitbox')		
