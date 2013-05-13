@@ -26,7 +26,7 @@ class View.Module
 		Model.EventManager.on( 'module.set.selected', @, @onModuleSelected )
 		Model.EventManager.on( 'module.set.hovered', @, @onModuleHovered )
 		Model.EventManager.on( 'paper.resize', @, @onPaperResize)
-		
+
 		Object.defineProperty( @, 'visible',
 			# @property [Function] the step function
 			get: ->
@@ -150,6 +150,8 @@ class View.Module
 	# @param scale [Integer] the scale
 	#
 	draw: ( x, y, scale ) ->
+		console.log 'draw'
+
 		# Clear all existing content
 		@clear()
 
@@ -201,7 +203,9 @@ class View.Module
 				Model.EventManager.trigger('module.set.hovered', @module, [ true ])
 
 		@_view = @_paper.setFinish()
+
 		@_view.push(contents)
+		contents.insertBefore(hitbox)
 
 	# Draws contents
 	#
