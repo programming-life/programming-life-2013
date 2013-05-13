@@ -298,6 +298,13 @@ class View.Cell
 		
 		return @_graphs
 	
+	# Redraw graphs
+	#
+	_redrawGraphs: ( ) ->
+		for graph in @_graphs
+			graph.redraw()
+			
+	
 	# Starts drawing the simulation
 	# 
 	# @param step_duration [Integer] duration of each step call
@@ -374,6 +381,7 @@ class View.Cell
 		console.log 'stop'
 		
 		@_running = off
+		@_redrawGraphs()
 
 	# Draws red lines
 	#
