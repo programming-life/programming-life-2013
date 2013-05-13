@@ -300,6 +300,9 @@ class View.Cell
 		
 		for key, dataset of datasets
 			if ( !@_graphs[ key ]? )
+				height = y + 100 + Math.ceil( (graph_num + 1) / 2 ) * 175 + ( Math.ceil( (graph_num + 1) / 2 ) - 1 ) * 100
+				@_container.setViewBox( 0, 0, 1000, height )
+				@_container.setSize( "100%", height )
 				@_graphs[ key ] = new View.Graph( @_container, key, @ )
 
 			
@@ -310,9 +313,6 @@ class View.Cell
 			@_graphs[ key ].draw( placement.x, placement.y, scale )
 			
 		
-		height = y + 100 + Math.ceil( graph_num / 2 ) * 175 + ( Math.ceil( graph_num / 2 ) - 1 ) * 100
-		@_container.setViewBox( 0, 0, 1000, height )
-		@_container.setSize( "100%", height )
 		return @_graphs
 	
 	# Starts drawing the simulation
