@@ -2,6 +2,8 @@
 #
 class View.Cell
 
+	MAX_RUNTIME: 100
+
 	# Constructor for this view
 	# 
 	# @param paper [Raphael] paper parent
@@ -331,16 +333,18 @@ class View.Cell
 	# @param base_values [Array<Float>] the previous values
 	# @return [Array<Float>] the new values
 	#
-	# @todo append data instead of replace data
+	# @todo stopSimulation should throw event that is captured by play button
 	#
 	_step : ( duration, dt, base_values ) ->
 		
 		cell_data = @_getCellData( duration, base_values, dt, @_iteration )
 		@_iteration = cell_data.iteration
 		
-		console.log 'step', "#{ cell_data.from } -> #{ cell_data.to }"
 		@_drawGraphs( cell_data.datasets, 0, 0, @_scale, @_iteration > 1  )
-		
+
+		if cell_data.to >= @MAX_RUNTIME
+			@stopSimulation()
+			
 		return _( cell_data.results.y ).last()
 	
 	# Simulation handler
