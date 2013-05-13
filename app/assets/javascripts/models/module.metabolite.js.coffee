@@ -1,14 +1,16 @@
 # Simulates substrates/products/metabolites in the cell
 #
 # Parameters
-# ------------------ ------------------ ------------------
-# supply
-# 	The supply per time unit
+# --------------------------------------------------------
+# 
+# - supply
+#    - The supply per time unit
 #
 # Equations
-# ------------------ ------------------ ------------------
-# this / dt
-#	supply
+# --------------------------------------------------------
+#
+# - this / dt
+#    - supply
 #
 class Model.Metabolite extends Model.Module
 

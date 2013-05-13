@@ -1,21 +1,24 @@
 # Simulates Cell Growth / Population size
 #
 # Parameters
-# ------------------ ------------------ ------------------
-# infrastructure
-#	Infrastructure for population growth
-# metabolites
-#	All the metabolites required for population growth
+# --------------------------------------------------------
+# 
+# - infrastructure
+#    - Infrastructure for population growth
+# - metabolites
+#    - All the metabolites required for population growth
 # 
 # Properties
-# ------------------ ------------------ ------------------
-# mu
-#	infrastructure * metabolites
+# --------------------------------------------------------
+#
+# - mu
+#    - infrastructure * metabolites
 #
 # Equations
-# ------------------ ------------------ ------------------
-# this / dt
-#	mu * this
+# --------------------------------------------------------
+#
+# - this / dt
+#    - mu * this
 #
 class Model.CellGrowth extends Model.Module
 

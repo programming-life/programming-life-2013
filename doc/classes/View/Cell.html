@@ -116,6 +116,12 @@
           <td>app&#47;assets&#47;javascripts&#47;views&#47;cell.js.coffee</td>
         </tr>
       </table>
+      <h2>Overview</h2>
+      <div class='docstring'>
+  <p>Class to generate a view for a cell model</p>
+</div>
+<div class='tags'>
+</div>
       <h2>Instance Method Summary</h2>
       <ul class='summary'>
   <li>
@@ -126,7 +132,17 @@
     </span>
     <span class='constructor note title'>Constructor</span>
     <span class='desc'>
-      
+      Constructor for this view
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#redraw-instance'>
+        - (void) <strong>redraw</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Redraws the cell
     </span>
   </li>
   <li>
@@ -164,17 +180,17 @@
   <li>
     <span class='signature'>
       <a href='#getLocationForModule-instance'>
-        - (void) <strong>getLocationForModule</strong>(module, params)
+        - (Object) <strong>getLocationForModule</strong>(module, params)
       </a>
     </span>
     <span class='desc'>
-      Returns the location for a module @returns [Object] the size as an object with x, y
+      Returns the location for a module
     </span>
   </li>
   <li>
     <span class='signature'>
       <a href='#_getCellData-instance'>
-        - (Array) <strong>_getCellData</strong>(duration)
+        - (Object) <strong>_getCellData</strong>(duration, base_values = [], dt = 1, iteration = 0)
       </a>
     </span>
     <span class='desc'>
@@ -184,17 +200,17 @@
   <li>
     <span class='signature'>
       <a href='#_getGraphPlacement-instance'>
-        - (void) <strong>_getGraphPlacement</strong>()
+        - (Object) <strong>_getGraphPlacement</strong>(basex, basey, scale, graph_num)
       </a>
     </span>
     <span class='desc'>
-      
+      Get the graph placement
     </span>
   </li>
   <li>
     <span class='signature'>
       <a href='#_drawGraphs-instance'>
-        - (void) <strong>_drawGraphs</strong>(datasets)
+        - (Object) <strong>_drawGraphs</strong>(datasets, x, y, scale, append = false)
       </a>
     </span>
     <span class='desc'>
@@ -204,21 +220,31 @@
   <li>
     <span class='signature'>
       <a href='#startSimulation-instance'>
-        - (void) <strong>startSimulation</strong>()
+        - (void) <strong>startSimulation</strong>(step_duration = 20, step_update = 2000, dt = 1)
       </a>
     </span>
     <span class='desc'>
-      
+      Starts drawing the simulation
     </span>
   </li>
   <li>
     <span class='signature'>
-      <a href='#simulate-instance'>
-        - (void) <strong>simulate</strong>()
+      <a href='#_step-instance'>
+        - (Array&lt;Float&gt;) <strong>_step</strong>(duration, dt, base_values)
       </a>
     </span>
     <span class='desc'>
-      
+      Steps the simulation
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_simulate-instance'>
+        - (void) <strong>_simulate</strong>(step)
+      </a>
+    </span>
+    <span class='desc'>
+      Simulation handler Actually loops the simulation.
     </span>
   </li>
   <li>
@@ -228,7 +254,7 @@
       </a>
     </span>
     <span class='desc'>
-      
+      Stops the simulation
     </span>
   </li>
   <li>
@@ -238,7 +264,7 @@
       </a>
     </span>
     <span class='desc'>
-      
+      Draws red lines
     </span>
   </li>
 </ul>
@@ -248,12 +274,44 @@
     <p class='signature' id='constructor-instance'>
       - (void) <strong>constructor</strong>(paper, cell)
     </p>
-    <div class='tags'>
+    <div class='docstring'>
+  <p>Constructor for this view</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>paper</span>
+      <span class='type'>
+        (<tt>Raphael</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>paper parent</span>
+    </li>
+    <li>
+      <span class='name'>cell</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Model/Cell.html'>Model.Cell</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>cell to view</span>
+    </li>
+  </ul>
 </div>
   </div>
 </div>
       <h2>Instance Method Details</h2>
       <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='redraw-instance'>
+      - (void) <strong>redraw</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Redraws the cell</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
   <div class='method_details'>
     <p class='signature' id='draw-instance'>
       - (void) <strong>draw</strong>(x, y, scale)
@@ -262,6 +320,33 @@
   <p>Draws the cell</p>
 </div>
 <div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>x</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>x location</span>
+    </li>
+    <li>
+      <span class='name'>y</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>y location</span>
+    </li>
+    <li>
+      <span class='name'>scale</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>scale</span>
+    </li>
+  </ul>
 </div>
   </div>
   <div class='method_details'>
@@ -326,10 +411,10 @@
   </div>
   <div class='method_details'>
     <p class='signature' id='getLocationForModule-instance'>
-      - (void) <strong>getLocationForModule</strong>(module, params)
+      - (Object) <strong>getLocationForModule</strong>(module, params)
     </p>
     <div class='docstring'>
-  <p>Returns the location for a module</p><p>@returns [Object] the size as an object with x, y</p>
+  <p>Returns the location for a module</p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
@@ -343,11 +428,20 @@
       <span class='desc'>the module to get the location for</span>
     </li>
   </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Object</tt>)
+      &mdash;
+      <span class='desc'>the size as an object with x, y</span>
+    </li>
+  </ul>
 </div>
   </div>
   <div class='method_details'>
     <p class='signature' id='_getCellData-instance'>
-      - (Array) <strong>_getCellData</strong>(duration)
+      - (Object) <strong>_getCellData</strong>(duration, base_values = [], dt = 1, iteration = 0)
     </p>
     <div class='docstring'>
   <p>Get the simulation data from the cell</p>
@@ -363,28 +457,60 @@
       &mdash;
       <span class='desc'>The duration of the simulation</span>
     </li>
+    <li>
+      <span class='name'>dt</span>
+      <span class='type'>
+        (<tt>Float</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The timestep for the graphs</span>
+    </li>
+    <li>
+      <span class='name'>base_values</span>
+      <span class='type'>
+        (<tt>Array</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>continuation values</span>
+    </li>
   </ul>
   <h3>Returns:</h3>
   <ul class='return'>
     <li>
       <span class='type'></span>
-      (<tt>Array</tt>)
+      (<tt>Object</tt>)
       &mdash;
-      <span class='desc'>An array of datapoints</span>
+      <span class='desc'>Object with data such as An array of datapoints</span>
     </li>
   </ul>
 </div>
   </div>
   <div class='method_details'>
     <p class='signature' id='_getGraphPlacement-instance'>
-      - (void) <strong>_getGraphPlacement</strong>()
+      - (Object) <strong>_getGraphPlacement</strong>(basex, basey, scale, graph_num)
     </p>
-    <div class='tags'>
+    <div class='docstring'>
+  <div class='note todo'>
+    <strong>TODO:</strong>
+    why is there width/height code here? should come from graph
+  </div>
+  <p>Get the graph placement</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Object</tt>)
+      &mdash;
+      <span class='desc'>A placement object</span>
+    </li>
+  </ul>
 </div>
   </div>
   <div class='method_details'>
     <p class='signature' id='_drawGraphs-instance'>
-      - (void) <strong>_drawGraphs</strong>(datasets)
+      - (Object) <strong>_drawGraphs</strong>(datasets, x, y, scale, append = false)
     </p>
     <div class='docstring'>
   <p>Draw the graphs with the data from the datasets</p>
@@ -395,47 +521,181 @@
     <li>
       <span class='name'>datasets</span>
       <span class='type'>
-        (<tt>Array</tt>)
+        (<tt>Object</tt>)
       </span>
       &mdash;
-      <span class='desc'>An array of datasets</span>
+      <span class='desc'>An object of datasets</span>
+    </li>
+    <li>
+      <span class='name'>x</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>x location to draw</span>
+    </li>
+    <li>
+      <span class='name'>y</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>y location to draw</span>
+    </li>
+    <li>
+      <span class='name'>scale</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>scale</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Object</tt>)
+      &mdash;
+      <span class='desc'>graphs</span>
     </li>
   </ul>
 </div>
   </div>
   <div class='method_details'>
     <p class='signature' id='startSimulation-instance'>
-      - (void) <strong>startSimulation</strong>()
+      - (void) <strong>startSimulation</strong>(step_duration = 20, step_update = 2000, dt = 1)
     </p>
-    <div class='tags'>
+    <div class='docstring'>
+  <p>Starts drawing the simulation</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>step_duration</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>duration of each step call</span>
+    </li>
+    <li>
+      <span class='name'>step_update</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>time between steps</span>
+    </li>
+    <li>
+      <span class='name'>dt</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>graph dt</span>
+    </li>
+  </ul>
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='simulate-instance'>
-      - (void) <strong>simulate</strong>()
+    <p class='signature' id='_step-instance'>
+      - (Array&lt;Float&gt;) <strong>_step</strong>(duration, dt, base_values)
     </p>
-    <div class='tags'>
+    <div class='docstring'>
+  <div class='note todo'>
+    <strong>TODO:</strong>
+    append data instead of replace data
+  </div>
+  <p>Steps the simulation</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>duration</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the duration of this step</span>
+    </li>
+    <li>
+      <span class='name'>dt</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the dt of the graphs</span>
+    </li>
+    <li>
+      <span class='name'>base_values</span>
+      <span class='type'>
+        (<tt>Array&lt;Float&gt;</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the previous values</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Array&lt;Float&gt;</tt>)
+      &mdash;
+      <span class='desc'>the new values</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_simulate-instance'>
+      - (void) <strong>_simulate</strong>(step)
+    </p>
+    <div class='docstring'>
+  <p>Simulation handler</p><p>Actually loops the simulation. Expects step to be a throttled function
+and gracefully defers execution of this step function. </p>
+</div>
+<div class='tags'>
 </div>
   </div>
   <div class='method_details'>
     <p class='signature' id='stopSimulation-instance'>
       - (void) <strong>stopSimulation</strong>()
     </p>
-    <div class='tags'>
+    <div class='docstring'>
+  <p>Stops the simulation</p>
+</div>
+<div class='tags'>
 </div>
   </div>
   <div class='method_details'>
     <p class='signature' id='_drawRedLines-instance'>
       - (void) <strong>_drawRedLines</strong>(x)
     </p>
-    <div class='tags'>
+    <div class='docstring'>
+  <p>Draws red lines</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>x</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>x position</span>
+    </li>
+  </ul>
 </div>
   </div>
 </div>
     </div>
     <div id='footer'>
   Generated on
-  Fri May 10 2013 08:40:59 GMT+0200 (W. Europe Daylight Time)
+  Sun May 12 2013 04:54:49 GMT+0200 (W. Europe Daylight Time)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

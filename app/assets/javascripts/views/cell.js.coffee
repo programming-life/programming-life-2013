@@ -1,11 +1,18 @@
+#  Class to generate a view for a cell model
+#
 class View.Cell
 
+	# Constructor for this view
+	# 
+	# @param paper [Raphael] paper parent
+	# @param cell [Model.Cell] cell to view
+	# 	
 	constructor: ( paper, cell ) ->
 		@_paper = paper
 		@_cell = cell
 		
-		@_container = Raphael('graphs', 800, 1000)
-		console.log(@_container)
+		@_container = Raphael( 'graphs', "100%", 1 )
+		@_container.setViewBox( 0, 0, 1000, 1000 ) # 1000 pixels, 1000 pixels
 
 		@_views = []
 		@_drawn = []
@@ -17,7 +24,7 @@ class View.Cell
 
 		if ( @_cell? )
 			for module in @_cell._modules
-				@_views.push new View.Module( @_paper, module)
+				@_views.push new View.Module( @_paper, @_cell, module)
 
 		@_views.push new View.DummyModule( @_paper, @_cell, new Model.DNA() )
 		@_views.push new View.DummyModule( @_paper, @_cell, new Model.Lipid() )
@@ -27,17 +34,33 @@ class View.Cell
 		@_views.push new View.DummyModule( @_paper, @_cell, new Model.Protein() )
 		@_views.push new View.DummyModule( @_paper, @_cell, Model.Transporter.ext(), { direction: Model.Transporter.Outward } )
 		
+		tree = new Model.UndoTree(new Model.Node("Root", null))
+		for i in [1..9] by 3
+			tree.add("Node"+i)
+			tree.undo()
+			tree.add("Node"+(i+1))
+			tree.add("Node"+(i+2))
 		
 		@_views.push new View.Play( @_paper, @)
+		#@_views.push new View.Tree( @_paper, tree)
 		
 		Model.EventManager.on( 'cell.add.module', @, @onModuleAdd )
 		Model.EventManager.on( 'cell.add.metabolite', @, @onModuleAdd )
 		Model.EventManager.on( 'cell.remove.module', @, @onModuleRemove )
 			
+	# Redraws the cell
+	# 		
+	redraw: () ->
+		@draw( @_x, @_y, @_scale )
 
 	# Draws the cell
+	# 
+	# @param x [Integer] x location
+	# @param y [Integer] y location
+	# @param scale [Integer] scale
 	#
-	draw: (x, y, scale ) ->
+	draw: ( x, y, scale ) ->
+	
 		@_x = x
 		@_y = y
 		@_scale = scale
@@ -45,12 +68,12 @@ class View.Cell
 		radius = @_scale * 400
 
 		unless @_shape
-			@_shape = @_paper.circle( @_x, @_y, radius )
+			@_shape = @_paper.circle( x, y, radius )
 			@_shape.node.setAttribute( 'class', 'cell' )
 		else
 			@_shape.attr
-				cx: @_x
-				cy: @_y
+				cx: x
+				cy: y
 				r: radius
 				
 		counters = {}
@@ -62,6 +85,7 @@ class View.Cell
 				continue
 			
 			if ( view instanceof View.Module )
+				
 				type = view.module.constructor.name
 				direction = if view.module.direction? then view.module.direction else 0
 				placement = if view.module.placement? then view.module.placement else 0
@@ -78,8 +102,8 @@ class View.Cell
 					direction: direction
 					placement: placement
 					placement_type: placement_type
-					cx: @_x
-					cy: @_y
+					cx: x
+					cy: y
 					r: radius
 					scale: scale
 				}
@@ -89,9 +113,16 @@ class View.Cell
 				counters[ counter_name ] = ++counter
 				
 			if ( view instanceof View.Play )
-				placement = { x: @_x, y: @_y, @_scale }
+				placement = 
+					x: x
+					y: y
 
-			view.draw( placement.x, placement.y, @_scale )
+			if (view instanceof View.Tree )
+				counter = counters[ 'graphs' ] ? 0
+				placement = @_getGraphPlacement( 0, 0, scale, counter )
+				counters[ 'graphs' ]++
+
+			view.draw( placement.x, placement.y, scale )
 		
 	# On module added, add it from the cell
 	# 
@@ -99,11 +130,12 @@ class View.Cell
 	# @param module [Model.Module] module added
 	#
 	onModuleAdd: ( cell, module ) =>
+	
 		unless cell isnt @_cell
 			unless _( @_drawn ).indexOf( module.id ) isnt -1
 				@_drawn.unshift module.id
-				@_views.unshift new View.Module( @_paper, module )
-				@draw(@_x, @_y, @_scale)
+				@_views.unshift new View.Module( @_paper, @_cell, module )
+				@redraw()
 			
 	# On module removed, removed it from the cell
 	# 
@@ -111,19 +143,19 @@ class View.Cell
 	# @param module [Model.Module] module removed
 	#
 	onModuleRemove: ( cell, module ) =>
+	
 		index = _( @_drawn ).indexOf( module.id )
 		if index isnt -1
 			view = @_views[ index ]
 			view.clear()
 			@_views = _( @_views ).without view
 			@_drawn = _( @_drawn ).without module.id
-			
-			@draw(@_x, @_y, @_scale)
+			@redraw()
 
 	# Returns the location for a module
 	#
 	# @param module [Model.Module] the module to get the location for
-	# @returns [Object] the size as an object with x, y
+	# @return [Object] the size as an object with x, y
 	#
 	getLocationForModule: ( module, params ) ->
 		x = 0
@@ -186,13 +218,21 @@ class View.Cell
 	# Get the simulation data from the cell
 	# 
 	# @param duration [Integer] The duration of the simulation
-	# @return [Array] An array of datapoints
-	_getCellData: ( duration ) ->
-		cell_run = @_cell.run(duration)
+	# @param dt [Float] The timestep for the graphs
+	# @param base_values [Array] continuation values
+	# @return [Object] Object with data such as An array of datapoints
+	#
+	_getCellData: ( duration, base_values = [], dt = 1, iteration = 0 ) ->
+	
+		cell_run = @_cell.run( duration, base_values, iteration )
+		
 		results = cell_run.results
 		mapping = cell_run.map
-
-		dt = 0.1
+		
+		# This keeps track of where in the simulation we are. If we provide base values
+		# and an iteration number, we can keep track of where the duration is located
+		iteration = iteration + 1
+		iteration = 1 unless cell_run.append
 
 		# Get the interpolation for a fixed timestep instead of the adaptive timestep
 		# generated by the ODE. This should be fairly fast, since the values all 
@@ -202,59 +242,163 @@ class View.Cell
 			interpolation[ time ] = results.at time;
 
 		datasets = {}
-		# Draw all the substrates
+		
 		for key, value of mapping
 			dataset = []
-			# Push all the values, but round for float rounding errors
+			
+			# Push all the values
 			for time in [ 0 .. duration ] by dt
 				dataset.push( interpolation[ time ][ value ] ) 
+				
 			datasets[ key ] = dataset
 
-		return datasets
+		return { 
+			results: results
+			datasets: datasets
+			from: duration * ( iteration - 1 )
+			to: ( duration * iteration )
+			iteration: iteration
+		}
+			
 	
-	_getGraphPlacement: ( ) ->
-		x = 100
-		y = 100
-		unless @_numGraphs is 0
-			width = 300 * @_scale
-			height = width * @_scale
-			padding = 20 * @_scale
-			x += 1.5 * width * (@_numGraphs % 2)
-			y +=  (height + 30) * Math.floor(@_numGraphs / 2) 
-		@_numGraphs++
+	# Get the graph placement
+	# 
+	# @return [Object] A placement object
+	# @todo why is there width/height code here? should come from graph
+	#
+	_getGraphPlacement: ( basex, basey, scale, graph_num ) ->
+	
+		console.log basex, basey
+		x = basex + 100
+		y = basey + 50
 		
-		return {x: x, y: y}
+		unless graph_num is 0
+			width = 350 
+			height = 175
+			padding_x = 200
+			padding_y = 100
+			x += ( width + padding_x ) * ( graph_num % 2 )
+			y += ( height + padding_y ) * Math.floor( graph_num / 2 ) 
+		
+		return {
+			x: x
+			y: y
+		}
 		
 
 	# Draw the graphs with the data from the datasets
 	#
-	# @param datasets [Array] An array of datasets
-	_drawGraphs: ( datasets ) ->
-		@_numGraphs = 0
-		# Draw all the substrates
-		for key, dataset of datasets
-			if ( !@_graphs[ key ] )
-				@_graphs[ key ] = new View.Graph(@_container, key, @)
-
-			@_graphs[key].addData(dataset)
-			placement = @_getGraphPlacement()
-			@_graphs[key].draw(placement.x, placement.y, @_scale)
-
-	startSimulation: ( ) ->
-		duration = 10
-		container = $(".container")
-
-		datasets = @_getCellData(duration)
-		
-		@_drawGraphs(datasets)
+	# @param datasets [Object] An object of datasets
+	# @param x [Integer] x location to draw
+	# @param y [Integer] y location to draw
+	# @param scale [Integer] scale
+	# @return [Object] graphs
+	#
+	_drawGraphs: ( datasets, x, y, scale, append = off ) ->
 	
-	simulate: ( ) ->
+		graph_num = 0
 		
-	stopSimulation: ( ) ->
+		for key, dataset of datasets
+			if ( !@_graphs[ key ]? )
+				@_graphs[ key ] = new View.Graph( @_container, key, @ )
 
-	_drawRedLines: (x) ->
+			
+			@_graphs[ key ].appendData( dataset ) if append
+			@_graphs[ key ].addData( dataset ) unless append
+			
+			placement = @_getGraphPlacement( x, y, scale, graph_num++ )
+			@_graphs[ key ].draw( placement.x, placement.y, scale )
+			
+		
+		height = y + 100 + Math.ceil( graph_num / 2 ) * 175 + ( Math.ceil( graph_num / 2 ) - 1 ) * 100
+		@_container.setViewBox( 0, 0, 1000, height )
+		@_container.setSize( "100%", height )
+		return @_graphs
+	
+	# Starts drawing the simulation
+	# 
+	# @param step_duration [Integer] duration of each step call
+	# @param step_update [Integer] time between steps
+	# @param dt [Integer] graph dt
+	#
+	startSimulation: ( step_duration = 20, step_update = 2000, dt = 1 ) ->
+		
+		@_running = on
+		@_iteration = 0
+		
+		console.log 'starting simulation'
+
+		# This creates a version of the step function, with the parameters
+		# given filled in as a partial. It is throtthed over step_update. This
+		# means that you can call it an infinite number of times, but it will
+		# only be executed after step_update passes.
+		step = _( @_step )
+			.chain()
+			.bind( @, step_duration, dt )
+			.throttle( step_update )
+			.value()
+		
+		# Actually simulate
+		@_simulate( step )
+		
+	# Steps the simulation
+	#
+	# @param duration [Integer] the duration of this step
+	# @param dt [Integer] the dt of the graphs
+	# @param base_values [Array<Float>] the previous values
+	# @return [Array<Float>] the new values
+	#
+	# @todo append data instead of replace data
+	#
+	_step : ( duration, dt, base_values ) ->
+		
+		cell_data = @_getCellData( duration, base_values, dt, @_iteration )
+		@_iteration = cell_data.iteration
+		
+		console.log 'step', "#{ cell_data.from } -> #{ cell_data.to }"
+		@_drawGraphs( cell_data.datasets, 0, 0, @_scale, @_iteration > 1  )
+		
+		return _( cell_data.results.y ).last()
+	
+	# Simulation handler
+	#
+	# Actually loops the simulation. Expects step to be a throttled function
+	# and gracefully defers execution of this step function. 
+	#
+	_simulate: ( step ) ->
+		
+		console.log 'simulate'
+		
+		# While running step this function and recursively
+		# call this function. But because the call is deferred,
+		# the call_stack is emptied before execution.
+		#
+		# @param step [Function] step function
+		# @param results [any*] arguments to pass
+		simulation = ( step, args ) => 
+		
+			if @_running
+				results = step( args )
+				_.defer( simulation, step, results )
+			
+		# At the end of the call stack, start the simulation loop
+		_.defer( simulation, step, [] )
+		
+	# Stops the simulation
+	#
+	stopSimulation: ( ) ->
+	
+		console.log 'stop'
+		
+		@_running = off
+
+	# Draws red lines
+	#
+	# @param x [Integer] x position
+	#
+	_drawRedLines: ( x ) ->
 		for key, graph of @_graphs
-			graph._drawRedLine(x)
+			graph._drawRedLine( x )
 			
 
 (exports ? this).View.Cell = View.Cell

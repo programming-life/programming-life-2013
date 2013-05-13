@@ -458,8 +458,8 @@ describe("Module Transporter", function() {
 						expect( _(results).isEmpty() ).toBeFalsy();
 					});
 				
-					it( "should decrease orig with dest increase", function() {
-						expect(  results[module.dest] + results[module.orig] ).toBe( 0 );
+					it( "should decrease orig more than dest increase", function() {
+						expect(  -results[module.orig] - results[module.dest]  ).toBeGreaterThan( 0 );
 					});
 				});
 			});
@@ -476,7 +476,7 @@ describe("Module Transporter", function() {
 				
 				describe( "and cell = 1", function() {
 					beforeEach( function() {
-						substrates[module.cell] = 1;
+						substrates[module.cell] = 2;
 						results = module.step( 0, substrates, 1 );
 					});
 				
@@ -488,8 +488,8 @@ describe("Module Transporter", function() {
 						expect( results[module.dest] ).toBeGreaterThan( 0 );
 					})
 					
-					it( "should decrease orig with orig = -dest", function() {
-						expect( results[module.dest] + results[module.orig] ).toBe( 0 );
+					it( "should decrease orig less than dest increase", function() {
+						expect( results[module.dest] + results[module.orig] ).toBeGreaterThan( 0 );
 					});
 				});
 				
@@ -504,8 +504,8 @@ describe("Module Transporter", function() {
 						expect( _(results).isEmpty() ).toBeFalsy();
 					});
 				
-					it( "should decrease orig with orig = -dest", function() {
-						expect( results[module.dest] + results[module.orig] ).toBe( 0 );
+					it( "should decrease orig less than dest increase", function() {
+						expect( results[module.dest] + results[module.orig] ).toBeGreaterThan( 0 );
 					});
 				});
 			});

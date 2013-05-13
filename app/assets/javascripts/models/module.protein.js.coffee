@@ -1,29 +1,32 @@
 # Simulates protein synthesization.
 #
 # Parameters
-# ------------------ ------------------ ------------------
-# k
-#	Synthesize rate
-# k_d
-#	Protein degredation
-# consume
-#	All the metabolites required for Protein creation
+# --------------------------------------------------------
+# 
+# - k
+#    - Synthesize rate
+# - k_d
+#    - Protein degradation
+# - consume
+#    - All the metabolites required for Protein creation
 # 
 # Properties
-# ------------------ ------------------ ------------------
-# vProteinSynth
-#	k * this * consume
-# degredation
-#	k_d * this
-# dillution
-# 	mu * this
+# --------------------------------------------------------
+# 
+# - vProteinSynth
+#    - k * this * consume
+# - degradation
+#    - k_d * this
+# - dilution
+#    - mu * this
 #
 # Equations
-# ------------------ ------------------ ------------------
-# this / dt
-#	vProteinSynth - dillution - degredation
-# consume / dt
-#	- vProteinSynth
+# --------------------------------------------------------
+# 
+# - this / dt
+#    - vProteinSynth - dilution - degradation
+# - consume / dt
+#    - vProteinSynth
 #
 class Model.Protein extends Model.Module
 
@@ -59,20 +62,20 @@ class Model.Protein extends Model.Module
 				for c in @consume
 					vproteinsynth *= compounds[ c ]
 					
-				# Rate of dillution because of cell division
+				# Rate of dilution because of cell division
 				# 
-				dillution = mu * compounds[ @name ]
+				dilution = mu * compounds[ @name ]
 				
-				# Rate of degration
+				# Rate of degradation 
 				# 
-				degration = @k_d * compounds[ @name ]
+				degradation  = @k_d * compounds[ @name ]
 			
 			# If all components are available
 			if vproteinsynth?
 			
-				# The Protein increase is the rate minus dillution and degration
+				# The Protein increase is the rate minus dilution and degradation 
 				#
-				results[ @name ] = vproteinsynth - degration - dillution
+				results[ @name ] = vproteinsynth - degradation  - dilution
 				
 				# All the metabolites required for synthesisation
 				# are hereby subtracted by the increase in Protein

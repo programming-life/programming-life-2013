@@ -1,27 +1,46 @@
 # Simulates cell metabolism. Converts substrate into product.
 #
 # Parameters
-# ------------------ ------------------ ------------------
-# k
-#	Synthesize rate
-# k_d
-#	Protein degredation
+# --------------------------------------------------------
+#
+# - k
+#    - Synthesize rate
+# - k_d
+#    - Protein degradation
+# - k_m
+#    - MM kinetics constante
+# - v
+#    - v max for metabolism
+# - consume
+#    - All the metabolites required for Enzyme creation
+# - orig
+#	 - The metabolite before metabolism
+# - dest
+#    - The metabolite after metabolism
 # 
 # Properties
-# ------------------ ------------------ ------------------
-# vEnzymeSynth
-#	k * this 
-# degredation
-#	k_d * this
-# dillution
-# 	mu * this
+# --------------------------------------------------------
+# 
+# - vEnzymeSynth
+#    - k * this 
+# - degradation
+#    - k_d * this
+# - dilution
+#    - mu * this
+# - vMetabolism
+#    - v * this * ( orig / ( orig + k_m ) )
 #
 # Equations
-# ------------------ ------------------ ------------------
-# this / dt
-#	vEnzymeSynth - dillution - degredation
-# consume / dt
-#	- vEnzymeSynth
+# --------------------------------------------------------
+# 
+# - this / dt
+#    - vEnzymeSynth - dilution - degradation
+# - consume / dt
+#    - vEnzymeSynth
+# - orig / dt
+#    - -vMetabolism
+# - dest / dt
+#    - vMetabolism
 #
 class Model.Metabolism extends Model.Module
 
@@ -55,13 +74,13 @@ class Model.Metabolism extends Model.Module
 				# - The DNA itself called dna
 				venzymesynth = @k * compounds[ @dna ]
 				
-				# Rate of dillution because of cell division
+				# Rate of dilution because of cell division
 				# 
-				dillution = mu * compounds[ @name ]
+				dilution = mu * compounds[ @name ]
 				
-				# Rate of degration
+				# Rate of degradation
 				# 
-				degration = @k_d * compounds[ @name ]
+				degradation = @k_d * compounds[ @name ]
 				
 			# Only if the components are available 
 			if ( @_test( compounds, @name, @orig, @dest ) )
@@ -73,13 +92,14 @@ class Model.Metabolism extends Model.Module
 				# - The Mihaelis-Mentin kinetics with constant k_m
 				#
 				vmetabolism = @v * compounds[ @name ] * ( compounds[ @orig ] / ( compounds[ @orig ] + @k_m ) )
+				vmetabolism = 0 if ( isNaN vmetabolism )
 				
 			# If all components are available
 			if venzymesynth?
 			
-				# The Enzyme increase is the rate minus dillution and degration
+				# The Enzyme increase is the rate minus dilution and degradation
 				#
-				results[ @name ] = venzymesynth - degration - dillution
+				results[ @name ] = venzymesynth - degradation - dilution
 				
 			# If all components are available
 			if vmetabolism?

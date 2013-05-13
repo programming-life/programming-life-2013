@@ -1,3 +1,5 @@
+# The module view shows a module
+#
 class View.Module
 	
 	# Creates a new module view
@@ -5,8 +7,9 @@ class View.Module
 	# @param paper [Raphael.Paper] the raphael paper
 	# @param module [Model.Module] the module to show
 	#
-	constructor: ( paper, module ) ->
+	constructor: ( paper, cell, module ) ->
 		@_paper = paper
+		@_cell = cell
 
 		@module = module		
 		@type = module.constructor.name
@@ -22,7 +25,8 @@ class View.Module
 		Model.EventManager.on( 'module.set.property', @, @onModuleInvalidated )
 		Model.EventManager.on( 'module.set.selected', @, @onModuleSelected )
 		Model.EventManager.on( 'module.set.hovered', @, @onModuleHovered )
-		
+		Model.EventManager.on( 'paper.resize', @, @onPaperResize)
+
 		Object.defineProperty( @, 'visible',
 			# @property [Function] the step function
 			get: ->
@@ -32,7 +36,7 @@ class View.Module
 	# Generates a hashcode based on the module name
 	#
 	# @param hashee [String] the name to use as hash
-	# @returns [Integer] the hashcode
+	# @return [Integer] the hashcode
 	#
 	hashCode : ( hashee = @name ) ->
 		hash = 0
@@ -46,7 +50,7 @@ class View.Module
 	# Generates a colour based on the module name
 	#
 	# @param hashee [String] the name to use as hash
-	# @returns [String] the CSS color
+	# @return [String] the CSS color
 	#
 	hashColor : ( hashee = @name ) ->
 		return '#' + md5( hashee ).slice(0, 6) #@numToColor @hashCode hashee
@@ -57,7 +61,7 @@ class View.Module
 	# @param num [Integer] the seed for the colour
 	# @param alpha [Boolean] if on, uses rgba, else rgb defaults to off
 	# @param minalpha [Integer] the minimum alpha if on, defaults to 127
-	# @returns [String] the CSS color
+	# @return [String] the CSS color
 	#
 	numToColor : ( num, alpha = off, minalpha = 127 ) ->
 		num >>>= 0
@@ -114,7 +118,19 @@ class View.Module
 
 		else if hovered is @_hovered is true
 			@_hovered = false
-			@redraw()	
+			@redraw()
+
+		# Make sure a selected module is always placed at the front
+		# no longer hovering a module.
+		else if hovered is false and @_selected is true
+			_.defer(=> @_view.toFront())
+
+	# Runs if paper is resized
+	#
+	onPaperResize: ( ) =>
+		if @_selected
+			@_view.toFront()
+
 
 	# Clears the module view
 	#
@@ -134,6 +150,8 @@ class View.Module
 	# @param scale [Integer] the scale
 	#
 	draw: ( x, y, scale ) ->
+		console.log 'draw'
+
 		# Clear all existing content
 		@clear()
 
@@ -165,7 +183,12 @@ class View.Module
 			closeButton = @drawCloseButton( box, scale )
 			closeButton?.click =>
 				Model.EventManager.trigger('module.set.selected', @module, [ false ])
-			shadow = @drawShadow(box, scale)
+
+			deleteButton = @drawDeleteButton( box, scale )
+			deleteButton?.click =>
+				@_cell.remove(@module)
+
+		shadow = @drawShadow(box, scale)
 
 		# Draw hitbox
 		hitbox = @drawHitbox(box, scale)
@@ -180,7 +203,9 @@ class View.Module
 				Model.EventManager.trigger('module.set.hovered', @module, [ true ])
 
 		@_view = @_paper.setFinish()
+
 		@_view.push(contents)
+		contents.insertBefore(hitbox)
 
 	# Draws contents
 	#
@@ -377,18 +402,33 @@ class View.Module
 
 		closeButton = @_paper.set()
 
-		circle = @_paper.circle( rect.x + rect.width, rect.y, 15 * scale)
+		circle = @_paper.circle( rect.x + rect.width, rect.y, 16 * scale)
 		circle.node.setAttribute('class', 'module-close')
-			
-		text = @_paper.text( rect.x + rect.width, rect.y, 'x')
-		text.attr
-			'font-size': 20 * scale
 
-		hitbox = @_paper.circle( rect.x + rect.width, rect.y, 15 * scale )
+		image = @_paper.image('/assets/icon-resize-small.png', rect.x + rect.width - 12 * scale, rect.y - 12 * scale, 24 * scale, 24 * scale)
+
+		hitbox = @_paper.circle( rect.x + rect.width, rect.y, 16 * scale )
 		hitbox.node.setAttribute('class', 'module-hitbox')		
-		closeButton.push( circle, text, hitbox )
+		closeButton.push( circle, image, hitbox )
 		
 		return closeButton
+
+	drawDeleteButton : ( elem, scale ) ->
+		rect = elem.getBBox()
+
+		deleteButton = @_paper.set()
+
+		circle = @_paper.circle( rect.x, rect.y, 16 * scale)
+		circle.node.setAttribute('class', 'module-close')
+			
+		image = @_paper.image('/assets/icon-trash.png', rect.x - 12 * scale, rect.y - 12 * scale, 24 * scale, 24 * scale)
+
+		hitbox = @_paper.circle( rect.x, rect.y, 16 * scale )
+		hitbox.node.setAttribute('class', 'module-hitbox')		
+		deleteButton.push( circle, image, hitbox )
+		
+		return deleteButton
+
 
 	# Draws this view shadow
 	#
@@ -425,7 +465,7 @@ class View.Module
 	# @param y [Integer] y position
 	# @param scale [Integer] scale
 	# @param params [Object] options
-	# @returns [Array<Object>] The drawn components
+	# @return [Array<Object>] The drawn components
 	#
 	drawComponent : ( module, component, x, y, scale, params = {} ) ->
 		switch component
@@ -516,9 +556,10 @@ class View.Module
 				objRect = params.objRect
 				
 				# Add params text
-				text = @_paper.text( x, y + params.padding * 3, params.text )
+				text = @_paper.text( objRect.x, y + params.padding * 3, params.text )
 				text.attr
 					'font-size': 18 * scale
+					'text-anchor': 'start'
 
 				textRect = text.getBBox()
 				
@@ -531,4 +572,3 @@ class View.Module
 		return []			
 
 (exports ? this).View.Module = View.Module
-

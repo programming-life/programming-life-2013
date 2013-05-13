@@ -1,25 +1,28 @@
-# Simulates DNA existance and synthesisis in the Cell
+# Simulates DNA existance and synthesis in the Cell
 #
 # Parameters
-# ------------------ ------------------ ------------------
-# k
-#	Synthesize rate
-# consume
-#	All the metabolites required for DNA creation
+# --------------------------------------------------------
+#
+# - k
+#    - Synthesize rate
+# - consume
+#    - All the metabolites required for DNA creation
 # 
 # Properties
-# ------------------ ------------------ ------------------
-# vDNASynth
-#	k * this * consume
-# dillution
-#	mu * this
+# --------------------------------------------------------
+# 
+# - vDNASynth
+#    - k * this * consume
+# - dilution
+#    - mu * this
 #
 # Equations
-# ------------------ ------------------ ------------------
-# this / dt
-#	vDNASynth - dillution
-# consume / dt
-#	- vDNASynth
+# --------------------------------------------------------
+# 
+# - this / dt
+#    - vDNASynth - dilution
+# - consume / dt
+#    - vDNASynth
 #
 class Model.DNA extends Model.Module
 
@@ -52,16 +55,16 @@ class Model.DNA extends Model.Module
 				for c in @consume
 					vdnasynth *= compounds[ c ]
 					
-				# Rate of dillution because of cell division
+				# Rate of dilution because of cell division
 				# 
-				dillution = mu * compounds[ @name ]
+				dilution = mu * compounds[ @name ]
 				
 			# If all components are available 
 			if vdnasynth? 
 				
-				# The DNA increase is the rate minus dillution
+				# The DNA increase is the rate minus dilution
 				#
-				results[ @name ] = vdnasynth - dillution
+				results[ @name ] = vdnasynth - dilution
 				
 				# All the metabolites required for synthesisation
 				# are hereby subtracted by the increase in DNA

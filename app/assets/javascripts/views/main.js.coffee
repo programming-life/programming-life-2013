@@ -1,3 +1,6 @@
+# The main view is the view used on the main page. It shows
+# A cell and allows interaction on this cell.
+#
 class View.Main
 
 	# Creates a new Main view
@@ -18,6 +21,7 @@ class View.Main
 		@_height = $( window ).height() - 5 
 		@_paper.setSize( @_width, @_height )
 		@draw()
+		Model.EventManager.trigger( 'paper.resize', @_paper )
 
 	# Draws the main view
 	#

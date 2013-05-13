@@ -37,7 +37,6 @@ body {
 	stroke-width: 40px;
 }
 
-
 .module-box {
 	stroke: #cacaca;
 	stroke-width: 1px;
@@ -60,8 +59,8 @@ body {
 
 .module-close {
 	fill: #fff;
-	stroke:#ababab;
-	stroke-width:1px;
+	stroke:#333333;
+	stroke-width:2px;
 }
 
 .module-seperator {
@@ -74,6 +73,13 @@ body {
 	fill: rgba(255, 0, 0, 0);
 	stroke: rgba(255, 0, 0, 0);
 	stroke-width: 1px;
+}
+
+.node-hitbox {
+	fill: rgba(255, 0, 0, 0);
+	stroke: rgba(255, 0, 0, 0);
+	stroke-width: 1px;
+	opacity: 0;
 }
 
 .module-label {

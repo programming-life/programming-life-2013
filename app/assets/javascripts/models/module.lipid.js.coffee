@@ -1,25 +1,28 @@
-# Simulates a cell border from lipids
+# Simulates a cell border of lipids
 #
 # Parameters
-# ------------------ ------------------ ------------------
-# k
-#	Synthesize rate
-# consume
-#	All the substrates required for DNA creation
+# --------------------------------------------------------
+#
+# - k
+#    - Synthesize rate
+# - consume
+#    - All the metabolites required for Lipid creation
 # 
 # Properties
-# ------------------ ------------------ ------------------
-# vLipidProd
-#	k * this * consume
-# dillution
-#	mu * this
+# --------------------------------------------------------
+#
+# - vLipidProd
+#    - k * this * consume
+# - dilution
+#    - mu * this
 #
 # Equations
-# ------------------ ------------------ ------------------
-# this / dt
-#	vLipidProd - dillution
-# consume / dt
-#	- vLipidProd
+# --------------------------------------------------------
+# 
+# - this / dt
+#    - vLipidProd - dilution
+# - consume / dt
+#    - vLipidProd
 #
 class Model.Lipid extends Model.Module
 
@@ -52,16 +55,16 @@ class Model.Lipid extends Model.Module
 				for c in @consume
 					vlipidprod *= compounds[ c ]
 					
-				# Rate of dillution because of cell division
+				# Rate of dilution because of cell division
 				# 
-				dillution = mu * compounds[ @name ]
+				dilution = mu * compounds[ @name ]
 			
 			# If all components are available 
 			if ( vlipidprod? )
 			
-				# The Lipid increase is the rate minus dillution
+				# The Lipid increase is the rate minus dilution
 				#
-				results[ @name ] = vlipidprod - dillution
+				results[ @name ] = vlipidprod - dilution
 				
 				# All the substrates required for synthesisation
 				# are hereby subtracted by the increase in DNA
