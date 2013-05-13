@@ -24,7 +24,7 @@ class View.Cell
 
 		if ( @_cell? )
 			for module in @_cell._modules
-				@_views.push new View.Module( @_paper, module)
+				@_views.push new View.Module( @_paper, @_cell, module)
 
 		@_views.push new View.DummyModule( @_paper, @_cell, new Model.DNA() )
 		@_views.push new View.DummyModule( @_paper, @_cell, new Model.Lipid() )
@@ -134,7 +134,7 @@ class View.Cell
 		unless cell isnt @_cell
 			unless _( @_drawn ).indexOf( module.id ) isnt -1
 				@_drawn.unshift module.id
-				@_views.unshift new View.Module( @_paper, module )
+				@_views.unshift new View.Module( @_paper, @_cell, module )
 				@redraw()
 			
 	# On module removed, removed it from the cell
@@ -300,6 +300,9 @@ class View.Cell
 		
 		for key, dataset of datasets
 			if ( !@_graphs[ key ]? )
+				height = y + 100 + Math.ceil( (graph_num + 1) / 2 ) * 175 + ( Math.ceil( (graph_num + 1) / 2 ) - 1 ) * 100
+				@_container.setViewBox( 0, 0, 1000, height )
+				@_container.setSize( "100%", height )
 				@_graphs[ key ] = new View.Graph( @_container, key, @ )
 
 			
@@ -310,9 +313,6 @@ class View.Cell
 			@_graphs[ key ].draw( placement.x, placement.y, scale )
 			
 		
-		height = y + 100 + Math.ceil( graph_num / 2 ) * 175 + ( Math.ceil( graph_num / 2 ) - 1 ) * 100
-		@_container.setViewBox( 0, 0, 1000, height )
-		@_container.setSize( "100%", height )
 		return @_graphs
 	
 	# Starts drawing the simulation

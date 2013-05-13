@@ -17,6 +17,12 @@ class ReportsController < ApplicationController
 
 		respond_to do |format|
 			format.html
+			format.pdf {
+				render	:pdf 						=> "#{@report.created_at.strftime("%Y-%m-%d")}_#{@report.id}_#{@report.cell.id}",
+						:disable_internal_links		=> true,
+               			:disable_external_links		=> true,
+               			:template					=> 'reports/show.html.erb'
+			}
 			format.json { render json: @report }
 		end
 	end
