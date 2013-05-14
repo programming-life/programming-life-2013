@@ -1,42 +1,54 @@
 # View for extensible Pane
 #
-class View.Pane extends View.Base
+class View.Pane
 	
 	@LEFT_SIDE : "left"
 	@RIGHT_SIDE : "right"
 
 	# Creates a new Pane
 	#
-	# @param paper [Object] The paper to draw on
 	# @param side [String] The side the pane needs to be on
-	constructor: ( @_paper, @_side ) ->
-		super(@_paper)
+	constructor: ( @_side ) ->
+		@_id = new Date().getMilliseconds()
+		@_paper = @_addPaper()
 
-		@_width = 400
-		@_height = $( window ).height()
+		@_contents = @_paper.set()
+		@_views = []
 
 		@_extended = off
 		@_buttonWidth = 40
 
 		@_buttonOptions = {
-			stroke : "black"
-			fill: "grey"
 		}
 		@_containerOptions = {
-			stroke : "black"
-			fill: "green"
 		}
+	
+	clear: ( ) ->
+		@_contents?.remove()
+	
+	# Resizes the view
+	#
+	resize: ( ) ->
+		@_width = @_container.width()
+		@_height = $( window ).height()
+		@_paper.setSize( @_width, @_height )
+		#@_paper.setViewBox( x, y, @_width, @_height, true )
+		
 		
 	# Draw the view
 	#
 	# @param side [String] The side the pane needs to be on
 	draw: ( side = @_side ) ->
-		super(x, y)
+		@clear()
+		[ button, container ] = @_getXY()
 
-		[ x, y ] = @_getXY( side )
+		@_contents.push @_drawButton(button.x, button.y)
+		@_contents.push @_drawContainer(container.x, container.y)
 
-		@_contents.push @_drawContainer(x, y)
-		@_contents.push @_drawButton(x, y)
+		if @_extended
+			@extend(0)
+		else
+			@retract(0)
 	
 	# Get the x and y for this view based on the side
 	#
@@ -45,33 +57,103 @@ class View.Pane extends View.Base
 	_getXY: ( side = @_side ) ->
 		switch side
 			when View.Pane.LEFT_SIDE
-				x = 0
+				buttonX = @_width - @_buttonWidth
+				buttonY = 0
+				containerX = 0
+				containerY = 0
 			when View.Pane.RIGHT_SIDE
-				x = $( window ).width()
-		y = 0
-		return [ x, y ]
+				buttonX = 0
+				buttonY = 0
+				containerX = @_buttonWidth
+				containerY = 0
+		button = {
+			x : buttonX
+			y : buttonY
+		}
+		container = {
+			x : containerX
+			y : containerY
+		}
+		return [button, container]
 	
-	# Draw the container for the objects displayed in the pane
+	# Add paper to the container node
 	#
-	# @param x [Integer] The x position
-	# @param y [Integer] The y position
-	_drawContainer: ( x, y ) ->
-		container = @_paper.rect(x, y, x + @_width, y + @_height)
-		container.attr( @_containerOptions )
-		return container
+	_addPaper: ( ) ->
+		unless @_container?
+			@_container= @_addContainerNode()
+
+		paper = Raphael("pane-"+@_id,"100%", @_height)
+		return paper
+	
+	# Adds a node to act as the container for the pane
+	#
+	# @retun [Object] The node that will contain the pane
+	_addContainerNode: ( ) ->
+		node = $("<div id='pane-" + @_id + "' class='pane pane-" + @_side + "'></div>")
+		$( "body" ).append( node )
+		
+		return node
 
 	# Draw the button to extend or retract the pane
 	#
 	# @param x [Integer] The x position
 	# @param y [Integer] The y position
 	_drawButton: ( x, y ) ->
-		button = @_paper.rect(x, y, x + @_buttonWidth, y + @_height)
+		button = @_paper.rect(x, y, @_buttonWidth, @_height)
 		button.attr( @_buttonOptions )
+		button.node.setAttribute("class","pane-button")
+		button.click((() => @_switchState()))
 		return button
 	
-	_extend: ( ) ->
+	# Draws container and any elements to be drawn within it
+	#
+	# @param x [Integer] The x position
+	# @param y [Integer] The y position
+	_drawContainer: ( x, y ) ->
+		box = @_paper.rect(x, y, @_width - @_buttonWidth, @_height).attr(@_containerOptions)
+		box.node.setAttribute("class","pane-container")
+		return box
+	
+	# Switches the pane from extended to retracted and vice versa
+	#
+	_switchState: ( ) ->
+		if @_extended
+			@retract()
+		else
+			@extend()
+		
+	
+	# Extends the pane if not already extended
+	#
+	# @param time [Integer] The time for the animation to take
+	#
+	extend: ( time = 500 ) ->
+		unless @_extended
+			console.log("Extending")
+			switch @_side
+				when View.Pane.LEFT_SIDE
+					animation = {left: 0}
+				when View.Pane.RIGHT_SIDE
+					animation = {right: 0}
+			@_container.animate(animation, time)
+			@_extended = on
 
-	_retract: ( ) ->
+	
+	# Retracts the pane if not already retracted
+	#
+	# @param time [Integer] The time for the animation to take
+	#
+	retract: ( time = 500 ) ->
+		if @_extended?
+			console.log("Retracting")
+
+			switch @_side
+				when View.Pane.LEFT_SIDE
+					animation = {left: (@_width - @_buttonWidth) * -1}
+				when View.Pane.RIGHT_SIDE
+					animation = {right: (@_width - @_buttonWidth) * -1}
+			@_container.animate(animation, time)
+			@_extended = off
 
 	# Set the button options
 	#

@@ -10,7 +10,8 @@ class View.Main extends View.Base
 		super( Raphael( 'paper', 0, 0 ) )
 
 		@_views.push  new View.Cell( @_paper, new Model.Cell() )
-		@_views.push  new View.Pane(@_paper, View.Pane.LEFT_SIDE)
+		@_views.push  new View.Pane(View.Pane.LEFT_SIDE)
+		@_views.push  new View.Pane(View.Pane.RIGHT_SIDE)
 
 		@resize()
 		$( window ).on( 'resize', @resize )
@@ -28,7 +29,7 @@ class View.Main extends View.Base
 
 		scale = (@_width - old) / old
 
-		#super( scale )
+		super( scale )
 		@draw()
 
 		Model.EventManager.trigger( 'paper.resize', @_paper )

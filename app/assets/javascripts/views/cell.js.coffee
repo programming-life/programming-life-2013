@@ -106,8 +106,6 @@ class View.Cell extends View.Base
 		@_y = y
 		@_scale = scale
 
-		console.log( x, y, scale)
-
 		radius = @_scale * 400
 
 		unless @_shape

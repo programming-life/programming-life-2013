@@ -1,6 +1,6 @@
 # Class to generate graphs from a set of data points
 #
-class View.Graph
+class View.Graph extends View.Base
 	
 	# @property [Integer] Maximum number of simultaneously displayed data sets
 	#
@@ -12,15 +12,12 @@ class View.Graph
 	
 	# Construct a new Graph object
 	#
-	# @param paper [Object] The paper to draw on
 	# @param title [String] The title of the graph	
+	# @param parent [View.Cell] The cell view this graph belongs to
 	#
-	constructor: ( paper, title, parent) ->
-	
-		@_paper = paper
-		@_title = title
+	constructor: ( paper, @_title, @_parent) ->
+		super(paper)
 		@_datasets = []
-		@_parent = parent
 
 		@_dt = 1
 		@_options = {
@@ -39,7 +36,11 @@ class View.Graph
 	addData: ( data ) ->
 		@_datasets.push data
 		return @
-		
+	
+	# Append a dataset to the most recently added dataset
+	#
+	# @param data [Array] The data to append
+	# @param return [View.Graph] This for easy chaining
 	appendData: ( data ) ->
 		
 		if @_datasets.length is 0
@@ -56,25 +57,14 @@ class View.Graph
 		@_line?.remove()
 		@_line = null
 	
-	# Redraw this component with its current parameters
-	#
-	redraw: () ->
-		@draw( @_x, @_y, @_scale )
-	
 	# Draws the graph
 	#
 	# @param x [Integer] The x coordinate
 	# @param y [Integer] The y coordinate
 	# @param scale [Integer] The scale
 	#
-	draw: ( x, y, scale ) ->
+	draw: ( @_x, @_y, @_scale ) ->
 		@clear()
-				
-		@_x = x 
-		@_y = y
-		@_scale = scale
-
-		@_contents = @_paper.set()
 
 		# Show the title
 		text = @_drawTitle( @_x, @_y, @_scale )

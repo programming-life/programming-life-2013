@@ -104,3 +104,27 @@ body {
 	stroke:#333;
 	stroke-width:2px;
 }
+
+.pane {
+	position: fixed;
+	width: 500px;
+	height: 100%;
+	fill: green;
+}
+.pane-left {
+	top: 0;
+	left: 0;
+}
+
+.pane-right {
+	top: 0;
+	right: 0;
+}
+.pane-button{
+	fill: #cacaca;
+	stroke: black;
+}
+.pane-container {
+	fill: green;
+	stroke: black;
+}
