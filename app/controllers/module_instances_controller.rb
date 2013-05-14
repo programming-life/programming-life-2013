@@ -61,6 +61,8 @@ class ModuleInstancesController < ApplicationController
 						cell_id: @module_instance.cell_id,
 						type: @module_template.javascript_model,
 						step: @module_template.step,
+						name: @module_instance.name,
+						amount: @module_instance.amount,
 						parameters: @module_hash
 					} 
 				}
