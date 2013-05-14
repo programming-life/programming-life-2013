@@ -35,13 +35,28 @@ describe("Module", function() {
 		expect( serialized.length ).toBeGreaterThan( 2 )
 	});
 
+	it("should be local", function() {
+		expect( module.isLocal() ).toBeTruthy();
+	});
+
 	it("should be able to get its url", function() {
 		expect( module.url ).toBe("/module_instances.json");
 	});
 
-	it("should not be able to add compounds if not predefined in params", function() {
-		expect( function() { module.setCompound("foo", 42) } ).toThrow();		
+	it("should be able to give correct results to ensure tests", function() {
+		expect( module._ensure( true, "true" ) ).toBeTruthy();
+		expect( module._ensure( false, "false" ) ).toBeFalsy();
 	});
+
+	// it("should do nothing when undoing an unchanged module", function() {
+	// 	spyOn(module, 'isLocal');
+	// //	module.undo();
+	// 	expect( module.isLocal ).toHaveBeenCalled();
+	// });
+
+	// // it("should do nothing when redoing an unchanged module", function() {
+
+	// // })
 
 	describe( "when serialized and deserialized", function() { 
 		var serialized;
