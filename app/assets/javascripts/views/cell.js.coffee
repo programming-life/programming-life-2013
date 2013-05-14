@@ -383,6 +383,10 @@ class View.Cell extends Helper.Mixable
 		
 		# Actually simulate
 		@_simulate( step )
+	
+		Model.EventManager.trigger("simulation.start",@, [ @_cell ])
+		
+		return this
 		
 	# Steps the simulation
 	#
@@ -437,6 +441,10 @@ class View.Cell extends Helper.Mixable
 		
 		@_running = off
 		@_redrawGraphs()
+
+		Model.EventManager.trigger("simulation.stop",@, [ @_cell ])
+		return this
+
 
 	# Draws red lines
 	#

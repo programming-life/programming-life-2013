@@ -53,6 +53,8 @@ class View.Graph
 	#
 	clear: () ->
 		@_contents?.remove()
+		@_line?.remove()
+		@_line = null
 	
 	# Redraw this component with its current parameters
 	#
@@ -130,13 +132,9 @@ class View.Graph
 		set = @_paper.set()
 
 		chart = @_paper.linechart( x , y, width, height, xValues, yValues, @_options )
-		unless @_parent._running
-			chart.hoverColumn ( event ) =>
+		chart.hoverColumn ( event ) =>
+			unless @_parent._running
 				@_parent._drawRedLines( event.x - @_x - @_paper.canvas.offsetLeft )
-		else
-			@_line?.remove()
-			@_line = null
-			chart.hoverColumn()
 
 		
 		# Draw the gridlines

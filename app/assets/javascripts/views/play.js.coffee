@@ -25,6 +25,8 @@ class View.Play
 		
 		@_playing = false
 
+		Model.EventManager.on("simulation.stop", @, @_onSimulationStop)
+
 	# Clears the module view
 	#
 	clear: () ->
@@ -35,6 +37,11 @@ class View.Play
 		@_play?.remove()
 		@_pause?.remove()
 			
+	# Redraws this view
+	#
+	redraw: ( ) ->
+		@draw(@_x, @_y, @_scale)
+
 	# Draws this view and thus the model
 	#
 	# @param x [Integer] the x position
@@ -131,4 +138,9 @@ class View.Play
 					
 		return @_pause
 		
+	_onSimulationStop: ( ) ->
+		unless @_cell._running
+			@_playing = off
+			@redraw()
+
 (exports ? this).View.Play = View.Play
