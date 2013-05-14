@@ -1,13 +1,13 @@
 # The play view adds controlls to a cell's simulation.
 # 
-class View.Play
+class View.Play extends View.Base
 	
 	# Creates a new action view
 	# 
 	# @param paper [Object] Raphael paper
 	# @param cell [View.Cell] The view of the cell to simulate
 	constructor: ( paper, cell) ->
-		@_paper = paper
+		super(paper)
 		@_cell = cell
 
 		@_x = 0
