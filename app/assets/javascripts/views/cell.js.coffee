@@ -1,6 +1,10 @@
 #  Class to generate a view for a cell model
 #
-class View.Cell
+class View.Cell extends Helper.Mixable
+
+	@include Mixin.EventBindings
+
+	MAX_RUNTIME: 100
 
 	# Constructor for this view
 	# 
@@ -9,7 +13,6 @@ class View.Cell
 	# 	
 	constructor: ( paper, cell ) ->
 		@_paper = paper
-		@_cell = cell
 		
 		@_container = Raphael( 'graphs', "100%", 1 )
 		@_container.setViewBox( 0, 0, 1000, 1000 ) # 1000 pixels, 1000 pixels
@@ -21,11 +24,61 @@ class View.Cell
 
 		@_width = @_paper.width
 		@_height = @_paper.height
-
-		if ( @_cell? )
-			for module in @_cell._modules
-				@_views.push new View.Module( @_paper, @_cell, module)
-
+		
+		@_allowBindings()
+		
+		Object.defineProperty( @ , "_cell",
+			value: undefined
+			configurable: false
+			enumerable: false
+			writable: true
+		)
+		
+		Object.defineProperty( @, 'cell',
+			
+			get: -> @_cell
+			
+			set: ( value ) ->
+			
+				@kill()
+				
+				@_cell = value
+				for module in @_cell._modules
+					@_views.push new View.Module( @_paper, @_cell, module)
+			
+				@_createButtons()
+				@_bind( 'cell.add.module', @, @onModuleAdd )
+				@_bind( 'cell.add.metabolite', @, @onModuleAdd )
+				@_bind( 'cell.remove.module', @, @onModuleRemove )
+				
+			configurable: false
+			enumerable: true
+		)
+				
+		@cell = cell		
+	#
+	#
+	kill: () ->
+		if @_views?
+			for view in @_views
+				view.kill?()
+		
+		if @_graphs?
+			for name, graph of @_graphs
+				graph.clear()
+				
+		@_unbindAll()
+		
+		@_drawn = []
+		@_views = []
+		@_graphs = {}
+		@_numGraphs = 0
+		
+	#
+	# @todo hide buttons if module present etc.
+	#
+	_createButtons: () ->
+		
 		@_views.push new View.DummyModule( @_paper, @_cell, new Model.DNA() )
 		@_views.push new View.DummyModule( @_paper, @_cell, new Model.Lipid() )
 		@_views.push new View.DummyModule( @_paper, @_cell, new Model.Metabolite( { name: 's' } ), { name: 's', inside_cell: false, is_product: false, amount: 1, supply: 1 } )
@@ -34,20 +87,8 @@ class View.Cell
 		@_views.push new View.DummyModule( @_paper, @_cell, new Model.Protein() )
 		@_views.push new View.DummyModule( @_paper, @_cell, Model.Transporter.ext(), { direction: Model.Transporter.Outward } )
 		
-		tree = new Model.UndoTree(new Model.Node("Root", null))
-		for i in [1..9] by 3
-			tree.add("Node"+i)
-			tree.undo()
-			tree.add("Node"+(i+1))
-			tree.add("Node"+(i+2))
+		@_views.push new View.Play( @_paper, @ )
 		
-		@_views.push new View.Play( @_paper, @)
-		#@_views.push new View.Tree( @_paper, tree)
-		
-		Model.EventManager.on( 'cell.add.module', @, @onModuleAdd )
-		Model.EventManager.on( 'cell.add.metabolite', @, @onModuleAdd )
-		Model.EventManager.on( 'cell.remove.module', @, @onModuleRemove )
-			
 	# Redraws the cell
 	# 		
 	redraw: () ->
@@ -79,10 +120,7 @@ class View.Cell
 		counters = {}
 		
 		# Draw each module
-		for view in @_views
-			
-			unless view.visible
-				continue
+		for view in @_views when view.visible
 			
 			if ( view instanceof View.Module )
 				
@@ -117,11 +155,6 @@ class View.Cell
 					x: x
 					y: y
 
-			if (view instanceof View.Tree )
-				counter = counters[ 'graphs' ] ? 0
-				placement = @_getGraphPlacement( 0, 0, scale, counter )
-				counters[ 'graphs' ]++
-
 			view.draw( placement.x, placement.y, scale )
 		
 	# On module added, add it from the cell
@@ -146,8 +179,7 @@ class View.Cell
 	
 		index = _( @_drawn ).indexOf( module.id )
 		if index isnt -1
-			view = @_views[ index ]
-			view.clear()
+			view = @_views[ index ].kill()
 			@_views = _( @_views ).without view
 			@_drawn = _( @_drawn ).without module.id
 			@redraw()
@@ -164,7 +196,7 @@ class View.Cell
 		switch params.type
 		
 			when "CellGrowth"
-				alpha = 3 * Math.PI / 4 + ( params.count * Math.PI / 12 )
+				alpha = -3 * Math.PI / 4 + ( ( params.count + 1 ) * Math.PI / 12 )
 				x = params.cx + params.r * Math.cos( alpha )
 				y = params.cy + params.r * Math.sin( alpha )
 			
@@ -174,13 +206,13 @@ class View.Cell
 				y = params.cy + params.r * Math.sin( alpha )
 
 			when "Transporter"
-				dx = 60 * params.count * params.scale
+				dx = 80 * params.count * params.scale
 				
 				alpha = 0
 				if params.direction is Model.Transporter.Inward					
 					alpha = Math.PI - Math.asin( dx / params.r )
 				if params.direction is Model.Transporter.Outward		
-					alpha = 0 + Math.asin( dx / params.r )
+					alpha = Math.asin( dx / params.r )
 
 				x = params.cx + params.r * Math.cos( alpha )
 				y = params.cy + params.r * Math.sin( alpha )
@@ -190,8 +222,8 @@ class View.Cell
 				y = params.cy - params.r / 2 + ( Math.floor( params.count / 3 ) * 40 )
 
 			when "Metabolism"
-				x = params.cx + ( params.count % 2 * 80 )
-				y = params.cy + params.r / 2 + ( Math.floor( params.count / 2 ) * 40 )
+				x = params.cx + ( params.count % 2 * 130 )
+				y = params.cy + params.r / 2 + ( Math.floor( params.count / 2 ) * 60 )
 
 			when "Protein"
 				x = params.cx + params.r / 2 + ( params.count % 3 * 40 )
@@ -298,8 +330,15 @@ class View.Cell
 	
 		graph_num = 0
 		
+		for key, graph of @_graphs
+			graph.clear()
+			delete @_graphs[ key ] unless datasets[ key ]?
+		
 		for key, dataset of datasets
 			if ( !@_graphs[ key ]? )
+				height = y + 100 + Math.ceil( (graph_num + 1) / 2 ) * 175 + ( Math.ceil( (graph_num + 1) / 2 ) - 1 ) * 100
+				@_container.setViewBox( 0, 0, 1000, height )
+				@_container.setSize( "100%", height )
 				@_graphs[ key ] = new View.Graph( @_container, key, @ )
 
 			
@@ -310,9 +349,6 @@ class View.Cell
 			@_graphs[ key ].draw( placement.x, placement.y, scale )
 			
 		
-		height = y + 100 + Math.ceil( graph_num / 2 ) * 175 + ( Math.ceil( graph_num / 2 ) - 1 ) * 100
-		@_container.setViewBox( 0, 0, 1000, height )
-		@_container.setSize( "100%", height )
 		return @_graphs
 	
 	# Starts drawing the simulation
@@ -348,16 +384,18 @@ class View.Cell
 	# @param base_values [Array<Float>] the previous values
 	# @return [Array<Float>] the new values
 	#
-	# @todo append data instead of replace data
+	# @todo stopSimulation should throw event that is captured by play button
 	#
 	_step : ( duration, dt, base_values ) ->
 		
 		cell_data = @_getCellData( duration, base_values, dt, @_iteration )
 		@_iteration = cell_data.iteration
 		
-		console.log 'step', "#{ cell_data.from } -> #{ cell_data.to }"
 		@_drawGraphs( cell_data.datasets, 0, 0, @_scale, @_iteration > 1  )
-		
+
+		if cell_data.to >= @MAX_RUNTIME
+			@stopSimulation()
+			
 		return _( cell_data.results.y ).last()
 	
 	# Simulation handler

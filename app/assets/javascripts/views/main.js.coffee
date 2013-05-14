@@ -8,11 +8,10 @@ class View.Main
 	#
 	constructor: ( ) ->
 		@_paper = Raphael( 'paper', 0, 0 )
-		@_cell = new View.Cell(@_paper, new Model.Cell())
+		@_cellView = new View.Cell( @_paper, new Model.Cell() )
 
 		@resize()
 		$( window ).on( 'resize', @resize )
-
 
 	# Resizes the cell to the window size
 	#
@@ -35,7 +34,7 @@ class View.Main
 		
 		scale = radius / 400
 
-		@_cell.draw(centerX, centerY, scale)
+		@_cellView.draw(centerX, centerY, scale)
 
 
 (exports ? this).View.Main = View.Main
