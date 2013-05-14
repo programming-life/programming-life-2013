@@ -1,6 +1,9 @@
 # Baseclass of all modules. 
 #
-class Model.Module
+class Model.Module extends Helper.Mixable
+
+	@include Mixin.DynamicProperties
+	@include Mixin.EventBindings
 
 	# Constructor for module
 	#
@@ -8,51 +11,14 @@ class Model.Module
 	# @param step [Function] the step function
 	#
 	constructor: ( params = {}, step ) -> 
-		
+
 		Object.defineProperty( @ , "_tree",
 			value: new Model.UndoTree()
 			configurable: false
 			enumerable: false
 			writable: true
 		)
-	
-		params = _( params ).defaults( {
-			id: _.uniqueId "client:#{this.constructor.name}:"
-			creation: Date.now()
-		} )
-
-		for key, value of params
-		
-			value = parseFloat( value ) if _( value ).isString() and !isNaN( value )
-			# The function to create a property out of param
-			#
-			# @param key [String] the property name
-			#
-			( ( key ) => 
 			
-				# This defines the private value.
-				Object.defineProperty( @ , "_#{key}",
-					value: value
-					configurable: false
-					enumerable: false
-					writable: true
-				)
-
-				# This defines the public functions to change
-				# those values.
-				Object.defineProperty( @ , key,
-					set: ( param ) ->
-						console.log "I am setting #{key}", @["_#{key}"], param
-						Model.EventManager.trigger( 'module.set.property', @, [ "_#{key}", @["_#{key}"], param ] )
-						@_do( "_#{key}", param )
-					get: ->
-						return @["_#{key}"]
-					enumerable: true
-					configurable: false
-				)
-				
-			) key
-
 		Object.defineProperty( @, '_step',
 			
 			# @property [Function] the step function
@@ -87,6 +53,15 @@ class Model.Module
 			configurable: false
 			enumerable: false
 		)
+		
+		@_allowBindings()
+		@_defineProps(  
+			_( params ).defaults( {
+				id: _.uniqueId "client:#{this.constructor.name}:"
+				creation: Date.now()
+			} ),
+			'module.set.property'
+		)
 
 		Object.seal @
 					
@@ -96,7 +71,7 @@ class Model.Module
 			unless caller isnt context
 				@_addMove key, value, param
 						
-		Model.EventManager.on( 'module.set.property', @, addmove )
+		@_bind( 'module.set.property', @, addmove )
 		Model.EventManager.trigger( 'module.creation', @, [ @creation, @id ] )	
 		
 	# Extracts id data from id
@@ -300,8 +275,8 @@ class Model.Module
 	serialize : ( to_string = on ) ->
 	
 		parameters = {}
-		for parameter in Object.keys( @ )
-			parameters[parameter] = @[parameter]
+		for parameter in @_dynamicProperties 
+			parameters[ parameter ] = @[ parameter ]
 			
 		type = @constructor.name
 		
@@ -309,6 +284,7 @@ class Model.Module
 			name: @name
 			parameters: parameters
 			type: type 
+			amount: @amount
 			step: @_step.toString() if type is "Module" and @_step?
 		}
 		
@@ -344,6 +320,7 @@ class Model.Module
 						module_template_id: module_template.id
 						cell_id: cell
 						name: serialized_data.name
+						amount: serialized_data.amount
 				
 				# Define the parameters set function, so we can resuse it
 				update_parameters = () =>
