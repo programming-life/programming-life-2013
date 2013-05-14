@@ -69,7 +69,7 @@ class Model.Metabolite extends Model.Module
 		}
 		
 		Object.defineProperty( @ , "_name",
-			value: if params.name? then params.name else name ? undefined
+			value: undefined
 			configurable: false
 			enumerable: false
 			writable: true
@@ -78,7 +78,7 @@ class Model.Metabolite extends Model.Module
 		Object.defineProperty( @ , "name",
 			set: ( param ) ->
 				Model.EventManager.trigger( 'module.set.property', @, [ "_name", @["_name"], param ] )
-				@["_name"] = param
+				@["_name"] = param?.split( '#' )[0]
 			get: ->
 				return @["_name"] + "#int" if @placement is Model.Metabolite.Inside
 				return @["_name"] + "#ext" if @placement is Model.Metabolite.Outside
@@ -86,9 +86,13 @@ class Model.Metabolite extends Model.Module
 			enumerable: true
 			configurable: false
 		)
+		
+		@name = if params.name? then params.name else name ? undefined
 				
 		params = _( _( params ).defaults( defaults ) ).omit( 'name' ) 
 		super params, step
+		
+		@_dynamicProperties.push 'name'
 		
 	# Constructor for External Substrates
 	#
