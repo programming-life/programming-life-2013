@@ -100,7 +100,7 @@ class View.Module extends Helper.Mixable
 			if selected isnt @_selected
 				@_selected = selected
 				@redraw()
-			
+
 		# Deselect if was selected 
 		else if selected is @_selected is on
 			@_selected = off
@@ -133,7 +133,7 @@ class View.Module extends Helper.Mixable
 	#
 	onPaperResize: ( ) =>
 		if @_selected
-			@_view.toFront()
+			@redraw()
 
 
 	# Clears the module view
@@ -204,6 +204,11 @@ class View.Module extends Helper.Mixable
 			deleteButton = @drawDeleteButton( box, scale )
 			deleteButton?.click =>
 				console.log @module.id, 'delete'
+				@_cell.remove( @module )
+
+			editButton = @drawEditButton( box, scale )
+			editButton?.click =>
+				console.log @module.id, 'edit'
 				@_cell.remove( @module )
 
 			shadow = @drawShadow(box, scale)
@@ -462,6 +467,34 @@ class View.Module extends Helper.Mixable
 		deleteButton.push( circle, image, hitbox )
 		
 		return deleteButton
+
+	# Draws the edit buttons
+	#
+	# @param elem [Raphael] element to draw for
+	# @param scale [Integer] the scale
+	# @return [Raphael] the contents
+	#
+	drawEditButton : ( elem, scale ) ->
+		rect = elem.getBBox()
+
+		editButton = @_paper.set()
+
+		circle = @_paper.circle( rect.x + 32, rect.y, 16 * scale )
+		circle.node.setAttribute('class', 'module-close')
+			
+		image = @_paper.image(
+			'/assets/icon-pencil.png', 
+			rect.x + 30 * scale, 
+			rect.y - 12 * scale, 
+			24 * scale, 
+			24 * scale
+		)
+
+		hitbox = @_paper.circle( rect.x + 32, rect.y, 16 * scale )
+		hitbox.node.setAttribute('class', 'module-hitbox')		
+		editButton.push( circle, image, hitbox )
+		
+		return editButton
 
 
 	# Draws this view shadow
