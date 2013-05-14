@@ -209,7 +209,7 @@ class Model.Module extends Helper.Mixable
 		
 	# Ensures test to be true or notifies with message
 	#
-	# @param test [Function] function in a module to run
+	# @param test [Boolean] boolean in a module to run
 	# @param message [String] string to display when it fails
 	# @return [Boolean] true if test succeeded
 	#
