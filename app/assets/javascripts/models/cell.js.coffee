@@ -2,7 +2,10 @@
 # of simulating the modules for a timespan. A cell comes with one default 
 # module which is the Cell Growth.
 #
-class Model.Cell
+class Model.Cell extends Helper.Mixable
+
+	@include Mixin.DynamicProperties
+	@include Mixin.EventBindings
 
 	# Constructor for cell
 	#
@@ -32,45 +35,6 @@ class Model.Cell
 			enumerable: false
 			writable: true
 		)
-		
-		# Add defaults for serialization
-		defaults = {
-			id: _.uniqueId "client:#{this.constructor.name}:"
-			creation: Date.now()
-		}
-		
-		paramscell = _( paramscell ).defaults( defaults )
-		for key, value of paramscell
-		
-			# The function to create a property out of param
-			#
-			# @param key [String] the property name
-			#
-			( ( key ) => 
-			
-				# This defines the private value.
-				Object.defineProperty( @ , "_#{key}",
-					value: value
-					configurable: false
-					enumerable: false
-					writable: true
-				)
-
-				# This defines the public functions to change
-				# those values.
-				Object.defineProperty( @ , key,
-					set: ( param ) ->
-						console.log "I am setting #{key}", @["_#{key}"], param
-						Model.EventManager.trigger( 'cell.set.property', @, [ "_#{key}", @["_#{key}"], param ] )
-						@["_#{key}"] = param
-						#@_do( "_#{key}", param )
-					get: ->
-						return @["_#{key}"]
-					enumerable: true
-					configurable: false
-				)
-				
-			) key
 
 		Object.defineProperty( @, 'module',
 			
@@ -92,6 +56,15 @@ class Model.Cell
 			
 			configurable: false
 			enumerable: false
+		)
+
+		@_allowBindings()
+		@_defineProps(  
+			_( paramscell ).defaults( {
+				id: _.uniqueId "client:#{this.constructor.name}:"
+				creation: Date.now()
+			} ),
+			'cell.set.property'
 		)
 		
 		Object.seal @
@@ -413,7 +386,7 @@ class Model.Cell
 	serialize : ( to_string = on ) ->
 		
 		parameters = {}
-		for parameter in Object.keys( @ )
+		for parameter in @_dynamicProperties 
 			parameters[parameter] = @[parameter]
 		type = @constructor.name
 		
