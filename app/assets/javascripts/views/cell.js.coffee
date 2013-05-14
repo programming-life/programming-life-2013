@@ -1,6 +1,8 @@
 #  Class to generate a view for a cell model
 #
-class View.Cell
+class View.Cell extends Helper.Mixable
+
+	@include Mixin.EventBindings
 
 	MAX_RUNTIME: 100
 
@@ -11,7 +13,6 @@ class View.Cell
 	# 	
 	constructor: ( paper, cell ) ->
 		@_paper = paper
-		@_cell = cell
 		
 		@_container = Raphael( 'graphs', "100%", 1 )
 		@_container.setViewBox( 0, 0, 1000, 1000 ) # 1000 pixels, 1000 pixels
@@ -23,11 +24,61 @@ class View.Cell
 
 		@_width = @_paper.width
 		@_height = @_paper.height
-
-		if ( @_cell? )
-			for module in @_cell._modules
-				@_views.push new View.Module( @_paper, @_cell, module)
-
+		
+		@_allowBindings()
+		
+		Object.defineProperty( @ , "_cell",
+			value: undefined
+			configurable: false
+			enumerable: false
+			writable: true
+		)
+		
+		Object.defineProperty( @, 'cell',
+			
+			get: -> @_cell
+			
+			set: ( value ) ->
+			
+				@kill()
+				
+				@_cell = value
+				for module in @_cell._modules
+					@_views.push new View.Module( @_paper, @_cell, module)
+			
+				@_createButtons()
+				@_bind( 'cell.add.module', @, @onModuleAdd )
+				@_bind( 'cell.add.metabolite', @, @onModuleAdd )
+				@_bind( 'cell.remove.module', @, @onModuleRemove )
+				
+			configurable: false
+			enumerable: true
+		)
+				
+		@cell = cell		
+	#
+	#
+	kill: () ->
+		if @_views?
+			for view in @_views
+				view.kill?()
+		
+		if @_graphs?
+			for name, graph of @_graphs
+				graph.clear()
+				
+		@_unbindAll()
+		
+		@_drawn = []
+		@_views = []
+		@_graphs = {}
+		@_numGraphs = 0
+		
+	#
+	# @todo hide buttons if module present etc.
+	#
+	_createButtons: () ->
+		
 		@_views.push new View.DummyModule( @_paper, @_cell, new Model.DNA() )
 		@_views.push new View.DummyModule( @_paper, @_cell, new Model.Lipid() )
 		@_views.push new View.DummyModule( @_paper, @_cell, new Model.Metabolite( { name: 's' } ), { name: 's', inside_cell: false, is_product: false, amount: 1, supply: 1 } )
@@ -36,12 +87,8 @@ class View.Cell
 		@_views.push new View.DummyModule( @_paper, @_cell, new Model.Protein() )
 		@_views.push new View.DummyModule( @_paper, @_cell, Model.Transporter.ext(), { direction: Model.Transporter.Outward } )
 		
-		@_views.push new View.Play( @_paper, @)
+		@_views.push new View.Play( @_paper, @ )
 		
-		Model.EventManager.on( 'cell.add.module', @, @onModuleAdd )
-		Model.EventManager.on( 'cell.add.metabolite', @, @onModuleAdd )
-		Model.EventManager.on( 'cell.remove.module', @, @onModuleRemove )
-			
 	# Redraws the cell
 	# 		
 	redraw: () ->
