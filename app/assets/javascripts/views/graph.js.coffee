@@ -30,7 +30,7 @@ class View.Graph
 			shade : false
 			colors: [ "blue", "red" ]
 		}
-		
+
 	# Add a dataset to visualize in this graphs
 	#
 	# @param data [Array] An array of datapoints
@@ -53,6 +53,8 @@ class View.Graph
 	#
 	clear: () ->
 		@_contents?.remove()
+		@_line?.remove()
+		@_line = null
 	
 	# Redraw this component with its current parameters
 	#
@@ -131,7 +133,8 @@ class View.Graph
 
 		chart = @_paper.linechart( x , y, width, height, xValues, yValues, @_options )
 		chart.hoverColumn ( event ) =>
-			@_parent._drawRedLines( event.x - @_x - @_paper.canvas.offsetLeft )
+			unless @_parent._running
+				@_parent._drawRedLines( event.x - @_x - @_paper.canvas.offsetLeft )
 
 		
 		# Draw the gridlines
@@ -186,7 +189,7 @@ class View.Graph
 	# @param x [Integer] The x position of the line, relative to the offset of the chart
 	#
 	_drawRedLine: ( x ) ->
-		if not @_line?	
+		unless @_line?	
 			@_line = @_paper
 				.path( [ 'M', x + @_x, @_y, 'V', @_chart.axis[0].text.items[0].attrs.y] )
 				.attr
