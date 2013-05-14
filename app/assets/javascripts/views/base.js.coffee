@@ -9,37 +9,54 @@ class View.Base extends Helper.Mixable
 	# @param paper [Object] The paper to draw on
 	constructor: ( @_paper ) ->
 		@_contents = @_paper.set()
+		@_views = []
 
 		@_allowBindings()
 	
-	# Clear the contents of this view
+	# Clear the contents of this view and it's children
 	# 
 	clear: ( ) ->
 		@_contents?.remove()
 
-	# Draw this view
+		for view in @_views
+			view.clear()
+
+	# Draw this view and it's children
 	# 
 	# @param x [Integer] The x position
 	# @param y [Integer] The y position
 	#
 	draw: ( @_x, @_y) ->
 		@clear()
+
+		for view in @_views
+			view.draw()
 	
-	# Redraw this view with it's current parameters
+	# Redraw this view and it's children with their current parameters
 	# 
 	redraw: ( ) ->
 		@draw(@_x, @_y)
 
-	# Resize this view
+		for view in @_views
+			view.redraw()
+
+	# Resize this view and it's children
 	# 
 	# @param scale [Float] The scale of the view
 	#
-	resize: ( @_scale ) ->
+	resize: ( scale = @_scale ) ->
+		@_contents.transform("S"+scale)
 
-	# Kill this view, removing and unsetting all references from this view
+		for view in @_views
+			view.resize( scale )
+
+	# Kill this view and it's children, removing and unsetting all references from this view and it's children
 	# 
 	kill: ( ) ->
 		@clear()
 		@_contents = null
+
+		for view in @_views
+			view.kill()
 
 (exports ? this).View.Base = View.Base

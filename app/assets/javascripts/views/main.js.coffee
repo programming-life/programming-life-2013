@@ -1,25 +1,36 @@
 # The main view is the view used on the main page. It shows
 # A cell and allows interaction on this cell.
 #
-class View.Main
+class View.Main extends View.Base
 
 	# Creates a new Main view
 	# @todo dummy module inactivate if already in cell
 	#
 	constructor: ( ) ->
-		@_paper = Raphael( 'paper', 0, 0 )
-		@_cellView = new View.Cell( @_paper, new Model.Cell() )
+		super( Raphael( 'paper', 0, 0 ) )
+
+		@_views.push  new View.Cell( @_paper, new Model.Cell() )
+		@_views.push  new View.Pane(@_paper, View.Pane.LEFT_SIDE)
 
 		@resize()
 		$( window ).on( 'resize', @resize )
 
+		@draw()
+
 	# Resizes the cell to the window size
 	#
 	resize: ( ) =>
+		old = @_width
+
 		@_width = $( window ).width() - 20
 		@_height = $( window ).height() - 5 
 		@_paper.setSize( @_width, @_height )
+
+		scale = (@_width - old) / old
+
+		#super( scale )
 		@draw()
+
 		Model.EventManager.trigger( 'paper.resize', @_paper )
 
 	# Draws the main view
@@ -34,7 +45,11 @@ class View.Main
 		
 		scale = radius / 400
 
-		@_cellView.draw(centerX, centerY, scale)
-
+		for view in @_views
+			switch view.constructor.name
+				when "Cell"
+					view.draw(centerX, centerY, scale)
+				else
+					view.draw()
 
 (exports ? this).View.Main = View.Main

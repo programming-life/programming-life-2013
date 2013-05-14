@@ -1,6 +1,6 @@
 #  Class to generate a view for a cell model
 #
-class View.Cell extends Helper.Mixable
+class View.Cell extends View.Base
 
 	@include Mixin.EventBindings
 
@@ -12,7 +12,7 @@ class View.Cell extends Helper.Mixable
 	# @param cell [Model.Cell] cell to view
 	# 	
 	constructor: ( paper, cell ) ->
-		@_paper = paper
+		super(paper)
 		
 		@_container = Raphael( 'graphs', "100%", 1 )
 		@_container.setViewBox( 0, 0, 1000, 1000 ) # 1000 pixels, 1000 pixels
@@ -105,6 +105,8 @@ class View.Cell extends Helper.Mixable
 		@_x = x
 		@_y = y
 		@_scale = scale
+
+		console.log( x, y, scale)
 
 		radius = @_scale * 400
 
