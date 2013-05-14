@@ -59,6 +59,7 @@ class Model.Module extends Helper.Mixable
 			_( params ).defaults( {
 				id: _.uniqueId "client:#{this.constructor.name}:"
 				creation: Date.now()
+				starts: {}
 			} ),
 			'module.set.property'
 		)
@@ -277,14 +278,14 @@ class Model.Module extends Helper.Mixable
 		parameters = {}
 		for parameter in @_dynamicProperties 
 			parameters[ parameter ] = @[ parameter ]
-			
+
 		type = @constructor.name
 		
 		result = { 
 			name: @name
 			parameters: parameters
 			type: type 
-			amount: @amount
+			amount: @amount? 0
 			step: @_step.toString() if type is "Module" and @_step?
 		}
 		
