@@ -59,27 +59,36 @@
 			The third section describes the production/release phase, in which a tested feature is implemented.
 			
 			\subsubsection{Development}
-				We are making use of Behaviour Driven Development (BDD \footnote{http://en.wikipedia.org/wiki/Behavior\-driven\_development} ). 
-				During development we are making use of Coffeescript \footnote{http://coffeescript.org/\#language} for writing interaction assets, SASS \footnote{http://sass-lang.com/docs/yardoc/file.SASS\_REFERENCE.html} for styling and SVG with the Raphael framework for visualising the application.
+				During development we are making use of Coffeescript \footnote{http://coffeescript.org/\#language} for writing interaction assets, SASS \footnote{http://sass-lang.com/docs/yardoc/file.SASS\_REFERENCE.html} for styling and SVG \footnote{http://www.w3.org/Graphics/SVG/} with the Raphael \footnote{http://raphaeljs.com/reference.html} framework for visualising the application.
+				Coffeescript and SASS are preprocessors for respectively Javascript and CSS. Using these preprocessors gives us the advantage of cleaner syntax.
+				By making use of SVG to render the cell every graphical object is also a DOM object, this enables us to attach Javascript event handlers and modify the objects itself.
+				
 			\subsubsection{Testing}
-				We test the application in a BDD and Test Driven Development (TDD \footnote{http://en.wikipedia.org/wiki/Test\-driven\_development} ) way. 
-				The tests are written using the Jasmine framework \footnote{http://pivotal.github.io/jasmine/} . To run all tests in the browser we are making use of the Teabag framework \footnote{https://github.com/modeset/teabag} . To keep track of code coverage we are making use of the Istabul framework \footnote{https://github.com/gotwarlost/istanbul} . All tests are ran automatically using Continuous Integration with Travis CI \footnote{http://about.travis-ci.org/} , a practice in which tests ar ran every time work has been done within critical sections of the code. 
+				We test the application in a Behaviour Driven Development (BDD \footnote{http://en.wikipedia.org/wiki/Behavior\-driven\_development} ) and Test Driven Development (TDD \footnote{http://en.wikipedia.org/wiki/Test\-driven\_development} ) way. 
+				The Javascript assets are tested using the Jasmine framework \footnote{http://pivotal.github.io/jasmine/} . 
+				To run all tests in the browser we are making use of the Teabag framework \footnote{https://github.com/modeset/teabag} . 
+				To keep track of code coverage we are making use of the Istanbul framework \footnote{https://github.com/gotwarlost/istanbul} .
+				The Ruby assets (database, MVC architecture and Rails) are tested using the Rspec framework \footnote{http://rubydoc.info/gems/rspec\-rails/frames} .  
+				All tests are ran automatically using Continuous Integration, a practice in which tests are ran every time work has been done within critical sections of the code. 
+				
 			\subsubsection{Production release}
-				During the Production release the Coffeescript assets are compiled to Javascript \footnote{https://developer.mozilla.org/en-US/docs/JavaScript/Reference} , while the SASS assets are compiled to CSS, after which they are compressed and bundled using uglifier \footnote{http://rubydoc.info/gems/uglifier/2.1.0/frames} . 
+				During the Production release the Coffeescript assets are compiled to Javascript \footnote{https://developer.mozilla.org/en-US/docs/JavaScript/Reference} and the SASS assets are compiled to CSS, after which they are minified and bundled using uglifier \footnote{http://rubydoc.info/gems/uglifier/2.1.0/frames} . Minified assets take up less space and increase page performance which results in a better user experience and less demand on the web server. 
+				SVG is still used for creating visualisations of the cell models.
 		\newpage
 				 
 		\section{Server Client Architecture}
 			
 			\subsection{Server}
-				The server subsystems consist of two key parts: the server back end and the database. The serve keeps an up-to-date copy of the database and sychronises with the client side when possible. It can also be used to do calculations that are too complicated for the client-side of the application (Calculations are deemed too complicated when they take a notable amount of time to complete). It is dependent upon the database, to synchronise the appropriate data to the appropriate client back end corresponding with a user.
+				The server subsystems consist of two key parts: the server back end and the database. The server keeps an up-to-date copy of the database and sychronises with the client side when possible. It can also be used to do calculations that are too complicated for the client-side of the application (Calculations are deemed too complicated when they take a notable amount of time to complete). It is dependent upon the database, to synchronise the appropriate data to the appropriate client back end corresponding with a user.
 				The database is used for storage of user data, modules for cell design, as well as cell models created using the application. It provides a centralised storage so the client-side application can function on any platform without a persistent internet connection. It is not dependent upon anything, although every function using persistent data is dependent on it.	\\
 				\includegraphics[scale=0.7]{EAD.png} \\				
 				\subsubsection{Rails}
 					The server runs on Ruby on Rails \footnote{http://api.rubyonrails.org/} . This is a fairly new but very stable platform that is not only free but also open source. This means active development by a lot of people. Problems are easily fixed and this should ease the use of the application that is being designed. The language itself is written from a standpoint where you should just be able to write code and not worry about breaking the interpreter. This makes it easy to write complex code.				
 				\subsubsection{MVC}
-					The pages served are HTML5 for markup with CSS3 for styling and Javascript for interaction. Pages are built by a comprehensive and solid Model-Viewer-Controller system. This keeps data separated from the representation, further increasing maintainability.					 
+					The pages served are HTML5 for markup with CSS3 for styling and Javascript for interaction. Pages are built by a comprehensive and solid Model-Viewer-Controller system. This keeps data separated from the representation, further increasing maintainability.\\
+					\includegraphics[scale=0.5]{SequenceDiagramLife.png} 				 
 				\subsubsection{Models and Database}
-					: Ruby models are mapped to any Relational Database Management System (RDMS) such as SQLite, MySQL and PostgreSQL. By not restricting the server database technology, switching systems, servers or extending  their capacity should be fairly simple and easy.
+					Ruby models are mapped to any Relational Database Management System (RDMS) such as SQLite, MySQL and PostgreSQL. By not restricting the server database technology, switching systems, servers or extending  their capacity should be fairly simple and easy.
 				\subsubsection{Views and ERB} 
 					The views are in ERB \footnote{http://ruby-doc.org/stdlib-2.0/libdoc/erb/rdoc/ERB.html} which is an HTML template system. It is provided with the default Ruby library, so it does not require any extra software. Ruby controllers can expose data to these views. New views are easily added this way, so new ways of data representation are quickly devised.
 			\newpage
@@ -87,27 +96,24 @@
 			\subsection{Client}
 				The client-side subsystems contain most of the applications functionality. These subsystems are responsible for displaying the graphical environment with all its modules, as well as doing the basic simulating. If the simulation becomes too complex, the complicated calculations can be sent to the sever to be processed on the server-side. If used locally, the client-side subsystems function independently of the server. If used on multiple machines, the client-side can be made dependent on the server and the database to synchronise user data.
 				\subsubsection{Local storage}
-					: Javascript determines the local storage engine that is availabe and uses that to maintain an offline copy of the application and the created cells/modules. This makes it very easy to design new cells or edit saved cells even when the user isn't connected to the internet.
+					Javascript determines the local storage engine that is availabe and uses that to maintain an offline copy of the application and the created cells/modules. This makes it very easy to design new cells or edit saved cells even when the user isn't connected to the internet.
 				\subsubsection{Interaction by Javascript}
-					: Javascript facilitates interaction and processes all the differential equations. It generates the graphs and the reports with the help of the canvas element, part of HTML5.
+					Javascript facilitates interaction and processes all the differential equations. It generates the graphs and the reports with the help of the canvas element, part of HTML5.
 
 		\subsection{Hardware/software mapping}
 			The server-side is a non-client piece of hardware, and can therefore be chosen specifically to suit the clients needs. Tasks of the server-side include, but are not limited to the compilation of source files and providing a SQL enabled database. The client-side hardware is required to support current webbuilding standards, which qualifies almost every machine from almost every platform to run the application. It's also possible for the client to work locally without internet connection, using the local storage.\\
-\clearpage
 		\subsection{Ordinary Differential Equation Solver}
 			All computations are performed by our ODE Solver, which is built upon the numericjs library. This is a library which makes it possible to perform sophisticated numerical computations in pure javascript and thus is able to run in the browser.
-		\subsection{SVG}
-			The SVG rendering engine is built upon the Raphael library. Every graphical object is also a DOM object. This enables us to attach javascript event handlers and modify the objects.
 		\subsection{Data management}
 			The application provides the possibility to store data locally and export simulation results to a report in multiple standardised format, such as \emph{HTML}, \emph{Excel} and \emph{PDF}.
 			The locally stored data is synchronized with the database upon connection. 	
 		\subsection{API}
-			The API can be found online here: http://coffeedoc.info/github/Derkje-J/programming-life/develop/
+			The API can be found online here: http://coffeedoc.info/github/Derkje-J/programming-life/develop/ \\
+			In the future there will be a Rubydoc online for server-side assets.
 	
 		\subsection{Concurrency}
 			Each client runs independently and uses asynchronous communication with the server through \emph{REST} and \emph{AJAX}. Because of this, concurrency issues are very improbable. The client-side application is web-based, and uses only one process. Shared resources are retrieved directly from and synchronised directly with the database.\\
 			
-			\includegraphics[scale=0.5]{SequenceDiagramLife.png} 
 	\clearpage
 	\section{Summary}
 		The application is a lightweight, cross-platform graphical design tool with a centralised storage database. The architecture ensures its functionality on different kinds of machines as well as the ease of simulating complex cell models. It not only offers stability, ease and intuitive design, it offers it on every machine.
