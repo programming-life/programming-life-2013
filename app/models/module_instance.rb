@@ -12,7 +12,7 @@
 #
 
 class ModuleInstance < ActiveRecord::Base
-	attr_accessible :id, :module_template_id, :cell_id, :module_values_attributes, :name
+	attr_accessible :id, :module_template_id, :cell_id, :module_values_attributes, :name, :amount
 
 	has_many :module_values, :dependent => :destroy
 	has_many :module_parameters, :through => :module_template
@@ -24,7 +24,6 @@ class ModuleInstance < ActiveRecord::Base
 	validates :module_template_id, :presence => true
 	validates :cell_id, :presence => true
 	validates :name, :presence => true
-	
 	
 	after_create :create_parameters
 	
