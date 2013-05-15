@@ -45,7 +45,6 @@ describe("Event Manager", function() {
 				expect( Model.EventManager.bindings( event ) ).toBeDefined();
 				expect( previousCount - Model.EventManager.bindings( event ).length ).toBe( 1 );
 				
-				console.log( Model.EventManager.bindings( event ) );
 			});
 		});
 		
