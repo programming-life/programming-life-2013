@@ -4,6 +4,22 @@ describe("Tree", function() {
 		
 	beforeEach(function() {
 	});
+
+	describe("when a tree is contructed without a root", function() {
+		beforeEach( function() {
+			tree = new Model.Tree();
+		});
+
+		it("should have a default root node", function() {
+			expect( tree._root._parent ).toBe( null );
+			expect( tree._root._object).toBe( null );
+			expect( tree._root._children.length).toBe( 0 );
+		});
+		
+		it("the current node should be the root node", function() {
+			expect( tree._current ).toBe( tree._root );
+		});
+	});
 	
 	describe("when a tree is constructed", function() {
 	
@@ -74,13 +90,30 @@ describe("Tree", function() {
 
 			it( "should be able to generate a depthfirst iterator", function() {
 				it = tree.depthfirst()
-				console.log(it)
 				expected = [0,1,2,3,4,8,7,6,5]
 				for (i = 0; i < it.length; i++ ) {
 					expect( it[i] ).toBe( nodes[expected[i]] );
 				}
 			});
 
+		});
+
+		describe("when a node is added", function() {
+			var node,previous;
+			beforeEach( function() {
+				node = new Model.Node(null,null)
+				previous = tree._current;
+				tree.addNode(node);
+			});
+
+			it("should have added that node to the tree", function() {
+				expect( tree._current ).toBe( node );
+			});
+
+			it("should have updated the parent of that node to the previous node", function() {
+				expect( node._parent ).toBe( previous );
+			});
+			
 		});
 
 	})

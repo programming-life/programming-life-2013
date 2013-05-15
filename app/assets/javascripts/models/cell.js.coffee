@@ -24,6 +24,13 @@ class Model.Cell extends Helper.Mixable
 		@_tree = new Model.UndoTree()
 		console.log(@_tree)
 		
+		Object.defineProperty( @, '_tree',
+			value: new Model.UndoTree()
+			configurable: false
+			enumerable: false
+			writable: true
+		)
+		
 		Object.defineProperty( @, '_modules',
 			value: []
 			configurable: false
@@ -73,6 +80,9 @@ class Model.Cell extends Helper.Mixable
 		Object.seal @
 		
 		Model.EventManager.trigger( 'cell.creation', @, [ @creation, @id ] )
+		@_bind( 'cell.add.module', @, @_addToTree )
+		@_bind( 'cell.add.metabolite', @, @_addToTree )
+		
 		@add new Model.CellGrowth( params, start )
 		
 	# Extracts id data from id
@@ -108,13 +118,26 @@ class Model.Cell extends Helper.Mixable
 				@_metabolites[ name ] = { }
 				@_metabolites[ name ][ Model.Metabolite.Inside ] = undefined
 				@_metabolites[ name ][ Model.Metabolite.Ouside ] = undefined
-				
-			@_metabolites[ name ][ module.placement ] = module
-			Model.EventManager.trigger( 'cell.add.metabolite', @, [ module, name, module.amount, module.placement is Model.Metabolite.Inside, module.type is Model.Metabolite.Product ] )
+
+			func1 = (name, placement, module) =>
+				@_metabolites[ name ][ placement ] = module
+			func2 = (name, placement) =>
+				delete @_metabolites[ name ][ placement ]
+
+			todo = _( func1 ).bind(@, name, placement, module)
+			undo = _( func2 ).bind(@, name, placement)
+			action = new Model.Action(@, todo, undo, "Added "+name+" with amount " +amount)
+	
+			action.do()
+			Model.EventManager.trigger( 'cell.add.metabolite', @, [ action, module, name, module.amount, module.placement is Model.Metabolite.Inside, module.type is Model.Metabolite.Product ] )
 	
 		else
-			@_modules.push module
-			Model.EventManager.trigger( 'cell.add.module', @, [ module ] )
+			todo = _( (module) => @_modules.push module).bind(@, module)
+			undo = _( (module) => @_modules = _( @_modules ).without module).bind(@, module)
+			action = new Model.Action(@, todo, undo, "Added "+module.name)
+			action.do()
+
+			Model.EventManager.trigger( 'cell.add.module', @, [ action, module ] )
 		return this
 		
 	# Add metabolite to cell
@@ -135,11 +158,31 @@ class Model.Cell extends Helper.Mixable
 		placement = if inside_cell then Model.Metabolite.Inside else Model.Metabolite.Outside
 		
 		if @_metabolites[ name ][ placement ]? 
-			@_metabolites[ name ][ placement ].amount = amount
+			func = (name, value, placement) =>
+				@_metabolites[ name ][ placement ].amount = value
+
+			oldValue = @_metabolites[ name ]
+			todo = _( func ).bind(@, name, amount, placement)
+			undo = _( func ).bind(@, name, oldValue, placement)
+			action = new Model.Action(@, todo, undo, "Added "+name)
 		else
 			type = if is_product then Model.Metabolite.Product else Model.Metabolite.Substrate
-			@_metabolites[ name ][ placement ] = new Model.Metabolite( { supply: supply }, amount, name, placement, type )
-			Model.EventManager.trigger( 'cell.add.metabolite', @, [ @_metabolites[ name ][ placement ], name, amount, inside_cell, is_product ] )
+			
+			met = new Model.Metabolite({ supply: supply}, amount, name, placement, type)
+
+			func1 = (name, placement, met) =>
+				@_metabolites[ name ][ placement ] = met
+			func2 = (name, placement) =>
+				delete @_metabolites[ name ][ placement ]
+
+			todo = _( func1 ).bind(@, name, placement, met)
+			undo = _( func2 ).bind(@, name, placement)
+			action = new Model.Action(@, todo, undo, "Added "+name+" with amount " +amount)
+
+			Model.EventManager.trigger( 'cell.add.metabolite', @, [ action, met] )
+
+		action.do()
+
 		return this
 		
 	# Add metabolite substrate to cell
@@ -538,6 +581,12 @@ class Model.Cell extends Helper.Mixable
 					
 				callback.apply( @, [ result ] ) if callback?
 			)
+	
+	_addToTree: ( source, action, module) ->
+		if source is this
+			node = @_tree.add action
+			module._tree.setRoot node
+		
 		
 
 # Makes this available globally.

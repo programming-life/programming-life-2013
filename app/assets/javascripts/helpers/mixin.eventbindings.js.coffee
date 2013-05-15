@@ -7,7 +7,8 @@ EventBindings =
 	# @return [self] chainable self
 	#
 	_allowBindings: () ->
-		@_bindings = {} 
+		unless @_bindings?
+			@_bindings = {} 
 		return this
 	 
 	# Unbinds all events

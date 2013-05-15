@@ -8,6 +8,15 @@ class Model.Tree
 	constructor: ( root = new Model.Node( null, null ) ) -> 
 		@_root = root
 		@_current = @_root
+
+	# Set a new root for the tree
+	#
+	# @param root [Model.Node] The new root
+	setRoot: ( root ) ->
+		if @_current is @_root
+			@_current = root
+
+		@_root.rebase( root )
 	
 	# Add an object to the tree
 	#
@@ -15,11 +24,23 @@ class Model.Tree
 	# @param parent [Node] The future parent
 	# @return [Node] the added node
 	#
-	add: ( object, parent = @_root ) ->
+	add: ( object, parent = @_current ) ->
 		node = new Model.Node(object, parent)
-		current = node
+		@_current = node
 		if parent isnt null
-			parent._branch = current
+			parent._branch = node
+		return node
+	
+	# Add a node to the tree
+	#
+	# @param node [Model.Node] The node to add.
+	# @param parent [Model.Node] The new parent of the node.
+	#
+	addNode: ( node, parent = @_current ) ->
+		node._parent = parent
+		parent._branch = node
+		parent._children.push node
+		@_current = node
 		return node
 	
 	# Find an objects location in the tree

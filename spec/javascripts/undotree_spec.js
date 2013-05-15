@@ -6,6 +6,22 @@ describe("UndoTree", function() {
 		tree = new Model.UndoTree(root);
 	});
 
+	describe("when a tree is contructed without a root", function() {
+		beforeEach( function() {
+			tree = new Model.UndoTree();
+		});
+
+		it("should have a default root node", function() {
+			expect( tree._root._parent ).toBe( null );
+			expect( tree._root._object).toBe( null );
+			expect( tree._root._children.length ).toBe( 0);
+		});
+		
+		it("the current node should be the root node", function() {
+			expect( tree._current ).toBe( tree._root );
+		});
+	});
+
 	describe("when constructed with only a root node", function() {
 		beforeEach( function() {
 		});

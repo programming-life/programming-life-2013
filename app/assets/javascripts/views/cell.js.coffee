@@ -86,6 +86,8 @@ class View.Cell extends View.Base
 		@_views.push new View.DummyModule( @_paper, @_cell, new Model.Metabolism() )
 		@_views.push new View.DummyModule( @_paper, @_cell, new Model.Protein() )
 		@_views.push new View.DummyModule( @_paper, @_cell, Model.Transporter.ext(), { direction: Model.Transporter.Outward } )
+			
+		#@_views.push new View.Tree( @_paper, @_cell._tree)
 		
 		@_views.push new View.Play( @_paper, @ )
 		
@@ -155,6 +157,9 @@ class View.Cell extends View.Base
 					x: x
 					y: y
 
+			if (view instanceof View.Tree )
+				placement = {x: 300, y: 100}
+
 			view.draw( placement.x, placement.y, scale )
 		
 	# On module added, add it from the cell
@@ -162,8 +167,7 @@ class View.Cell extends View.Base
 	# @param cell [Model.Cell] cell added to
 	# @param module [Model.Module] module added
 	#
-	onModuleAdd: ( cell, module ) =>
-	
+	onModuleAdd: ( cell, action, module ) =>
 		unless cell isnt @_cell
 			unless _( @_drawn ).indexOf( module.id ) isnt -1
 				@_drawn.unshift module.id
