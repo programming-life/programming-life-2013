@@ -1,3 +1,6 @@
+# The module dummy view shows a potential module.
+# It also allows for interaction adding this potential module to a cell.
+#
 class View.DummyModule extends View.Module
 	
 	# Creates a new module view
@@ -11,7 +14,7 @@ class View.DummyModule extends View.Module
 		@_cell = cell
 		@_params = params
 		@_activated = off
-		super paper, module
+		super paper, cell, module
 		
 	# Runs if module is selected
 	# 
@@ -136,6 +139,14 @@ class View.DummyModule extends View.Module
 	# @return [Raphael] the box raphael
 	drawBox : ( elem, scale ) ->
 		box = super elem, scale
-		box.node.setAttribute('class', 'module-box inactive')
+		
+		classname = 'module-box inactive'
+		classname += ' hovered' if @_hovered
+		classname += ' selected' if @_selected
+		box.node.setAttribute( 'class', classname )
+		box.attr
+			r: 10 * scale
+			
 		return box
 		
+(exports ? this).View.DummyModule = View.DummyModule

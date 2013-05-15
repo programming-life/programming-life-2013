@@ -1,4 +1,5 @@
 # Basic node class
+#
 class Model.Node
 
 	# Constructor for node
@@ -14,7 +15,7 @@ class Model.Node
 		@_branch = null
 		@_creation = new Date()
 
-		@_parent._children.push(this) if @_parent
+		@_parent._children.push( this ) if @_parent
 
 		Model.EventManager.trigger( 'node.creation', @, [] )
 
@@ -28,8 +29,8 @@ class Model.Node
 		parent._branch = this if not parent._branch
 
 		if @_parent isnt null
-			index = @_parent._children.indexOf(this)
-			@_parent._children.splice(index, 1);
+			index = @_parent._children.indexOf this
+			@_parent._children.splice( index, 1 )
 
 		@_parent = parent
 		return this

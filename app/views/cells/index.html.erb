@@ -16,6 +16,7 @@
 			<th class="span1">Id</th>
 			<th class="span1">Show</th>
 			<th class="span1">Edit</th>
+			<th class="span2">Generate report</th>
 			<th>Name</th>
 			<th>Contains</th>
 			<th class="span1">Destroy</th>
@@ -31,6 +32,9 @@
 			</td>
 			<td class="span1">
 				<%= link_to raw('<i class="icon-pencil"></i>'), edit_cell_path(cell), :class => 'btn btn-small', :title => 'Edit' %> 
+			</td>
+			<td class="span2">
+				<%= link_to raw('<i class="icon-list-alt"></i>'), new_report_path, :class => 'btn btn-small', :title => 'Report' %>
 			</td>
 			<td><%= cell.name %></td>
 			<td><%= link_to pluralize( ModuleInstance.where( :cell_id => cell.id ).count, 'module'), module_instances_path( :cell => cell.id ) %></td>

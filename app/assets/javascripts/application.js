@@ -19,6 +19,7 @@
 //
 //= require MVC
 //
+//= require_tree ./helpers
 //= require_tree ./models
 //= require_tree ./views
 //= require_tree ./controllers

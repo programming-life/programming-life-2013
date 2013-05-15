@@ -1,25 +1,28 @@
-# Simulates DNA existance and synthesisis in the Cell
+# Simulates DNA existance and synthesis in the Cell
 #
 # Parameters
-# ------------------ ------------------ ------------------
-# k
-#	Synthesize rate
-# consume
-#	All the metabolites required for DNA creation
+# --------------------------------------------------------
+#
+# - k
+#    - Synthesize rate
+# - consume
+#    - All the metabolites required for DNA creation
 # 
 # Properties
-# ------------------ ------------------ ------------------
-# vDNASynth
-#	k * this * consume
-# dilution
-#	mu * this
+# --------------------------------------------------------
+# 
+# - vDNASynth
+#    - k * this * consume
+# - dilution
+#    - mu * this
 #
 # Equations
-# ------------------ ------------------ ------------------
-# this / dt
-#	vDNASynth - dilution
-# consume / dt
-#	- vDNASynth
+# --------------------------------------------------------
+# 
+# - this / dt
+#    - vDNASynth - dilution
+# - consume / dt
+#    - vDNASynth
 #
 class Model.DNA extends Model.Module
 

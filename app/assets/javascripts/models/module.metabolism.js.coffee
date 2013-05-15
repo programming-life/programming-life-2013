@@ -1,27 +1,46 @@
 # Simulates cell metabolism. Converts substrate into product.
 #
 # Parameters
-# ------------------ ------------------ ------------------
-# k
-#	Synthesize rate
-# k_d
-#	Protein degradation
+# --------------------------------------------------------
+#
+# - k
+#    - Synthesize rate
+# - k_d
+#    - Protein degradation
+# - k_m
+#    - MM kinetics constante
+# - v
+#    - v max for metabolism
+# - consume
+#    - All the metabolites required for Enzyme creation
+# - orig
+#	 - The metabolite before metabolism
+# - dest
+#    - The metabolite after metabolism
 # 
 # Properties
-# ------------------ ------------------ ------------------
-# vEnzymeSynth
-#	k * this 
-# degradation
-#	k_d * this
-# dilution
-# 	mu * this
+# --------------------------------------------------------
+# 
+# - vEnzymeSynth
+#    - k * this 
+# - degradation
+#    - k_d * this
+# - dilution
+#    - mu * this
+# - vMetabolism
+#    - v * this * ( orig / ( orig + k_m ) )
 #
 # Equations
-# ------------------ ------------------ ------------------
-# this / dt
-#	vEnzymeSynth - dilution - degradation
-# consume / dt
-#	- vEnzymeSynth
+# --------------------------------------------------------
+# 
+# - this / dt
+#    - vEnzymeSynth - dilution - degradation
+# - consume / dt
+#    - vEnzymeSynth
+# - orig / dt
+#    - -vMetabolism
+# - dest / dt
+#    - vMetabolism
 #
 class Model.Metabolism extends Model.Module
 
@@ -73,6 +92,7 @@ class Model.Metabolism extends Model.Module
 				# - The Mihaelis-Mentin kinetics with constant k_m
 				#
 				vmetabolism = @v * compounds[ @name ] * ( compounds[ @orig ] / ( compounds[ @orig ] + @k_m ) )
+				vmetabolism = 0 if ( isNaN vmetabolism )
 				
 			# If all components are available
 			if venzymesynth?
