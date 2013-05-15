@@ -4,11 +4,13 @@
 #
 # @concern Mixin.DynamicProperties
 # @concern Mixin.EventBindings
+# @concern Mixin.TimeMachine
 #
 class Model.Cell extends Helper.Mixable
 
 	@concern Mixin.DynamicProperties
 	@concern Mixin.EventBindings
+	@concern Mixin.TimeMachine
 
 	# Constructor for cell
 	#
@@ -24,24 +26,26 @@ class Model.Cell extends Helper.Mixable
 	# @option paramscell [Integer] creation the creation time
 	#
 	constructor: ( params = {}, start = 1, paramscell = {} ) ->
-		@_tree = new Model.UndoTree()
-		console.log(@_tree)
+		
+		@_allowEventBindings()
+		@_allowTimeMachine()
 		
 		@_defineProperties( paramscell )
-		Model.EventManager.trigger( 'cell.creation', @, [ @creation, @id ] )
+		
+		@_trigger( 'cell.creation', @, [ @creation, @id ] )
 		@add new Model.CellGrowth( params, start )
 		
 	# Defines All the properties
 	#
 	# @see {DynamicProperties} for function calls
-	# @see {EventBindings} for function calls
+	#
 	# @return [self] chainable self
 	#
 	_defineProperties: ( params ) ->
-		
-		@_allowEventBindings()
+				
 		@_defineValues()
 		@_defineGetters()
+		
 		@_propertiesFromParams(  
 			_( params ).defaults( {
 				id: _.uniqueId "client:#{this.constructor.name}:"
@@ -60,7 +64,6 @@ class Model.Cell extends Helper.Mixable
 	#
 	_defineValues: () ->
 	
-		@_nonEnumerableValue( '_tree', new Model.UndoTree() )
 		@_nonEnumerableValue( '_modules', [] )
 		@_nonEnumerableValue( '_metabolites', {} )
 		
@@ -83,40 +86,6 @@ class Model.Cell extends Helper.Mixable
 				return '/cells.json'
 		)
 
-		
-		return this
-		
-	# Adds an undoable event to the tree
-	#
-	# @params action [Model.Action] action that is undoable
-	# @return [Model.Node]
-	#
-	addUndoableEvent: ( action ) ->
-		return @_tree.add action
-	
-	# Adds an undoable event to the subtree
-	#
-	# @params action [Model.Action] action that is undoable
-	# @params module [Model.Module] 
-	# @return [Model.Node]
-	#	
-	addUndoableEventToSub: ( action, module ) ->
-		tree_node = @addUndoableEvent action
-		module?._tree?.setRoot tree_node
-		return tree_node
-		
-	#
-	#
-	undo: () ->
-		action = @_tree.undo()
-		action.undo() if action?
-		return this
-		
-	#
-	#
-	redo: () ->
-		action = @_tree.redo()
-		action.redo() if action?
 		return this
 		
 	# Extracts id data from id
@@ -151,11 +120,13 @@ class Model.Cell extends Helper.Mixable
 			@addMetaboliteModule module
 			return this
 		
-		todo = _( @_addModule ).bind( @, module )
-		undo = _( @_removeModule ).bind( @, module )
-		
-		action = new Model.Action( @, todo, undo, "Added #{module.name}" )
-		action.do()
+		action = 
+			@_createAction( "Added #{module.name}")
+				.set( 
+					_( @_addModule ).bind( @, module ),
+					_( @_removeModule ).bind( @, module )
+				)
+				.do()
 		
 		@addUndoableEventToSub( action, module )
 		return this
@@ -167,7 +138,7 @@ class Model.Cell extends Helper.Mixable
 	#
 	_addModule: ( module ) ->
 		@_modules.push module
-		Model.EventManager.trigger( 'cell.add.module', @, [ module ] )
+		@_trigger( 'cell.add.module', @, [ module ] )
 		return this
 		
 	# Ensures that metabolite can be accessed
@@ -190,17 +161,18 @@ class Model.Cell extends Helper.Mixable
 	addMetaboliteModule: ( metabolite ) ->
 	
 		name = _( metabolite.name.split( '#' ) ).first()
-		todo = _( @_addMetabolite ).bind( @, name, metabolite.placement, metabolite )
-		undo = _( @_removeMetabolite ).bind( @, name, metabolite.placement )
-		action = new Model.Action( 
-			@, todo, undo, 
-			"Added metabolite #{name} with amount #{metabolite.amount}" 
-		)
-		action.do()
+		@_ensureMetaboliteAllocation( name )
+		
+		action = 
+			@_createAction( "Added metabolite #{name} with amount #{metabolite.amount}" )
+				.set( 
+					_( @_addMetabolite ).bind( @, name, metabolite.placement, metabolite ),
+					_( @_removeMetabolite ).bind( @, name, metabolite.placement )
+				)
+				.do()
 		
 		@addUndoableEventToSub( action, metabolite )
 		
-
 		return this
 		
 
@@ -213,7 +185,7 @@ class Model.Cell extends Helper.Mixable
 	#
 	_addMetabolite: ( name, placement, metabolite ) -> 
 		@_metabolites[ name ][ placement ] = metabolite 
-		Model.EventManager.trigger( 'cell.add.metabolite', @, 
+		@_trigger( 'cell.add.metabolite', @, 
 			[ 
 				metabolite, 
 				name, 
@@ -235,12 +207,10 @@ class Model.Cell extends Helper.Mixable
 	#
 	addMetabolite: ( name, amount, supply = 1, inside_cell = off, is_product = off ) ->
 		
-		@_ensureMetaboliteAllocation( name )
-
 		placement = if inside_cell then Model.Metabolite.Inside else Model.Metabolite.Outside
 		type = if is_product then Model.Metabolite.Product else Model.Metabolite.Substrate
 		
-		if @_metabolites[ name ][ placement ]? 
+		if @_metabolites[ name ]? and @_metabolites[ name ][ placement ]? 
 			@_metabolites[ name ][ placement ].amount = amount
 			return this
 			
@@ -281,14 +251,17 @@ class Model.Cell extends Helper.Mixable
 			name = _( module.name.split( '#' ) ).first()
 			@removeMetabolite name, module.placement
 			return this
+			
+		action = 
+			@_createAction( "Removed #{module.name}" )
+				.set( 
+					_( @_removeModule ).bind( @, module ),
+					_( @_addModule ).bind( @, module )
+				)
+				.do()
 	
-		todo = _( @_removeModule ).bind( @, module )
-		undo = _( @_addModule ).bind( @, module )
-		
-		action = new Model.Action( @, todo, undo, "Removed #{module.name}" )
-		action.do()
-
 		@addUndoableEvent( action )
+		
 		return this
 	
 	# Actually removes the module from the cell
@@ -298,7 +271,7 @@ class Model.Cell extends Helper.Mixable
 	#
 	_removeModule: ( module ) ->
 		@_modules = _( @_modules ).without module
-		Model.EventManager.trigger( 'cell.remove.module', @, [ module ] )
+		@_trigger( 'cell.remove.module', @, [ module ] )
 		return this
 		
 	# Removes this metabolite from cell
@@ -312,15 +285,17 @@ class Model.Cell extends Helper.Mixable
 		return this unless @hasMetabolite( name, placement )
 		
 		module = @getMetabolite( name, placement )
-		todo = _( @_removeMetabolite ).bind( @, name, placement )
-		undo = _( @_addMetabolite ).bind( @, name, placement, module )
 		
-		action = new Model.Action( @, todo, undo, "Removed #{module.name}" )
-		action.do()
+		action = 
+			@_createAction( "Removed metabolite #{module.name}" )
+				.set( 
+					_( @_removeMetabolite ).bind( @, name, placement ),
+					_( @_addMetabolite ).bind( @, name, placement, module )
+				)
+				.do()
 		
 		@addUndoableEvent( action )
 		return this
-		
 	
 	# Actually removes the metabolite from the cell
 	#
@@ -332,7 +307,7 @@ class Model.Cell extends Helper.Mixable
 	_removeMetabolite: ( name, placement ) -> 
 		module = @_metabolites[ name ][ placement ]
 		delete @_metabolites[ name ][ placement ]
-		Model.EventManager.trigger( 'cell.remove.metabolite', @, [ module ] )
+		@_trigger( 'cell.remove.metabolite', @, [ module ] )
 		return this
 		
 	# Removes this substrate from cell (alias for removeMetabolite)
@@ -468,8 +443,7 @@ class Model.Cell extends Helper.Mixable
 			return [ base_values, on ]
 			
 		if base_values.length > 0
-		
-			Model.EventManager.trigger( 'notification', @, 
+			@_trigger( 'notification', @, 
 				[ 
 					'cell', 'run', 'cell:basevalues',
 					'Compounds have been added or removed since the last run, so I can not continue the calculation.',
@@ -491,7 +465,7 @@ class Model.Cell extends Helper.Mixable
 	#
 	run : ( timespan, base_values = [] ) ->
 		
-		Model.EventManager.trigger( 'cell.before.run', @, [ timespan ] )
+		@_trigger( 'cell.before.run', @, [ timespan ] )
 		
 		substrates = { }
 						
@@ -520,7 +494,7 @@ class Model.Cell extends Helper.Mixable
 		# Run the ODE from 0...timespan with starting values and step function
 		sol = numeric.dopri( 0, timespan, values, @_step( modules, mapping, map ) )
 		
-		Model.EventManager.trigger( 'cell.after.run', @, [ timespan, sol, mapping ] )
+		@_trigger( 'cell.after.run', @, [ timespan, sol, mapping ] )
 		
 		# Return the system results
 		return { results: sol, map: mapping, append: continuation }
@@ -547,7 +521,7 @@ class Model.Cell extends Helper.Mixable
 			mapped = map v
 			mu = @module.mu( mapped )
 			
-			Model.EventManager.trigger( 'cell.before.step', @, [ t, v, mu, mapped ] )
+			@_trigger( 'cell.before.step', @, [ t, v, mu, mapped ] )
 			
 			# Run all the equations
 			for module in modules
@@ -555,7 +529,7 @@ class Model.Cell extends Helper.Mixable
 				for variable, result of module_results
 					results[ mapping[ variable ] ] += result
 				
-			Model.EventManager.trigger( 'cell.after.step', @, [ t, v, mu, mapped, results ] )
+			@_trigger( 'cell.after.step', @, [ t, v, mu, mapped, results ] )
 				
 			return results
 	
@@ -646,7 +620,7 @@ class Model.Cell extends Helper.Mixable
 		)
 			
 		promise.fail( ( data ) => 
-			Model.EventManager.trigger( 
+			@_trigger( 
 				'notification', @, 
 				[ 
 					'cell', 'save', 'cell.save',
@@ -674,7 +648,7 @@ class Model.Cell extends Helper.Mixable
 		promise.done( ( data ) => @_save_modules() 	)
 		promise.fail( ( data ) => 
 				
-			Model.EventManager.trigger( 
+			@_trigger( 
 				'notification', @, 
 				[ 
 					'cell', 'save', 'cell.save',
