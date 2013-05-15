@@ -49,7 +49,8 @@ EventBindings =
 			Model.EventManager.off( event, context, func )
 			if @_bindings[ event ]?
 				for binding in @_bindings[ event ] when binding[ 0 ] is context and binding[ 1 ] is func
-					@_bindings = _( @_bindings ).without binding
+					@_bindings[ event ] = _( @_bindings[ event ] ).without binding
+					console.log @_bindings
 			return this
 			
 ( exports ? this ).Mixin.EventBindings = EventBindings
