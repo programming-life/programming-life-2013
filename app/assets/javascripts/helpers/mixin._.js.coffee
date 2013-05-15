@@ -1,3 +1,5 @@
+#
+#
 class Helper.Mixable
 	
 	@ModuleKeyWords : [ 'extended', 'included' ]
@@ -26,6 +28,18 @@ class Helper.Mixable
 				@::[ key ] = value
 
 			mixin.included?.apply( @ )
+		this
+		
+	# Concerns automagically include and extend a class
+	#
+	# @param  concerns [Object*] the mixins to add
+	#
+	@concern: ( concerns... ) ->
+	
+		for concern in concerns
+			@include concern.InstanceMethods
+			@extend concern.ClassMethods
+			
 		this
 		
 ( exports ? this ).Helper.Mixable = Helper.Mixable
