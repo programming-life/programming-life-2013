@@ -1,6 +1,6 @@
 # View for extensible Pane
 #
-class View.Pane
+class View.Pane extends View.Base
 	
 	@LEFT_SIDE : "left"
 	@RIGHT_SIDE : "right"
@@ -12,8 +12,7 @@ class View.Pane
 		@_id = new Date().getMilliseconds()
 		@_paper = @_addPaper()
 
-		@_contents = @_paper.set()
-		@_views = []
+		super(@_paper)
 
 		@_extended = off
 		@_buttonWidth = 40
@@ -22,9 +21,6 @@ class View.Pane
 		}
 		@_containerOptions = {
 		}
-	
-	clear: ( ) ->
-		@_contents?.remove()
 	
 	# Resizes the view
 	#
@@ -39,7 +35,7 @@ class View.Pane
 	#
 	# @param side [String] The side the pane needs to be on
 	draw: ( side = @_side ) ->
-		@clear()
+		super()
 		[ button, container ] = @_getXY()
 
 		@_contents.push @_drawButton(button.x, button.y)
@@ -112,6 +108,7 @@ class View.Pane
 	_drawContainer: ( x, y ) ->
 		box = @_paper.rect(x, y, @_width - @_buttonWidth, @_height).attr(@_containerOptions)
 		box.node.setAttribute("class","pane-container")
+		box.toBack()
 		return box
 	
 	# Switches the pane from extended to retracted and vice versa
@@ -166,5 +163,14 @@ class View.Pane
 	# @param options [Object] The new options
 	setContainerOptions: ( options = {} ) ->
 		@_containerOptions = options
+	
+	# Gets the view placement for a specific view
+	#
+	# @param view [View.Base] The view to get placement for
+	# @return [Object] An object containing an x and y for the view
+	_getViewPlacement:( view ) ->
+		x = 100
+		y = 100
+		return {x: x, y: y}
 
 (exports ? this).View.Pane = View.Pane

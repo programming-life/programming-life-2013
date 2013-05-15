@@ -7,8 +7,8 @@ class View.Base extends Helper.Mixable
 	# Constructs a new Base view
 	# 
 	# @param paper [Object] The paper to draw on
-	constructor: ( @_paper ) ->
-		@_contents = @_paper.set()
+	constructor: ( @_paper = null ) ->
+		@_contents = @_paper?.set()
 		@_views = []
 
 		@_allowBindings()
@@ -25,12 +25,16 @@ class View.Base extends Helper.Mixable
 	# 
 	# @param x [Integer] The x position
 	# @param y [Integer] The y position
+	# @retuns [Object] The contents drawn
 	#
 	draw: ( @_x, @_y) ->
 		@clear()
 
 		for view in @_views
-			view.draw()
+			placement = @_getViewPlacement( view )
+			@_contents.push view.draw( placement.x, placement.y, 1)
+
+		return @_contents
 	
 	# Redraw this view and it's children with their current parameters
 	# 
@@ -40,12 +44,27 @@ class View.Base extends Helper.Mixable
 		for view in @_views
 			view.redraw()
 
+	# Add a view to draw in the container
+	#
+	# @param view [View.Base] The view to draw
+	addView: ( view ) ->
+		@_views.push( view )
+		placement = @_getViewPlacement( view )
+		@_contents.push view.draw( placement.x, placement.y, 1)
+	
+	# Removes a view from the container
+	#
+	# @param [View.Base] The view to remove
+	removeView: ( ) ->
+		@_views = _( @_views ).without view
+		@redraw()
+
 	# Resize this view and it's children
 	# 
 	# @param scale [Float] The scale of the view
 	#
 	resize: ( scale = @_scale ) ->
-		@_contents.transform("S"+scale)
+		@_contents?.transform("S"+scale)
 
 		for view in @_views
 			view.resize( scale )

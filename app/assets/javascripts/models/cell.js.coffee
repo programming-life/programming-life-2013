@@ -21,6 +21,8 @@ class Model.Cell extends Helper.Mixable
 	# @option paramscell [Integer] creation the creation time
 	#
 	constructor: ( params = {}, start = 1, paramscell = {} ) ->
+		@_tree = new Model.UndoTree()
+		console.log(@_tree)
 		
 		Object.defineProperty( @, '_modules',
 			value: []
@@ -66,6 +68,7 @@ class Model.Cell extends Helper.Mixable
 			} ),
 			'cell.set.property'
 		)
+
 		
 		Object.seal @
 		
