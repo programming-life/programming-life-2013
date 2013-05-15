@@ -28,7 +28,7 @@ class Model.Cell extends Helper.Mixable
 			enumerable: false
 			writable: true
 		)
-		
+
 		Object.defineProperty( @, '_modules',
 			value: []
 			configurable: false
@@ -77,8 +77,8 @@ class Model.Cell extends Helper.Mixable
 		Object.seal @
 		
 		Model.EventManager.trigger( 'cell.creation', @, [ @creation, @id ] )
-		Model.EventManager.on( 'cell.add.module', @, @_addToTree )
-		Model.EventManager.on( 'cell.add.metabolite', @, @_addToTree )
+		@_bind( 'cell.add.module', @, @_addToTree )
+		@_bind( 'cell.add.metabolite', @, @_addToTree )
 		
 		@add new Model.CellGrowth( params, start )
 		
@@ -126,7 +126,7 @@ class Model.Cell extends Helper.Mixable
 			action = new Model.Action(@, todo, undo, "Added "+name+" with amount " +amount)
 
 			action.do()
-			Model.EventManager.trigger( 'cell.add.metabolite', @, [ module, name, module.amount, module.placement is Model.Metabolite.Inside, module.type is Model.Metabolite.Product ] )
+			Model.EventManager.trigger( 'cell.add.metabolite', @, [ action, module, name, module.amount, module.placement is Model.Metabolite.Inside, module.type is Model.Metabolite.Product ] )
 	
 		else
 			todo = _( (module) => @_modules.push module).bind(@, module)
@@ -428,6 +428,7 @@ class Model.Cell extends Helper.Mixable
 			modules: modules
 			metabolites: metabolites
 		}
+		console.log(result)
 		
 		return JSON.stringify( result ) if to_string
 		return result
@@ -536,6 +537,10 @@ class Model.Cell extends Helper.Mixable
 					
 				callback.apply( @, [ result ] ) if callback?
 			)
+	
+	_addToTree:( source, action, module ) ->
+		if source is this
+			module._tree.setRoot @_tree.add action
 		
 
 # Makes this available globally.

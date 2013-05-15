@@ -48,7 +48,7 @@ describe("Cell", function() {
 			module = new Model.Module()
 
 			if (cell._tree._current._parent != null)
-				oldLength = cell._tree._current._parent._children._length;
+				oldLength = cell._tree._current._parent._children.length;
 			else
 				oldLength = 0
 
@@ -65,7 +65,6 @@ describe("Cell", function() {
 		});
 
 		it("should have added a node to the undotree", function() {
-			console.log( cell._tree )
 			expect( cell._tree._current._parent._children.length ).toBe( oldLength + 1 );
 		});
 

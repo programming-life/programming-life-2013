@@ -88,7 +88,7 @@ class View.Cell extends Helper.Mixable
 		@_views.push new View.DummyModule( @_paper, @_cell, Model.Transporter.ext(), { direction: Model.Transporter.Outward } )
 		
 		@_views.push new View.Play( @_paper, @)
-		@_views.push new View.Tree( @_paper, tree)
+		@_views.push new View.Tree( @_paper, @_cell._tree)
 		
 	# Redraws the cell
 	# 		
@@ -155,6 +155,10 @@ class View.Cell extends Helper.Mixable
 				placement = 
 					x: x
 					y: y
+			if ( view instanceof View.Tree )
+				placement = 
+					x: 100
+					y: 100
 
 			view.draw( placement.x, placement.y, scale )
 		

@@ -72,7 +72,7 @@ class Model.Module extends Helper.Mixable
 			unless caller isnt context
 				@_addMove key, value, param
 						
-		@_bind( 'module.set.property', @, addmove )
+		@_bind( 'module.set.property', @, @_addToTree)
 		Model.EventManager.trigger( 'module.creation', @, [ @creation, @id ] )	
 		
 	# Extracts id data from id
@@ -226,24 +226,22 @@ class Model.Module extends Helper.Mixable
 		
 		return test
 		
-	# Applies a change to the parameters of the module
+	# Adds an action to the undotree
 	#
-	# @param [String] key The changed property
-	# @param [val] value The value of the changed property
-	# @return [self] for chaining
-	#
-	_do : ( key, value ) ->
-		@[ key ] = value
-		return this
-
-	# Adds a move to the undotree
-	#
+	# @param source [Model.Module] The source of the action
 	# @param [String] key, the changed property
 	# @param [val] value, the value of the changed property 
 	# @return [self] for chaining
 	#
-	_addMove: ( key, value, param ) ->
-		@_tree.add [ key, value, param ]
+	_addToTree: ( source , key, value, param ) ->
+		console.log(event)
+		func = (key, value ) =>
+			@[key] = value
+			
+		todo = _( func ).bind( @, key, param )
+		undo = _( func ).bind( @, key, value )
+		action = new Model.Action(@, todo, undo, "Changed " + key + "from " + value + " to " + param)
+		@_tree.add action
 		return this
 
 	# Undoes the most recent move
