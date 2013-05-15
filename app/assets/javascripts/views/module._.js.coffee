@@ -1,6 +1,6 @@
 # The module view shows a module
 #
-class View.Module extends Helper.Mixable
+class View.Module extends View.Base
 
 	@concern Mixin.EventBindings
 	
@@ -10,7 +10,7 @@ class View.Module extends Helper.Mixable
 	# @param module [Model.Module] the module to show
 	#
 	constructor: ( paper, cell, module ) ->
-		@_paper = paper
+		super(paper)
 		@_cell = cell
 
 		@module = module		
@@ -639,4 +639,3 @@ class View.Module extends Helper.Mixable
 		return []			
 
 (exports ? this).View.Module = View.Module
-

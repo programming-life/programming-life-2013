@@ -1,6 +1,6 @@
 # View for UndoTree
 #
-class View.Tree
+class View.Tree extends View.Base
 	
 	# Creates a new UndoTree view
 	# 
@@ -8,7 +8,7 @@ class View.Tree
 	# @param tree [Model.UndoTree] The tree to view
 	#
 	constructor: ( paper, tree ) ->
-		@_paper = paper
+		super( paper )
 		@_tree = tree
 
 		@_visible = on
@@ -28,6 +28,7 @@ class View.Tree
 	# @param scale [Integer] The scale
 	#
 	draw: ( x, y, scale ) ->
+		console.log(@_tree.current)
 		console.log("Drawing undotree")
 		if @_view._x and @_view._y
 			@_x = @_view._x

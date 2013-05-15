@@ -24,6 +24,8 @@ class Model.Cell extends Helper.Mixable
 	# @option paramscell [Integer] creation the creation time
 	#
 	constructor: ( params = {}, start = 1, paramscell = {} ) ->
+		@_tree = new Model.UndoTree()
+		console.log(@_tree)
 		
 		@_defineProperties( paramscell )
 		Model.EventManager.trigger( 'cell.creation', @, [ @creation, @id ] )
@@ -80,6 +82,7 @@ class Model.Cell extends Helper.Mixable
 				return "/cells/#{ data.id }.json" if data.origin is "server"
 				return '/cells.json'
 		)
+
 		
 		return this
 		
