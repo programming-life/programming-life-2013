@@ -56,9 +56,16 @@ class Model.Tree
 			return res if res
 		return null
 	
+	# A wrapper method the breadthfirst iterator	
+	#
+	# @return [Array] The resuls of breadthfirst()
 	iterator: ( ) ->
 		return @breadthfirst()
 	
+	# Returns a breadthfirst itarator array for the tree
+	#
+	# @param start [Model.Node] The root of the iterator
+	# @return [Array] An array with the nodes of the tree in breadthfirst order
 	breadthfirst: ( start = @_root ) ->
 		res = [start]
 
@@ -71,6 +78,10 @@ class Model.Tree
 
 		return res
 	
+	# Returns a depthfirst itarator array for the tree
+	#
+	# @param start [Model.Node] The root of the iterator
+	# @return [Array] An array with the nodes of the tree in depthfirst order
 	depthfirst: ( start = @_root ) ->
 		res = [start]
 
