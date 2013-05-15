@@ -67,7 +67,7 @@ DynamicProperties =
 		#
 		_nonEnumerableValue: ( key, value ) ->
 			
-			Object.defineProperty( @ , "_#{key}",
+			Object.defineProperty( @ , key,
 				value: value
 				configurable: false
 				enumerable: false
