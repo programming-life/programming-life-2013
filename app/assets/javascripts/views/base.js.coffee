@@ -2,7 +2,7 @@
 # 
 class View.Base extends Helper.Mixable
 	
-	@include Mixin.EventBindings
+	@concern Mixin.EventBindings
 
 	# Constructs a new Base view
 	# 
@@ -11,7 +11,7 @@ class View.Base extends Helper.Mixable
 		@_contents = @_paper?.set()
 		@_views = []
 
-		@_allowBindings()
+		@_allowEventBindings()
 	
 	# Clear the contents of this view and it's children
 	# 
