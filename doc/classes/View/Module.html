@@ -116,6 +116,12 @@
           <td>app&#47;assets&#47;javascripts&#47;views&#47;module._.js.coffee</td>
         </tr>
       </table>
+      <h2>Overview</h2>
+      <div class='docstring'>
+  <p>The module view shows a module</p>
+</div>
+<div class='tags'>
+</div>
       <h2>Direct Known Subclasses</h2>
       <p class='children'>
         <a href='../../classes/View/DummyModule.html'>View.DummyModule</a>
@@ -136,31 +142,31 @@
   <li>
     <span class='signature'>
       <a href='#hashCode-instance'>
-        - (void) <strong>hashCode</strong>(hashee = @name)
+        - (Integer) <strong>hashCode</strong>(hashee = @name)
       </a>
     </span>
     <span class='desc'>
-      Generates a hashcode based on the module name @returns [Integer] the hashcode
+      Generates a hashcode based on the module name
     </span>
   </li>
   <li>
     <span class='signature'>
       <a href='#hashColor-instance'>
-        - (void) <strong>hashColor</strong>(hashee = @name)
+        - (String) <strong>hashColor</strong>(hashee = @name)
       </a>
     </span>
     <span class='desc'>
-      Generates a colour based on the module name @returns [String] the CSS color
+      Generates a colour based on the module name
     </span>
   </li>
   <li>
     <span class='signature'>
       <a href='#numToColor-instance'>
-        - (void) <strong>numToColor</strong>(num, alpha = false, minalpha = 127)
+        - (String) <strong>numToColor</strong>(num, alpha = false, minalpha = 127)
       </a>
     </span>
     <span class='desc'>
-      Generates a colour based on a numer @returns [String] the CSS color
+      Generates a colour based on a numer
     </span>
   </li>
   <li>
@@ -279,11 +285,11 @@
   <li>
     <span class='signature'>
       <a href='#drawComponent-instance'>
-        - (void) <strong>drawComponent</strong>(module, component, x, y, scale, params = {})
+        - (Array&lt;Object&gt;) <strong>drawComponent</strong>(module, component, x, y, scale, params = {})
       </a>
     </span>
     <span class='desc'>
-      Draw a component @returns [Array<Object>] The drawn components
+      Draw a component
     </span>
   </li>
 </ul>
@@ -323,10 +329,10 @@
       <div class='methods'>
   <div class='method_details'>
     <p class='signature' id='hashCode-instance'>
-      - (void) <strong>hashCode</strong>(hashee = @name)
+      - (Integer) <strong>hashCode</strong>(hashee = @name)
     </p>
     <div class='docstring'>
-  <p>Generates a hashcode based on the module name</p><p>@returns [Integer] the hashcode</p>
+  <p>Generates a hashcode based on the module name</p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
@@ -338,16 +344,25 @@
       </span>
       &mdash;
       <span class='desc'>the name to use as hash</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Integer</tt>)
+      &mdash;
+      <span class='desc'>the hashcode</span>
     </li>
   </ul>
 </div>
   </div>
   <div class='method_details'>
     <p class='signature' id='hashColor-instance'>
-      - (void) <strong>hashColor</strong>(hashee = @name)
+      - (String) <strong>hashColor</strong>(hashee = @name)
     </p>
     <div class='docstring'>
-  <p>Generates a colour based on the module name</p><p>@returns [String] the CSS color</p>
+  <p>Generates a colour based on the module name</p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
@@ -361,14 +376,23 @@
       <span class='desc'>the name to use as hash</span>
     </li>
   </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>String</tt>)
+      &mdash;
+      <span class='desc'>the CSS color</span>
+    </li>
+  </ul>
 </div>
   </div>
   <div class='method_details'>
     <p class='signature' id='numToColor-instance'>
-      - (void) <strong>numToColor</strong>(num, alpha = false, minalpha = 127)
+      - (String) <strong>numToColor</strong>(num, alpha = false, minalpha = 127)
     </p>
     <div class='docstring'>
-  <p>Generates a colour based on a numer</p><p>@returns [String] the CSS color</p>
+  <p>Generates a colour based on a numer</p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
@@ -396,6 +420,15 @@
       </span>
       &mdash;
       <span class='desc'>the minimum alpha if on, defaults to 127</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>String</tt>)
+      &mdash;
+      <span class='desc'>the CSS color</span>
     </li>
   </ul>
 </div>
@@ -736,10 +769,10 @@
   </div>
   <div class='method_details'>
     <p class='signature' id='drawComponent-instance'>
-      - (void) <strong>drawComponent</strong>(module, component, x, y, scale, params = {})
+      - (Array&lt;Object&gt;) <strong>drawComponent</strong>(module, component, x, y, scale, params = {})
     </p>
     <div class='docstring'>
-  <p>Draw a component</p><p>@returns [Array<Object>] The drawn components</p>
+  <p>Draw a component</p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
@@ -793,13 +826,22 @@
       <span class='desc'>options</span>
     </li>
   </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Array&lt;Object&gt;</tt>)
+      &mdash;
+      <span class='desc'>The drawn components</span>
+    </li>
+  </ul>
 </div>
   </div>
 </div>
     </div>
     <div id='footer'>
   Generated on
-  Fri May 10 2013 08:40:59 GMT+0200 (W. Europe Daylight Time)
+  Sun May 12 2013 04:54:49 GMT+0200 (W. Europe Daylight Time)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

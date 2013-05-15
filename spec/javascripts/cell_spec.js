@@ -400,6 +400,30 @@ describe("Cell", function() {
 					result.y[ result.y.length - 1 ][ mapping["food#ext"] ] 
 				).toBeLessThan( food );
 			});
+
+			it("should summed up the rate if a second transporter uses the same substrate", function() {
+				create_transport_2 = new Model.Module(
+					{ 
+						rate: 2, 
+						name : 'transp' ,
+						starts : { 
+							name : 0 
+						}
+					}, 
+					function ( t, substrates ) {
+						return { 'transp' : this.rate }
+					}
+				);
+
+				cell.add( create_transport_2 );
+
+				results = cell.run( 2 );
+				result = results.results;
+				mapping = results.map;
+
+				expect( result.y[ result.y.length - 1 ][ mapping.transp ] ).
+					toBe( (create_transport.rate + create_transport_2.rate) * 2);
+			});
 			
 		});
 		

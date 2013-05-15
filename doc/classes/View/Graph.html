@@ -133,6 +133,15 @@
         <dd>
           <pre><code class='coffee'>2</code></pre>
         </dd>
+        <dt id='MAX_LENGTH-constant'>
+          MAX_LENGTH
+          =
+          <div class='tags'>
+</div>
+        </dt>
+        <dd>
+          <pre><code class='coffee'>100</code></pre>
+        </dd>
       </dl>
       <h2>Instance Method Summary</h2>
       <ul class='summary'>
@@ -150,11 +159,31 @@
   <li>
     <span class='signature'>
       <a href='#addData-instance'>
-        - (void) <strong>addData</strong>(data)
+        - (self) <strong>addData</strong>(data)
       </a>
     </span>
     <span class='desc'>
       Add a dataset to visualize in this graphs
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#appendData-instance'>
+        - (void) <strong>appendData</strong>(data)
+      </a>
+    </span>
+    <span class='desc'>
+      
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#clear-instance'>
+        - (void) <strong>clear</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Clears the view
     </span>
   </li>
   <li>
@@ -179,12 +208,22 @@
   </li>
   <li>
     <span class='signature'>
-      <a href='#_drawGridLines-instance'>
-        - (void) <strong>_drawGridLines</strong>()
+      <a href='#_drawTitle-instance'>
+        - (Raphael) <strong>_drawTitle</strong>(x, y, scale)
       </a>
     </span>
     <span class='desc'>
-      
+      Draws the title
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_drawGridLines-instance'>
+        - (Raphael) <strong>_drawGridLines</strong>(x, width)
+      </a>
+    </span>
+    <span class='desc'>
+      Draws the gridlines
     </span>
   </li>
   <li>
@@ -234,7 +273,7 @@
       <div class='methods'>
   <div class='method_details'>
     <p class='signature' id='addData-instance'>
-      - (void) <strong>addData</strong>(data)
+      - (self) <strong>addData</strong>(data)
     </p>
     <div class='docstring'>
   <p>Add a dataset to visualize in this graphs</p>
@@ -251,6 +290,32 @@
       <span class='desc'>An array of datapoints</span>
     </li>
   </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>self</tt>)
+      &mdash;
+      <span class='desc'>chainable self</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='appendData-instance'>
+      - (void) <strong>appendData</strong>(data)
+    </p>
+    <div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='clear-instance'>
+      - (void) <strong>clear</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Clears the view</p>
+</div>
+<div class='tags'>
 </div>
   </div>
   <div class='method_details'>
@@ -301,10 +366,87 @@
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='_drawGridLines-instance'>
-      - (void) <strong>_drawGridLines</strong>()
+    <p class='signature' id='_drawTitle-instance'>
+      - (Raphael) <strong>_drawTitle</strong>(x, y, scale)
     </p>
-    <div class='tags'>
+    <div class='docstring'>
+  <p>Draws the title</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>x</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the x position</span>
+    </li>
+    <li>
+      <span class='name'>y</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the y position</span>
+    </li>
+    <li>
+      <span class='name'>scale</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the scale</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Raphael</tt>)
+      &mdash;
+      <span class='desc'>the text object</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_drawGridLines-instance'>
+      - (Raphael) <strong>_drawGridLines</strong>(x, width)
+    </p>
+    <div class='docstring'>
+  <p>Draws the gridlines</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>x</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the x position</span>
+    </li>
+    <li>
+      <span class='name'>width</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the width</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Raphael</tt>)
+      &mdash;
+      <span class='desc'>the lines object</span>
+    </li>
+  </ul>
 </div>
   </div>
   <div class='method_details'>
@@ -332,7 +474,7 @@
     </div>
     <div id='footer'>
   Generated on
-  Fri May 10 2013 08:40:59 GMT+0200 (W. Europe Daylight Time)
+  Sun May 12 2013 04:54:49 GMT+0200 (W. Europe Daylight Time)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

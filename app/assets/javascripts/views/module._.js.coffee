@@ -1,12 +1,18 @@
-class View.Module
+# The module view shows a module
+#
+class View.Module extends Helper.Mixable
+
+	@include Mixin.EventBindings
 	
 	# Creates a new module view
 	#
 	# @param paper [Raphael.Paper] the raphael paper
+	# @param cell [Model.Cell] The cell the module belongs to
 	# @param module [Model.Module] the module to show
 	#
-	constructor: ( paper, module ) ->
+	constructor: ( paper, cell, module ) ->
 		@_paper = paper
+		@_cell = cell
 
 		@module = module		
 		@type = module.constructor.name
@@ -18,10 +24,12 @@ class View.Module
 
 		@_selected = off	
 		@_visible = on
-
-		Model.EventManager.on( 'module.set.property', @, @onModuleInvalidated )
-		Model.EventManager.on( 'module.set.selected', @, @onModuleSelected )
-		Model.EventManager.on( 'module.set.hovered', @, @onModuleHovered )
+		
+		@_allowBindings()
+		@_bind( 'module.set.property', @, @onModuleInvalidated )
+		@_bind( 'module.set.selected', @, @onModuleSelected )
+		@_bind( 'module.set.hovered', @, @onModuleHovered )
+		@_bind( 'paper.resize', @, @onPaperResize)
 		
 		Object.defineProperty( @, 'visible',
 			# @property [Function] the step function
@@ -32,7 +40,7 @@ class View.Module
 	# Generates a hashcode based on the module name
 	#
 	# @param hashee [String] the name to use as hash
-	# @returns [Integer] the hashcode
+	# @return [Integer] the hashcode
 	#
 	hashCode : ( hashee = @name ) ->
 		hash = 0
@@ -46,7 +54,7 @@ class View.Module
 	# Generates a colour based on the module name
 	#
 	# @param hashee [String] the name to use as hash
-	# @returns [String] the CSS color
+	# @return [String] the CSS color
 	#
 	hashColor : ( hashee = @name ) ->
 		return '#' + md5( hashee ).slice(0, 6) #@numToColor @hashCode hashee
@@ -57,7 +65,7 @@ class View.Module
 	# @param num [Integer] the seed for the colour
 	# @param alpha [Boolean] if on, uses rgba, else rgb defaults to off
 	# @param minalpha [Integer] the minimum alpha if on, defaults to 127
-	# @returns [String] the CSS color
+	# @return [String] the CSS color
 	#
 	numToColor : ( num, alpha = off, minalpha = 127 ) ->
 		num >>>= 0
@@ -93,10 +101,10 @@ class View.Module
 			if selected isnt @_selected
 				@_selected = selected
 				@redraw()
-			
+
 		# Deselect if was selected 
-		else if selected is @_selected is true
-			@_selected = false
+		else if selected is @_selected is on
+			@_selected = off
 			@redraw()
 
 	# Runs if module is hovered
@@ -107,25 +115,52 @@ class View.Module
 	onModuleHovered: ( module, hovered ) =>
 		
 		if module is @module 
-		
+			
 			if hovered isnt @_hovered
 				@_hovered = hovered
-				@redraw()
+				@redraw() unless @_selected
 
-		else if hovered is @_hovered is true
-			@_hovered = false
-			@redraw()	
+		else if hovered is @_hovered is on
+		
+			@_hovered = off
+			@redraw() unless @_selected
+
+		# Make sure a selected module is always placed at the front
+		# no longer hovering a module.
+		else if hovered is off and @_selected
+			_.defer( => @redraw() )
+
+	# Runs if paper is resized
+	#
+	onPaperResize: ( ) =>
+		if @_selected
+			@redraw()
+
 
 	# Clears the module view
 	#
+	# @return [self] chainable self
+	#
 	clear: () ->
 		@_view?.remove()
+		return this
+		
+	# Kills the module view
+	#
+	# @return [self] chainable self
+	#
+	kill: () ->
+		@_visible = off
+		@_unbindAll()
+		@clear()
+		return this		
 
 	# Redraws this view iff it has been drawn before
 	#
 	redraw: ( ) ->
 		if @_x and @_y and @_scale
-			@draw(@_x, @_y, @_scale)
+			_( @draw( @_x, @_y, @_scale ) ).throttle( 50 )
+		return this
 			
 	# Draws this view and thus the model
 	#
@@ -134,7 +169,7 @@ class View.Module
 	# @param scale [Integer] the scale
 	#
 	draw: ( x, y, scale ) ->
-		# Clear all existing content
+		
 		@clear()
 
 		# Store x, y, and scale values for further redraws
@@ -164,23 +199,35 @@ class View.Module
 		if @_selected
 			closeButton = @drawCloseButton( box, scale )
 			closeButton?.click =>
-				Model.EventManager.trigger('module.set.selected', @module, [ false ])
+				console.log @module.id, 'close'
+				Model.EventManager.trigger( 'module.set.selected' , @module, [ off ])
+
+			deleteButton = @drawDeleteButton( box, scale )
+			deleteButton?.click =>
+				console.log @module.id, 'delete'
+				@_cell.remove( @module )
+
+			editButton = @drawEditButton( box, scale )
+			editButton?.click =>
+				console.log @module.id, 'edit'
+				@_cell.remove( @module )
+
 			shadow = @drawShadow(box, scale)
 
 		# Draw hitbox
 		hitbox = @drawHitbox(box, scale)
 		hitbox.click =>
-			Model.EventManager.trigger('module.set.selected', @module, [ true ])
+			Model.EventManager.trigger( 'module.set.selected', @module, [ on ] )
 
 		if @_hovered
 			hitbox.mouseout =>			
-				Model.EventManager.trigger('module.set.hovered', @module, [ false ])		
+				_( Model.EventManager.trigger( 'module.set.hovered', @module, [ off ]) ).debounce( 100 )
 		else 
 			hitbox.mouseover =>
-				Model.EventManager.trigger('module.set.hovered', @module, [ true ])
+				_( Model.EventManager.trigger( 'module.set.hovered', @module, [ on ]) ).debounce( 100 )
 
 		@_view = @_paper.setFinish()
-		@_view.push(contents)
+		@_view.push( contents )
 
 	# Draws contents
 	#
@@ -377,18 +424,79 @@ class View.Module
 
 		closeButton = @_paper.set()
 
-		circle = @_paper.circle( rect.x + rect.width, rect.y, 15 * scale)
+		circle = @_paper.circle( rect.x + rect.width, rect.y, 16 * scale )
 		circle.node.setAttribute('class', 'module-close')
-			
-		text = @_paper.text( rect.x + rect.width, rect.y, 'x')
-		text.attr
-			'font-size': 20 * scale
 
-		hitbox = @_paper.circle( rect.x + rect.width, rect.y, 15 * scale )
+		image = @_paper.image( 
+			'/assets/icon-resize-small.png', 
+			rect.x + rect.width - 12 * scale, 
+			rect.y - 12 * scale, 
+			24 * scale, 
+			24 * scale
+		)
+
+		hitbox = @_paper.circle( rect.x + rect.width , rect.y, 16 * scale )
 		hitbox.node.setAttribute('class', 'module-hitbox')		
-		closeButton.push( circle, text, hitbox )
+		closeButton.push( circle, image, hitbox )
 		
 		return closeButton
+
+	# Draws the delete buttons
+	#
+	# @param elem [Raphael] element to draw for
+	# @param scale [Integer] the scale
+	# @return [Raphael] the contents
+	#
+	drawDeleteButton : ( elem, scale ) ->
+		rect = elem.getBBox()
+
+		deleteButton = @_paper.set()
+
+		circle = @_paper.circle( rect.x, rect.y, 16 * scale )
+		circle.node.setAttribute('class', 'module-close')
+			
+		image = @_paper.image(
+			'/assets/icon-trash.png', 
+			rect.x - 12 * scale, 
+			rect.y - 12 * scale, 
+			24 * scale, 
+			24 * scale
+		)
+
+		hitbox = @_paper.circle( rect.x, rect.y, 16 * scale )
+		hitbox.node.setAttribute('class', 'module-hitbox')		
+		deleteButton.push( circle, image, hitbox )
+		
+		return deleteButton
+
+	# Draws the edit buttons
+	#
+	# @param elem [Raphael] element to draw for
+	# @param scale [Integer] the scale
+	# @return [Raphael] the contents
+	#
+	drawEditButton : ( elem, scale ) ->
+		rect = elem.getBBox()
+
+		editButton = @_paper.set()
+
+		circle = @_paper.circle( rect.x + 32, rect.y, 16 * scale )
+		circle.node.setAttribute('class', 'module-close')
+			
+		image = @_paper.image(
+			'/assets/icon-pencil.png', 
+			rect.x + 30 * scale, 
+			rect.y - 12 * scale, 
+			24 * scale, 
+			24 * scale
+		)
+
+		hitbox = @_paper.circle( rect.x + 32, rect.y, 16 * scale )
+		hitbox.node.setAttribute('class', 'module-hitbox')		
+		editButton.push( circle, image, hitbox )
+		
+		return editButton
+
 
 	# Draws this view shadow
 	#
@@ -425,7 +533,7 @@ class View.Module
 	# @param y [Integer] y position
 	# @param scale [Integer] scale
 	# @param params [Object] options
-	# @returns [Array<Object>] The drawn components
+	# @return [Array<Object>] The drawn components
 	#
 	drawComponent : ( module, component, x, y, scale, params = {} ) ->
 		switch component
@@ -516,9 +624,10 @@ class View.Module
 				objRect = params.objRect
 				
 				# Add params text
-				text = @_paper.text( x, y + params.padding * 3, params.text )
+				text = @_paper.text( objRect.x, y + params.padding * 3, params.text )
 				text.attr
 					'font-size': 18 * scale
+					'text-anchor': 'start'
 
 				textRect = text.getBBox()
 				

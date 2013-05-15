@@ -6,19 +6,23 @@
 #
 class Controller.Main
 
-	dt: 0.1
-	_tree: new Model.UndoTree()
+	# The undo tree for this controller
+	#
+	@_tree: new Model.UndoTree()
 
 	# Creates a new instance of Main
+	#
 	constructor: ( ) ->
 		@view = new View.Main()
 	
 	# Undoes the last move.
+	# 
 	undo: ( ) ->
 		object = [type, module]
 		@_tree.add( object )
 
 	# Redoes the last move.
+	#
 	redo: ( ) ->
 		[type, module] = @_tree.redo()
 		switch type

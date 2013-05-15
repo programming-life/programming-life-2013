@@ -1,39 +1,46 @@
 # Simulates transporters in the cell.
 #
 # Parameters
-# ------------------ ------------------ ------------------
-# k
-#	Synthesize rate
-# k_m
-#	For active transporters
-# k_tr
-#	The transport rate
-# consume
-#	All the metabolites required for Transporter creation
-# type
-#	Model.Transporter.Active or Model.Transporter.Passive
+# --------------------------------------------------------
+#
+# - k
+#    - Synthesize rate
+# - k_m
+#    - For active transporters, MM kinetics constant
+# - k_tr
+#    - The transport rate
+# - consume
+#    - All the metabolites required for Transporter creation
+# - type
+#    - Model.Transporter.Active or Model.Transporter.Passive
+# - transported
+#    - The transported compound, a metabolite
 # 
 # Properties
-# ------------------ ------------------ ------------------
-# vTransporterProd
-#	k * this * consume
-# dilution
-#	mu * this
-# vTransport [active transporter]
-#	k_tr * this * ( transported_compound / ( transported_compound + k_m ) ) * cell
-# vTransport [passive transporter]
-#	k_tr * this * transported_compound * cell
+# --------------------------------------------------------
+#
+# - vTransporterProd
+#    - k * this * consume
+# - dilution
+#    - mu * this
+# - vTransport 
+#    - [active transporter]
+#        - k_tr * this * ( transported_compound / ( transported_compound + k_m ) ) * cell
+# - vTransport
+#    - [passive transporter]
+#	     - k_tr * this * transported_compound * cell
 #
 # Equations
-# ------------------ ------------------ ------------------
-# this / dt
-#	vTransporterProd - dilution
-# consume / dt
-#	- vTransporterProd
-# orig / dt
-#	- vTransport
-# dest / dt
-#	vTransport
+# --------------------------------------------------------
+#
+# - this / dt
+#    - vTransporterProd - dilution
+# - consume / dt
+#    - vTransporterProd
+# - orig / dt
+#    - -vTransport
+# - dest / dt
+#    - vTransport
 #
 class Model.Transporter extends Model.Module
 
@@ -106,6 +113,7 @@ class Model.Transporter extends Model.Module
 					# - The Mihaelis-Mentin kinetics with constant k_m
 					#
 					vtransport = @k_tr * compounds[ @name ] * ( compounds[ orig ] / ( compounds[ orig ] + @k_m ) )
+					vtransport = 0 if ( isNaN vtransport )
 					
 				else if @type is Model.Transporter.Passive
 				
@@ -188,17 +196,24 @@ class Model.Transporter extends Model.Module
 		super params, step
 		
 	
-	#
+	# Validates that the type is set
+	# 
+	# @return [Boolean] true if validation passes
 	#
 	validate_type: () -> 
 		return ( @type is Model.Transporter.Active or @type is Model.Transporter.Passive )
 	
-	#
+	# Validates that the direction is set
+	# 
+	# @return [Boolean] true if validation passes
 	#
 	validate_direction: () ->
 		return ( @direction is Model.Transporter.Inward or @direction is Model.Transporter.Outward )
 	
+	# Gets the names of the transported metabolites
 	#
+	# @param transported [String] base name of the metabolite
+	# @return [Array<String>] an array with [ origin name, destination name ]
 	#
 	getTransportedNames: ( transported ) ->
 		result = [ "#{transported}#int", "#{transported}#ext" ]

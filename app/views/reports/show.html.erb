@@ -1,5 +1,5 @@
 <header class="row">
-	<h1 class="span12">Report #<%= @report.id %>, cell #<%= @report.cell_id %> </h1>
+	<h1 class="span12">Report #<%= @report.id %> on cell #<%= @report.cell_id %> </h1>
 </header>
 
 <table class="table row">
@@ -16,8 +16,8 @@
 		</tr>
 
 		<tr>
-			<td class="span2"> Cell Id </td>
-			<td class="span10"> <%= @report.cell.id %>
+			<td class="span2">Cell</td>
+			<td class="span10">#<%= @report.cell.id %> <%= link_to @report.cell.name, @report.cell %></td>
 		</tr>
 
 		<tr>
@@ -25,9 +25,9 @@
 			<td> 
 				<% 
 					modules = []
-					@mi.map { |i| 
-						modules.push link_to ModuleTemplate.find( i.
-							module_template.id ).name, i, :class => 'btn btn-mini'
+					@module_instances.map { |module_instance| 
+						modules.push link_to ModuleTemplate.find( module_instance.
+							module_template.id ).name, module_instance, :class => 'btn btn-mini'
 					}				
 				%>
 
@@ -35,21 +35,21 @@
 		</tr>
 		
 		<% 
-			@mi.each do |i| 
-				@module = ModuleTemplate.find(i.module_template.id)
+			@module_instances.each do |module_instance| 
+				@module_template = ModuleTemplate.find(module_instance.module_template.id)
 
-				@module_parameters = i.module_parameters
-				@module_values = i.module_values
-				@module_hash = Hash[ ( @module_parameters.map { |p| p.key } ).zip( 
-					@module_parameters.map { |p| 
-						( found = ( @module_values.select{ |v| v.module_parameter == p } ).first ).blank? ? nil : found.value
+				module_parameters = module_instance.module_parameters
+				@module_hash = Hash[ ( module_parameters.map { |p| p.key } ).zip( 
+					module_parameters.map { |p| 
+						( found = ( module_instance.module_values.select{ |v| v.module_parameter == p } ).first ).blank? ? nil : found.value
 						}
 					)
 				]
 		%>
 		<tr>
-			<td> <%= @module.name %> </td>
+			<td><%= @module_template.name %></td>
 			<td>
+				<span class="compound"><%= module_instance.name %></span>
 				<table class="table-condensed table-striped table">
 					<thead>
 						<tr>
@@ -75,15 +75,14 @@
 			<td>Creation</td>
 			<td><%= @report.created_at.strftime("%a %d %B %Y at %H:%M") %></td>
 		</tr>
-		<tr>
-			<td>Updated</td>
-			<td><%= (@report.updated_at == @report.created_at ? "Never" : @report.updated_at.strftime("%a %d %B %Y at %H:%M")  ) %></td>
-		</tr>
 	</tbody>
 </table>
 
+<% unless request.format.to_sym == :pdf %>
 <footer class="row">
 	<div class="form-actions span12">
-		<%= link_to 'Back', report_index_path %>
+		<%= link_to 'Create PDF', :format => :pdf %> 
+		<%= link_to 'Back', reports_path %>
 	</div>
 </footer>
+<% end -%>

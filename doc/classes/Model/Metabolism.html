@@ -125,20 +125,75 @@
       <h2>Overview</h2>
       <div class='docstring'>
   <p>Simulates cell metabolism. Converts substrate into product.</p><h2>Parameters</h2>
-<hr><p>k
-Synthesize rate
-k_d
-Protein degredation</p><h2>Properties</h2>
-<hr><p>vEnzymeSynth
-k <em> this 
-degredation
-k_d </em> this
-dillution
-    mu * this</p><h2>Equations</h2>
-<hr><p>this / dt
-vEnzymeSynth - dillution - degredation
-consume / dt
-- vEnzymeSynth</p>
+<ul>
+<li>k<ul>
+<li>Synthesize rate</li>
+</ul>
+</li>
+<li>k_d<ul>
+<li>Protein degradation</li>
+</ul>
+</li>
+<li>k_m<ul>
+<li>MM kinetics constante</li>
+</ul>
+</li>
+<li>v<ul>
+<li>v max for metabolism</li>
+</ul>
+</li>
+<li>consume<ul>
+<li>All the metabolites required for Enzyme creation</li>
+</ul>
+</li>
+<li>orig<ul>
+<li>The metabolite before metabolism</li>
+</ul>
+</li>
+<li>dest<ul>
+<li>The metabolite after metabolism</li>
+</ul>
+</li>
+</ul>
+<h2>Properties</h2>
+<ul>
+<li>vEnzymeSynth<ul>
+<li>k * this </li>
+</ul>
+</li>
+<li>degradation<ul>
+<li>k_d * this</li>
+</ul>
+</li>
+<li>dilution<ul>
+<li>mu * this</li>
+</ul>
+</li>
+<li>vMetabolism<ul>
+<li>v <em> this </em> ( orig / ( orig + k_m ) )</li>
+</ul>
+</li>
+</ul>
+<h2>Equations</h2>
+<ul>
+<li>this / dt<ul>
+<li>vEnzymeSynth - dilution - degradation</li>
+</ul>
+</li>
+<li>consume / dt<ul>
+<li>vEnzymeSynth</li>
+</ul>
+</li>
+<li>orig / dt<ul>
+<li>-vMetabolism</li>
+</ul>
+</li>
+<li>dest / dt<ul>
+<li>vMetabolism</li>
+</ul>
+</li>
+</ul>
+
 </div>
 <div class='tags'>
 </div>
@@ -167,8 +222,14 @@ consume / dt
                 <a href='../../classes/Model/Module.html#constructor-instance'>#constructor</a>,
                 <a href='../../classes/Model/Module.html#extractId-class'>.extractId</a>,
                 <a href='../../classes/Model/Module.html#isLocal-instance'>#isLocal</a>,
+                <a href='../../classes/Model/Module.html#getCompound-instance'>#getCompound</a>,
+                <a href='../../classes/Model/Module.html#getMetabolite-instance'>#getMetabolite</a>,
                 <a href='../../classes/Model/Module.html#getSubstrate-instance'>#getSubstrate</a>,
+                <a href='../../classes/Model/Module.html#getProduct-instance'>#getProduct</a>,
+                <a href='../../classes/Model/Module.html#setCompound-instance'>#setCompound</a>,
+                <a href='../../classes/Model/Module.html#setMetabolite-instance'>#setMetabolite</a>,
                 <a href='../../classes/Model/Module.html#setSubstrate-instance'>#setSubstrate</a>,
+                <a href='../../classes/Model/Module.html#setProduct-instance'>#setProduct</a>,
                 <a href='../../classes/Model/Module.html#step-instance'>#step</a>,
                 <a href='../../classes/Model/Module.html#_test-instance'>#_test</a>,
                 <a href='../../classes/Model/Module.html#_ensure-instance'>#_ensure</a>,
@@ -302,7 +363,7 @@ consume / dt
     </div>
     <div id='footer'>
   Generated on
-  Fri May 10 2013 08:40:59 GMT+0200 (W. Europe Daylight Time)
+  Sun May 12 2013 04:54:49 GMT+0200 (W. Europe Daylight Time)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

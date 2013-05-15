@@ -1,29 +1,32 @@
 # Simulates protein synthesization.
 #
 # Parameters
-# ------------------ ------------------ ------------------
-# k
-#	Synthesize rate
-# k_d
-#	Protein degradation
-# consume
-#	All the metabolites required for Protein creation
+# --------------------------------------------------------
+# 
+# - k
+#    - Synthesize rate
+# - k_d
+#    - Protein degradation
+# - consume
+#    - All the metabolites required for Protein creation
 # 
 # Properties
-# ------------------ ------------------ ------------------
-# vProteinSynth
-#	k * this * consume
-# degradation
-#	k_d * this
-# dilution
-# 	mu * this
+# --------------------------------------------------------
+# 
+# - vProteinSynth
+#    - k * this * consume
+# - degradation
+#    - k_d * this
+# - dilution
+#    - mu * this
 #
 # Equations
-# ------------------ ------------------ ------------------
-# this / dt
-#	vProteinSynth - dilution - degradation
-# consume / dt
-#	- vProteinSynth
+# --------------------------------------------------------
+# 
+# - this / dt
+#    - vProteinSynth - dilution - degradation
+# - consume / dt
+#    - vProteinSynth
 #
 class Model.Protein extends Model.Module
 

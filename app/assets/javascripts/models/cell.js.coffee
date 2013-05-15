@@ -2,7 +2,10 @@
 # of simulating the modules for a timespan. A cell comes with one default 
 # module which is the Cell Growth.
 #
-class Model.Cell
+class Model.Cell extends Helper.Mixable
+
+	@include Mixin.DynamicProperties
+	@include Mixin.EventBindings
 
 	# Constructor for cell
 	#
@@ -39,44 +42,6 @@ class Model.Cell
 			enumerable: false
 			writable: true
 		)
-		
-		# Add defaults for serialization
-		defaults = {
-			id: _.uniqueId "client:#{this.constructor.name}:"
-			creation: Date.now()
-		}
-		
-		paramscell = _( paramscell ).defaults( defaults )
-		for key, value of paramscell
-			# The function to create a property out of param
-			#
-			# @param key [String] the property name
-			#
-			( ( key ) => 
-			
-				# This defines the private value.
-				Object.defineProperty( @ , "_#{key}",
-					value: value
-					configurable: false
-					enumerable: false
-					writable: true
-				)
-
-				# This defines the public functions to change
-				# those values.
-				Object.defineProperty( @ , key,
-					set: ( param ) ->
-						console.log "I am setting #{key}", @["_#{key}"], param
-						Model.EventManager.trigger( 'cell.set.property', @, [ "_#{key}", @["_#{key}"], param ] )
-						@["_#{key}"] = param
-						#@_do( "_#{key}", param )
-					get: ->
-						return @["_#{key}"]
-					enumerable: true
-					configurable: false
-				)
-				
-			) key
 
 		Object.defineProperty( @, 'module',
 			
@@ -99,6 +64,15 @@ class Model.Cell
 			configurable: false
 			enumerable: false
 		)
+
+		@_allowBindings()
+		@_defineProps(  
+			_( paramscell ).defaults( {
+				id: _.uniqueId "client:#{this.constructor.name}:"
+				creation: Date.now()
+			} ),
+			'cell.set.property'
+		)
 		
 		Object.seal @
 		
@@ -107,7 +81,7 @@ class Model.Cell
 		Model.EventManager.on( 'cell.add.metabolite', @, @_addToTree )
 		
 		@add new Model.CellGrowth( params, start )
-	
+		
 	# Extracts id data from id
 	#
 	# @param id [Object,Number,String] id containing id data
@@ -120,7 +94,9 @@ class Model.Cell
 		return { id: parseInt( data[0] ), origin: "server" } if data.length is 1
 		return { id: parseInt( data[2] ), origin: data[0] }
 		
-	# 
+	# Returns true if local cell
+	#
+	# @return [Boolean] true if local, false if synced
 	#
 	isLocal : () ->
 		return Model.Cell.extractId( @id ).origin isnt "server"
@@ -131,30 +107,51 @@ class Model.Cell
 	# @return [self] chainable instance
 	#
 	add: ( module ) ->
-		todo = _( (module) => @_modules.push module).bind(@, module)
-		undo = _( (module) => @_modules = _( @_modules ).without module).bind(@, module)
-		action = new Model.Action(@, todo, undo, "Added "+module.name)
-		action.do()
+	
+		# Transparent adding of metabolites
+		if module instanceof Model.Metabolite
+			name = _( module.name.split( '#' ) ).first()
+			if !@_metabolites[ name ]? 
+				@_metabolites[ name ] = { }
+				@_metabolites[ name ][ Model.Metabolite.Inside ] = undefined
+				@_metabolites[ name ][ Model.Metabolite.Ouside ] = undefined
+			
+			func1 = (name, placement, module) =>
+				@_metabolites[ name ][ placement ] = module
+			func2 = (name, placement) =>
+				delete @_metabolites[ name ][ placement ]
 
-		Model.EventManager.trigger( 'cell.add.module', @, [ action, module ] )
+			todo = _( func1 ).bind(@, name, placement, module)
+			undo = _( func2 ).bind(@, name, placement)
+			action = new Model.Action(@, todo, undo, "Added "+name+" with amount " +amount)
+
+			action.do()
+			Model.EventManager.trigger( 'cell.add.metabolite', @, [ module, name, module.amount, module.placement is Model.Metabolite.Inside, module.type is Model.Metabolite.Product ] )
+	
+		else
+			todo = _( (module) => @_modules.push module).bind(@, module)
+			undo = _( (module) => @_modules = _( @_modules ).without module).bind(@, module)
+			action = new Model.Action(@, todo, undo, "Added "+module.name)
+			action.do()
+			Model.EventManager.trigger( 'cell.add.module', @, [ action, module ] )
 		return this
 		
 	# Add metabolite to cell
 	#
 	# @param name [String] name of the metabolite to add
 	# @param amount [Integer] amount of metabolite to add
+	# @param supply [Integer] supply of param of metabolite
 	# @param inside_cell [Boolean] if true is placed inside the cell
 	# @param is_product [Boolean] if true is placed right of the cell
 	# @return [self] chainable instance
 	#
 	addMetabolite: ( name, amount, supply = 1, inside_cell = off, is_product = off ) ->
-		placement = if inside_cell then Model.Metabolite.Inside else Model.Metabolite.Outside
-
 		if !@_metabolites[ name ]? 
 			@_metabolites[ name ] = { }
 			@_metabolites[ name ][ Model.Metabolite.Inside ] = undefined
 			@_metabolites[ name ][ Model.Metabolite.Ouside ] = undefined
 
+		placement = if inside_cell then Model.Metabolite.Inside else Model.Metabolite.Outside
 		
 		if @_metabolites[ name ][ placement ]? 
 			func = (name, value, placement) =>
@@ -184,9 +181,24 @@ class Model.Cell
 
 		return this
 		
+	# Add metabolite substrate to cell
+	#
+	# @param name [String] name of the metabolite to add
+	# @param amount [Integer] amount of metabolite to add
+	# @param supply [Integer] supply of param of metabolite
+	# @param inside_cell [Boolean] if true is placed inside the cell
+	# @return [self] chainable instance
+	#
 	addSubstrate: ( name, amount, supply = 1, inside_cell = off ) ->
 		return @addMetabolite( name, amount, supply, inside_cell, off )
 		
+	# Add metabolite product to cell
+	#
+	# @param name [String] name of the metabolite to add
+	# @param amount [Integer] amount of metabolite to add
+	# @param inside_cell [Boolean] if true is placed inside the cell
+	# @return [self] chainable instance
+	#
 	addProduct: ( name, amount, inside_cell = on ) ->
 		return @addMetabolite( name, amount, 0, inside_cell, on )
 		
@@ -203,6 +215,7 @@ class Model.Cell
 	# Removes this metabolite from cell
 	#
 	# @param name [String] metabolites to remove from this cell
+	# @param placement [Integer] metabolite placement to remove from this cell
 	# @return [self] chainable instance
 	#
 	removeMetabolite: ( name, placement ) ->
@@ -210,9 +223,21 @@ class Model.Cell
 		Model.EventManager.trigger( 'cell.remove.metabolite', @, [ name, placement ] )
 		return this
 		
+	# Removes this substrate from cell (alias for removeMetabolite)
+	#
+	# @param name [String] substrate to remove from this cell
+	# @param placement [Integer] substrate placement to remove from this cell
+	# @return [self] chainable instance
+	#
 	removeSubstrate: ( name, placement ) ->
 		return @removeMetabolite( name, placement )
 		
+	# Removes this product from cell (alias for removeProduct)
+	#
+	# @param name [String] product to remove from this cell
+	# @param placement [Integer] product placement to remove from this cell
+	# @return [self] chainable instance
+	#
 	removeProduct: ( name, placement ) ->
 		return @removeMetabolite( name, placement )
 		
@@ -227,28 +252,54 @@ class Model.Cell
 	# Checks if this cell has this metabolite
 	# 
 	# @param name [String] the name of the metabolite
+	# @param placement [Integer] metabolite placement
 	# @return [Boolean] true if contains
 	#
 	hasMetabolite: ( name, placement ) ->
 		return @_metabolites[ name ][ placement ]?
 		
+	# Checks if this cell has this substrate (alias for hasMetabolite)
+	# 
+	# @param name [String] the name of the substrate
+	# @param placement [Integer] substrate placement
+	# @return [Boolean] true if contains
+	#
 	hasSubstrate: ( name, placement ) ->
 		return @hasMetabolite( name, placement )
 		
+	# Checks if this cell has this product (alias for hasMetabolite)
+	# 
+	# @param name [String] the name of the product
+	# @param placement [Integer] product placement
+	# @return [Boolean] true if contains
+	#
 	hasProduct: ( name, placement ) ->
 		return @hasMetabolite( name, placement )
 		
 	# Gets a metabolite
 	# 
 	# @param name [String] the name of the metabolite
-	# @return [Model.Metabolite] the substrate
+	# @param placement [Integer] metabolite placement
+	# @return [Model.Metabolite] the metabolite
 	#
 	getMetabolite: ( name, placement ) ->
 		return @_metabolites[ name ][ placement ] ? null
 		
+	# Gets a substrate (alias for getMetabolite)
+	# 
+	# @param name [String] the name of the substrate
+	# @param placement [Integer] substrate placement
+	# @return [Model.Metabolite] the substrate
+	#
 	getSubstrate: ( name, placement ) ->
 		return @getMetabolite( name, placement )
 		
+	# Gets a product (alias for getMetabolite)
+	# 
+	# @param name [String] the name of the product
+	# @param placement [Integer] product placement
+	# @return [Model.Metabolite] the product
+	#
 	getProduct: ( name, placement ) ->
 		return @getMetabolite( name, placement )
 	
@@ -485,42 +536,7 @@ class Model.Cell
 					
 				callback.apply( @, [ result ] ) if callback?
 			)
-
-	# Add a new node to the undotree for an action that occured in the cell.
-	#
-	# @param cell [Model.Cell] The cell the action occured in.
-	# @param action [Model.Action] The action
-	# @param module [Model.Module] The module that was created or altered by the action.
-	#
-	_addToTree: ( cell, action, module ) ->
-		console.log(module)
-		unless cell isnt @
-			unless module instanceof Model.CellGrowth
-				node = @_tree.add(action)
-				module._tree.setRoot(node)
-				if @_tree._root._object is null
-					@_tree.setRoot(node)
-
-	
-	# Undo the most recent change to the cell
-	#
-	undo: ( ) ->
-		action = _tree.undo()
-		if action isnt null
-			action.undo()
 		
-		return @
-		
-
-	# Redo the most recent change to the cell if there is one
-	#
-	redo: ( ) ->
-		action = _tree.redo()
-		if action isnt null
-			action.undo()
-		
-		return @
-
 
 # Makes this available globally.
 (exports ? this).Model.Cell = Model.Cell
