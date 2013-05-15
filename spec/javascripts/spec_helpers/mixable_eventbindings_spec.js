@@ -21,6 +21,21 @@ describe("Mixin: Event Bindings", function() {
 			expect( Object.keys( mixed._bindings ).length ).toBe( 0 );
 		});
 		
+		describe("and triggered", function() {
+	
+			var event = 'foo';
+			
+			beforeEach( function() {
+				spyOn( Model.EventManager.constructor.prototype, 'trigger' );
+				mixed._trigger( event, this, [] );
+			});
+			
+			it( "should have triggered the event", function() {
+				expect( Model.EventManager.constructor.prototype.trigger ).toHaveBeenCalled();
+				expect( Model.EventManager.constructor.prototype.trigger.callCount ).toBe( 1 );
+			});
+		});
+		
 		describe("and event bound", function() {
 		
 			var event = 'foo';

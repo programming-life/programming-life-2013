@@ -50,7 +50,17 @@ EventBindings =
 			if @_bindings[ event ]?
 				for binding in @_bindings[ event ] when binding[ 0 ] is context and binding[ 1 ] is func
 					@_bindings[ event ] = _( @_bindings[ event ] ).without binding
-					console.log @_bindings
+			return this
+			
+		# Triggers an event
+		# 
+		# @param event [String] the event to trigger from
+		# @param context [Context] the context to trigger for
+		# @param args [Array] the arguments to send
+		# @return [self] chainable self
+		#
+		_trigger: ( event, context, args ) ->
+			Model.EventManager.trigger( event, context, args )
 			return this
 			
 ( exports ? this ).Mixin.EventBindings = EventBindings
