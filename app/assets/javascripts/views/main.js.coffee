@@ -4,10 +4,13 @@
 class View.Main extends View.Base
 
 	# Creates a new Main view
-	# @todo dummy module inactivate if already in cell
 	#
-	constructor: ( ) ->
-		super( Raphael( 'paper', 0, 0 ) )
+	# @todo dummy module inactivate if already in cell
+	# @param container [String, Object] A string with an id or a DOM node to serve as a container for the view
+	#
+	constructor: ( container = "#paper" ) ->
+		container = $( container )[0]
+		super( Raphael(container, 0,0) )
 
 		cell = new Model.Cell()
 		@_views.push  new View.Cell( @_paper, cell)
@@ -55,5 +58,11 @@ class View.Main extends View.Base
 					view.draw(centerX, centerY, scale)
 				else
 					view.draw()
+	
+	# Kills the main view
+	#
+	kill: ( ) ->
+		super()
+		@_paper.remove()
 
 (exports ? this).View.Main = View.Main

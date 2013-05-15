@@ -1,10 +1,8 @@
-class View.Node
+class View.Node extends View.Base
 	constructor: ( node, paper, parent ) ->
+		super(paper)
 		@_node = node
-		@_paper = paper
 		@_parent = parent
-
-		@_views = []
 
 		for child in @_node._children
 			@_views.push new View.Node( child, @_paper, @ )
@@ -23,25 +21,23 @@ class View.Node
 	# @param scale [Integer] The scale
 	#
 	draw: ( x, y, scale ) ->
+		@clear()
 		@_x = x
 		@_y = y
 		@_scale = scale
 
 		@_padding = 10 * @_scale
 
-		@_contents?.remove()
-		@_contents = @_paper.set()
-
-		@_drawText()
+		@_contents.push @_drawText()
 		@_radius = Math.max( @_text.getBBox().width, @_text.getBBox().height ) * @_scale
 
 
-		@_drawCircle()
-		@_drawShadow()
-		@_drawHitBox()
+		@_contents.push @_drawCircle()
+		@_contents.push @_drawShadow()
+		@_contents.push @_drawHitBox()
 
 		unless @_parent is null
-			@_drawArrow(@_parent)
+			@_contents.push @_drawArrow(@_parent)
 
 		@_drawViews()
 	
@@ -69,7 +65,7 @@ class View.Node
 	_drawCircle: ( ) ->
 		@_circle?.remove()
 		@_circle = @_paper.circle(@_x, @_y, @_radius)
-		@_contents.push(@_text, @_circle)
+		return @_circle
 	
 	_drawShadow: ( ) ->
 		@_shadow?.remove()
@@ -77,6 +73,7 @@ class View.Node
 			width: 5
 			opacity: .125
 		@_shadow?.scale(.9, .9)
+		return @_shadow
 		
 	
 	_drawText: ( ) ->
@@ -90,7 +87,9 @@ class View.Node
 		@_text = @_paper.text(@_x, @_y, id)
 		@_text.attr
 			'font-size': 16 * @_scale
-	
+
+		return @_text
+		
 	_drawHitBox: ( ) ->
 		unless @_dragging
 			@_hitBox?.remove()
@@ -117,6 +116,7 @@ class View.Node
 			@_drawHitBox()
 
 		@_hitBox.drag(drag, dragStart, dragStop)
+		return @_hitBox
 	
 	# Draw an arrow from this node to other
 	# @param next [View.Node] The other node
@@ -135,6 +135,6 @@ class View.Node
 			"fill" : "black"
 		})
 
-		@_contents.push @_arrow
+		return @_arrow
 
 (exports ? this).View.Node = View.Node

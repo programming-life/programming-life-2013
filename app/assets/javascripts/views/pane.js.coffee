@@ -29,7 +29,12 @@ class View.Pane extends View.Base
 		@_height = $( window ).height()
 		@_paper.setSize( @_width, @_height )
 		#@_paper.setViewBox( x, y, @_width, @_height, true )
-		
+	
+	# Kills the view
+	#
+	kill: ( ) ->
+		super()
+		node = $( "#pane-" + @_id ).remove()
 		
 	# Draw the view
 	#

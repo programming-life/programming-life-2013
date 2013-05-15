@@ -28,7 +28,6 @@ class View.Tree extends View.Base
 	# @param scale [Integer] The scale
 	#
 	draw: ( x, y, scale ) ->
-		console.log(@_tree.current)
 		console.log("Drawing undotree")
 		if @_view._x and @_view._y
 			@_x = @_view._x
@@ -58,7 +57,8 @@ class View.Tree extends View.Base
 				@_box.node.setAttribute('class', 'module-box')
 				@_box.attr
 					r: 10 * scale
-				@_box.insertBefore(@_contents)
+				@_box.toBack()
+				@_contents.push( @_box )
 
 		# Draw shadow around module view
 		@_shadow?.remove()

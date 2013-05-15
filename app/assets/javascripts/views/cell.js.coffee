@@ -11,10 +11,11 @@ class View.Cell extends View.Base
 	# @param paper [Raphael] paper parent
 	# @param cell [Model.Cell] cell to view
 	# 	
-	constructor: ( paper, cell ) ->
+	constructor: ( paper, cell, container = "#graphs" ) ->
 		super(paper)
 		
-		@_container = Raphael( 'graphs', "100%", 1 )
+		container =  if $( container )[0] then $( container )[0] else $("<div></div>")[0]
+		@_container = Raphael( container, "100%", 1 )
 		@_container.setViewBox( 0, 0, 1000, 1000 ) # 1000 pixels, 1000 pixels
 
 		@_views = []
@@ -104,6 +105,7 @@ class View.Cell extends View.Base
 	# @param scale [Integer] scale
 	#
 	draw: ( x, y, scale ) ->
+		@clear()
 	
 		@_x = x
 		@_y = y
@@ -111,14 +113,13 @@ class View.Cell extends View.Base
 
 		radius = @_scale * 400
 
-		unless @_shape
-			@_shape = @_paper.circle( x, y, radius )
-			@_shape.node.setAttribute( 'class', 'cell' )
-		else
-			@_shape.attr
-				cx: x
-				cy: y
-				r: radius
+		@_shape = @_paper.circle( x, y, radius )
+		@_shape.node.setAttribute( 'class', 'cell' )
+		@_shape.attr
+			cx: x
+			cy: y
+			r: radius
+		@_contents.push @_shape
 				
 		counters = {}
 		
