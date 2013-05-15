@@ -92,4 +92,17 @@ describe("Mixin: TimeMachine", function() {
 			
 		});
 	});
+	
+	describe("when action is created", function() {
+		
+		var result;
+		var desc = 'foo';
+		beforeEach( function() {
+			result = mixed._createAction( desc );
+		});
+		
+		it( "should return a model action", function() {
+			expect( result instanceof Model.Action ).toBeTruthy();
+		});
+	});
 });
