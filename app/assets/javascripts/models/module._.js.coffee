@@ -13,7 +13,7 @@ class Model.Module extends Helper.Mixable
 	constructor: ( params = {}, step ) -> 
 
 		Object.defineProperty( @ , "_tree",
-			value: new Model.UndoTree()
+			value: new Model.UndoTree(new Model.Node(new Model.Action(), null))
 			configurable: false
 			enumerable: false
 			writable: true
@@ -68,11 +68,7 @@ class Model.Module extends Helper.Mixable
 					
 		# Bind the events
 		context = @
-		addmove = ( caller, key, value, param ) ->
-			unless caller isnt context
-				@_addMove key, value, param
-						
-		@_bind( 'module.set.property', @, addmove )
+		@_bind( 'module.set.property', @, @_addToTree)
 		Model.EventManager.trigger( 'module.creation', @, [ @creation, @id ] )	
 		
 	# Extracts id data from id
@@ -226,24 +222,15 @@ class Model.Module extends Helper.Mixable
 		
 		return test
 		
-	# Applies a change to the parameters of the module
-	#
-	# @param [String] key The changed property
-	# @param [val] value The value of the changed property
-	# @return [self] for chaining
-	#
-	_do : ( key, value ) ->
-		@[ key ] = value
-		return this
-
 	# Adds a move to the undotree
 	#
 	# @param [String] key, the changed property
 	# @param [val] value, the value of the changed property 
 	# @return [self] for chaining
 	#
-	_addMove: ( key, value, param ) ->
-		@_tree.add [ key, value, param ]
+	_addToTree: ( cell, action ) ->
+		if cell is this
+			@_tree.add action
 		return this
 
 	# Undoes the most recent move
@@ -251,21 +238,21 @@ class Model.Module extends Helper.Mixable
 	# @return [self] for chaining
 	#
 	undo: ( ) ->
-		result = @_tree.undo()
-		if result isnt null
-			[ key, value, param ] = result
-			@_do( key, value )
+		action = @_tree.undo()
+		console.log "I would like to undo: ", action
+		if action isnt null
+			action.undo()
 		return this
 
 	# Redoes the most recently undone move
 	#
-	# @return [self] for chaining
+	# @returns [self] for chaining
 	#
 	redo : ( ) ->
-		result = @_tree.redo()
-		if result isnt null
-			[ key, value, param ] = result
-			@_do( key, param )
+		action = @_tree.redo()
+		console.log "I would like to redo: ", action
+		if action isnt null
+			action.redo()
 		return this
 		
 	# Serializes a module

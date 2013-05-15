@@ -32,9 +32,16 @@ DynamicProperties =
 				Object.defineProperty( @ , key,
 				
 					set: ( param ) ->
-						Model.EventManager.trigger( event , @, [ "_#{key}", @["_#{key}"], param ] )
-						@_do( "_#{key}", param )
-						
+						func = (key, value ) => 
+							@["_#{key}"] = value
+						oldValue = @["#{key}"] 
+						todo = _( func ).bind(@, key, param )
+						undo = _( func ).bind(@, key, oldValue)
+						action = new Model.Action(@, todo, undo, "Set "+key+" from " + value + " to " + param)
+
+						console.log "I am setting #{key}", @["_#{key}"], param
+						action.do()
+						Model.EventManager.trigger( 'module.set.property', @, [ action ] )
 					get: ->
 						return @["_#{key}"]
 						

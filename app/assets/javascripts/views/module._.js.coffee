@@ -639,3 +639,4 @@ class View.Module extends Helper.Mixable
 		return []			
 
 (exports ? this).View.Module = View.Module
+
