@@ -1,8 +1,8 @@
 #  Class to generate a view for a cell model
 #
-class View.Cell extends Helper.Mixable
+class View.Cell extends View.Base
 
-	@include Mixin.EventBindings
+	@concern Mixin.EventBindings
 
 	MAX_RUNTIME: 100
 
@@ -12,7 +12,7 @@ class View.Cell extends Helper.Mixable
 	# @param cell [Model.Cell] cell to view
 	# 	
 	constructor: ( paper, cell ) ->
-		@_paper = paper
+		super(paper)
 		
 		@_container = Raphael( 'graphs', "100%", 1 )
 		@_container.setViewBox( 0, 0, 1000, 1000 ) # 1000 pixels, 1000 pixels
@@ -25,7 +25,7 @@ class View.Cell extends Helper.Mixable
 		@_width = @_paper.width
 		@_height = @_paper.height
 		
-		@_allowBindings()
+		@_allowEventBindings()
 		
 		Object.defineProperty( @ , "_cell",
 			value: undefined
@@ -50,6 +50,7 @@ class View.Cell extends Helper.Mixable
 				@_bind( 'cell.add.module', @, @onModuleAdd )
 				@_bind( 'cell.add.metabolite', @, @onModuleAdd )
 				@_bind( 'cell.remove.module', @, @onModuleRemove )
+				@_bind( 'cell.remove.metabolite', @, @onModuleRemove )
 				
 			configurable: false
 			enumerable: true
@@ -86,6 +87,8 @@ class View.Cell extends Helper.Mixable
 		@_views.push new View.DummyModule( @_paper, @_cell, new Model.Metabolism() )
 		@_views.push new View.DummyModule( @_paper, @_cell, new Model.Protein() )
 		@_views.push new View.DummyModule( @_paper, @_cell, Model.Transporter.ext(), { direction: Model.Transporter.Outward } )
+			
+		#@_views.push new View.Tree( @_paper, @_cell._tree)
 		
 		@_views.push new View.Play( @_paper, @ )
 		
@@ -155,6 +158,9 @@ class View.Cell extends Helper.Mixable
 					x: x
 					y: y
 
+			if (view instanceof View.Tree )
+				placement = {x: 300, y: 100}
+
 			view.draw( placement.x, placement.y, scale )
 		
 	# On module added, add it from the cell
@@ -163,7 +169,6 @@ class View.Cell extends Helper.Mixable
 	# @param module [Model.Module] module added
 	#
 	onModuleAdd: ( cell, module ) =>
-	
 		unless cell isnt @_cell
 			unless _( @_drawn ).indexOf( module.id ) isnt -1
 				@_drawn.unshift module.id
@@ -176,7 +181,6 @@ class View.Cell extends Helper.Mixable
 	# @param module [Model.Module] module removed
 	#
 	onModuleRemove: ( cell, module ) =>
-	
 		index = _( @_drawn ).indexOf( module.id )
 		if index isnt -1
 			view = @_views[ index ].kill()
@@ -351,6 +355,13 @@ class View.Cell extends Helper.Mixable
 		
 		return @_graphs
 	
+	# Redraw graphs
+	#
+	_redrawGraphs: ( ) ->
+		for graph in @_graphs
+			graph.redraw()
+			
+	
 	# Starts drawing the simulation
 	# 
 	# @param step_duration [Integer] duration of each step call
@@ -376,6 +387,10 @@ class View.Cell extends Helper.Mixable
 		
 		# Actually simulate
 		@_simulate( step )
+	
+		Model.EventManager.trigger("simulation.start",@, [ @_cell ])
+		
+		return this
 		
 	# Steps the simulation
 	#
@@ -429,6 +444,11 @@ class View.Cell extends Helper.Mixable
 		console.log 'stop'
 		
 		@_running = off
+		@_redrawGraphs()
+
+		Model.EventManager.trigger("simulation.stop",@, [ @_cell ])
+		return this
+
 
 	# Draws red lines
 	#

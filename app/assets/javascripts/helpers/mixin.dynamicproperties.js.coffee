@@ -2,52 +2,91 @@
 #
 DynamicProperties =
 
-	# Defines Properties from param
-	#
-	# @param params [Object] properties to define
-	#
-	_defineProps: ( params, event ) ->
+	ClassMethods: {}
 	
-		@_dynamicProperties = []
+	InstanceMethods:
+	
+		# Defines properties from param with accessors and a private value
+		#
+		# @param params [Object] properties to define
+		# @param event [String] the event name to push
+		#
+		_propertiesFromParams: ( params, event ) ->
 		
-		for key, value of params
-			value = parseFloat( value ) if _( value ).isString() and !isNaN( value )
+			@_dynamicProperties = []
 			
-			# The function to create a property out of param
-			#
-			# @param key [String] the property name
-			#
-			( ( key ) => 
+			setter = ( key, value ) => 
+				@["_#{key}"] = value
 			
-				# This defines the private value.
-				Object.defineProperty( @ , "_#{key}",
-					value: value
-					configurable: false
-					enumerable: false
-					writable: true
-				)
+			for key, value of params
+				value = parseFloat( value ) if _( value ).isString() and !isNaN( value )
+				
+				# The function to create a property out of param
+				#
+				# @param key [String] the property name
+				#
+				( ( key ) => 
+				
+					@_nonEnumerableValue( "_#{key}", value )
 
-				# This defines the public functions to change
-				# those values.
-				Object.defineProperty( @ , key,
-				
-					set: ( param ) ->
-						Model.EventManager.trigger( event , @, [ "_#{key}", @["_#{key}"], param ] )
-						@_do( "_#{key}", param )
+					# This defines the public functions to change
+					# those values.
+					Object.defineProperty( @ , key,
+					
+						set: ( param ) ->
 						
-					get: ->
-						return @["_#{key}"]
-						
-					enumerable: true
-					configurable: false
-				)
+							todo = _( setter ).bind( @, key, param )
+							undo = _( setter ).bind( @, key, @[ "#{key}" ] )
+							
+							action = new Model.Action( 
+								@, todo, undo, 
+								"Change #{key} from #{value} to #{param}" 
+							)
+							
+							action.do()
+							
+							if ( event? )
+								Model.EventManager.trigger( event, @, [ action ] )
+							
+						get: ->
+							return @["_#{key}"]
+							
+						enumerable: true
+						configurable: false
+					)
+					
+					@_dynamicProperties.push key
+					
+				) key
+			return this
 				
-				@_dynamicProperties.push key
-				
-			) key
-		
-	# @todo replace this with events and undo tree?
-	_do: ( key, param ) ->
-		@[ key ] = param
+		# Defines a non enurable property with a value
+		#
+		# @param params key [String] key to define for
+		# @param params value [any] value of the property
+		#
+		_nonEnumerableValue: ( key, value ) ->
+			
+			Object.defineProperty( @ , key,
+				value: value
+				configurable: false
+				enumerable: false
+				writable: true
+			)
+			return this
+			
+		# Defines Properties from param
+		#
+		# @param params key [String] key to define for
+		# @param params value [any] value of the property
+		#
+		_nonEnumerableGetter: ( key, getter ) ->
+
+			Object.defineProperty( @ , key,
+				get: getter
+				configurable: false
+				enumerable: false
+			)
+			return this	
 
 ( exports ? this ).Mixin.DynamicProperties = DynamicProperties
