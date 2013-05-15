@@ -2,7 +2,7 @@
 #
 class View.Module extends View.Base
 
-	@include Mixin.EventBindings
+	@concern Mixin.EventBindings
 	
 	# Creates a new module view
 	#
@@ -24,7 +24,7 @@ class View.Module extends View.Base
 		@_selected = off	
 		@_visible = on
 		
-		@_allowBindings()
+		@_allowEventBindings()
 		@_bind( 'module.set.property', @, @onModuleInvalidated )
 		@_bind( 'module.set.selected', @, @onModuleSelected )
 		@_bind( 'module.set.hovered', @, @onModuleHovered )

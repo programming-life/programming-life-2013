@@ -2,8 +2,8 @@
 #
 class Model.Module extends Helper.Mixable
 
-	@include Mixin.DynamicProperties
-	@include Mixin.EventBindings
+	@concern Mixin.DynamicProperties
+	@concern Mixin.EventBindings
 
 	# Constructor for module
 	#
@@ -54,8 +54,8 @@ class Model.Module extends Helper.Mixable
 			enumerable: false
 		)
 		
-		@_allowBindings()
-		@_defineProps(  
+		@_allowEventBindings()
+		@_propertiesFromParams(  
 			_( params ).defaults( {
 				id: _.uniqueId "client:#{this.constructor.name}:"
 				creation: Date.now()

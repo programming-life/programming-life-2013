@@ -8,7 +8,7 @@ class Model.Action
 	# @param do [Function] The function to execute in the context on (re)do
 	# @param undo [Function] The function to execute in the context on undo
 	# @param description [String] A description of the action
-	constructor: ( context, todo, undo, description = "Action") ->
+	constructor: ( context, todo, undo, description = "Action" ) ->
 		@_context = context
 		@_todo = todo
 		@_undo = undo
@@ -17,12 +17,12 @@ class Model.Action
 	# Apply the do function on context
 	# 
 	do: ( ) ->
-		@_todo.apply( @_context)
+		@_todo?.apply( @_context)
 	
 	# Apply the undo function on context
 	#
 	undo: ( ) ->
-		@_undo.apply( @_context)
+		@_undo?.apply( @_context)
 	
 	# Wrapper for do for convenience
 	# 

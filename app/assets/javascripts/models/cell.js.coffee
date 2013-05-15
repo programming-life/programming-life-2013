@@ -2,10 +2,13 @@
 # of simulating the modules for a timespan. A cell comes with one default 
 # module which is the Cell Growth.
 #
+# @concern Mixin.DynamicProperties
+# @concern Mixin.EventBindings
+#
 class Model.Cell extends Helper.Mixable
 
-	@include Mixin.DynamicProperties
-	@include Mixin.EventBindings
+	@concern Mixin.DynamicProperties
+	@concern Mixin.EventBindings
 
 	# Constructor for cell
 	#
@@ -24,71 +27,103 @@ class Model.Cell extends Helper.Mixable
 		@_tree = new Model.UndoTree()
 		console.log(@_tree)
 		
-		Object.defineProperty( @, '_tree',
-			value: new Model.UndoTree()
-			configurable: false
-			enumerable: false
-			writable: true
-		)
+		@_defineProperties( paramscell )
+		Model.EventManager.trigger( 'cell.creation', @, [ @creation, @id ] )
+		@add new Model.CellGrowth( params, start )
 		
-		Object.defineProperty( @, '_modules',
-			value: []
-			configurable: false
-			enumerable: false
-			writable: true
-		)
+	# Defines All the properties
+	#
+	# @see {DynamicProperties} for function calls
+	# @see {EventBindings} for function calls
+	# @return [self] chainable self
+	#
+	_defineProperties: ( params ) ->
 		
-		Object.defineProperty( @, '_metabolites',
-			value: {}
-			configurable: false
-			enumerable: false
-			writable: true
-		)
-
-		Object.defineProperty( @, 'module',
-			
-			# @property [Date] the creation date
-			get : -> 
-				return _( @_modules ).find( ( module ) -> module.constructor.name is "CellGrowth" )
-			
-			configurable: false
-			enumerable: false
-		)
-		
-		Object.defineProperty( @, 'url',
-			
-			# @property [String] the url for this model
-			get : -> 
-				data = Model.Cell.extractId( @id )
-				return "/cells/#{ data.id }.json" if data.origin is "server"
-				return '/cells.json'
-			
-			configurable: false
-			enumerable: false
-		)
-
-		@_allowBindings()
-		@_defineProps(  
-			_( paramscell ).defaults( {
+		@_allowEventBindings()
+		@_defineValues()
+		@_defineGetters()
+		@_propertiesFromParams(  
+			_( params ).defaults( {
 				id: _.uniqueId "client:#{this.constructor.name}:"
 				creation: Date.now()
 			} ),
 			'cell.set.property'
 		)
+		
+		Object.seal @ 
+		return this
+		
+	# Defines the value properties
+	#
+	# @see {DynamicProperties} for function calls
+	# @return [self] chainable self
+	#
+	_defineValues: () ->
+	
+		@_nonEnumerableValue( '_tree', new Model.UndoTree() )
+		@_nonEnumerableValue( '_modules', [] )
+		@_nonEnumerableValue( '_metabolites', {} )
+		
+		return this
+		
+	# Defines the getters
+	#
+	# @see {DynamicProperties} for function calls
+	# @return [self] chainable self
+	#
+	_defineGetters: () ->
+		
+		@_nonEnumerableGetter( 'module', () -> 
+				return _( @_modules ).find( ( module ) -> module.constructor.name is "CellGrowth" ) 
+		)
+		
+		@_nonEnumerableGetter( 'url', () ->
+				data = Model.Cell.extractId( @id )
+				return "/cells/#{ data.id }.json" if data.origin is "server"
+				return '/cells.json'
+		)
 
 		
-		Object.seal @
+		return this
 		
-		Model.EventManager.trigger( 'cell.creation', @, [ @creation, @id ] )
-		@_bind( 'cell.add.module', @, @_addToTree )
-		@_bind( 'cell.add.metabolite', @, @_addToTree )
+	# Adds an undoable event to the tree
+	#
+	# @params action [Model.Action] action that is undoable
+	# @return [Model.Node]
+	#
+	addUndoableEvent: ( action ) ->
+		return @_tree.add action
+	
+	# Adds an undoable event to the subtree
+	#
+	# @params action [Model.Action] action that is undoable
+	# @params module [Model.Module] 
+	# @return [Model.Node]
+	#	
+	addUndoableEventToSub: ( action, module ) ->
+		tree_node = @addUndoableEvent action
+		module?._tree?.setRoot tree_node
+		return tree_node
 		
-		@add new Model.CellGrowth( params, start )
+	#
+	#
+	undo: () ->
+		action = @_tree.undo()
+		action.undo() if action?
+		return this
+		
+	#
+	#
+	redo: () ->
+		action = @_tree.redo()
+		action.redo() if action?
+		return this
 		
 	# Extracts id data from id
 	#
 	# @param id [Object,Number,String] id containing id data
 	# @return [Object] extracted id data
+	#
 	@extractId: ( id ) ->
 		return id if _( id ).isObject()
 		return { id: id, origin: "server" } if _( id ).isNumber()
@@ -113,31 +148,80 @@ class Model.Cell extends Helper.Mixable
 	
 		# Transparent adding of metabolites
 		if module instanceof Model.Metabolite
-			name = _( module.name.split( '#' ) ).first()
-			if !@_metabolites[ name ]? 
-				@_metabolites[ name ] = { }
-				@_metabolites[ name ][ Model.Metabolite.Inside ] = undefined
-				@_metabolites[ name ][ Model.Metabolite.Ouside ] = undefined
-
-			func1 = (name, placement, module) =>
-				@_metabolites[ name ][ placement ] = module
-			func2 = (name, placement) =>
-				delete @_metabolites[ name ][ placement ]
-
-			todo = _( func1 ).bind(@, name, placement, module)
-			undo = _( func2 ).bind(@, name, placement)
-			action = new Model.Action(@, todo, undo, "Added "+name+" with amount " +amount)
+			@addMetaboliteModule module
+			return this
+		
+		todo = _( @_addModule ).bind( @, module )
+		undo = _( @_removeModule ).bind( @, module )
+		
+		action = new Model.Action( @, todo, undo, "Added #{module.name}" )
+		action.do()
+		
+		@addUndoableEventToSub( action, module )
+		return this
+		
+	# Actually adds the module to the cell
+	#
+	# @param module [Model.Module] module to add to the cell
+	# @return [self] chainable instance
+	#
+	_addModule: ( module ) ->
+		@_modules.push module
+		Model.EventManager.trigger( 'cell.add.module', @, [ module ] )
+		return this
+		
+	# Ensures that metabolite can be accessed
+	#
+	# @param name [String] metabolite name
+	# @return [self] chainable instance
+	#
+	_ensureMetaboliteAllocation: ( name ) ->
+		if !@_metabolites[ name ]? 
+			@_metabolites[ name ] = { }
+			@_metabolites[ name ][ Model.Metabolite.Inside ] = undefined
+			@_metabolites[ name ][ Model.Metabolite.Ouside ] = undefined
+		return this
+		
+	# Actually adds the metabolite to the cell
+	# 
+	# @param metabolite [Model.Metabolite] metabolite to add
+	# @return [self] chainable self
+	#
+	addMetaboliteModule: ( metabolite ) ->
 	
-			action.do()
-			Model.EventManager.trigger( 'cell.add.metabolite', @, [ action, module, name, module.amount, module.placement is Model.Metabolite.Inside, module.type is Model.Metabolite.Product ] )
-	
-		else
-			todo = _( (module) => @_modules.push module).bind(@, module)
-			undo = _( (module) => @_modules = _( @_modules ).without module).bind(@, module)
-			action = new Model.Action(@, todo, undo, "Added "+module.name)
-			action.do()
+		name = _( metabolite.name.split( '#' ) ).first()
+		todo = _( @_addMetabolite ).bind( @, name, metabolite.placement, metabolite )
+		undo = _( @_removeMetabolite ).bind( @, name, metabolite.placement )
+		action = new Model.Action( 
+			@, todo, undo, 
+			"Added metabolite #{name} with amount #{metabolite.amount}" 
+		)
+		action.do()
+		
+		@addUndoableEventToSub( action, metabolite )
+		
 
-			Model.EventManager.trigger( 'cell.add.module', @, [ action, module ] )
+		return this
+		
+
+	# Actually adds the metabolite to the cell
+	#
+	# @param name [String] the name of the metabolite
+	# @param placement [Integer] the placement of the metabolite
+	# @param metabolite [Model.Metabolie] Metabolie to add to the cell
+	# @return [self] chainable instance
+	#
+	_addMetabolite: ( name, placement, metabolite ) -> 
+		@_metabolites[ name ][ placement ] = metabolite 
+		Model.EventManager.trigger( 'cell.add.metabolite', @, 
+			[ 
+				metabolite, 
+				name, 
+				metabolite.amount, 
+				metabolite.placement is Model.Metabolite.Inside, 
+				metabolite.type is Model.Metabolite.Product 
+			] 
+		)
 		return this
 		
 	# Add metabolite to cell
@@ -150,38 +234,17 @@ class Model.Cell extends Helper.Mixable
 	# @return [self] chainable instance
 	#
 	addMetabolite: ( name, amount, supply = 1, inside_cell = off, is_product = off ) ->
-		if !@_metabolites[ name ]? 
-			@_metabolites[ name ] = { }
-			@_metabolites[ name ][ Model.Metabolite.Inside ] = undefined
-			@_metabolites[ name ][ Model.Metabolite.Ouside ] = undefined
+		
+		@_ensureMetaboliteAllocation( name )
 
 		placement = if inside_cell then Model.Metabolite.Inside else Model.Metabolite.Outside
+		type = if is_product then Model.Metabolite.Product else Model.Metabolite.Substrate
 		
 		if @_metabolites[ name ][ placement ]? 
-			func = (name, value, placement) =>
-				@_metabolites[ name ][ placement ].amount = value
-
-			oldValue = @_metabolites[ name ]
-			todo = _( func ).bind(@, name, amount, placement)
-			undo = _( func ).bind(@, name, oldValue, placement)
-			action = new Model.Action(@, todo, undo, "Added "+name)
-		else
-			type = if is_product then Model.Metabolite.Product else Model.Metabolite.Substrate
+			@_metabolites[ name ][ placement ].amount = amount
+			return this
 			
-			met = new Model.Metabolite({ supply: supply}, amount, name, placement, type)
-
-			func1 = (name, placement, met) =>
-				@_metabolites[ name ][ placement ] = met
-			func2 = (name, placement) =>
-				delete @_metabolites[ name ][ placement ]
-
-			todo = _( func1 ).bind(@, name, placement, met)
-			undo = _( func2 ).bind(@, name, placement)
-			action = new Model.Action(@, todo, undo, "Added "+name+" with amount " +amount)
-
-			Model.EventManager.trigger( 'cell.add.metabolite', @, [ action, met] )
-
-		action.do()
+		@addMetaboliteModule( new Model.Metabolite( { supply: supply }, amount, name, placement, type ) )
 
 		return this
 		
@@ -212,6 +275,28 @@ class Model.Cell extends Helper.Mixable
 	# @return [self] chainable instance
 	#
 	remove: ( module ) ->
+	
+		# Transparent adding of metabolites
+		if module instanceof Model.Metabolite
+			name = _( module.name.split( '#' ) ).first()
+			@removeMetabolite name, module.placement
+			return this
+	
+		todo = _( @_removeModule ).bind( @, module )
+		undo = _( @_addModule ).bind( @, module )
+		
+		action = new Model.Action( @, todo, undo, "Removed #{module.name}" )
+		action.do()
+
+		@addUndoableEvent( action )
+		return this
+	
+	# Actually removes the module from the cell
+	#
+	# @param module [Model.Module] module to remove
+	# @return [self] the chainable self
+	#
+	_removeModule: ( module ) ->
 		@_modules = _( @_modules ).without module
 		Model.EventManager.trigger( 'cell.remove.module', @, [ module ] )
 		return this
@@ -223,8 +308,31 @@ class Model.Cell extends Helper.Mixable
 	# @return [self] chainable instance
 	#
 	removeMetabolite: ( name, placement ) ->
+		
+		return this unless @hasMetabolite( name, placement )
+		
+		module = @getMetabolite( name, placement )
+		todo = _( @_removeMetabolite ).bind( @, name, placement )
+		undo = _( @_addMetabolite ).bind( @, name, placement, module )
+		
+		action = new Model.Action( @, todo, undo, "Removed #{module.name}" )
+		action.do()
+		
+		@addUndoableEvent( action )
+		return this
+		
+	
+	# Actually removes the metabolite from the cell
+	#
+	# @param name [String] the name of the metabolite
+	# @param placement [Integer] the placement of the metabolite
+	# @param metabolite [Model.Metabolie] Metabolie to remove from the cell
+	# @return [self] chainable instance
+	#
+	_removeMetabolite: ( name, placement ) -> 
+		module = @_metabolites[ name ][ placement ]
 		delete @_metabolites[ name ][ placement ]
-		Model.EventManager.trigger( 'cell.remove.metabolite', @, [ name, placement ] )
+		Model.EventManager.trigger( 'cell.remove.metabolite', @, [ module ] )
 		return this
 		
 	# Removes this substrate from cell (alias for removeMetabolite)
@@ -308,34 +416,34 @@ class Model.Cell extends Helper.Mixable
 		return @getMetabolite( name, placement )
 	
 	# Returns the amount of metabolite in this cell
+	#
 	# @param name [String] metabolite to check
 	# @return [Integer] amount of metabolite
+	#
 	amountOf: ( name, placement ) ->
 		return @_metabolites[ name ][ placement ]?.amount
-	
-	# Runs this cell
+
+	# Gets all the modules that are steppable
+	# 
+	# @return [Array<Model.Module>] modules
 	#
-	# @param timespan [Integer] the time it should run for
-	# @return [self] chainable instance
-	#
-	run : ( timespan, base_values = [] ) ->
-		
-		Model.EventManager.trigger( 'cell.before.run', @, [ timespan ] )
-		
-		substrates = { }
-		variables = [ ]
-		values = [ ]
-						
-		# We would like to get all the variables in all the equations, so
-		# that's what we are going to do. Then we can insert the value indices
-		# into the equations.
-		modules = _( @_metabolites ).chain()
+	_getModules: () ->
+		return _( @_metabolites ).chain()
 			.map( ( ms ) -> _( ms ).values() )
 			.flatten()
 			.filter( ( ms ) -> ms instanceof Model.Metabolite )
 			.concat( @_modules )
 			.value()
-
+			
+	# Gets all the modules that are steppable, and their compounds
+	# 
+	# @return [Array] {Model.Module modules}, variables, values
+	#
+	_getModulesAndCompounds: () ->
+	
+		modules = @_getModules()
+		values = []
+		variables = []
 		for module in modules
 			for metabolite, value of module.starts
 				name = module[ metabolite ]
@@ -345,14 +453,21 @@ class Model.Cell extends Helper.Mixable
 					values.push value
 				else
 					values[ index ] += value
+					
+		return [ modules, variables, values ]
+		
+	# Tries using the base values as values
+	#
+	# @param base_values [Array<Float>] the base values to try
+	# @param values [Array<Float>] the default values
+	# @return [Array] values, used base values
+	#
+	_tryUsingBaseValues: ( base_values, values ) ->
 	
-		# If we got a pre set of values, we can use that
 		if base_values.length is values.length
+			return [ base_values, on ]
 			
-			values = base_values
-			append = on
-			
-		else if base_values.length > 0
+		if base_values.length > 0
 		
 			Model.EventManager.trigger( 'notification', @, 
 				[ 
@@ -364,7 +479,27 @@ class Model.Cell extends Helper.Mixable
 					]
 				] 
 			)
-			append = off
+			return [ values, off ]
+			
+		return [ values, on ]
+		
+	# Runs this cell
+	#
+	# @param timespan [Integer] the time it should run for
+	# @param base_values [Array] the base values to try
+	# @return [self] chainable instance
+	#
+	run : ( timespan, base_values = [] ) ->
+		
+		Model.EventManager.trigger( 'cell.before.run', @, [ timespan ] )
+		
+		substrates = { }
+						
+		# We would like to get all the variables in all the equations, so
+		# that's what we are going to do. Then we can insert the value indices
+		# into the equations.
+		[ modules, variables, values ] = @_getModulesAndCompounds()
+		[ values, continuation ] = @_tryUsingBaseValues( base_values, values )
 	
 		# Create the mapping from variable to value index
 		mapping = { }
@@ -381,15 +516,26 @@ class Model.Cell extends Helper.Mixable
 			for variable, i of mapping
 				variables[ variable ] = values[ i ]
 			return variables
-					
-		# The step function for this module
-		#
-		# @param t [Integer] the current time
-		# @param v [Array] the current value array
-		# @return [Array] the delta values	
-		#
-		step = ( t, v ) =>
+
+		# Run the ODE from 0...timespan with starting values and step function
+		sol = numeric.dopri( 0, timespan, values, @_step( modules, mapping, map ) )
 		
+		Model.EventManager.trigger( 'cell.after.run', @, [ timespan, sol, mapping ] )
+		
+		# Return the system results
+		return { results: sol, map: mapping, append: continuation }
+		
+	# The step function for the cell
+	#
+	# @param t [Integer] the current time
+	# @param v [Array] the current value array
+	# @param mapping
+	# @param map
+	# @return [Array] the delta values	
+	#
+	_step: ( modules, mapping, map ) ->
+	
+		return ( t, v ) =>
 			results = [ ]
 			variables = [ ]
 			
@@ -397,11 +543,8 @@ class Model.Cell extends Helper.Mixable
 			# value remains the same
 			for variable, index of mapping
 				results[ index ] = 0
-								
-			# Get those substrates named
+				
 			mapped = map v
-			
-			# Calculate the mu for this timestep
 			mu = @module.mu( mapped )
 			
 			Model.EventManager.trigger( 'cell.before.step', @, [ t, v, mu, mapped ] )
@@ -415,14 +558,6 @@ class Model.Cell extends Helper.Mixable
 			Model.EventManager.trigger( 'cell.after.step', @, [ t, v, mu, mapped, results ] )
 				
 			return results
-				
-		# Run the ODE from 0...timespan with starting values and step function
-		sol = numeric.dopri( 0, timespan, values, step )
-		
-		Model.EventManager.trigger( 'cell.after.run', @, [ timespan, sol, mapping ] )
-		
-		# Return the system results
-		return { results: sol, map: mapping, append: append }
 	
 	# Serializes a cell
 	# 
@@ -455,85 +590,106 @@ class Model.Cell extends Helper.Mixable
 		return JSON.stringify( result ) if to_string
 		return result
 		
+	# Save modules
+	# 
+	# @return [Array<jQuery.Promise>] the promises 
+	#
+	_save_modules: () =>
+		
+		promises = []
+		for module in @_modules
+			promises.push module.save @id
+			
+		for name, packet of @_metabolites
+			for placement, object of packet
+				if object? and object isnt null
+					promises.push object.save @id
+		
+		return promises
+		
 	# Tries to save a module
 	#
-	save : ( ) ->
-		
-		save_data = @serialize( false )
-		
-		# map data to server accepted data
-		cell_data =
-			cell:
-				id: save_data.id unless @isLocal()
-				name: 'My Test Cell'	
+	# @return [JQuery.Promise] promise
+	#
+	save: ( ) ->
 			
-		# Define the modules set function, so we can resuse it
-		update_modules = () =>
-		
-			for module in @_modules
-				module.save @id
-				
-			for name, packet of @_metabolites
-				for placement, object of packet
-					if object? and object isnt null
-						object.save @id
-			
-					
 		# This is the create
 		if @isLocal()
-			$.post( @url, cell_data )
-				.done( ( data ) => 
-					
-					# Lets save those results first
-					@id = data.id
-					
-					# And now we need to store those module
-					update_modules()
-				)
-				
-				.fail( ( data ) => 
-					Model.EventManager.trigger( 
-						'notification', @, 
-						[ 
-							'cell', 'save', 'cell.save',
-							"I am trying to save the cell #{ @id } but an error occured: #{ data }",
-							[ 
-								'create', 
-								data, 
-								module_instance_data 
-							] 
-						] 
-					)	
-				)
-		
+			@_create()
+			return 
+			
 		# This is the update
-		else
-			$.ajax( @url, { data: cell_data, type: 'PUT' } )
-				.done( ( data ) => 
-				
-					# And now we need to store those module
-					update_modules()
-				)
-				
-				.fail( ( data ) => 
-				
-					Model.EventManager.trigger( 
-						'notification', @, 
-						[ 
-							'cell', 'save', 'cell.save',
-							"I am trying to update the cell #{ @id } but an error occured: #{ data }",
-							[ 
-								'update', 
-								data, 
-								module_instance_data 
-							] 
-						] 
-					)	
-				)
+		return @_update()
+		
+	# Gets the data to save for this cell
+	#
+	# @return [Object] the data
+	#
+	_getData: () ->
+		save_data = @serialize( false )
+		return cell:
+				id: save_data.id unless @isLocal()
+				name: 'My Test Cell'	
+		
+	# Creates (new) this cell
+	# 
+	# @return [jQuery.Promise] the promise
+	#
+	_create: () ->
 	
-		subsequent_calls = []
+		cell_data = @_getData()
+		promise = $.post( @url, cell_data )
 		
+		promise.done( ( data ) => 			
+			@id = data.id
+			@_save_modules()
+		)
+			
+		promise.fail( ( data ) => 
+			Model.EventManager.trigger( 
+				'notification', @, 
+				[ 
+					'cell', 'save', 'cell.save',
+					"I am trying to save the cell #{ @id } but an error occured: #{ data }",
+					[ 
+						'create', 
+						data, 
+						module_instance_data 
+					] 
+				] 
+			)	
+		)
 		
+		return promise
+		
+	# Updates (existing) this cell
+	# 
+	# @return [jQuery.Promise] the promise
+	#
+	_update: () ->
+		
+		cell_data = @_getData()
+		promise = $.ajax( @url, { data: cell_data, type: 'PUT' } )
+		
+		promise.done( ( data ) => @_save_modules() 	)
+		promise.fail( ( data ) => 
+				
+			Model.EventManager.trigger( 
+				'notification', @, 
+				[ 
+					'cell', 'save', 'cell.save',
+					"I am trying to update the cell #{ @id } but an error occured: #{ data }",
+					[ 
+						'update', 
+						data, 
+						cell_data 
+					] 
+				] 
+			)	
+		)
+		
+		return promise
+
 	# Deserializes a cell
 	# 
 	# @param serialized [Object,String] the serialized object
@@ -560,34 +716,30 @@ class Model.Cell extends Helper.Mixable
 	# @param callback [Function] function to call on completion
 	#
 	@load : ( cell_id, callback ) ->
-		cell = new Model.Cell( undefined, undefined, { id: cell_id } )
-		
-		$.get( cell.url, { all: true } )
-			.done( ( data ) =>
-				result = new Model.Cell( 
-					undefined,
-					undefined,
-					{ 
-						id: data.cell.id
-						name: data.cell.name
-						#creation: new Date(data.created_at).getTime()
-					}
-				)
-				for module in result._modules
-					result.remove module
-					
-				for module_id in data.modules
-					Model.Module.load( module_id, result )
-					
-				callback.apply( @, [ result ] ) if callback?
-			)
 	
-	_addToTree: ( source, action, module) ->
-		if source is this
-			node = @_tree.add action
-			module._tree.setRoot node
+		cell = new Model.Cell( undefined, undefined, { id: cell_id } )
+		promise = $.get( cell.url, { all: true } )
 		
-		
+		promise.done( ( data ) =>
+			result = new Model.Cell( 
+				undefined,
+				undefined,
+				{ 
+					id: data.cell.id
+					name: data.cell.name
+					#creation: new Date(data.created_at).getTime()
+				}
+			)
+			for module in result._modules
+				result.remove module
+				
+			for module_id in data.modules
+				Model.Module.load( module_id, result )
+				
+			callback.apply( @, [ result ] ) if callback?
+		)	
+
+		return promise
 
 # Makes this available globally.
 (exports ? this).Model.Cell = Model.Cell
