@@ -2,7 +2,7 @@
 #
 class View.Cell extends Helper.Mixable
 
-	@include Mixin.EventBindings
+	@concern Mixin.EventBindings
 
 	MAX_RUNTIME: 100
 
@@ -25,7 +25,7 @@ class View.Cell extends Helper.Mixable
 		@_width = @_paper.width
 		@_height = @_paper.height
 		
-		@_allowBindings()
+		@_allowEventBindings()
 		
 		Object.defineProperty( @ , "_cell",
 			value: undefined
@@ -50,6 +50,7 @@ class View.Cell extends Helper.Mixable
 				@_bind( 'cell.add.module', @, @onModuleAdd )
 				@_bind( 'cell.add.metabolite', @, @onModuleAdd )
 				@_bind( 'cell.remove.module', @, @onModuleRemove )
+				@_bind( 'cell.remove.metabolite', @, @onModuleRemove )
 				
 			configurable: false
 			enumerable: true
@@ -167,7 +168,7 @@ class View.Cell extends Helper.Mixable
 	# @param cell [Model.Cell] cell added to
 	# @param module [Model.Module] module added
 	#
-	onModuleAdd: ( cell, action, module ) =>
+	onModuleAdd: ( cell, module ) =>
 		unless cell isnt @_cell
 			unless _( @_drawn ).indexOf( module.id ) isnt -1
 				@_drawn.unshift module.id
@@ -180,7 +181,6 @@ class View.Cell extends Helper.Mixable
 	# @param module [Model.Module] module removed
 	#
 	onModuleRemove: ( cell, module ) =>
-	
 		index = _( @_drawn ).indexOf( module.id )
 		if index isnt -1
 			view = @_views[ index ].kill()
