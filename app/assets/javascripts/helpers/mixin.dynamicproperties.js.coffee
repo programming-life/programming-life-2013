@@ -42,7 +42,6 @@ DynamicProperties =
 								@, todo, undo, 
 								"Change #{key} from #{value} to #{param}" 
 							)
-							
 							action.do()
 							
 							if ( event? )
