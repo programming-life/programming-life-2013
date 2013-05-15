@@ -12,6 +12,8 @@ describe("Mixin: Event Bindings", function() {
 	
 		beforeEach( function() {
 			mixed._allowEventBindings();
+			spyOn( Model.EventManager.constructor.prototype, 'bind' );
+			spyOn( Model.EventManager.constructor.prototype, 'unbind' );
 		});
 		
 		it( "should have set a private variable", function() {
@@ -26,6 +28,11 @@ describe("Mixin: Event Bindings", function() {
 			
 			beforeEach( function() {
 				mixed._bind( event, this, method );
+			});
+					
+			it( "should have bound that event", function() {
+				expect( Model.EventManager.constructor.prototype.bind ).toHaveBeenCalled();
+				expect( Model.EventManager.constructor.prototype.bind.callCount ).toBe( 1 );
 			});
 			
 			it( "should have saved a binding", function() {
@@ -42,13 +49,16 @@ describe("Mixin: Event Bindings", function() {
 					mixed._unbind( event, this, method );
 				});
 				
+				it( "should have unbound that event", function() {
+					expect( Model.EventManager.constructor.prototype.unbind ).toHaveBeenCalled();
+					expect( Model.EventManager.constructor.prototype.unbind.callCount ).toBe( 1 );
+				});
+				
 				it( "should have removed that binding", function() {
 					expect( mixed._bindings ).toBeDefined();
 					expect( Object.keys( mixed._bindings ).length ).toBe( 1 );
 					expect( mixed._bindings[event].length ).toBe( 0 );
 				});
-			
-				
 			});
 			
 			describe("and another event bound", function() {
@@ -58,6 +68,11 @@ describe("Mixin: Event Bindings", function() {
 				
 				beforeEach( function() {
 					mixed._bind( eventb, this, method );
+				});
+				
+				it( "should have bound that event", function() {
+					expect( Model.EventManager.constructor.prototype.bind ).toHaveBeenCalled();
+					expect( Model.EventManager.constructor.prototype.bind.callCount ).toBe( 2 );
 				});
 				
 				it( "should have saved a binding", function() {
@@ -70,6 +85,11 @@ describe("Mixin: Event Bindings", function() {
 			
 					beforeEach( function() {
 						mixed._unbind( eventb, this, method );
+					});
+					
+					it( "should have unbound that event", function() {
+						expect( Model.EventManager.constructor.prototype.unbind ).toHaveBeenCalled();
+						expect( Model.EventManager.constructor.prototype.unbind.callCount ).toBe( 1 );
 					});
 					
 					it( "should have removed a binding, but retain the other", function() {
@@ -85,6 +105,11 @@ describe("Mixin: Event Bindings", function() {
 			
 					beforeEach( function() {
 						mixed._unbindAll();
+					});
+					
+					it( "should have unbound those events", function() {
+						expect( Model.EventManager.constructor.prototype.unbind ).toHaveBeenCalled();
+						expect( Model.EventManager.constructor.prototype.unbind.callCount ).toBe( 2 );
 					});
 					
 					it( "should have removed all bindings", function() {
