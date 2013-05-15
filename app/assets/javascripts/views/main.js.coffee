@@ -12,7 +12,6 @@ class View.Main extends View.Base
 		cell = new Model.Cell()
 		@_views.push  new View.Cell( @_paper, cell)
 		@_leftPane = new View.Pane(View.Pane.LEFT_SIDE) 
-		console.log(cell._tree)
 		@_leftPane.addView( new View.Tree( @_leftPane._paper, cell._tree ) )
 		@_views.push @_leftPane
 		@_views.push  new View.Pane(View.Pane.RIGHT_SIDE)
