@@ -10,17 +10,15 @@ EventBindings =
 		#
 		# @return [self] chainable self
 		#
-		_allowEventBindings: _( () ->
-				@_bindings = {} 
-				return this 
-			).once()
-		 
+		_allowEventBindings: () ->
+			@_bindings = {} unless @_bindings?
+			return this 
+				 
 		# Unbinds all events
 		#
 		# @return [self] chainable self
 		# 
 		_unbindAll: () ->
-			@_allowEventBindings()
 			for event, bindings of @_bindings
 				for binding in bindings
 					@_unbind( event, binding[ 0 ], binding[ 1] )
@@ -34,7 +32,6 @@ EventBindings =
 		# @return [self] chainable self
 		#
 		_bind: ( event, context, method ) ->
-			@_allowEventBindings()
 			Model.EventManager.on( event, context, method )
 			unless @_bindings[ event ]? 
 				 @_bindings[ event ] = []
@@ -49,7 +46,6 @@ EventBindings =
 		# @return [self] chainable self
 		#
 		_unbind: ( event, context, func ) ->
-			@_allowEventBindings()
 			Model.EventManager.off( event, context, func )
 			if @_bindings[ event ]?
 				for binding in @_bindings[ event ] when binding[ 0 ] is context and binding[ 1 ] is func
