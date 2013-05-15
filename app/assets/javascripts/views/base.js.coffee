@@ -74,6 +74,8 @@ class View.Base extends Helper.Mixable
 	kill: ( ) ->
 		@clear()
 		@_contents = null
+		
+		@_unbindAll()
 
 		for view in @_views
 			view.kill()

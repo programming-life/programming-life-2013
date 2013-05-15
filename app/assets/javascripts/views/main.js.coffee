@@ -64,5 +64,6 @@ class View.Main extends View.Base
 	kill: ( ) ->
 		super()
 		@_paper.remove()
+		$( window ).unbind()
 
 (exports ? this).View.Main = View.Main
