@@ -180,29 +180,20 @@ class View.Module extends View.Base
 		# Draw splines
 		if @type is 'Transporter' and @activated
 			metaboliteInside = @_cell.getMetabolite(@module.transported, Model.Metabolite.Inside)
-			if metaboliteInside
-				metaboliteInsideView = @_parent.getView(metaboliteInside)
-				spline = @drawSpline(@x, @y, metaboliteInsideView.x, metaboliteInsideView.y, metaboliteInsideView.color)
-				spline.insertBefore(@_paper.bottom)
-
-			metaboliteOutside = @_cell.getMetabolite(@module.transported, Model.Metabolite.Outside)			
-			if metaboliteOutside
-				metaboliteOutsideView = @_parent.getView(metaboliteOutside)			
-				spline = @drawSpline(@x, @y, metaboliteOutsideView.x, metaboliteOutsideView.y, metaboliteOutsideView.color)
-				spline.insertBefore(@_paper.bottom)
+			metaboliteOutside = @_cell.getMetabolite(@module.transported, Model.Metabolite.Outside)
+			for metabolite in [metaboliteInside, metaboliteOutside]
+				if metabolite
+					metaboliteView = @_parent.getView(metabolite)
+					spline = @drawSpline(@x, @y, metaboliteView.x, metaboliteView.y, metaboliteView.color)
+					spline.insertBefore(@_paper.bottom)
 
 		if @type is 'Metabolism' and @activated
-			substrate = @_cell.getMetabolite(@module.orig.split("#")[0], Model.Metabolite.Inside)
-			if substrate
-				substrateView = @_parent.getView(substrate)
-				spline = @drawSpline(@x, @y, substrateView.x, substrateView.y, substrateView.color)
-				spline.insertBefore(@_paper.bottom)
-
-			product = @_cell.getMetabolite(@module.dest.split("#")[0], Model.Metabolite.Inside)
-			if product
-				productView = @_parent.getView(product)
-				spline = @drawSpline(@x, @y, productView.x, productView.y, productView.color)
-				spline.insertBefore(@_paper.bottom)
+			for metaboliteName in @module.orig.concat(@module.dest)
+				metabolite = @_cell.getMetabolite(metaboliteName.split("#")[0], Model.Metabolite.Inside)
+				if metabolite
+					metaboliteView = @_parent.getView(metabolite)
+					spline = @drawSpline(@x, @y, metaboliteView.x, metaboliteView.y, metaboliteView.color)
+					spline.insertBefore(@_paper.bottom)
 
 		# Draw hitbox
 		hitbox = @drawHitbox(box, scale)
