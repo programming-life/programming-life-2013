@@ -33,6 +33,7 @@ class Model.Cell extends Helper.Mixable
 		@_defineProperties( paramscell )
 		
 		@_trigger( 'cell.creation', @, [ @creation, @id ] )
+		@_bind( 'cell.set.property', @, @onPropertySet )
 		@add new Model.CellGrowth( params, start )
 		
 	# Defines All the properties
@@ -87,6 +88,15 @@ class Model.Cell extends Helper.Mixable
 		)
 
 		return this
+		
+	# Triggered when a property is set
+	#
+	# @param caller [any] the originating property
+	# @param action [Model.Action] the action invoked
+	#
+	onPropertySet: ( caller, action ) =>
+		if caller is @
+			@addUndoableEvent( action )
 		
 	# Extracts id data from id
 	#
