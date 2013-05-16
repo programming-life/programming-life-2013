@@ -86,8 +86,20 @@ class Model.Protein extends Model.Module
 			return results
 		
 		# Default parameters set here
-		defaults = {
-
+		defaults = @_getParameterDefaults( start, name, consume )
+		params = _( defaults ).extend( params )
+		metadata = @_getParameterMetaData()
+		
+		super params, step, metadata
+		
+	# Get parameter defaults array
+	#
+	# @param start [Integer] the start value
+	# @return [Object] default values
+	#
+	_getParameterDefaults: ( start, name, consume ) ->
+		return { 
+		
 			# Parameters
 			k : 1
 			k_d : 1
@@ -103,7 +115,15 @@ class Model.Protein extends Model.Module
 			starts: { name : start }
 		}
 		
-		params = _( defaults ).extend( params )
-		super params, step
+	# Get parameter metadata
+	#
+	# @return [Object] metadata values
+	#
+	_getParameterMetaData: () ->
+		return {
+			properties:
+				parameters: [ 'k', 'k_d' ]
+				metabolites: [ 'consume' ]
+		}
 
 (exports ? this).Model.Protein = Model.Protein
