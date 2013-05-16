@@ -36,10 +36,8 @@ class Model.CellGrowth extends Model.Module
 		step = ( t, compounds, mu ) -> 
 			
 			results = {}
-			
-			# Only if the components are available
-			if ( @_test( compounds, @name ) )
 
+			if ( @_test( compounds, @name ) )
 				# The Population size
 				# - growth rate
 				# - population
@@ -47,23 +45,19 @@ class Model.CellGrowth extends Model.Module
 				results[ @name ] = mu * compounds[ @name ]
 				
 			return results
-		
-		# Define default parameters here
-		defaults = { 
-		
-			# Parameters
-			metabolites: [ "s#int" ]
-			infrastructure : [ "lipid", "protein" ]
-			
-			# Name of the population compound
-			name: "cell"
-			
-			# Start values
-			starts : { name : start }
-		}
-		
-		params = _( params ).defaults( defaults )
 				
+		defaults = @_getParameterDefaults( start )
+		meta_data =  @_getParameterMetaData()
+		params = _( params ).defaults( defaults )
+		
+		super params, step, meta_data
+		
+	# Add the mu getter for this module
+	#
+	# @param step [Function] the step function
+	#
+	_defineGetters: ( step ) ->
+	
 		cell_growth = @
 		Object.defineProperty( @, 'mu',
 			
@@ -92,8 +86,40 @@ class Model.CellGrowth extends Model.Module
 						
 					return 0
 		)
+		super step
 		
-		super params, step		
+	# Get parameter defaults array
+	#
+	# @param start [Integer] the start value
+	# @return [Object] default values
+	#
+	_getParameterDefaults: ( start ) ->
+		return { 
+		
+			# Parameters
+			metabolites: [ "s#int" ]
+			infrastructure : [ "lipid", "protein" ]
+			
+			# Name of the population compound
+			name: "cell"
+			
+			# Start values
+			starts : { name : start }
+		}
+		
+	# Get parameter metadata
+	#
+	# @return [Object] metadata values
+	#
+	_getParameterMetaData: () ->
+		return {
+			
+			properties:
+				metabolites: [ 'metabolites' ]
+				compounds: [ 'infrastructure' ]
+				
+			#placement:
+		}
 
 # Makes this available globally.
 (exports ? this).Model.CellGrowth = Model.CellGrowth
