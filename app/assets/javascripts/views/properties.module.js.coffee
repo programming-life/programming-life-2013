@@ -57,31 +57,53 @@ class View.ModuleProperties extends Helper.Mixable
 		@_body = $('<div class="popover-content"></div>')
 		@_elem.append(@_body)
 
-		form = $('<div class="form-horizontal"></div>')
-
 		# Create body content and append to body
-		for prop in @module._dynamicProperties
-			propLabel = prop.replace(/_(.*)/g, "<sub>$1</sub>")
-
-			controlGroup = $('<div class="control-group"></div>')
-			controlGroup.append('<label class="control-label">' + propLabel + '</label>')
-
-			controls = $('<div class="controls"></div>')
-			controls.append('<input class="input-mini" type="text" value="' + @module[prop] + '" />')
-			controlGroup.append(controls)
-			form.append(controlGroup)
-
-		@_body.append(form)
+		@_populateBody()
 
 		# Create the popover footer
 		@_footer = $('<div class="modal-footer"></div>')
 		@_elem.append(@_footer)		
 
 		# Create footer content and append to footer
-		@_footer.append('<button class="btn">Done</button>')
+		@_saveButton = $('<button class="btn btn-primary">Save</button>')
+		@_saveButton.on('click', =>
+			@_save()
+		)
+
+		@_footer.append(@_saveButton)
 
 		# Append popover to body
 		$('body').append(@_elem)
+
+	# Populates the popover body with the required forms to reflect the module.
+	#
+	_populateBody: ( ) ->
+		@_body.empty()
+		form = $('<div class="form-horizontal"></div>')
+		
+		for prop in @module._dynamicProperties
+			id = @module.id + ':' + prop
+			propLabel = prop.replace(/_(.*)/g, "<sub>$1</sub>")
+
+			controlGroup = $('<div class="control-group"></div>')
+			controlGroup.append('<label class="control-label" for="' + id + '">' + propLabel + '</label>')
+
+			controls = $('<div class="controls"></div>')
+			controls.append('<input id="' + id + '" data-key="' + prop + '" class="input-small" type="text" value="' + @module[prop] + '" />')
+			controlGroup.append(controls)
+			form.append(controlGroup)
+
+		@_body.append(form)
+
+	# Saves all changed properties to the module.
+	#
+	_save: ( ) ->
+		for input in @_body.find('input')
+			key = $(input).attr('data-key')
+			value = $(input).val()
+
+			if @module[key] isnt value
+				@module[key] = value
 
 	# Sets the position of the popover so the arrow points straight at the module view
 	#
@@ -155,6 +177,8 @@ class View.ModuleProperties extends Helper.Mixable
 	#
 	# @param module [Module] the module that has changed
 	#
-	onModuleInvalidated: ( module ) ->
+	onModuleInvalidated: ( module, prop ) ->
+		if module is @module
+			@_populateBody()
 
 (exports ? this).View.ModuleProperties = View.ModuleProperties
