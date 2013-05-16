@@ -88,9 +88,9 @@ class Model.Protein extends Model.Module
 		# Default parameters set here
 		defaults = @_getParameterDefaults( start, name, consume )
 		params = _( defaults ).extend( params )
-		meta_data = @_getParameterMetaData()
+		metadata = @_getParameterMetaData()
 		
-		super params, step, meta_data
+		super params, step, metadata
 		
 	# Get parameter defaults array
 	#

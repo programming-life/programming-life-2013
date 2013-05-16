@@ -58,9 +58,9 @@ class Model.Metabolite extends Model.Module
 		
 		name = params.name ? name ? undefined
 		params = _( _( params ).defaults( defaults ) ).omit( 'name' ) 
-		meta_data = @_getParameterMetaData()
+		metadata = @_getParameterMetaData()
 		
-		super params, step, meta_data
+		super params, step, metadata
 		
 		@name = name
 		@_dynamicProperties.push 'name'
@@ -69,7 +69,7 @@ class Model.Metabolite extends Model.Module
 	#
 	# @param step [Function] the step function
 	#
-	_defineGetters: ( step ) ->
+	_defineGetters: ( step, metadata ) ->
 		@_nonEnumerableValue( '_name', undefined )
 		
 		Object.defineProperty( @ , "name",
@@ -97,7 +97,7 @@ class Model.Metabolite extends Model.Module
 			configurable: false
 		)
 		
-		super step
+		super step, metadata
 		
 	# Get parameter defaults array
 	#

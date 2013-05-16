@@ -76,9 +76,9 @@ class Model.Lipid extends Model.Module
 		
 		defaults = @_getParameterDefaults( start, consume )
 		params = _( params ).defaults( defaults )
-		meta_data = @_getParameterMetaData()
+		metadata = @_getParameterMetaData()
 		
-		super params, step, meta_data
+		super params, step, metadata
 		
 	# Get parameter defaults array
 	#

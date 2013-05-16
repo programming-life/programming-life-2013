@@ -77,9 +77,9 @@ class Model.DNA extends Model.Module
 		# Define default parameters here
 		defaults = @_getParameterDefaults( start, prefix, consume )
 		params = _( params ).defaults( defaults )
-		meta_data =  @_getParameterMetaData()
+		metadata =  @_getParameterMetaData()
 		
-		super params, step, meta_data
+		super params, step, metadata
 		
 	# Get parameter defaults array
 	#

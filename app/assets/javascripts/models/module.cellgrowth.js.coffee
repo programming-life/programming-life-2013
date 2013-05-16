@@ -48,15 +48,15 @@ class Model.CellGrowth extends Model.Module
 				
 		defaults = @_getParameterDefaults( start )
 		params = _( params ).defaults( defaults )
-		meta_data =  @_getParameterMetaData()
+		metadata =  @_getParameterMetaData()
 		
-		super params, step, meta_data
+		super params, step, metadata
 		
 	# Add the mu getter for this module
 	#
 	# @param step [Function] the step function
 	#
-	_defineGetters: ( step ) ->
+	_defineGetters: ( step, metadata ) ->
 	
 		cell_growth = @
 		Object.defineProperty( @, 'mu',
@@ -86,7 +86,7 @@ class Model.CellGrowth extends Model.Module
 						
 					return 0
 		)
-		super step
+		super step, metadata
 		
 	# Get parameter defaults array
 	#

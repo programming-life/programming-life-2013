@@ -116,9 +116,9 @@ class Model.Metabolism extends Model.Module
 		
 		defaults = @_getParameterDefaults( start, orig, dest, name )
 		params = _( params  ).defaults( defaults )
-		meta_data = @_getParameterMetaData()
+		metadata = @_getParameterMetaData()
 		
-		super params, step, meta_data
+		super params, step, metadata
 		
 	# Get parameter defaults array
 	#

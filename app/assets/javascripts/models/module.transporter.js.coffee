@@ -160,18 +160,18 @@ class Model.Transporter extends Model.Module
 		# Default parameters set here
 		defaults = @_getParameterDefaults( start, name, consume, type, direction, transported )
 		params = _( params ).defaults( defaults )			
-		meta_data = @_getParameterMetaData()
+		metadata = @_getParameterMetaData()
 
-		super params, step, meta_data
+		super params, step, metadata
 		
 	# Add the getters for this module
 	#
 	# @param step [Function] the step function
 	#
-	_defineGetters: ( step ) ->
+	_defineGetters: ( step, metadata ) ->
 		@_nonEnumerableGetter( 'orig', () -> return @getTransportedNames( @transported )[0] )
 		@_nonEnumerableGetter( 'dest', () -> return @getTransportedNames( @transported )[1] )
-		super step
+		super step, metadata
 		
 	# Get parameter defaults array
 	#
