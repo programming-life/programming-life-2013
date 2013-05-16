@@ -27,8 +27,6 @@ class View.ModuleProperties extends Helper.Mixable
 
 		@draw()
 
-		console.log @module._dynamicProperties
-
 	# Removes the properties' popover from the body
 	#
 	clear: ( ) ->
