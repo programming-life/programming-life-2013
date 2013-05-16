@@ -47,8 +47,8 @@ class Model.CellGrowth extends Model.Module
 			return results
 				
 		defaults = @_getParameterDefaults( start )
-		meta_data =  @_getParameterMetaData()
 		params = _( params ).defaults( defaults )
+		meta_data =  @_getParameterMetaData()
 		
 		super params, step, meta_data
 		
@@ -113,12 +113,9 @@ class Model.CellGrowth extends Model.Module
 	#
 	_getParameterMetaData: () ->
 		return {
-			
 			properties:
 				metabolites: [ 'metabolites' ]
 				compounds: [ 'infrastructure' ]
-				
-			#placement:
 		}
 
 # Makes this available globally.
