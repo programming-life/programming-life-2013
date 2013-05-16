@@ -33,6 +33,7 @@ class Model.Cell extends Helper.Mixable
 		@_defineProperties( paramscell )
 		
 		@_trigger( 'cell.creation', @, [ @creation, @id ] )
+		@_bind( 'cell.set.property', @, @onPropertySet )
 		@add new Model.CellGrowth( params, start )
 		
 	# Defines All the properties
@@ -87,6 +88,15 @@ class Model.Cell extends Helper.Mixable
 		)
 
 		return this
+		
+	# Triggered when a property is set
+	#
+	# @param caller [any] the originating property
+	# @param action [Model.Action] the action invoked
+	#
+	onPropertySet: ( caller, action ) =>
+		if caller is @
+			@addUndoableEvent( action )
 		
 	# Extracts id data from id
 	#
@@ -566,20 +576,20 @@ class Model.Cell extends Helper.Mixable
 		
 	# Save modules
 	# 
-	# @return [Array<jQuery.Promise>] the promises 
+	# @return [jQuery.Promise] the promiseses deffered 
 	#
 	_save_modules: () =>
 		
-		promises = []
+		promiseses = []
 		for module in @_modules
-			promises.push module.save @id
+			promiseses.push module.save @id
 			
 		for name, packet of @_metabolites
 			for placement, object of packet
 				if object? and object isnt null
-					promises.push object.save @id
+					promiseses.push object.save @id
 		
-		return promises
+		return $.when( promiseses... )
 		
 	# Tries to save a module
 	#
@@ -587,12 +597,9 @@ class Model.Cell extends Helper.Mixable
 	#
 	save: ( ) ->
 			
-		# This is the create
 		if @isLocal()
-			@_create()
-			return 
-			
-		# This is the update
+			return @_create()
+
 		return @_update()
 		
 	# Gets the data to save for this cell
@@ -600,10 +607,13 @@ class Model.Cell extends Helper.Mixable
 	# @return [Object] the data
 	#
 	_getData: () ->
+	
 		save_data = @serialize( false )
-		return cell:
+		return {
+			cell:
 				id: save_data.id unless @isLocal()
 				name: 'My Test Cell'	
+		}
 		
 	# Creates (new) this cell
 	# 
@@ -613,26 +623,27 @@ class Model.Cell extends Helper.Mixable
 	
 		cell_data = @_getData()
 		promise = $.post( @url, cell_data )
-		
-		promise.done( ( data ) => 			
-			@id = data.id
-			@_save_modules()
-		)
+		promise = promise.then( 
+			# Done
+			( data ) => 			
+				@id = data.id
+				return @_save_modules()
 			
-		promise.fail( ( data ) => 
-			@_trigger( 
-				'notification', @, 
-				[ 
-					'cell', 'save', 'cell.save',
-					"I am trying to save the cell #{ @id } but an error occured: #{ data }",
+			# Fail
+			, ( data ) => 
+				@_trigger( 
+					'notification', @, 
 					[ 
-						'create', 
-						data, 
-						module_instance_data 
+						'cell', 'save', 'cell.save',
+						"I am trying to save the cell #{ @id } but an error occured: #{ data }",
+						[ 
+							'create', 
+							data, 
+							module_instance_data 
+						] 
 					] 
-				] 
-			)	
-		)
+				)	
+			)
 		
 		return promise
 		
@@ -645,22 +656,28 @@ class Model.Cell extends Helper.Mixable
 		cell_data = @_getData()
 		promise = $.ajax( @url, { data: cell_data, type: 'PUT' } )
 		
-		promise.done( ( data ) => @_save_modules() 	)
-		promise.fail( ( data ) => 
-				
-			@_trigger( 
-				'notification', @, 
-				[ 
-					'cell', 'save', 'cell.save',
-					"I am trying to update the cell #{ @id } but an error occured: #{ data }",
+		promise = promise.then( 
+			# Done
+			( data ) =>
+				return @_save_modules()
+			
+			,
+			# Fail
+			( data ) => 
+			
+				@_trigger( 
+					'notification', @, 
 					[ 
-						'update', 
-						data, 
-						cell_data 
+						'cell', 'save', 'cell.save',
+						"I am trying to update the cell #{ @id } but an error occured: #{ data }",
+						[ 
+							'update', 
+							data, 
+							cell_data 
+						] 
 					] 
-				] 
-			)	
-		)
+				)	
+			)
 		
 		return promise
 
@@ -693,25 +710,46 @@ class Model.Cell extends Helper.Mixable
 	
 		cell = new Model.Cell( undefined, undefined, { id: cell_id } )
 		promise = $.get( cell.url, { all: true } )
-		
-		promise.done( ( data ) =>
-			result = new Model.Cell( 
-				undefined,
-				undefined,
-				{ 
-					id: data.cell.id
-					name: data.cell.name
-					#creation: new Date(data.created_at).getTime()
-				}
+		promise = promise.then( 
+			
+			# Done
+			( data ) =>
+				result = new Model.Cell( 
+					undefined,
+					undefined,
+					{ 
+						id: data.cell.id
+						name: data.cell.name
+						#creation: new Date(data.created_at).getTime()
+					}
+				)
+				for module in result._modules
+					result.remove module
+				
+				promiseses = []
+				for module_id in data.modules
+					promiseses.push Model.Module.load( module_id, result )
+					
+				callback.apply( @, [ result ] ) if callback?
+				
+				return $.when( promiseses... )
+				
+			# Fail
+			, ( data ) => 
+			
+				cell._trigger( 
+					'notification', cell, 
+					[ 
+						'cell', 'load', 'cell.load:#{cell_id}',
+						"I am trying to load the cell #{ cell_id } but an error occured: #{ data }",
+						[ 
+							'load', 
+							data, 
+							cell_id 
+						] 
+					] 
+				)	
 			)
-			for module in result._modules
-				result.remove module
-				
-			for module_id in data.modules
-				Model.Module.load( module_id, result )
-				
-			callback.apply( @, [ result ] ) if callback?
-		)	
 
 		return promise
 
