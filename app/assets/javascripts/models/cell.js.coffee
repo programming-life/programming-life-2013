@@ -380,7 +380,7 @@ class Model.Cell extends Helper.Mixable
 	# @return [Model.Metabolite] the metabolite
 	#
 	getMetabolite: ( name, placement ) ->
-		return @_metabolites[ name ][ placement ] ? null
+		return @_metabolites[ name ]?[ placement ] ? null
 		
 	# Gets a substrate (alias for getMetabolite)
 	# 

@@ -11,9 +11,10 @@ class View.Module extends View.Base
 	# @param paper [Raphael.Paper] the raphael paper
 	# @param module [Model.Module] the module to show
 	#
-	constructor: ( paper, cell, module, params = {} ) ->
+	constructor: ( paper, cell, parent, module, params = {} ) ->
 		super(paper)
 		@_cell = cell
+		@_parent = parent
 
 		@module = module		
 		@type = module.constructor.name
@@ -21,8 +22,8 @@ class View.Module extends View.Base
 
 		@_params = params
 		
-		@_x = 0
-		@_y = 0
+		@x = 0
+		@y = 0
 		@_scale = 0
 
 		@_selected = off	
@@ -139,8 +140,8 @@ class View.Module extends View.Base
 	# Redraws this view iff it has been drawn before
 	#
 	redraw: ( ) ->
-		if @_x and @_y and @_scale
-			_( @draw( @_x, @_y, @_scale ) ).throttle( 50 )
+		if @x and @y and @_scale
+			_( @draw( @x, @y, @_scale ) ).throttle( 50 )
 		return this
 			
 	# Draws this view and thus the model
@@ -154,10 +155,10 @@ class View.Module extends View.Base
 		@clear()
 
 		# Store x, y, and scale values for further redraws
-		@_x = x
-		@_y = y
+		@x = x
+		@y = y
 		@_scale = scale
-		@_color = @hashColor()
+		@color = @hashColor(_.escape _( @module.name ).first())
 
 		unless @_visible
 			return
@@ -175,6 +176,33 @@ class View.Module extends View.Base
 		# Draw box
 		box = @drawBox(contents, scale)
 		box.insertBefore(contents)
+
+		# Draw splines
+		if @type is 'Transporter' and @activated
+			metaboliteInside = @_cell.getMetabolite(@module.transported, Model.Metabolite.Inside)
+			if metaboliteInside
+				metaboliteInsideView = @_parent.getView(metaboliteInside)
+				spline = @drawSpline(metaboliteInsideView.x, metaboliteInsideView.y, metaboliteInsideView.color)
+				spline.insertBefore(@_paper.bottom)
+
+			metaboliteOutside = @_cell.getMetabolite(@module.transported, Model.Metabolite.Outside)			
+			if metaboliteOutside
+				metaboliteOutsideView = @_parent.getView(metaboliteOutside)			
+				spline = @drawSpline(metaboliteOutsideView.x, metaboliteOutsideView.y, metaboliteOutsideView.color)
+				spline.insertBefore(@_paper.bottom)
+
+		if @type is 'Metabolism' and @activated
+			substrate = @_cell.getMetabolite(@module.orig.split("#")[0], Model.Metabolite.Inside)
+			if substrate
+				substrateView = @_parent.getView(substrate)
+				spline = @drawSpline(substrateView.x, substrateView.y, substrateView.color)
+				spline.insertBefore(@_paper.bottom)
+
+			product = @_cell.getMetabolite(@module.dest.split("#")[0], Model.Metabolite.Inside)
+			if product
+				productView = @_parent.getView(product)
+				spline = @drawSpline(productView.x, productView.y, productView.color)
+				spline.insertBefore(@_paper.bottom)
 
 		# Draw hitbox
 		hitbox = @drawHitbox(box, scale)
@@ -213,29 +241,7 @@ class View.Module extends View.Base
 					showText: off
 				
 				[ substrateCircle ] = @drawComponent( 'transporter', 'SubstrateCircle', x, y, scale, params )
-					
-				if big
-					params = 
-						objRect : arrow.getBBox()
-						title: _.escape @type
-						padding: padding
-					
-					[ titleText, titleLine ] = @drawComponent( 'module', 'ModuleTitle', x, y, scale, params )
-					
-					params = 
-						objRect : arrow.getBBox()
-						title: _.escape @type
-						padding: padding
-					
-					[ titleText, titleLine ] = @drawComponent( 'module', 'ModuleTitle', x, y, scale, params )
-					
-					params = 
-						objRect : arrow.getBBox()
-						text: "name: #{@module.name}\ninitial:  #{@module.starts.name}\nk: #{@module.k}\nk_tr: #{@module.k_tr}\nk_m: #{@module.k_m}\nsynth: #{@module.consume}\n#{@module.orig} > #{@module.dest}"
-						padding: padding
-					
-					[ paramsText, paramsLine ] = @drawComponent( 'module', 'Information', x, substrateCircle.getBBox().y + substrateCircle.getBBox().height + 40 * scale , scale, params )
-			
+
 			when "Metabolite"		
 			
 				params =
@@ -246,17 +252,7 @@ class View.Module extends View.Base
 					'substrate', 
 					'SubstrateCircle', 
 					x, y, scale, params )
-					
-				if big
-	
-					params = 
-						objRect : substrateCircle.getBBox()
-						text: "name: #{@module.name}\ninitial:  #{@module.starts.name}"
-						padding: padding
-					
-					[ paramsText, paramsLine ] = @drawComponent( 'module', 'Information', x, y, scale, params )
 				
-
 			when "Metabolism"
 			
 				[ arrow ] = @drawComponent( 'transporter', 'ProcessArrow', x, y, scale, { } )
@@ -267,23 +263,7 @@ class View.Module extends View.Base
 					showText: off
 				
 				[ enzymCircleOrig, enzymCircleDest ] = @drawComponent( 'enzym', 'EnzymCircle', x, y, scale, params )
-					
-				if big
-								
-					params = 
-						objRect : arrow.getBBox()
-						title: _.escape @type
-						padding: padding
-					
-					[ titleText, titleLine ] = @drawComponent( 'module', 'ModuleTitle', x, y, scale, params )
-					
-					params = 
-						objRect : arrow.getBBox()
-						text: "name: #{@module.name}\ninitial:  #{@module.starts.name}\nk: #{@module.k}\nk_m: #{@module.k_m}\nk_d: #{@module.k_d}\nv: #{@module.v}\n#{@module.orig} > #{@module.dest}"
-						padding: padding
-					
-					[ paramsText, paramsLine ] = @drawComponent( 'module', 'Information', x, enzymCircleOrig.getBBox().y + enzymCircleOrig.getBBox().height + 40 * scale , scale, params )
-				
+									
 			when "Protein"	
 			
 				params =
@@ -296,59 +276,24 @@ class View.Module extends View.Base
 					'protein', 
 					'SubstrateCircle', 
 					x, y, scale, params )
-					
-				if big
-					params = 
-							objRect : substrateCircle.getBBox()
-							text: "name: #{@module.name}\ninitial:  #{@module.starts.name}\nk: #{@module.k}\nk_d: #{@module.k_d}\nsynth: #{@module.consume}\n#{@module.consume} > #{@module.name}"
-							padding: padding
-						
-						[ paramsText, paramsLine ] = @drawComponent( 'module', 'Information', x, substrateCircle.getBBox().y + substrateCircle.getBBox().height + 40 * scale , scale, params )
-					
+										
 			when "DNA"
 						
 				text = @_paper.text(x, y, _.escape @type)
 				text.attr
 					'font-size': 20 * scale
-				
-				if big
-	
-					params = 
-						objRect : text.getBBox()
-						text: "initial:  #{@module.starts.name}\nk: #{@module.k}\nsynth: #{@module.consume}\n#{@module.consume} > #{@module.name}"
-						padding: padding
-					
-					[ paramsText, paramsLine ] = @drawComponent( 'module', 'Information', x, y, scale, params )
 					
 			when "Lipid"
 						
 				text = @_paper.text(x, y, _.escape @type)
 				text.attr
 					'font-size': 20 * scale
-				
-				if big
-	
-					params = 
-						objRect : text.getBBox()
-						text: "initial:  #{@module.starts.name}\nk: #{@module.k}\nsynth: #{@module.consume}\n#{@module.consume} > #{@module.name}"
-						padding: padding
-					
-					[ paramsText, paramsLine ] = @drawComponent( 'module', 'Information', x, y, scale, params )
-					
+									
 			when "CellGrowth"
 						
 				text = @_paper.text(x, y, _.escape @type)
 				text.attr
 					'font-size': 20 * scale
-				
-				if big
-	
-					params = 
-						objRect : text.getBBox()
-						text: "initial cell:  #{@module.starts.name}\ninfrastructure: #{@module.infrastructure}\nsynth: #{@module.metabolites}\n#{@module.infrastructure}, #{@module.metabolites} > #{@module.name}"
-						padding: padding
-					
-					[ paramsText, paramsLine ] = @drawComponent( 'module', 'Information', x, y, scale, params )
 					
 			else
 				text = @_paper.text(x, y, _.escape @type)
@@ -375,89 +320,17 @@ class View.Module extends View.Base
 
 		return box
 
-	# Draws this view close buttons
-	#
-	# @param elem [Raphael] element to draw for
-	# @param scale [Integer] the scale
-	# @return [Raphael] the contents
-	#
-	drawCloseButton : ( elem, scale ) ->
-		rect = elem.getBBox()
+	drawSpline : ( toX, toY, color) ->
+		x1 = toX
+		y1 = @y
 
-		closeButton = @_paper.set()
+		x2 = @x		
+		y2 = toY
+		spline = @_paper.path("M#{@x},#{@y}C#{x1},#{y1} #{x2},#{y2} #{toX},#{toY}")
+		spline.attr('stroke', color)
+		spline.node.setAttribute('class', 'metabolite-spline')
 
-		circle = @_paper.circle( rect.x + rect.width, rect.y, 16 * scale )
-		circle.node.setAttribute('class', 'module-close')
-
-		image = @_paper.image( 
-			'/assets/icon-resize-small.png', 
-			rect.x + rect.width - 12 * scale, 
-			rect.y - 12 * scale, 
-			24 * scale, 
-			24 * scale
-		)
-
-		hitbox = @_paper.circle( rect.x + rect.width , rect.y, 16 * scale )
-		hitbox.node.setAttribute('class', 'module-hitbox')		
-		closeButton.push( circle, image, hitbox )
-		
-		return closeButton
-
-	# Draws the delete buttons
-	#
-	# @param elem [Raphael] element to draw for
-	# @param scale [Integer] the scale
-	# @return [Raphael] the contents
-	#
-	drawDeleteButton : ( elem, scale ) ->
-		rect = elem.getBBox()
-
-		deleteButton = @_paper.set()
-
-		circle = @_paper.circle( rect.x, rect.y, 16 * scale )
-		circle.node.setAttribute('class', 'module-close')
-			
-		image = @_paper.image(
-			'/assets/icon-trash.png', 
-			rect.x - 12 * scale, 
-			rect.y - 12 * scale, 
-			24 * scale, 
-			24 * scale
-		)
-
-		hitbox = @_paper.circle( rect.x, rect.y, 16 * scale )
-		hitbox.node.setAttribute('class', 'module-hitbox')		
-		deleteButton.push( circle, image, hitbox )
-		
-		return deleteButton
-
-	# Draws the edit buttons
-	#
-	# @param elem [Raphael] element to draw for
-	# @param scale [Integer] the scale
-	# @return [Raphael] the contents
-	#
-	drawEditButton : ( elem, scale ) ->
-		rect = elem.getBBox()
-
-		editButton = @_paper.set()
-
-		circle = @_paper.circle( rect.x + 40 * scale, rect.y, 16 * scale )
-		circle.node.setAttribute('class', 'module-close')
-			
-		image = @_paper.image(
-			'/assets/icon-pencil.png', 
-			rect.x + 28 * scale, 
-			rect.y - 12 * scale, 
-			24 * scale, 
-			24 * scale
-		)
-
-		hitbox = @_paper.circle( rect.x + 40 * scale, rect.y, 16 * scale )
-		hitbox.node.setAttribute('class', 'module-hitbox')		
-		editButton.push( circle, image, hitbox )
-		
-		return editButton
+		return spline
 
 
 	# Draws this view shadow
