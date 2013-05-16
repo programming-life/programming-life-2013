@@ -24,6 +24,8 @@ class View.ModuleProperties extends Helper.Mixable
 
 		@draw()
 
+		console.log @module._dynamicProperties
+
 	# Removes the properties' popover from the body
 	#
 	clear: ( ) ->
@@ -39,8 +41,8 @@ class View.ModuleProperties extends Helper.Mixable
 		@_elem.append('<div class="arrow"></div>')
 
 		# Create the popover header
-		header = $('<div class="popover-title"></div>')
-		@_elem.append(header)
+		@_header = $('<div class="popover-title"></div>')
+		@_elem.append(@_header)
 
 		# Create closebutton and title and append to header
 		closeButton = $('<button class="close">&times;</button>')
@@ -48,22 +50,35 @@ class View.ModuleProperties extends Helper.Mixable
 			Model.EventManager.trigger('module.set.selected', @module, [ off ])
 		)
 
-		header.append(@module.constructor.name)
-		header.append(closeButton)
+		@_header.append(@module.constructor.name)
+		@_header.append(closeButton)
 
 		# Create the popover body
-		body = $('<div class="popover-content"></div>')
-		@_elem.append(body)
+		@_body = $('<div class="popover-content"></div>')
+		@_elem.append(@_body)
+
+		form = $('<div class="form-horizontal"></div>')
 
 		# Create body content and append to body
-		body.append('yolo op je radio')
+		for prop in @module._dynamicProperties
+			propLabel = prop.replace(/_(.*)/g, "<sub>$1</sub>")
+
+			controlGroup = $('<div class="control-group"></div>')
+			controlGroup.append('<label class="control-label">' + propLabel + '</label>')
+
+			controls = $('<div class="controls"></div>')
+			controls.append('<input class="input-mini" type="text" value="' + @module[prop] + '" />')
+			controlGroup.append(controls)
+			form.append(controlGroup)
+
+		@_body.append(form)
 
 		# Create the popover footer
-		footer = $('<div class="modal-footer"></div>')
-		@_elem.append(footer)		
+		@_footer = $('<div class="modal-footer"></div>')
+		@_elem.append(@_footer)		
 
 		# Create footer content and append to footer
-		footer.append('<button class="btn">Done</button>')
+		@_footer.append('<button class="btn">Done</button>')
 
 		# Append popover to body
 		$('body').append(@_elem)

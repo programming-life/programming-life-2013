@@ -109,11 +109,16 @@ body {
 
 .module-properties.hovered {
 	display:block;
-	opacity: .8;
+	opacity: .9;
 	z-index:1000;
 
 	.close {
 		display:none;
+	}
+
+	input {
+		border: none;
+		box-shadow:none;
 	}
 }
 
