@@ -74,9 +74,20 @@ class Model.Lipid extends Model.Module
 			
 			return results
 		
-		# Define default parameters here
-		defaults = { 
-			
+		defaults = @_getParameterDefaults( start, consume )
+		params = _( params ).defaults( defaults )
+		meta_data = @_getParameterMetaData()
+		
+		super params, step, meta_data
+		
+	# Get parameter defaults array
+	#
+	# @param start [Integer] the start value
+	# @return [Object] default values
+	#
+	_getParameterDefaults: ( start, consume ) ->
+		return { 
+		
 			# Parameters
 			k : 1
 			consume: if _( consume ).isArray() then consume else [ consume ] 
@@ -91,7 +102,15 @@ class Model.Lipid extends Model.Module
 			name : "lipid"
 		}
 		
-		params = _( params ).defaults( defaults )
-		super params, step
+	# Get parameter metadata
+	#
+	# @return [Object] metadata values
+	#
+	_getParameterMetaData: () ->
+		return {
+			properties:
+				metabolites: [ 'consume' ]
+				parameters: [ 'k' ]
+		}
 
 (exports ? this).Model.Lipid = Model.Lipid
