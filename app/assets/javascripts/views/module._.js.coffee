@@ -182,26 +182,26 @@ class View.Module extends View.Base
 			metaboliteInside = @_cell.getMetabolite(@module.transported, Model.Metabolite.Inside)
 			if metaboliteInside
 				metaboliteInsideView = @_parent.getView(metaboliteInside)
-				spline = @drawSpline(metaboliteInsideView.x, metaboliteInsideView.y, metaboliteInsideView.color)
+				spline = @drawSpline(@x, @y, metaboliteInsideView.x, metaboliteInsideView.y, metaboliteInsideView.color)
 				spline.insertBefore(@_paper.bottom)
 
 			metaboliteOutside = @_cell.getMetabolite(@module.transported, Model.Metabolite.Outside)			
 			if metaboliteOutside
 				metaboliteOutsideView = @_parent.getView(metaboliteOutside)			
-				spline = @drawSpline(metaboliteOutsideView.x, metaboliteOutsideView.y, metaboliteOutsideView.color)
+				spline = @drawSpline(@x, @y, metaboliteOutsideView.x, metaboliteOutsideView.y, metaboliteOutsideView.color)
 				spline.insertBefore(@_paper.bottom)
 
 		if @type is 'Metabolism' and @activated
 			substrate = @_cell.getMetabolite(@module.orig.split("#")[0], Model.Metabolite.Inside)
 			if substrate
 				substrateView = @_parent.getView(substrate)
-				spline = @drawSpline(substrateView.x, substrateView.y, substrateView.color)
+				spline = @drawSpline(@x, @y, substrateView.x, substrateView.y, substrateView.color)
 				spline.insertBefore(@_paper.bottom)
 
 			product = @_cell.getMetabolite(@module.dest.split("#")[0], Model.Metabolite.Inside)
 			if product
 				productView = @_parent.getView(product)
-				spline = @drawSpline(productView.x, productView.y, productView.color)
+				spline = @drawSpline(@x, @y, productView.x, productView.y, productView.color)
 				spline.insertBefore(@_paper.bottom)
 
 		# Draw hitbox
@@ -320,13 +320,21 @@ class View.Module extends View.Base
 
 		return box
 
-	drawSpline : ( toX, toY, color) ->
-		x1 = toX
-		y1 = @y
+	# Draws a spline from between two points
+	#
+	# @param origX [float] the starting x coordinate
+	# @param origY [float] the starting y coordinate
+	# @param destX [float] the terminal x coordinate
+	# @param destY [float] the terminal y coordinate
+	# @return [Raphael] the spline path
+	#
+	drawSpline : ( origX, origY, destX, destY, color) ->
+		x1 = destX
+		y1 = origY
 
-		x2 = @x		
-		y2 = toY
-		spline = @_paper.path("M#{@x},#{@y}C#{x1},#{y1} #{x2},#{y2} #{toX},#{toY}")
+		x2 = origX		
+		y2 = destY
+		spline = @_paper.path("M#{origX},#{origY}C#{x1},#{y1} #{x2},#{y2} #{destX},#{destY}")
 		spline.attr('stroke', color)
 		spline.node.setAttribute('class', 'metabolite-spline')
 
