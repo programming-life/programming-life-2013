@@ -64,8 +64,8 @@ class Model.Metabolite extends Model.Module
 		
 		@name = name
 		@_dynamicProperties.push 'name'
-	
-	# Add the mu getter for this module
+		
+	# Add the getters for this module
 	#
 	# @param step [Function] the step function
 	#
@@ -73,13 +73,26 @@ class Model.Metabolite extends Model.Module
 		@_nonEnumerableValue( '_name', undefined )
 		
 		Object.defineProperty( @ , "name",
+		
 			set: ( param ) ->
-				Model.EventManager.trigger( 'module.set.property', @, [ "_name", @["_name"], param ] )
-				@["_name"] = param?.split( '#' )[0]
+			
+				todo = _( ( value ) => @['_name'] = value ).bind( @, param?.split( '#' )[0] )
+				undo = _( ( value ) => @['_name'] = value ).bind( @, @[ '_name' ] )
+				
+				action = new Model.Action( 
+					@, todo, undo, 
+					"Change name from #{@[ '_name' ]} to #{param}" 
+				)
+				action.do()
+			
+				@_trigger( 'module.set.property', @, [ action ] )
+				
 			get: ->
+				
 				return @["_name"] + "#int" if @placement is Model.Metabolite.Inside
 				return @["_name"] + "#ext" if @placement is Model.Metabolite.Outside
 				return @["_name"] 
+				
 			enumerable: true
 			configurable: false
 		)
