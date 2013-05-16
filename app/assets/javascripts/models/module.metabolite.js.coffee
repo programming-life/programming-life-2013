@@ -54,27 +54,24 @@ class Model.Metabolite extends Model.Module
 				
 			return results
 
-		# Default parameters set here
-		defaults = { 
+		defaults = @_getParameterDefaults( start, placement, type )
 		
-			# Parameters
-			supply: if placement is Model.Metabolite.Outside and type is Model.Metabolite.Substrate then 1 else 0
-			
-			# Meta-Parameters
-			placement : placement
-			type : type
-			
-			# Start values
-			starts : { name: start }
-		}
+		name = params.name ? name ? undefined
+		params = _( _( params ).defaults( defaults ) ).omit( 'name' ) 
+		meta_data = @_getParameterMetaData()
 		
-		Object.defineProperty( @ , "_name",
-			value: undefined
-			configurable: false
-			enumerable: false
-			writable: true
-		)
-
+		super params, step, meta_data
+		
+		@name = name
+		@_dynamicProperties.push 'name'
+	
+	# Add the mu getter for this module
+	#
+	# @param step [Function] the step function
+	#
+	_defineGetters: ( step ) ->
+		@_nonEnumerableValue( '_name', undefined )
+		
 		Object.defineProperty( @ , "name",
 			set: ( param ) ->
 				Model.EventManager.trigger( 'module.set.property', @, [ "_name", @["_name"], param ] )
@@ -87,12 +84,49 @@ class Model.Metabolite extends Model.Module
 			configurable: false
 		)
 		
-		@name = if params.name? then params.name else name ? undefined
-				
-		params = _( _( params ).defaults( defaults ) ).omit( 'name' ) 
-		super params, step
+		super step
 		
-		@_dynamicProperties.push 'name'
+	# Get parameter defaults array
+	#
+	# @param start [Integer] the start value
+	# @return [Object] default values
+	#
+	_getParameterDefaults: ( start, placement, type ) ->
+		return { 
+		
+			# Parameters
+			supply: if placement is Model.Metabolite.Outside and type is Model.Metabolite.Substrate then 1 else 0
+			
+			# Meta-Parameters
+			placement : placement
+			type : type
+			
+			# Start values
+			starts : { name: start }
+		}
+		
+	# Get parameter metadata
+	#
+	# @return [Object] metadata values
+	#
+	_getParameterMetaData: () ->
+		return {
+			properties:
+				parameters: [ 'supply' ]
+				enumerations: [ 
+					{
+						name: 'placement'
+						values: 
+							Outside: Model.Metabolite.Outside
+							Inside: Model.Metabolite.Inside
+					}, {
+						name: 'type'
+						values: 
+							Substrate: Model.Metabolite.Substrate
+							Product: Model.Metabolite.Product
+					}
+				]
+		}
 		
 	# Constructor for External Substrates
 	#
