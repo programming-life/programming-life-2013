@@ -22,7 +22,7 @@ class Model.Module extends Helper.Mixable
 		
 		@_defineProperties( params, step )
 					
-		@_bind( 'module.set.property', @, @addUndoableEvent )
+		@_bind( 'module.set.property', @, @onPropertySet )
 		@_trigger( 'module.creation', @, [ @creation, @id ] )	
 		
 	# Defines All the properties
@@ -82,6 +82,15 @@ class Model.Module extends Helper.Mixable
 			configurable: false
 			enumerable: false
 		)
+		
+	# Triggered when a property is set
+	#
+	# @param caller [any] the originating property
+	# @param action [Model.Action] the action invoked
+	#
+	onPropertySet: ( caller, action ) =>
+		if caller is @
+			@addUndoableEvent( action )
 		
 	# Extracts id data from id
 	#
