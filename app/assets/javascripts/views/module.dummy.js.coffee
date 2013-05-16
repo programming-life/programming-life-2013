@@ -10,11 +10,9 @@ class View.DummyModule extends View.Module
 	# @param module [Model.Module] the module to show
 	# @param params [Object] the params
 	#
-	constructor: ( paper, cell, module, params ) ->
-		@_cell = cell
-		@_params = params
-		@_activated = off
-		super paper, cell, module
+	constructor: ( paper, cell, module, params = {} ) ->
+		@activated = off
+		super paper, cell, module, params
 		
 	# Runs if module is selected
 	# 
@@ -37,29 +35,29 @@ class View.DummyModule extends View.Module
 		
 			when "DNA"
 				@_visible = off
-				@_activated = on
+				@activated = on
 				
 				@_cell.add( new Model.DNA() )
 				
 			when "Lipid"
 				@_visible = off
-				@_activated = on
+				@activated = on
 				
 				@_cell.add( new Model.Lipid() )
 				
 			when "Metabolite"
 				
 				#@_visible = on
-				#@_activated = off
+				#@activated = off
 				@_visible = off
-				@_activated = on
+				@activated = on
 				
 				@_cell.addMetabolite( @_params.name, @_params.amount, @_params.supply, @_params.inside_cell, @_params.is_product )
 				
 			when "Transporter"
 					
 				@_visible = on
-				@_activated = off
+				@activated = off
 				
 				if @_params.direction is Model.Transporter.Outward
 					@_cell.add Model.Transporter.ext()
@@ -73,7 +71,7 @@ class View.DummyModule extends View.Module
 			when "Metabolism"
 					
 				@_visible = on
-				@_activated = off
+				@activated = off
 	
 				@_cell.add new Model.Metabolism()
 				@_cell.addProduct( 'p', 0, true )
@@ -81,7 +79,7 @@ class View.DummyModule extends View.Module
 				
 			when "Protein"
 				@_visible = off
-				@_activated = on
+				@activated = on
 				
 				@_cell.add( new Model.Protein() )
 				

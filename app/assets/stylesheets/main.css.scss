@@ -6,11 +6,6 @@ body {
 	
 }
 
-.bottom {
-	position: absolute;
-	bottom: 0px;
-}
-
 .left {
 	position: absolute;
 	left: 0px;
@@ -38,7 +33,7 @@ body {
 }
 
 .module-box {
-	stroke: #cacaca;
+	stroke: rgba(0, 0, 0, .2);
 	stroke-width: 1px;
 	fill: rgba( 255, 255, 255, 1 );
 	
@@ -91,6 +86,34 @@ body {
 		fill: #000;
 
 		dominant-baseline:mathematical;
+	}
+}
+
+
+.module-properties {
+	max-width:none;
+	width:300px;
+	position:absolute;
+	display:none;
+}
+
+.module-properties.selected {
+	display:block;
+	opacity: 1;
+	z-index:999;
+
+	.close {
+		display:inline;
+	}
+}
+
+.module-properties.hovered {
+	display:block;
+	opacity: .8;
+	z-index:1000;
+
+	.close {
+		display:none;
 	}
 }
 

@@ -3,19 +3,23 @@
 class View.Module extends View.Base
 
 	@concern Mixin.EventBindings
+
+	activated: on
 	
 	# Creates a new module view
 	#
 	# @param paper [Raphael.Paper] the raphael paper
 	# @param module [Model.Module] the module to show
 	#
-	constructor: ( paper, cell, module ) ->
+	constructor: ( paper, cell, module, params = {} ) ->
 		super(paper)
 		@_cell = cell
 
 		@module = module		
 		@type = module.constructor.name
 		@name = module.name
+
+		@_params = params
 		
 		@_x = 0
 		@_y = 0
@@ -23,6 +27,8 @@ class View.Module extends View.Base
 
 		@_selected = off	
 		@_visible = on
+
+		@_propertiesView = new View.ModuleProperties(@, @module, @_cell)
 		
 		@_allowEventBindings()
 		@_bind( 'module.set.property', @, @onModuleInvalidated )
@@ -93,41 +99,14 @@ class View.Module extends View.Base
 	#
 	onModuleSelected: ( module, selected ) =>
 		
-		# If action runs on this module
-		if module is @module 
-		
-			# State changed
-			if selected isnt @_selected
-				@_selected = selected
-				@redraw()
-
-		# Deselect if was selected 
-		else if selected is @_selected is on
-			@_selected = off
-			@redraw()
 
 	# Runs if module is hovered
 	# 
 	# @param module [Model.Module] the module hovered/dehovered
 	# @param selected [Mixed] hovered state
 	#
-	onModuleHovered: ( module, hovered ) =>
+	onModuleHovered: ( module, hovered ) =>		
 		
-		if module is @module 
-			
-			if hovered isnt @_hovered
-				@_hovered = hovered
-				@redraw() unless @_selected
-
-		else if hovered is @_hovered is on
-		
-			@_hovered = off
-			@redraw() unless @_selected
-
-		# Make sure a selected module is always placed at the front
-		# no longer hovering a module.
-		else if hovered is off and @_selected
-			_.defer( => @redraw() )
 
 	# Runs if paper is resized
 	#
@@ -152,7 +131,10 @@ class View.Module extends View.Base
 		@_visible = off
 		@_unbindAll()
 		@clear()
-		return this		
+		return this
+
+	getBBox: ( ) -> 
+		return @_view?.getBBox() ? { x:0, y:0, x2:0, y2:0, width:0, height:0 }
 
 	# Redraws this view iff it has been drawn before
 	#
@@ -194,39 +176,20 @@ class View.Module extends View.Base
 		box = @drawBox(contents, scale)
 		box.insertBefore(contents)
 
-		# Draw shadow
-		if @_selected
-			closeButton = @drawCloseButton( box, scale )
-			closeButton?.click =>
-				console.log @module.id, 'close'
-				Model.EventManager.trigger( 'module.set.selected' , @module, [ off ])
-
-			deleteButton = @drawDeleteButton( box, scale )
-			deleteButton?.click =>
-				console.log @module.id, 'delete'
-				@_cell.remove( @module )
-
-			editButton = @drawEditButton( box, scale )
-			editButton?.click =>
-				console.log @module.id, 'edit'
-				@_cell.remove( @module )
-
-			shadow = @drawShadow(box, scale)
-
 		# Draw hitbox
 		hitbox = @drawHitbox(box, scale)
-		hitbox.click =>
-			Model.EventManager.trigger( 'module.set.selected', @module, [ on ] )
 
-		if @_hovered
-			hitbox.mouseout =>			
-				_( Model.EventManager.trigger( 'module.set.hovered', @module, [ off ]) ).debounce( 100 )
-		else 
-			hitbox.mouseover =>
-				_( Model.EventManager.trigger( 'module.set.hovered', @module, [ on ]) ).debounce( 100 )
+		hitbox.click =>
+			_( Model.EventManager.trigger( 'module.set.selected', @module, [ on ]) ).debounce( 100 )
+		hitbox.mouseout =>			
+			_( Model.EventManager.trigger( 'module.set.hovered', @module, [ off ]) ).debounce( 100 )
+		hitbox.mouseover =>
+			_( Model.EventManager.trigger( 'module.set.hovered', @module, [ on ]) ).debounce( 100 )
 
 		@_view = @_paper.setFinish()
 		@_view.push( contents )
+
+		Model.EventManager.trigger( 'module.drawn', @module )
 
 	# Draws contents
 	#
@@ -479,18 +442,18 @@ class View.Module extends View.Base
 
 		editButton = @_paper.set()
 
-		circle = @_paper.circle( rect.x + 32, rect.y, 16 * scale )
+		circle = @_paper.circle( rect.x + 40 * scale, rect.y, 16 * scale )
 		circle.node.setAttribute('class', 'module-close')
 			
 		image = @_paper.image(
 			'/assets/icon-pencil.png', 
-			rect.x + 30 * scale, 
+			rect.x + 28 * scale, 
 			rect.y - 12 * scale, 
 			24 * scale, 
 			24 * scale
 		)
 
-		hitbox = @_paper.circle( rect.x + 32, rect.y, 16 * scale )
+		hitbox = @_paper.circle( rect.x + 40 * scale, rect.y, 16 * scale )
 		hitbox.node.setAttribute('class', 'module-hitbox')		
 		editButton.push( circle, image, hitbox )
 		
