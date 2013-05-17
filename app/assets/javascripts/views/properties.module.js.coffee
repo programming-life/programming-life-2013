@@ -41,40 +41,47 @@ class View.ModuleProperties extends Helper.Mixable
 		@_elem = $('<div class="popover bottom module-properties"></div>')
 		@_elem.append('<div class="arrow"></div>')
 
-		# Create the popover header
+		@_elem.append @_createHeader()
+		@_elem.append @_createBody()
+		@_elem.append @_createFooter()		
+		
+		# Append popover to body
+		$('body').append(@_elem)
+		
+	# Create the popover header
+	#
+	_createHeader: () ->
 		@_header = $('<div class="popover-title"></div>')
-		@_elem.append(@_header)
-
+		
 		# Create closebutton and title and append to header
 		closeButton = $('<button class="close">&times;</button>')
 		closeButton.on('click', =>
 			Model.EventManager.trigger('module.set.selected', @module, [ off ])
 		)
 
-		@_header.append(@module.constructor.name)
-		@_header.append(closeButton)
-
-		# Create the popover body
+		@_header.append @module.constructor.name
+		@_header.append closeButton
+		return @_header
+		
+	# Create the popover body
+	#
+	_createBody: () ->
 		@_body = $('<div class="popover-content"></div>')
-		@_elem.append(@_body)
-
-		# Create body content and append to body
 		@_drawForm()
+		return @_body
 
-		# Create the popover footer
+	#  Create footer content and append to footer
+	#
+	_createFooter: () ->
 		@_footer = $('<div class="modal-footer"></div>')
-		@_elem.append(@_footer)		
 
-		# Create footer content and append to footer
 		@_saveButton = $('<button class="btn btn-primary">Save</button>')
 		@_saveButton.on('click', =>
 			@_save()
 		)
 
 		@_footer.append(@_saveButton)
-
-		# Append popover to body
-		$('body').append(@_elem)
+		return @_footer
 
 	# Populates the popover body with the required forms to reflect the module.
 	#
