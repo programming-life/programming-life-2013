@@ -227,14 +227,14 @@ describe("Cell", function() {
 	
 	describe("when a module that is a metabolite has been added", function() {
 	
-		var moldule =  new Model.Metabolite( 'foo' );
+		var module =  new Model.Metabolite( 'foo' );
 		beforeEach(function() {
 			spyOn( Model.Cell.prototype, 'addMetaboliteModule' );
-			cell.add( moldule );
+			cell.add( module );
 		});
 		
 		it("should have added that module as metabolite", function() {
-			expect( Model.Cell.prototype.addMetaboliteModule ).toHaveBeenCalledWith( moldule );
+			expect( Model.Cell.prototype.addMetaboliteModule ).toHaveBeenCalledWith( module );
 		});
 		
 	});
