@@ -131,8 +131,8 @@ class View.Cell extends View.Base
 				type = view.module.constructor.name
 				direction = if view.module.direction? then view.module.direction else 0
 				placement = if view.module.placement? then view.module.placement else 0
-				placement_type = if view.module.type? then view.module.type else 0
-				counter_name = "#{type}_#{direction}_#{placement}"
+				placement_type = if view.module.type? and type is "Metabolite" then view.module.type else 0
+				counter_name = "#{type}_#{direction}_#{placement}_#{placement_type}"
 				counter = counters[ counter_name ] ? 0
 
 				# Send all the parameters through so the location
