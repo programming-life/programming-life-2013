@@ -78,10 +78,41 @@ class View.ModuleProperties extends Helper.Mixable
 
 	# Populates the popover body with the required forms to reflect the module.
 	#
-	_populateBody: ( properties ) ->
+	_populateBody: ( ) ->
 		@_body.empty()
 		form = $('<div class="form-horizontal"></div>')
+		paramSection = $('<div></div>')
+		metaboliteSection = $('<div></div>')
+		enumSection = $('<div></div>')
 		
+
+		metadata = @module.metadata
+		console.log metadata
+
+		for parameter in metadata.properties.parameters ? []
+			key = parameter
+			value = @module[key]
+
+			input = @_drawInput('parameter', key, value)			
+			paramSection.append(input)
+
+		form.append(paramSection)
+
+		for enumeration in metadata.properties.enumerations ? []
+			key = enumeration.name
+			value = @module[key]
+			params = {values: enumeration.values}
+
+			input = @_drawInput('enumeration', key, value, params)
+			enumSection.append(input)
+
+		if enumSection.children().length > 0
+			enumSection.prepend('<hr />')
+
+		form.append(enumSection)
+
+
+		###
 		for prop in properties
 			id = @module.id + ':' + prop
 			propLabel = prop.replace(/_(.*)/g, "<sub>$1</sub>")
@@ -103,8 +134,51 @@ class View.ModuleProperties extends Helper.Mixable
 			controls.append(input)
 			controlGroup.append(controls)
 			form.append(controlGroup)
+		###
 
 		@_body.append(form)
+
+	_drawInput: ( type, key, value, params = {} ) ->
+		console.log arguments
+
+		id = @module.id + ':' + key
+		keyLabel = key.replace(/_(.*)/g, "<sub>$1</sub>")
+
+		controlGroup = $('<div class="control-group"></div>')
+		controlGroup.append('<label class="control-label" for="' + id + '">' + keyLabel + '</label>')
+
+		controls = $('<div class="controls"></div>')
+		
+		switch type
+			when 'parameter'
+				input = $('<input type="text" id="' + id + '" class="input-small" value="' + value + '" />')
+				controls.append(input)
+
+				((key) => 
+					input.on('change', (event) => 
+						@_changes[key] = event.target.value
+					)
+				) key
+
+			when 'enumeration'
+				select = $('<select class="input-small"></select>')
+				for k, v of params.values
+					option = $('<option value="' + v + '">' + k + '</option>')
+					if v is value
+						option.attr('selected', true)
+					select.append(option)
+				controls.append(select)
+
+				((key) => 
+					select.on('change', (event) => 
+						@_changes[key] = event.target.value
+					)
+				) key
+
+
+		controlGroup.append(controls)
+		return controlGroup
+
 
 	# Saves all changed properties to the module.
 	#
