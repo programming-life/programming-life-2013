@@ -638,10 +638,20 @@ class Model.Cell extends Helper.Mixable
 						'create', 
 						data, 
 						module_instance_data 
-					] 
+					],
+					Model.Cell.Error
 				)	
 			)
-		
+			
+		promise.done( ( data ) => 
+			@_notificate( @, @, 
+				'cell.save',
+				"Successfully saved the cell #{ @name }",
+				[ 'create' ],
+				Model.Cell.Success
+			)	
+		)
+
 		return promise
 		
 	# Updates (existing) this cell
@@ -668,7 +678,8 @@ class Model.Cell extends Helper.Mixable
 							'update', 
 							data, 
 							cell_data  
-					] 
+					],
+					Model.Cell.Success
 				)	
 			)
 		
@@ -730,15 +741,27 @@ class Model.Cell extends Helper.Mixable
 			# Fail
 			, ( data ) => 
 			
-				cell._notificate( this, cell, 'cell.load',
+				cell._notificate( @, cell, 
+					'cell.load',
 					"I am trying to load the cell #{ cell_id } but an error occured: #{ data }",
 					[ 
 						'load', 
 						data, 
 						cell_id 
-					] 
+					],
+					Model.Cell.error
 				)	
 			)
+			
+		promise.done( ( data ) => 
+		
+			cell._notificate( @, cell, 
+				'cell.load',
+				"Successfully loaded the cell #{ cell.name }",
+				[ 'load' ],
+				Model.Cell.Success
+			)	
+		)
 
 		return promise
 

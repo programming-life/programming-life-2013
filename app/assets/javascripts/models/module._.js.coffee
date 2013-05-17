@@ -305,7 +305,6 @@ class Model.Module extends Helper.Mixable
 	#
 	# @param prameters [Object] parameters to update
 	# @return [jQuery.Promise] the update promise
-	# @todo instead of @ for source, try finding errorounous module
 	#
 	_updateParameters: ( parameters ) ->
 		params = []
@@ -318,6 +317,16 @@ class Model.Module extends Helper.Mixable
 			module_parameters: params
 			
 		promise = $.ajax( @url, { data: module_parameters_data, type: 'PUT' } )
+		
+		promise.done( ( data ) =>
+			@_notificate( @, @, 
+				"module.save.#{ @name }",
+				"Succesfully saved #{ @name }",
+				[ 'update parameters' ],
+				Model.Module.Success
+			)		
+		)
+			
 		promise.fail( ( data ) => 		
 			@_notificate( @, @, 
 				"module.save.#{ @name }",
@@ -326,7 +335,8 @@ class Model.Module extends Helper.Mixable
 					'update parameters',
 					data,
 					module_parameters_data, 
-				] 
+				],
+				Model.Module.Error
 			)		
 		)
 		
@@ -351,18 +361,24 @@ class Model.Module extends Helper.Mixable
 			( data ) => 	
 				@id = data.id
 				
+				@_notificate( @,  @, 
+					"module.save.#{ @name }",
+					"Succesfully saved module",
+					[ 'create instance' ],
+					Model.Module.Notification.Success
+				)		
+				
 			# Fail
 			, ( data ) => 		
 				@_notificate( @, @ 
+					"module.save.#{ @name }",
+					"While creating module instance #{ instance.name } an error occured: #{ JSON.stringify( data ? { message: 'none' } ) }",
 					[ 
-						'module', 'save', "#{ @constructor.name }:#{ @name }:#{ module_instance_data.name }",
-						"While creating module instance #{ instance.name } an error occured: #{ JSON.stringify( data ? { message: 'none' } ) }",
-						[ 
-							'create instance',
-							data,
-							module_instance_data
-						] 
-					] 
+						'create instance',
+						data,
+						module_instance_data
+					],
+					Model.Module.Error
 				)		
 			)
 		
@@ -405,7 +421,7 @@ class Model.Module extends Helper.Mixable
 						'get instance',
 						data,
 						serialized_data
-					] 
+					]
 				)		
 			)
 		
@@ -447,11 +463,19 @@ class Model.Module extends Helper.Mixable
 				cell.add result
 				callback.apply( @, result ) if callback?
 				
+				module._notificate(
+					cell, module, 
+					"module.load.:#{module_id}",
+					"Succesfully loaded #{module.name}",
+					[ 'load' ],
+					Model.Module.Success
+				)	
+				
 			# Fail
 			( data ) =>
 			
 				module._notificate(
-					@, module, 
+					cell, module, 
 					"module.load.:#{module_id}",
 					"I am trying to load module #{ module_id } for the cell #{ cell } but an error occured: #{ JSON.stringify( data ? { message: 'none' } ) }",
 					[ 
@@ -459,7 +483,8 @@ class Model.Module extends Helper.Mixable
 						data, 
 						module_id,
 						cell
-					] 
+					],
+					Model.Module.Error
 				)	
 			)
 			
