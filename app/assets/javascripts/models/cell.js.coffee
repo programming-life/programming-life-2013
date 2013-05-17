@@ -455,15 +455,13 @@ class Model.Cell extends Helper.Mixable
 			return [ base_values, on ]
 			
 		if base_values.length > 0
-			@_trigger( 'notification', @, 
+			@_notificate( @, @, 
+				'cell.run.basevalues'
+				'Compounds have been added or removed since the last run, so I can not continue the calculation.',
 				[ 
-					'cell', 'run', 'cell:basevalues',
-					'Compounds have been added or removed since the last run, so I can not continue the calculation.',
-					[
-						values,
-						base_values
-					]
-				] 
+					values,
+					base_values
+				]
 			)
 			return [ values, off ]
 			
@@ -633,16 +631,13 @@ class Model.Cell extends Helper.Mixable
 			
 			# Fail
 			, ( data ) => 
-				@_trigger( 
-					'notification', @, 
+				@_notificate( @, @, 
+					'cell.save',
+					"I am trying to save the cell #{ @id } but an error occured: #{ data }",
 					[ 
-						'cell', 'save', 'cell.save',
-						"I am trying to save the cell #{ @id } but an error occured: #{ data }",
-						[ 
-							'create', 
-							data, 
-							module_instance_data 
-						] 
+						'create', 
+						data, 
+						module_instance_data 
 					] 
 				)	
 			)
@@ -667,16 +662,12 @@ class Model.Cell extends Helper.Mixable
 			# Fail
 			( data ) => 
 			
-				@_trigger( 
-					'notification', @, 
+				@_notificate( @ , @, 'cell.save',
+					"I am trying to update the cell #{ @id } but an error occured: #{ data }",
 					[ 
-						'cell', 'save', 'cell.save',
-						"I am trying to update the cell #{ @id } but an error occured: #{ data }",
-						[ 
 							'update', 
 							data, 
-							cell_data 
-						] 
+							cell_data  
 					] 
 				)	
 			)
@@ -739,16 +730,12 @@ class Model.Cell extends Helper.Mixable
 			# Fail
 			, ( data ) => 
 			
-				cell._trigger( 
-					'notification', cell, 
+				cell._notificate( this, cell, 'cell.load',
+					"I am trying to load the cell #{ cell_id } but an error occured: #{ data }",
 					[ 
-						'cell', 'load', 'cell.load:#{cell_id}',
-						"I am trying to load the cell #{ cell_id } but an error occured: #{ data }",
-						[ 
-							'load', 
-							data, 
-							cell_id 
-						] 
+						'load', 
+						data, 
+						cell_id 
 					] 
 				)	
 			)
