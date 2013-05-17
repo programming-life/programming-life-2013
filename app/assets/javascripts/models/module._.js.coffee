@@ -291,12 +291,13 @@ class Model.Module extends Helper.Mixable
 	#
 	_getModuleInstanceData: ( instance, template, cell ) ->
 		return {
-			module_instance:
+			module_instance : {
 				id: instance.id unless @isLocal()
 				module_template_id: template.id
 				cell_id: cell
 				name: instance.name
 				amount: instance.amount
+			}
 		}
 		
 		

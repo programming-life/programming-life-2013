@@ -613,9 +613,10 @@ class Model.Cell extends Helper.Mixable
 	
 		save_data = @serialize( false )
 		return {
-			cell:
+			cell: {
 				id: save_data.id unless @isLocal()
 				name: 'My Test Cell'	
+			}
 		}
 		
 	# Creates (new) this cell

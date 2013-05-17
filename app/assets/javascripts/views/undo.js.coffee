@@ -55,34 +55,52 @@ class View.Undo extends Helper.Mixable
 		@_body = $('<dl class="undo-list"></dl>')
 		@_contents.append(@_body)
 
-		# Create body content and append to body
-		@_populateBody()
+		@_body.append(@_getView( @_tree._root))
 
 		@_container.append(@_contents)
-
-	# Populates the body of the list with the items
+	
+	# Gets the view for the node
 	#
-	_populateBody: ( ) ->
-		node = @_tree._root
+	# @param node [Model.Node] The node to get the view for
+	#
+	_getView:( node ) ->
+		container = $(
+		   '<dl>'+
+		   '</dl>'
+		  )
 		while node?
+			element = $(
+				'<dl class="undo-node">'+
+				'</dl>'
+			).click( node, (event) =>
+				@_onClick( event.data )
+			)
+
+			dt = $('<dt>'+node._object._description+'</dt>')
+			element.append(dt)
+
 			alternatives = 0
 			if node._parent? 
 				alternatives = node._parent._children.length - 1
 
-			element = $(
-				'<dl>'+
-					'<dt>'+node._object._description+'</dt>'+
-					'<dd>'+alternatives+' alternative actions</dd>'+
-				'</dl>'
-			)
-			element.click( node, (event) =>
-				@_onClick( event.data )
-			)
 			if node is @_tree._current
-				element.css("border","2px solid #009ACD")
-			@_body.append(element)
+				element.addClass('undo-current')
+				if alternatives > 0
+					console.log("Branch")
+					back = $('<span class="btn">&lt;</span>')
+					dt.prepend(back)
+					forward = $('<span class="btn">&gt;</span>')
+					dt.append(forward)
+				else
+					element.append($('<dd>'+alternatives+' alternative actions</dd>'))
+			else
+				element.append($('<dd>'+alternatives+' alternative actions</dd>'))
+
+			container.append(element)
 			node = node._branch
-	
+
+		return container
+
 	_onNodeAdd:( tree, node ) ->
 		if tree is @_tree
 			@draw()
@@ -93,6 +111,7 @@ class View.Undo extends Helper.Mixable
 	
 	_onClick: ( node ) ->
 		nodes = @_tree.jump( node )
+		console.log(nodes.reverse, nodes.forward)
 		for undo in nodes.reverse
 			undo._object.undo()
 		for redo in nodes.forward

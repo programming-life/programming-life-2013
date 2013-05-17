@@ -16,11 +16,9 @@ class View.Pane extends View.Base
 		paper = @_addPaper()
 		super(paper, withPaper)
 
-		@_extended = off
+		@_extended = on
 		@_buttonWidth = 40
 
-		@_buttonOptions = {
-		}
 		@_containerOptions = {
 		}
 	
@@ -54,7 +52,7 @@ class View.Pane extends View.Base
 	# @param side [String] The side the pane needs to be on
 	draw: ( side = @_side ) ->
 		@clear()
-		[ button, container ] = @_getXY()
+		[ container ] = @_getXY()
 
 		@_button = @_drawButton()
 		@_container = @_addContainerNode()
@@ -83,24 +81,16 @@ class View.Pane extends View.Base
 	_getXY: ( side = @_side ) ->
 		switch side
 			when View.Pane.LEFT_SIDE
-				buttonX = @_width - @_buttonWidth
-				buttonY = 0
 				containerX = 0
 				containerY = 0
 			when View.Pane.RIGHT_SIDE
-				buttonX = 0
-				buttonY = 0
 				containerX = 0
 				containerY = 0
-		button = {
-			x : buttonX
-			y : buttonY
-		}
 		container = {
 			x : containerX
 			y : containerY
 		}
-		return [button, container]
+		return [container]
 	
 	# Add paper to the container node
 	#
@@ -137,6 +127,8 @@ class View.Pane extends View.Base
 		button = $("<button class='btn pane-button' type='button'>")
 		button.on('click', =>
 			@_switchState()
+		).on('drag', (event) =>
+			@_onDrag(event)
 		)
 
 		@_parent.append(button)
@@ -192,12 +184,6 @@ class View.Pane extends View.Base
 					animation = {right: (@_container.width() ) * -1}
 			@_parent.animate(animation, time)
 			@_extended = off
-
-	# Set the button options
-	#
-	# @param options [Object] The new options
-	setButtonOptions: ( options = {} ) ->
-		@_buttonOptions = options
 	
 	# Set the container options
 	#
