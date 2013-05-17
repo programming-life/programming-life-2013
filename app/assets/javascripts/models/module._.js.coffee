@@ -15,7 +15,7 @@ class Model.Module extends Helper.Mixable
 	# @param params [Object] parameters for this module
 	# @param step [Function] the step function
 	#
-	constructor: ( params = {}, step, metadata ) -> 
+	constructor: ( params = {}, step, metadata = {} ) -> 
 		
 		@_allowTimeMachine()
 		@_allowEventBindings()
