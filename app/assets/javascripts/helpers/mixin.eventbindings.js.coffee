@@ -2,7 +2,13 @@
 #
 EventBindings =
 	 
-	ClassMethods: {}
+	ClassMethods: 
+	
+		Notification:
+			Success: 0
+			Warning: 1
+			Error: 2
+			Info: 3
 		
 	InstanceMethods:
 	
@@ -86,8 +92,7 @@ EventBindings =
 		# @param args [Array<any>] the additional arguments
 		# @return [self] chainable self
 		#
-		_notificate: ( caller, source, identifier, message, args ) ->
-			return @_trigger( 'notification', caller, [ source, identifier, message, args ] )
-			
+		_notificate: ( caller, source, identifier, message, args, type = EventBindings.ClassMethods.Notification.Info ) ->
+			return @_trigger( 'notification', caller, [ source, identifier, type, message, args ] )
 			
 ( exports ? this ).Mixin.EventBindings = EventBindings
