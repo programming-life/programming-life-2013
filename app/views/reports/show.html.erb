@@ -78,10 +78,16 @@
 	</tbody>
 </table>
 
-<% unless request.format.to_sym == :pdf %>
+<% if @report_params[:format] == 'pdf' %>
+	<%= @report_params[:data] %>
+<% else %>
 <footer class="row">
 	<div class="form-actions span12">
-		<%= link_to 'Create PDF', :format => :pdf %> 
+		<%= form_for(@report, :html => {:class => "no-form"} ) do |f| %>
+			<%= f.hidden_field :data, :value => { :bla => "bla" } %>
+			<%= f.hidden_field :format, :value => :pdf %>
+			<%= f.submit :class => "btn btn-primary", :value => 'Create PDF' %>
+		<% end %>
 		<%= link_to 'Back', reports_path %>
 	</div>
 </footer>
