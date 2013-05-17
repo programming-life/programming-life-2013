@@ -445,6 +445,8 @@ class View.Cell extends View.Base
 		
 		@_running = off
 		@_redrawGraphs()
+		if @cell.isLocal
+			$('#generate')[0].disabled = false;
 
 		Model.EventManager.trigger("simulation.stop",@, [ @_cell ])
 		return this

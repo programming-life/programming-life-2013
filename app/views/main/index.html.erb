@@ -1,5 +1,12 @@
-<script>$( document ).ready( function() { document.mvc = new <%= @controller %>(); } );</script>
+<script>
+	$( document ).ready( function() { 
+		document.mvc = new <%= @controller %>(); 
+	});
+</script>
 <div id="paper">
 </div>
 <div id="graphs" class="container">
 </div>
+<form action= <%= new_report_path %> >
+	<button type="submit" id="generate" class="btn btn-primary btn-large offset7" disabled><i class="icon-list-alt"></i> Generate report </button>
+</form>
