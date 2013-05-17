@@ -187,6 +187,7 @@ docs\deliverables\~$*
 *.out
 *.toc
 *.pdf
+*.fnt
 *.synctex.gz
 
 /coverage
