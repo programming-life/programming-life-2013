@@ -1,5 +1,4 @@
-# This is the model of a cell. It holds modules and substrates and is capable
-# of simulating the modules for a timespan. A cell comes with one default 
+# This is the model of a cell. It holds modules and substrates and is capable# of simulating the modules for a timespan. A cell comes with one default 
 # module which is the Cell Growth.
 #
 # @concern Mixin.DynamicProperties
@@ -29,6 +28,8 @@ class Model.Cell extends Helper.Mixable
 		
 		@_allowEventBindings()
 		@_allowTimeMachine()
+		action = @_createAction( "Created cell" )
+		@_tree.setRoot( new Model.Node(action, null) )
 		
 		@_defineProperties( paramscell )
 		

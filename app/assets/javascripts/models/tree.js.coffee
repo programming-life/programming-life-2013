@@ -17,6 +17,7 @@ class Model.Tree
 			@_current = root
 
 		@_root.rebase( root )
+		@_root = root
 	
 	# Add an object to the tree
 	#

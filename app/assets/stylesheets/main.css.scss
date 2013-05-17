@@ -146,22 +146,30 @@ body {
 	width: 500px;
 	height: 100%;
 	fill: green;
+	.pane-container {
+		width: 100%;
+	}
+	.pane-button{
+		width: 40px;
+		height: 100%
+	}
 }
 .pane-left {
 	top: 0;
 	left: 0;
+	padding-right: 40px;
+	.pane-button {
+		position: absolute;
+		right: 0;
+	}
 }
 
 .pane-right {
 	top: 0;
 	right: 0;
-}
-.pane-button{
-	fill: #cacaca;
-	stroke: black;
-}
-.pane-container {
-	fill: white;
-	stroke: black;
-	overflow: auto;
+	padding-left: 40px;
+	.pane-button {
+		position: absolute;
+		left: 0;
+	}
 }

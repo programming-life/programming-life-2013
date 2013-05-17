@@ -20,7 +20,7 @@ class View.Node extends View.Base
 	# @param y [Integer] The y position
 	# @param scale [Integer] The scale
 	#
-	draw: ( x, y, scale ) ->
+	draw: ( x = @_x, y = @_y, scale = @_scale ) ->
 		@clear()
 		@_x = x
 		@_y = y

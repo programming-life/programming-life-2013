@@ -14,10 +14,13 @@ class View.Main extends View.Base
 
 		cell = new Model.Cell()
 		@_views.push  new View.Cell( @_paper, cell)
-		@_leftPane = new View.Pane(View.Pane.LEFT_SIDE) 
-		@_leftPane.addView( new View.Tree( @_leftPane._paper, cell._tree ) )
+		@_leftPane = new View.Pane(View.Pane.LEFT_SIDE, false) 
+		@_leftPane.addView( new View.Undo( @_leftPane._container , cell._tree ) )
 		@_views.push @_leftPane
-		@_views.push  new View.Pane(View.Pane.RIGHT_SIDE)
+		@_rightPane = new View.Pane(View.Pane.RIGHT_SIDE)
+		@_rightPane.addView( new View.Tree( @_rightPane._paper, cell._tree ) )
+		@_views.push @_rightPane
+
 
 		@resize()
 		$( window ).on( 'resize', @resize )
