@@ -3,6 +3,8 @@
 class View.Module extends View.Base
 
 	@concern Mixin.EventBindings
+
+	activated: on
 	
 	# Creates a new module view
 	#
@@ -26,7 +28,6 @@ class View.Module extends View.Base
 
 		@_selected = off	
 		@_visible = on
-		@activated = on
 
 		@_propertiesView = new View.ModuleProperties(@, @_parent, @_cell, @module)
 		
@@ -98,9 +99,7 @@ class View.Module extends View.Base
 	# @param selected [Mixed] selected state
 	#
 	onModuleSelected: ( module, selected ) =>
-		if module is @module and @_selected isnt selected
-			@_selected = selected
-			#@redraw()
+		
 
 	# Runs if module is hovered
 	# 
@@ -108,9 +107,7 @@ class View.Module extends View.Base
 	# @param selected [Mixed] hovered state
 	#
 	onModuleHovered: ( module, hovered ) =>		
-		if module is @module and @_hovered isnt hovered
-			@_hovered = hovered
-			#@redraw()
+		
 
 	# Runs if paper is resized
 	#
