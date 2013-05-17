@@ -611,11 +611,12 @@ class Model.Cell extends Helper.Mixable
 	_getData: () ->
 	
 		save_data = @serialize( false )
-		return {
+		result = {
 			cell:
-				id: save_data.id unless @isLocal()
-				name: 'My Test Cell'	
+				name: 'My Test Cell'
 		}
+		result.cell.id = save_data.id unless @isLocal()
+		return result
 		
 	# Creates (new) this cell
 	# 
