@@ -8,13 +8,15 @@ class View.Pane extends View.Base
 	# Creates a new Pane
 	#
 	# @param side [String] The side the pane needs to be on
-	constructor: ( @_side ) ->
+	# @param withPaper [Boolean] Wheter to fill the container with a paper or not
+	#
+	constructor: ( @_side, withPaper = true ) ->
 		@_id = new Date().getMilliseconds()
-		@_paper = @_addPaper()
 
-		super(@_paper)
+		paper = @_addPaper()
+		super(paper, withPaper)
 
-		@_extended = off
+		@_extended = on
 		@_buttonWidth = 40
 
 		@_buttonOptions = {
@@ -22,29 +24,49 @@ class View.Pane extends View.Base
 		@_containerOptions = {
 		}
 	
+	# Clears this view
+	#
+	clear: ( ) ->
+		@_container?.remove()
+		@_button?.remove()
+		super()
+	
 	# Resizes the view
 	#
-	resize: ( ) ->
-		@_width = @_container.width()
-		@_height = $( window ).height()
-		@_paper.setSize( @_width, @_height )
-		#@_paper.setViewBox( x, y, @_width, @_height, true )
+	resize: ( scaleGraphics = true) ->
+		if @_withPaper
+			@_width = @_parent.width()
+			@_height = $( window ).height()
+			@_paper.setSize( @_width, @_height )
+			#@_paper.setViewBox( x, y, @_width, @_height, scaleGraphics)
 	
 	# Kills the view
 	#
 	kill: ( ) ->
 		super()
-		node = $( "#pane-" + @_id ).remove()
+		@_container?.remove()
 		
 	# Draw the view
 	#
 	# @param side [String] The side the pane needs to be on
 	draw: ( side = @_side ) ->
-		super()
+		@clear()
 		[ button, container ] = @_getXY()
 
-		@_contents.push @_drawButton(button.x, button.y)
-		@_contents.push @_drawContainer(container.x, container.y)
+		@_button = @_drawButton()
+		@_container = @_addContainerNode()
+
+		if @_withPaper
+			@_paper = @_addPaper()
+			@_contents.push @_drawContainer(container.x, container.y)
+
+		for view in @_views
+			if @_withPaper	
+				placement = @_getViewPlacement( view )
+				view._paper = @_paper
+				@_contents.push view.draw( placement.x, placement.y, 1)
+			else
+				view.draw(@_container)
 
 		if @_extended
 			@extend(0)
@@ -65,7 +87,7 @@ class View.Pane extends View.Base
 			when View.Pane.RIGHT_SIDE
 				buttonX = 0
 				buttonY = 0
-				containerX = @_buttonWidth
+				containerX = 0
 				containerY = 0
 		button = {
 			x : buttonX
@@ -83,27 +105,44 @@ class View.Pane extends View.Base
 		unless @_container?
 			@_container= @_addContainerNode()
 
-		paper = Raphael("pane-"+@_id,"100%", @_height)
+		paper = Raphael(@_container[0],"100%", @_height)
 		return paper
 	
+	_addParentNode: ( ) ->
+		parent = $("<div id='pane-" + @_id + "' class='pane pane-" + @_side + "'></div>")
+		$( "body" ).append( parent )
+
+		return parent
+
 	# Adds a node to act as the container for the pane
 	#
 	# @retun [Object] The node that will contain the pane
 	_addContainerNode: ( ) ->
-		node = $("<div id='pane-" + @_id + "' class='pane pane-" + @_side + "'></div>")
-		$( "body" ).append( node )
+		unless @_parent?
+			@_parent = @_addParentNode()
+
+		container = $("<div class='pane-container'></div>")
+		@_parent.append( container )
 		
-		return node
+		return container
 
 	# Draw the button to extend or retract the pane
 	#
 	# @param x [Integer] The x position
 	# @param y [Integer] The y position
 	_drawButton: ( x, y ) ->
-		button = @_paper.rect(x, y, @_buttonWidth, @_height)
-		button.attr( @_buttonOptions )
-		button.node.setAttribute("class","pane-button")
-		button.click((() => @_switchState()))
+	#	button = @_paper.rect(x, y, @_buttonWidth, @_height)
+	#	button.attr( @_buttonOptions )
+	#	button.node.setAttribute("class","pane-button")
+	#	button.click((() => @_switchState()))
+
+		button = $("<button class='btn pane-button' type='button'>")
+		button.on('click', =>
+			@_switchState()
+		)
+
+		@_parent.append(button)
+
 		return button
 	
 	# Draws container and any elements to be drawn within it
@@ -111,8 +150,8 @@ class View.Pane extends View.Base
 	# @param x [Integer] The x position
 	# @param y [Integer] The y position
 	_drawContainer: ( x, y ) ->
-		box = @_paper.rect(x, y, @_width - @_buttonWidth, @_height).attr(@_containerOptions)
-		box.node.setAttribute("class","pane-container")
+		box = @_paper.rect(x, y, @_width, @_height).attr(@_containerOptions)
+		#box.node.setAttribute("class","pane-container")
 		box.toBack()
 		return box
 	
@@ -174,8 +213,8 @@ class View.Pane extends View.Base
 	# @param view [View.Base] The view to get placement for
 	# @return [Object] An object containing an x and y for the view
 	_getViewPlacement:( view ) ->
-		x = 100
-		y = 100
+		x = 200
+		y = 200
 		return {x: x, y: y}
 
 (exports ? this).View.Pane = View.Pane

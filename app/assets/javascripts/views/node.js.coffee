@@ -20,7 +20,7 @@ class View.Node extends View.Base
 	# @param y [Integer] The y position
 	# @param scale [Integer] The scale
 	#
-	draw: ( x, y, scale ) ->
+	draw: ( x = @_x, y = @_y, scale = @_scale ) ->
 		@clear()
 		@_x = x
 		@_y = y
@@ -83,6 +83,8 @@ class View.Node extends View.Base
 			id += @_node._object._description
 		else
 			id += "Cell creation"
+
+		console.log(@_paper)
 
 		@_text = @_paper.text(@_x, @_y, id)
 		@_text.attr

@@ -150,18 +150,26 @@ body {
 .pane-left {
 	top: 0;
 	left: 0;
+
+	.pane-button {
+		float: right;
+	}
+	.pane-container {
+		float: right;
+	}
 }
 
 .pane-right {
 	top: 0;
 	right: 0;
+	.pane-button {
+		float: left;
+	}
 }
 .pane-button{
-	fill: #cacaca;
-	stroke: black;
+	width: 40px;
+	height: 100%
 }
 .pane-container {
-	fill: white;
-	stroke: black;
-	overflow: auto;
+	width: 100%;
 }
