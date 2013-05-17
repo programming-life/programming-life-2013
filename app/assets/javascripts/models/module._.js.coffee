@@ -221,13 +221,11 @@ class Model.Module extends Helper.Mixable
 		)
 		
 		unless result
-			@_trigger( 'notification', @, 
-				[ 
-					# section, method, message-id
-					'module', 'test', "#{ @constructor.name }:#{ @name }:#{ id ? 1 }",
-					"I need compounds in #{ @constructor.name }:#{ @name } but they are not available. #{ message ? '' }",
-					[ compounds, tests ] 
-				] 
+			@_notificate( 
+				@, @, 
+				"module.test.#{ @name }",
+				"I need compounds in #{ @constructor.name }:#{ @name } but they are not available. #{ message ? 'No additional message.' }",
+				[ compounds, tests ]  
 			)	
 		
 		return result
@@ -241,12 +239,10 @@ class Model.Module extends Helper.Mixable
 	_ensure : ( test, message ) ->
 		
 		unless test
-			@_trigger( 'notification', @, 
-				[ 
-					'module', 'ensure', "#{ @constructor.name }:#{ @name }:#{ id ? 1 }",
-					"In #{ @constructor.name }:#{ @name } an ensure failed: #{ message ? '' }",
-					[] 
-				] 
+			@_notificate( @, @, 
+				"module.ensure.#{ @name }",
+				"In #{ @constructor.name }:#{ @name } an ensure failed: #{ message ? 'No additional message.' }",
+				[]  
 			)		
 		
 		return test
@@ -309,6 +305,7 @@ class Model.Module extends Helper.Mixable
 	#
 	# @param prameters [Object] parameters to update
 	# @return [jQuery.Promise] the update promise
+	# @todo instead of @ for source, try finding errorounous module
 	#
 	_updateParameters: ( parameters ) ->
 		params = []
@@ -322,15 +319,13 @@ class Model.Module extends Helper.Mixable
 			
 		promise = $.ajax( @url, { data: module_parameters_data, type: 'PUT' } )
 		promise.fail( ( data ) => 		
-			@_trigger( 'notification', @, 
+			@_notificate( @, @, 
+				"module.save.#{ @name }",
+				"While saving parameters for #{ @name } an error occured: #{ JSON.stringify( data ? { message: 'none' } ) }",
 				[ 
-					'module', 'save', "#{ @constructor.name }:#{ @name }",
-					"While saving parameters for #{ @name } an error occured: #{ data ? '' }",
-					[ 
-						'update parameters',
-						data,
-						module_parameters_data, 
-					] 
+					'update parameters',
+					data,
+					module_parameters_data, 
 				] 
 			)		
 		)
@@ -358,10 +353,10 @@ class Model.Module extends Helper.Mixable
 				
 			# Fail
 			, ( data ) => 		
-				@_trigger( 'notification', @, 
+				@_notificate( @, @ 
 					[ 
 						'module', 'save', "#{ @constructor.name }:#{ @name }:#{ module_instance_data.name }",
-						"While creating module instance #{ instance.name } an error occured: #{ data ? '' }",
+						"While creating module instance #{ instance.name } an error occured: #{ JSON.stringify( data ? { message: 'none' } ) }",
 						[ 
 							'create instance',
 							data,
@@ -403,15 +398,13 @@ class Model.Module extends Helper.Mixable
 				
 			# Fail
 			, ( data ) => 
-				@_trigger( 'notification', @, 
+				@_notificate( @,  @, 
+					"module.save.#{ @name }",
+					"While retrieving module template #{ serialized_data.type } an error occured: #{ JSON.stringify( data ? { message: 'none' } ) }",
 					[ 
-						'module', 'save', "#{ @constructor.name }:#{ @name }:#{ serialized_data.type }",
-						"While retrieving module template #{ serialized_data.type } an error occured: #{ data ? '' }",
-						[ 
-							'get instance',
-							data,
-							serialized_data
-						] 
+						'get instance',
+						data,
+						serialized_data
 					] 
 				)		
 			)
@@ -457,17 +450,15 @@ class Model.Module extends Helper.Mixable
 			# Fail
 			( data ) =>
 			
-				module._trigger( 
-					'notification', module, 
+				module._notificate(
+					@, module, 
+					"module.load.:#{module_id}",
+					"I am trying to load module #{ module_id } for the cell #{ cell } but an error occured: #{ JSON.stringify( data ? { message: 'none' } ) }",
 					[ 
-						'module', 'load', 'module.load:#{module_id}',
-						"I am trying to load module #{ module_id } for the cell #{ cell } but an error occured: #{ data }",
-						[ 
-							'load', 
-							data, 
-							module_id,
-							cell
-						] 
+						'load', 
+						data, 
+						module_id,
+						cell
 					] 
 				)	
 			)
