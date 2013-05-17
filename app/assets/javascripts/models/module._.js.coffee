@@ -33,6 +33,11 @@ class Model.Module extends Helper.Mixable
 	#
 	_defineProperties: ( params, step, metadata ) ->
 				
+		properties = metadata.properties ? { }
+		properties.parameters = (properties.parameters ? [])
+		properties.parameters.push 'amount'
+		metadata.properties = properties
+		
 		@_defineGetters( step, metadata )
 		@_defineAccessors()
 		
