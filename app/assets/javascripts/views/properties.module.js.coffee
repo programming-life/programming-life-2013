@@ -156,7 +156,7 @@ class View.ModuleProperties extends Helper.Mixable
 
 				((key) => 
 					input.on('change', (event) => 
-						@_changes[key] = event.target.value
+						@_changes[key] = parseFloat(event.target.value)
 					)
 				) key
 
@@ -171,7 +171,7 @@ class View.ModuleProperties extends Helper.Mixable
 
 				((key) => 
 					select.on('change', (event) => 
-						@_changes[key] = event.target.value
+						@_changes[key] = parseInt(event.target.value)
 					)
 				) key
 
@@ -206,6 +206,7 @@ class View.ModuleProperties extends Helper.Mixable
 	#
 	_setSelected: ( selected ) ->
 		if selected
+			console.log  -1 == "-1"
 			@_setHovered(false)
 			@_elem.addClass('selected')
 		else
