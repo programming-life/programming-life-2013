@@ -84,6 +84,8 @@ class View.Node extends View.Base
 		else
 			id += "Cell creation"
 
+		console.log(@_paper)
+
 		@_text = @_paper.text(@_x, @_y, id)
 		@_text.attr
 			'font-size': 16 * @_scale

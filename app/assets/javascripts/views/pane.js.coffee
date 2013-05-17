@@ -16,7 +16,7 @@ class View.Pane extends View.Base
 		paper = @_addPaper()
 		super(paper, withPaper)
 
-		@_extended = on
+		@_extended = off
 		@_buttonWidth = 40
 
 		@_buttonOptions = {
@@ -67,7 +67,7 @@ class View.Pane extends View.Base
 			if @_withPaper	
 				placement = @_getViewPlacement( view )
 				view._paper = @_paper
-				#@_contents.push view.draw( placement.x, placement.y, 1)
+				@_contents.push view.draw( placement.x, placement.y, 1)
 			else
 				view.draw(@_container)
 
@@ -134,11 +134,6 @@ class View.Pane extends View.Base
 	# @param x [Integer] The x position
 	# @param y [Integer] The y position
 	_drawButton: ( x, y ) ->
-	#	button = @_paper.rect(x, y, @_buttonWidth, @_height)
-	#	button.attr( @_buttonOptions )
-	#	button.node.setAttribute("class","pane-button")
-	#	button.click((() => @_switchState()))
-
 		button = $("<button class='btn pane-button' type='button'>")
 		button.on('click', =>
 			@_switchState()
@@ -154,7 +149,6 @@ class View.Pane extends View.Base
 	# @param y [Integer] The y position
 	_drawContainer: ( x, y ) ->
 		box = @_paper.rect(x, y, @_width, @_height).attr(@_containerOptions)
-		#box.node.setAttribute("class","pane-container")
 		box.toBack()
 		return box
 	
