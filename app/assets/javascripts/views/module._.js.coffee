@@ -188,7 +188,7 @@ class View.Module extends View.Base
 					spline.insertBefore(@_paper.bottom)
 
 		if @type is 'Metabolism' and @activated
-			for metaboliteName in @module.orig.concat(@module.dest)
+			for metaboliteName in @module.orig.concat( @module.dest )
 				metabolite = @_cell.getMetabolite(metaboliteName.split("#")[0], Model.Metabolite.Inside)
 				if metabolite
 					metaboliteView = @_parent.getView(metabolite)
@@ -249,11 +249,11 @@ class View.Module extends View.Base
 				[ arrow ] = @drawComponent( 'transporter', 'ProcessArrow', x, y, scale, { } )
 				
 				params =
-					orig: @module.orig ? "..."
-					dest: @module.dest ? "..."
+					orig: @module.orig ? [ "..." ]
+					dest: @module.dest ? [ "..." ]
 					showText: off
 				
-				[ enzymCircleOrig, enzymCircleDest ] = @drawComponent( 'enzym', 'EnzymCircle', x, y, scale, params )
+				[ enzymCirclesOrig, enzymCircleDests ] = @drawComponent( 'enzym', 'EnzymCircle', x, y, scale, params )
 									
 			when "Protein"	
 			
@@ -417,24 +417,55 @@ class View.Module extends View.Base
 			when 'EnzymCircle'
 			
 				# This is the circle in which we show the conversion
-				origText = _.escape _( params.orig ).first()
-				destText = _.escape _( params.dest ).first()
 				
-				[ enzymOrigCircle ] = @drawComponent( 'enzym', 'Sector', x, y, scale, { r: 20, from: 90, to: 270 } );
-				enzymOrigCircle.attr
-					'fill': @hashColor origText
-				[ enzymDestCircle ] = @drawComponent( 'enzym', 'Sector', x, y, scale, { r: 20, from: 270, to: 90 } );
-				enzymDestCircle.attr
-					'fill': @hashColor destText
+				origTexts = []
+				enzymOrigCircles = []
+				
+				min = 90 
+				max = 270
+				d = ( max - min ) / params.orig.length 				
+				
+				for orig in params.orig
+				
+					from = min + origTexts.length * d 
+					to = max - ( params.orig.length - origTexts.length - 1 ) * d
+					
+					origTexts.push _.escape _( orig ).first()
+					
+					[ enzymOrigCircle ] = @drawComponent( 'enzym', 'Sector', x - 2, y, scale, { r: 20, from: from, to: to } )
+					enzymOrigCircle.attr
+						'fill': @hashColor origTexts[ origTexts.length - 1 ]
+					enzymOrigCircles.push enzymOrigCircle
+					
+				destTexts = []
+				enzymDestCircles = []
+				
+				min = 270
+				max = 90
+				d = ( max - min ) / params.dest.length 				
+				
+				for dest in params.dest
+				
+					from = min - ( params.dest.length - destTexts.length - 1 ) * d 
+					to = max + destTexts.length * d 
+					
+					destTexts.push _.escape _( dest ).first()
+					
+					[ enzymDestCircle ] = @drawComponent( 'enzym', 'Sector', x + 2, y, scale, { r: 20, from: from, to: to } )
+					enzymDestCircle.attr
+						'fill': @hashColor destTexts[ destTexts.length - 1 ]
+					enzymDestCircles.push enzymDestCircle
+				
+				destText = _.escape _( params.dest ).first()
 				
 				if ( params.showText )
 				
-					substrateText = @_paper.text( x, y, "#{origText}>#{destText}" )
+					substrateText = @_paper.text( x, y, "#{origTexts}>#{destTexts}" )
 					substrateText.node.setAttribute('class', "#{module}-substrate-text" )
 					substrateText.attr
 						'font-size': 18 * scale
 				
-				return [ enzymOrigCircle, enzymDestCircle, substrateText ]
+				return [ enzymOrigCircles, enzymDestCircles, substrateText ]
 				
 				
 				
