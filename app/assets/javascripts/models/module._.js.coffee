@@ -15,12 +15,12 @@ class Model.Module extends Helper.Mixable
 	# @param params [Object] parameters for this module
 	# @param step [Function] the step function
 	#
-	constructor: ( params = {}, step ) -> 
+	constructor: ( params = {}, step, metadata ) -> 
 		
 		@_allowTimeMachine()
 		@_allowEventBindings()
 		
-		@_defineProperties( params, step )
+		@_defineProperties( params, step, metadata )
 					
 		@_bind( 'module.set.property', @, @onPropertySet )
 		@_trigger( 'module.creation', @, [ @creation, @id ] )	
@@ -31,9 +31,9 @@ class Model.Module extends Helper.Mixable
 	#
 	# @return [self] chainable self
 	#
-	_defineProperties: ( params, step ) ->
+	_defineProperties: ( params, step, metadata ) ->
 				
-		@_defineGetters( step )
+		@_defineGetters( step, metadata )
 		@_defineAccessors()
 		
 		@_propertiesFromParams(  
@@ -53,9 +53,10 @@ class Model.Module extends Helper.Mixable
 	# @see {DynamicProperties} for function calls
 	# @return [self] chainable self
 	#
-	_defineGetters: ( step ) ->
+	_defineGetters: ( step, metadata ) ->
 		
 		@_nonEnumerableGetter( '_step', () -> return step )
+		@_nonEnumerableGetter( 'metadata', () -> return metadata )
 		@_nonEnumerableGetter( 'url', () ->
 				data = Model.Module.extractId( @id )
 				return "/module_instances/#{ data.id }.json" if data.origin is "server"

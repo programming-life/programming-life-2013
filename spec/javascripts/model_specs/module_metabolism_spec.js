@@ -12,11 +12,11 @@ describe("Module Metabolism", function() {
 		});
 		
 		it( "should have 's#int' as substrate", function() {
-			expect( module.orig ).toBe( "s#int" );
+			expect( module.orig ).toMatch( [ "s#int" ] );
 		});
 		
 		it( "should have 'p#int' as product", function() {
-			expect( module.dest ).toBe( "p#int" );
+			expect( module.dest ).toMatch( [ "p#int" ] );
 		});
 		
 		it( "should have 1 as k (transcription value)", function() {
@@ -77,11 +77,11 @@ describe("Module Metabolism", function() {
 				});
 				
 				it( "should have 's#int' as substrate", function() {
-					expect( module.orig ).toBe( "s#int" );
+					expect( module.orig ).toMatch( [ "s#int" ] );
 				});
 				
 				it( "should have 'p#int' as product", function() {
-					expect( module.dest ).toBe( "p#int" );
+					expect( module.dest ).toMatch( [ "p#int" ] );
 				});
 				
 				it( "should have 1 as k (transcription value)", function() {
@@ -144,7 +144,7 @@ describe("Module Metabolism", function() {
 			});
 			
 			it( "should override default parameters", function() {
-				expect( module.orig ).toMatch( 'f_int' );
+				expect( module.orig ).toMatch( [ 'f_int' ] );
 			});
 			
 		});
@@ -156,7 +156,7 @@ describe("Module Metabolism", function() {
 			});
 			
 			it( "should not override given params ", function() {
-				expect( module.orig ).toMatch( 'stubborn' );
+				expect( module.orig ).toMatch( [ 'stubborn' ] );
 			});
 			
 		});
@@ -183,7 +183,7 @@ describe("Module Metabolism", function() {
 		});		
 		
 		it( "should overide the orig with that substrate", function() {
-			expect( module.orig ).toMatch( 'magix' );
+			expect( module.orig ).toMatch( [ 'magix' ] );
 		});
 	});
 	
@@ -195,7 +195,7 @@ describe("Module Metabolism", function() {
 		});		
 		
 		it( "should overide the dest with that substrate", function() {
-			expect( module.dest ).toMatch( 'magix' );
+			expect( module.dest ).toMatch( [ 'magix' ] );
 		});
 	});
 	
@@ -207,7 +207,7 @@ describe("Module Metabolism", function() {
 		});		
 		
 		it( "should overide the name with that substrate", function() {
-			expect( module.name ).toMatch( 'magix' );
+			expect( module.name ).toMatch( [ 'magix' ] );
 		});
 	});
 	
@@ -268,8 +268,8 @@ describe("Module Metabolism", function() {
 			
 			beforeEach( function() { 
 				substrates[module.name] = 1;
-				substrates[module.orig] = 1;
-				substrates[module.dest] = 0;
+				substrates[module.orig[0]] = 1;
+				substrates[module.dest[0]] = 0;
 				results = module.step( 0, substrates, 0 );
 			});
 			
@@ -278,16 +278,16 @@ describe("Module Metabolism", function() {
 			});
 			
 			it( "should have dest created", function() {
-				expect( results[module.dest] ).toBeGreaterThan( 0 );
+				expect( results[module.dest[0]] ).toBeGreaterThan( 0 );
 			});
 			
 			it( "should have orig removed", function() {
-				expect( results[module.orig] ).toBeLessThan( 0 );
+				expect( results[module.orig[0]] ).toBeLessThan( 0 );
 			});
 			
 			
 			it( "should have orig = -dest", function() {
-				expect( results[module.orig] + results[module.dest]  ).toBe( 0 );
+				expect( results[module.orig[0]] + results[module.dest[0]]  ).toBe( 0 );
 			});
 		
 			describe( "and dna substrate", function() {
@@ -311,15 +311,15 @@ describe("Module Metabolism", function() {
 					});
 				
 					it( "should decrease orig", function() {
-						expect( results[module.orig] ).toBeLessThan( 0 );
+						expect( results[module.orig[0]] ).toBeLessThan( 0 );
 					});
 					
 					it( "should increase dest", function() {
-						expect( results[module.dest] ).toBeGreaterThan( 0 );
+						expect( results[module.dest[0]] ).toBeGreaterThan( 0 );
 					});
 				
 					it( "should have orig = -dest", function() {
-						expect( results[module.orig] + results[module.dest] ).toBe( 0 );
+						expect( results[module.orig[0]] + results[module.dest] ).toBe( 0 );
 					});
 				
 					describe( "and with enzym > 0", function() {
@@ -349,15 +349,15 @@ describe("Module Metabolism", function() {
 					});
 					
 					it( "should decrease orig", function() {
-						expect( results[module.orig] ).toBeLessThan( 0 );
+						expect( results[module.orig[0]] ).toBeLessThan( 0 );
 					});
 					
 					it( "should increase dest", function() {
-						expect( results[module.dest] ).toBeGreaterThan( 0 );
+						expect( results[module.dest[0]] ).toBeGreaterThan( 0 );
 					});
 				
 					it( "should have orig = -dest", function() {
-						expect( results[module.orig] + results[module.dest] ).toBe( 0 );
+						expect( results[module.orig[0]] + results[module.dest] ).toBe( 0 );
 					});
 				
 					describe( "and with enzym > 0", function() {

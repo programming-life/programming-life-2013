@@ -29,7 +29,7 @@ class View.Base extends Helper.Mixable
 	# @param y [Integer] The y position
 	# @retuns [Object] The contents drawn
 	#
-	draw: ( @_x, @_y) ->
+	draw: ( @x, @y) ->
 		@clear()
 
 		for view in @_views
@@ -44,7 +44,7 @@ class View.Base extends Helper.Mixable
 	# Redraw this view and it's children with their current parameters
 	# 
 	redraw: ( ) ->
-		@draw(@_x, @_y)
+		@draw(@x, @y)
 
 		for view in @_views
 			view.redraw()

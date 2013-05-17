@@ -89,19 +89,22 @@ body {
 	}
 }
 
+.metabolite-spline {
+	stroke-width:4px;
+}
+
 
 .module-properties {
 	max-width:none;
-	width:300px;
 	position:absolute;
 	display:none;
 
 	.control-label {
-		width:120px;
+		width:104px;
 	}
 
 	.controls {
-		margin-left:140px;
+		margin-left:119px;
 	}
 }
 
@@ -124,8 +127,8 @@ body {
 		display:none;
 	}
 
-	input {
-		border: none;
+	input, select {
+		border-color: rgba(0, 0, 0, 0);
 		box-shadow:none;
 	}
 }

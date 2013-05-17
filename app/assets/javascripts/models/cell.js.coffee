@@ -381,7 +381,7 @@ class Model.Cell extends Helper.Mixable
 	# @return [Model.Metabolite] the metabolite
 	#
 	getMetabolite: ( name, placement ) ->
-		return @_metabolites[ name ][ placement ] ? null
+		return @_metabolites[ name ]?[ placement ] ? null
 		
 	# Gets a substrate (alias for getMetabolite)
 	# 
@@ -432,13 +432,15 @@ class Model.Cell extends Helper.Mixable
 		variables = []
 		for module in modules
 			for metabolite, value of module.starts
-				name = module[ metabolite ]
-				index = _( variables ).indexOf( name ) 
-				if ( index is -1 )
-					variables.push name
-					values.push value
-				else
-					values[ index ] += value
+				names = module[ metabolite ]
+				names = [ names ] unless _( names ).isArray()
+				for name in names
+					index = _( variables ).indexOf( name ) 
+					if ( index is -1 )
+						variables.push name
+						values.push value
+					else
+						values[ index ] += value
 					
 		return [ modules, variables, values ]
 		
