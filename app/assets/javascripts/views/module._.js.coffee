@@ -135,7 +135,7 @@ class View.Module extends View.Base
 		return this
 
 	getBBox: ( ) -> 
-		return @_view?.getBBox() ? { x:0, y:0, x2:0, y2:0, width:0, height:0 }
+		return @_box?.getBBox() ? { x:0, y:0, x2:0, y2:0, width:0, height:0 }
 
 	# Redraws this view iff it has been drawn before
 	#
@@ -174,8 +174,8 @@ class View.Module extends View.Base
 		@_paper.setStart()
 
 		# Draw box
-		box = @drawBox(contents, scale)
-		box.insertBefore(contents)
+		@_box = @drawBox(contents, scale)
+		@_box.insertBefore(contents)
 
 		# Draw splines
 		if @type is 'Transporter' and @activated
@@ -196,7 +196,7 @@ class View.Module extends View.Base
 					spline.insertBefore(@_paper.bottom)
 
 		# Draw hitbox
-		hitbox = @drawHitbox(box, scale)
+		hitbox = @drawHitbox(@_box, scale)
 
 		hitbox.click =>
 			_( Model.EventManager.trigger( 'module.set.selected', @module, [ on ]) ).debounce( 100 )

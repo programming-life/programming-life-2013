@@ -115,7 +115,7 @@ class View.ModuleProperties extends Helper.Mixable
 
 	# Sets the position of the popover so the arrow points straight at the module view
 	#
-	setPosition: ( x, y ) ->
+	setPosition: ( ) ->
 		rect = @_view.getBBox()
 		x = rect.x + rect.width / 2
 		y = rect.y + rect.height
