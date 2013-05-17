@@ -13,6 +13,15 @@ class View.Undo extends Helper.Mixable
 	constructor: ( @_container, @_tree ) ->
 		@_allowEventBindings()
 
+		@_bind("tree.add.node", this, @_onNodeAdd)
+		@_bind("tree.remove.node", this, @_onNodeRemove)
+	
+	# Kills this view
+	#
+	kill: ( ) ->
+		@_parent?.remove()
+
+
 	# Clears this view
 	#
 	clear: ( ) ->
@@ -49,28 +58,46 @@ class View.Undo extends Helper.Mixable
 		# Create body content and append to body
 		@_populateBody()
 
-		# Create the popover footer
-		@_footer = $('<div class="modal-footer"></div>')
-		@_contents.append(@_footer)		
-
 		@_container.append(@_contents)
 
 	# Populates the body of the list with the items
 	#
 	_populateBody: ( ) ->
-		console.log(@_tree)
 		node = @_tree._root
 		while node?
-			console.log(node._object._description)
 			alternatives = 0
 			if node._parent? 
-				alternatives = node._parent._children.length
+				alternatives = node._parent._children.length - 1
+
 			element = $(
-				'<dt>'+node._object._description+'</dt>'+
-				'<dl>'+alternatives+' alternative actions</dl>'
+				'<dl>'+
+					'<dt>'+node._object._description+'</dt>'+
+					'<dd>'+alternatives+' alternative actions</dd>'+
+				'</dl>'
 			)
+			element.click( node, (event) =>
+				@_onClick( event.data )
+			)
+			if node is @_tree._current
+				element.css("border","2px solid #009ACD")
 			@_body.append(element)
-			node = node._current
+			node = node._branch
+	
+	_onNodeAdd:( tree, node ) ->
+		if tree is @_tree
+			@draw()
+
+	_onNodeRemove:( tree, node ) ->
+		if tree is @_tree
+			@draw()
+	
+	_onClick: ( node ) ->
+		nodes = @_tree.jump( node )
+		for undo in nodes.reverse
+			undo._object.undo()
+		for redo in nodes.forward
+			redo._object.redo()
+		@draw()
 
 
 (exports ? this).View.Undo = View.Undo

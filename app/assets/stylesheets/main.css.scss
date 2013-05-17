@@ -142,13 +142,18 @@ body {
 }
 
 .pane {
-	position: fixed;
-	width: 500px;
+	width: 300px;
 	height: 100%;
-	fill: green;
+	position: fixed;
+	backgrond-color: white;
+	
 	.pane-container {
 		width: 100%;
+		height: 100%;
+		background-color: white;
+		overflow: auto;
 	}
+
 	.pane-button{
 		width: 40px;
 		height: 100%
@@ -158,6 +163,7 @@ body {
 	top: 0;
 	left: 0;
 	padding-right: 40px;
+
 	.pane-button {
 		position: absolute;
 		right: 0;
@@ -168,8 +174,16 @@ body {
 	top: 0;
 	right: 0;
 	padding-left: 40px;
+
 	.pane-button {
 		position: absolute;
 		left: 0;
+	}
+}
+
+.undo {
+	padding: 10px;
+	dl dl:hover {
+		background-color: #cacaca;
 	}
 }

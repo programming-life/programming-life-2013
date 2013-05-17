@@ -101,8 +101,13 @@ describe("Mixin: Dynamic Properties", function() {
 		});
 		
 		it( "should not have a setter", function() {
-			mixed.foo = 2
-			expect( mixed.foo ).toBe( 'bar' );
+			try {
+				mixed.foo = 2
+				expect( mixed.foo ).toBe( 'bar' );
+			} catch( e ) {
+				if ( !e instanceof TypeError )
+					throw e
+			}	
 		});
 	});
 	

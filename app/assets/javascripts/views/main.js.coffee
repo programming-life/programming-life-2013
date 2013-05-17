@@ -18,7 +18,7 @@ class View.Main extends View.Base
 		@_leftPane.addView( new View.Undo( @_leftPane._container , cell._tree ) )
 		@_views.push @_leftPane
 		@_rightPane = new View.Pane(View.Pane.RIGHT_SIDE)
-		@_rightPane.addView( new View.Tree( @_rightPane._paper, cell._tree ) )
+		#@_rightPane.addView( new View.Tree( @_rightPane._paper, cell._tree ) )
 		@_views.push @_rightPane
 
 
