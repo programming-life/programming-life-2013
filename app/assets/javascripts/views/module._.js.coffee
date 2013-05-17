@@ -11,7 +11,7 @@ class View.Module extends View.Base
 	# @param paper [Raphael.Paper] the raphael paper
 	# @param module [Model.Module] the module to show
 	#
-	constructor: ( paper, cell, parent, module, params = {} ) ->
+	constructor: ( paper, parent, cell, module, params = {} ) ->
 		super(paper)
 		@_cell = cell
 		@_parent = parent
@@ -29,7 +29,7 @@ class View.Module extends View.Base
 		@_selected = off	
 		@_visible = on
 
-		@_propertiesView = new View.ModuleProperties(@, @module, @_cell)
+		@_propertiesView = new View.ModuleProperties(@, @_parent, @_cell, @module)
 		
 		@_allowEventBindings()
 		@_bind( 'module.set.property', @, @onModuleInvalidated )

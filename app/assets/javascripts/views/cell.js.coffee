@@ -45,7 +45,7 @@ class View.Cell extends View.Base
 				
 				@_cell = value
 				for module in @_cell._modules
-					@_views.push new View.Module( @_paper, @_cell, @, module)
+					@_views.push new View.Module( @_paper, @, @_cell, module)
 			
 				@_createButtons()
 				@_bind( 'cell.add.module', @, @onModuleAdd )
@@ -81,13 +81,13 @@ class View.Cell extends View.Base
 	#
 	_createButtons: () ->
 		
-		@_views.push new View.DummyModule( @_paper, @_cell, @, new Model.DNA() )
-		@_views.push new View.DummyModule( @_paper, @_cell, @, new Model.Lipid() )
-		@_views.push new View.DummyModule( @_paper, @_cell, @, new Model.Metabolite( { name: 's' } ), { name: 's', inside_cell: false, is_product: false, amount: 1, supply: 1 } )
-		@_views.push new View.DummyModule( @_paper, @_cell, @, Model.Transporter.int(), { direction: Model.Transporter.Inward } )
-		@_views.push new View.DummyModule( @_paper, @_cell, @, new Model.Metabolism() )
-		@_views.push new View.DummyModule( @_paper, @_cell, @, new Model.Protein() )
-		@_views.push new View.DummyModule( @_paper, @_cell, @, Model.Transporter.ext(), { direction: Model.Transporter.Outward } )
+		@_views.push new View.DummyModule( @_paper, @, @_cell, new Model.DNA() )
+		@_views.push new View.DummyModule( @_paper, @, @_cell, new Model.Lipid() )
+		@_views.push new View.DummyModule( @_paper, @, @_cell, new Model.Metabolite( { name: 's' } ), { name: 's', inside_cell: false, is_product: false, amount: 1, supply: 1 } )
+		@_views.push new View.DummyModule( @_paper, @, @_cell, Model.Transporter.int(), { direction: Model.Transporter.Inward } )
+		@_views.push new View.DummyModule( @_paper, @, @_cell, new Model.Metabolism() )
+		@_views.push new View.DummyModule( @_paper, @, @_cell, new Model.Protein() )
+		@_views.push new View.DummyModule( @_paper, @, @_cell, Model.Transporter.ext(), { direction: Model.Transporter.Outward } )
 			
 		#@_views.push new View.Tree( @_paper, @_cell._tree)
 		
@@ -173,7 +173,7 @@ class View.Cell extends View.Base
 		unless cell isnt @_cell
 			unless _( @_drawn ).indexOf( module.id ) isnt -1
 				@_drawn.unshift module.id
-				@_views.unshift new View.Module( @_paper, @_cell, @, module )
+				@_views.unshift new View.Module( @_paper, @, @_cell, module )
 				@redraw()
 			
 	# On module removed, removed it from the cell

@@ -10,9 +10,9 @@ class View.DummyModule extends View.Module
 	# @param module [Model.Module] the module to show
 	# @param params [Object] the params
 	#
-	constructor: ( paper, cell, parent, module, params = {} ) ->
+	constructor: ( paper, parent, cell, module, params = {} ) ->
 		@activated = off
-		super paper, cell, parent, module, params
+		super paper, parent, cell, module, params
 		
 	# Runs if module is selected
 	# 

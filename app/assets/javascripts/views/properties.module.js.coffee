@@ -11,8 +11,8 @@ class View.ModuleProperties extends Helper.Mixable
 	# @param module [Module] the module for which to display its properties
 	# @param cell [Cell] the parent cell of the module
 	#
-	constructor: ( view, module, cell ) ->
-		@_view = view
+	constructor: ( parent, cellView, cell, module, params = {} ) ->
+		@_parent = parent
 		@module = module
 		@_cell = cell
 
@@ -59,7 +59,7 @@ class View.ModuleProperties extends Helper.Mixable
 		@_elem.append(@_body)
 
 		# Create body content and append to body
-		@_populateBody(@module._dynamicProperties)
+		@_drawForm()
 
 		# Create the popover footer
 		@_footer = $('<div class="modal-footer"></div>')
@@ -78,19 +78,16 @@ class View.ModuleProperties extends Helper.Mixable
 
 	# Populates the popover body with the required forms to reflect the module.
 	#
-	_populateBody: ( ) ->
+	_drawForm: ( ) ->
 		@_body.empty()
 		form = $('<div class="form-horizontal"></div>')
 		paramSection = $('<div></div>')
 		metaboliteSection = $('<div></div>')
-		enumSection = $('<div></div>')
-		
+		enumSection = $('<div></div>')		
 
-		metadata = @module.metadata
-		console.log metadata
+		properties = @module.metadata.properties
 
-		for parameter in metadata.properties.parameters ? []
-			key = parameter
+		for key in properties.parameters ? []
 			value = @module[key]
 
 			input = @_drawInput('parameter', key, value)			
@@ -98,7 +95,18 @@ class View.ModuleProperties extends Helper.Mixable
 
 		form.append(paramSection)
 
-		for enumeration in metadata.properties.enumerations ? []
+		for key in properties.metabolite ? []
+			value = @module[key]
+
+			input = @_drawInput('metabolite', key, value)
+			metaboliteSection.append(input)
+
+		if metaboliteSection.children().length > 0
+			metaboliteSection.prepend('<hr />')
+
+		form.append(metaboliteSection)
+
+		for enumeration in properties.enumerations ? []
 			key = enumeration.name
 			value = @module[key]
 			params = {values: enumeration.values}
@@ -111,36 +119,9 @@ class View.ModuleProperties extends Helper.Mixable
 
 		form.append(enumSection)
 
-
-		###
-		for prop in properties
-			id = @module.id + ':' + prop
-			propLabel = prop.replace(/_(.*)/g, "<sub>$1</sub>")
-
-			controlGroup = $('<div class="control-group"></div>')
-			controlGroup.append('<label class="control-label" for="' + id + '">' + propLabel + '</label>')
-
-			controls = $('<div class="controls"></div>')
-			input = $('<input id="' + id + '" data-key class="input-small" type="text" value="' + @module[prop] + '" />')			
-			
-			((prop) => 
-				input.on('change', (event) => 
-					@_changes[prop] = event.target.value
-				)
-			) prop
-
-			@_inputs[prop] = input
-
-			controls.append(input)
-			controlGroup.append(controls)
-			form.append(controlGroup)
-		###
-
 		@_body.append(form)
 
 	_drawInput: ( type, key, value, params = {} ) ->
-		console.log arguments
-
 		id = @module.id + ':' + key
 		keyLabel = key.replace(/_(.*)/g, "<sub>$1</sub>")
 
@@ -160,8 +141,12 @@ class View.ModuleProperties extends Helper.Mixable
 					)
 				) key
 
+			when 'metabolite'
+				input = $('<input type="text" id="' + id + '" class="input-small" value="' + value + '" />')
+				controls.append(input)
+
 			when 'enumeration'
-				select = $('<select class="input-small"></select>')
+				select = $('<select id = "' + id + '" class="input-small"></select>')
 				for k, v of params.values
 					option = $('<option value="' + v + '">' + k + '</option>')
 					if v is value
@@ -173,8 +158,7 @@ class View.ModuleProperties extends Helper.Mixable
 					select.on('change', (event) => 
 						@_changes[key] = parseInt(event.target.value)
 					)
-				) key
-
+				) key			
 
 		controlGroup.append(controls)
 		return controlGroup
@@ -190,7 +174,7 @@ class View.ModuleProperties extends Helper.Mixable
 	# Sets the position of the popover so the arrow points straight at the module view
 	#
 	setPosition: ( ) ->
-		rect = @_view.getBBox()
+		rect = @_parent.getBBox()
 		x = rect.x + rect.width / 2
 		y = rect.y + rect.height
 
@@ -231,7 +215,7 @@ class View.ModuleProperties extends Helper.Mixable
 	# @param module [Module] the module that is being drawn
 	#
 	onModuleDrawn: ( module ) ->
-		if module is @module and @_view.activated
+		if module is @module and @_parent.activated
 			@setPosition()
 
 	# Gets called when a module view selected.
@@ -240,7 +224,7 @@ class View.ModuleProperties extends Helper.Mixable
 	# @param selected [Boolean] the selection state of the module
 	#
 	onModuleSelected: ( module, selected ) ->
-		if module is @module and @_view.activated
+		if module is @module and @_parent.activated
 			@_setSelected(selected)
 		else
 			@_setSelected(false)
@@ -251,7 +235,7 @@ class View.ModuleProperties extends Helper.Mixable
 	# @param selected [Boolean] the hover state of the module
 	#
 	onModuleHovered: ( module, hovered ) ->
-		if module is @module and @_view.activated
+		if module is @module and @_parent.activated
 			@_setHovered(hovered)
 		else
 			@_setHovered(false)
@@ -262,6 +246,6 @@ class View.ModuleProperties extends Helper.Mixable
 	#
 	onModuleInvalidated: ( module, prop ) ->
 		if module is @module
-			@_populateBody(@module._dynamicProperties)
+			@_drawForm()
 
 (exports ? this).View.ModuleProperties = View.ModuleProperties
