@@ -71,7 +71,6 @@ class View.Module extends View.RaphaelBase
 	#
 	hashColor : ( hashee = @name ) ->
 		return '#' + md5( hashee ).slice(0, 6) #@numToColor @hashCode hashee
-		
 
 	# Generates a colour based on a numer
 	#
@@ -106,7 +105,13 @@ class View.Module extends View.RaphaelBase
 	# @param selected [Mixed] selected state
 	#
 	onModuleSelected: ( module, selected ) =>
-		
+		if module is @module
+			if selected isnt @_selected
+				@_selected = selected
+				@redraw()
+		else if selected isnt off
+			@_selected = off
+			@redraw()
 
 	# Runs if module is hovered
 	# 
@@ -114,7 +119,13 @@ class View.Module extends View.RaphaelBase
 	# @param selected [Mixed] hovered state
 	#
 	onModuleHovered: ( module, hovered ) =>		
-		
+		if module is @module
+			if hovered isnt @_hovered
+				@_hovered = hovered
+				@redraw()
+		else if hovered isnt off
+			@_hovered = off
+			@redraw()
 
 	# Runs if paper is resized
 	#
@@ -173,7 +184,7 @@ class View.Module extends View.RaphaelBase
 	#
 	redraw: ( ) ->
 		if @x and @y and @_scale
-			_( @draw( @x, @y, @_scale ) ).throttle( 50 )
+			_( @draw( @x, @y, @_scale ) ).debounce( 50 )
 		return this
 			
 	# Draws this view and thus the model
@@ -250,12 +261,16 @@ class View.Module extends View.RaphaelBase
 		# Draw hitbox
 		hitbox = @drawHitbox(@_box, scale)
 
-		hitbox.click =>
-			_( Model.EventManager.trigger( 'module.set.selected', @module, [ on ]) ).debounce( 100 )
-		hitbox.mouseout =>			
-			_( Model.EventManager.trigger( 'module.set.hovered', @module, [ off ]) ).debounce( 100 )
-		hitbox.mouseover =>
-			_( Model.EventManager.trigger( 'module.set.hovered', @module, [ on ]) ).debounce( 100 )
+		unless @_selected
+			hitbox.click =>
+				_( @_trigger( 'module.set.selected', @module, [ on ]) ).debounce( 100 )
+				
+		if @_hovered
+			hitbox.mouseout =>			
+				_( @_trigger( 'module.set.hovered', @module, [ off ]) ).debounce( 100 )
+		else
+			hitbox.mouseover =>
+				_( @_trigger( 'module.set.hovered', @module, [ on ]) ).debounce( 100 )
 
 		@_view = @_paper.setFinish()
 		@_view.push( contents )

@@ -147,11 +147,11 @@ class View.ModuleProperties extends View.HTMLPopOver
 
 				((key) => 
 					select.on('change', (event) => 
-						@_changes[key] = parseInt(event.target.value)
+						@_changes[key] = parseInt event.target.value
 					)
 				) key			
 
-		controlGroup.append(controls)
+		controlGroup.append controls
 		return controlGroup
 
 
@@ -160,8 +160,8 @@ class View.ModuleProperties extends View.HTMLPopOver
 	_save: ( ) ->
 		for key, value of @_changes
 			@module[key] = value
-			
-		@_setSelected off
+		
+		@_trigger( 'module.set.selected', @module, [ off ] )
 			
 	# Gets called when a module view is drawn.
 	#
@@ -177,9 +177,10 @@ class View.ModuleProperties extends View.HTMLPopOver
 	# @param selected [Boolean] the selection state of the module
 	#
 	onModuleSelected: ( module, selected ) ->
-		if module is @module and @_parent.activated
-			@_setSelected selected 
-		else
+		if module is @module 
+			if @_parent.activated and @_selected isnt selected
+				@_setSelected selected 
+		else if @_selected isnt off
 			@_setSelected off
 
 	# Gets called when a module view hovered.
@@ -188,9 +189,10 @@ class View.ModuleProperties extends View.HTMLPopOver
 	# @param selected [Boolean] the hover state of the module
 	#
 	onModuleHovered: ( module, hovered ) ->
-		if module is @module and @_parent.activated
-			@_setHovered hovered
-		else
+		if module is @module 
+			if @_parent.activated and @_hovered isnt hovered
+				@_setHovered hovered
+		else if @_hovered isnt off
 			@_setHovered off
 
 	# Gets called when a module's parameters have changed

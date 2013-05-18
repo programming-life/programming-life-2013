@@ -83,8 +83,8 @@ class View.HTMLPopOver extends Helper.Mixable
 	# @param selected [Boolean] selection state
 	#
 	_setSelected: ( selected ) ->
-		if selected
-			@_setHovered(false)
+		if selected and selected isnt @_selected
+			@_setHovered off
 			@_elem.addClass('selected')
 		else
 			@_elem.removeClass('selected')
@@ -96,7 +96,7 @@ class View.HTMLPopOver extends Helper.Mixable
 	# @param hovered [Boolean] hover state
 	#
 	_setHovered: ( hovered ) ->
-		if hovered and not @_selected
+		if hovered and not @_selected and hovered isnt @_hovered 
 			@_elem.addClass('hovered')
 		else
 			@_elem.removeClass('hovered')
