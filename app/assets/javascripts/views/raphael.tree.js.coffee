@@ -1,6 +1,6 @@
 # View for UndoTree
 #
-class View.Tree extends View.Base
+class View.Tree extends View.RaphaelBase
 	
 	# Creates a new UndoTree view
 	# 

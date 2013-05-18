@@ -1,5 +1,5 @@
 # Action views are simulated buttons
-#
+# @todo extend from RaphaelBase
 class View.Action
 	
 	# Creates a new action view

@@ -15,7 +15,7 @@ class Model.Module extends Helper.Mixable
 	# @param params [Object] parameters for this module
 	# @param step [Function] the step function
 	#
-	constructor: ( params = {}, step, metadata ) -> 
+	constructor: ( params = {}, step, metadata = {} ) -> 
 		
 		@_allowTimeMachine()
 		@_allowEventBindings()
@@ -33,6 +33,11 @@ class Model.Module extends Helper.Mixable
 	#
 	_defineProperties: ( params, step, metadata ) ->
 				
+		properties = metadata.properties ? { }
+		properties.parameters = (properties.parameters ? [])
+		properties.parameters.push 'amount'
+		metadata.properties = properties
+		
 		@_defineGetters( step, metadata )
 		@_defineAccessors()
 		
@@ -216,13 +221,13 @@ class Model.Module extends Helper.Mixable
 		)
 		
 		unless result
-			@_trigger( 'notification', @, 
-				[ 
-					# section, method, message-id
-					'module', 'test', "#{ @constructor.name }:#{ @name }:#{ id ? 1 }",
-					"I need compounds in #{ @constructor.name }:#{ @name } but they are not available. #{ message ? '' }",
-					[ compounds, tests ] 
-				] 
+			missing = _( _( tests ).flatten() ).difference( _( compounds ).keys() )
+			@_notificate( 
+				@, @, 
+				"module.test.#{ @name }",
+				"I need #{ missing } in #{ @constructor.name }:#{ @name } but they are not available. #{ message ? '' }",
+				[ compounds, tests ],
+				Model.Module.Notification.Error
 			)	
 		
 		return result
@@ -236,12 +241,11 @@ class Model.Module extends Helper.Mixable
 	_ensure : ( test, message ) ->
 		
 		unless test
-			@_trigger( 'notification', @, 
-				[ 
-					'module', 'ensure', "#{ @constructor.name }:#{ @name }:#{ id ? 1 }",
-					"In #{ @constructor.name }:#{ @name } an ensure failed: #{ message ? '' }",
-					[] 
-				] 
+			@_notificate( @, @, 
+				"module.ensure.#{ @name }",
+				"In #{ @constructor.name }:#{ @name } an ensure failed: #{ message ? 'No additional message.' }",
+				[],
+				Model.Module.Notification.Error
 			)		
 		
 		return test
@@ -290,15 +294,15 @@ class Model.Module extends Helper.Mixable
 	# @return [Object] combined instance data
 	#
 	_getModuleInstanceData: ( instance, template, cell ) ->
-		return {
+		result = {
 			module_instance:
-				id: instance.id unless @isLocal()
 				module_template_id: template.id
 				cell_id: cell
 				name: instance.name
 				amount: instance.amount
 		}
-		
+		result.id = instance.id unless @isLocal()
+		return result
 		
 	# Updates the parameters givin
 	#
@@ -316,17 +320,26 @@ class Model.Module extends Helper.Mixable
 			module_parameters: params
 			
 		promise = $.ajax( @url, { data: module_parameters_data, type: 'PUT' } )
+		
+		promise.done( ( data ) =>
+			@_notificate( @, @, 
+				"module.save.#{ @name }",
+				"Succesfully saved #{ @name }",
+				[ 'update parameters' ],
+				Model.Module.Success
+			)		
+		)
+			
 		promise.fail( ( data ) => 		
-			@_trigger( 'notification', @, 
+			@_notificate( @, @, 
+				"module.save.#{ @name }",
+				"While saving parameters for #{ @name } an error occured: #{ JSON.stringify( data ? { message: 'none' } ) }",
 				[ 
-					'module', 'save', "#{ @constructor.name }:#{ @name }",
-					"While saving parameters for #{ @name } an error occured: #{ data ? '' }",
-					[ 
-						'update parameters',
-						data,
-						module_parameters_data, 
-					] 
-				] 
+					'update parameters',
+					data,
+					module_parameters_data, 
+				],
+				Model.Module.Error
 			)		
 		)
 		
@@ -351,18 +364,24 @@ class Model.Module extends Helper.Mixable
 			( data ) => 	
 				@id = data.id
 				
+				@_notificate( @,  @, 
+					"module.save.#{ @name }",
+					"Succesfully saved module",
+					[ 'create instance' ],
+					Model.Module.Notification.Success
+				)		
+				
 			# Fail
 			, ( data ) => 		
-				@_trigger( 'notification', @, 
+				@_notificate( @, @ 
+					"module.save.#{ @name }",
+					"While creating module instance #{ instance.name } an error occured: #{ JSON.stringify( data ? { message: 'none' } ) }",
 					[ 
-						'module', 'save', "#{ @constructor.name }:#{ @name }:#{ module_instance_data.name }",
-						"While creating module instance #{ instance.name } an error occured: #{ data ? '' }",
-						[ 
-							'create instance',
-							data,
-							module_instance_data
-						] 
-					] 
+						'create instance',
+						data,
+						module_instance_data
+					],
+					Model.Module.Error
 				)		
 			)
 		
@@ -398,16 +417,14 @@ class Model.Module extends Helper.Mixable
 				
 			# Fail
 			, ( data ) => 
-				@_trigger( 'notification', @, 
+				@_notificate( @,  @, 
+					"module.save.#{ @name }",
+					"While retrieving module template #{ serialized_data.type } an error occured: #{ JSON.stringify( data ? { message: 'none' } ) }",
 					[ 
-						'module', 'save', "#{ @constructor.name }:#{ @name }:#{ serialized_data.type }",
-						"While retrieving module template #{ serialized_data.type } an error occured: #{ data ? '' }",
-						[ 
-							'get instance',
-							data,
-							serialized_data
-						] 
-					] 
+						'get instance',
+						data,
+						serialized_data
+					]
 				)		
 			)
 		
@@ -449,21 +466,28 @@ class Model.Module extends Helper.Mixable
 				cell.add result
 				callback.apply( @, result ) if callback?
 				
+				module._notificate(
+					cell, module, 
+					"module.load.:#{module_id}",
+					"Succesfully loaded #{module.name}",
+					[ 'load' ],
+					Model.Module.Success
+				)	
+				
 			# Fail
 			( data ) =>
 			
-				module._trigger( 
-					'notification', module, 
+				module._notificate(
+					cell, module, 
+					"module.load.:#{module_id}",
+					"I am trying to load module #{ module_id } for the cell #{ cell } but an error occured: #{ JSON.stringify( data ? { message: 'none' } ) }",
 					[ 
-						'module', 'load', 'module.load:#{module_id}',
-						"I am trying to load module #{ module_id } for the cell #{ cell } but an error occured: #{ data }",
-						[ 
-							'load', 
-							data, 
-							module_id,
-							cell
-						] 
-					] 
+						'load', 
+						data, 
+						module_id,
+						cell
+					],
+					Model.Module.Error
 				)	
 			)
 			

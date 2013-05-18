@@ -2,7 +2,13 @@
 #
 EventBindings =
 	 
-	ClassMethods: {}
+	ClassMethods: 
+	
+		Notification:
+			Success: 0
+			Warning: 1
+			Error: 2
+			Info: 3
 		
 	InstanceMethods:
 	
@@ -54,13 +60,39 @@ EventBindings =
 			
 		# Triggers an event
 		# 
-		# @param event [String] the event to trigger from
-		# @param context [Context] the context to trigger for
+		# @param event [String] the event to trigger for
+		# @param caller [Context] the caller to trigger from
 		# @param args [Array] the arguments to send
 		# @return [self] chainable self
 		#
-		_trigger: ( event, context, args ) ->
-			Model.EventManager.trigger( event, context, args )
+		_trigger: ( event, caller, args ) ->
+			Model.EventManager.trigger( event, caller, args )
 			return this
+			
+		# Notification for a source binder event handler
+		# 
+		# @param context [Context] the context for the callback
+		# @param source [Context] the source of the message
+		# @param callback [Function] the function to run
+		#
+		_onNotificate: ( context, source, callback ) ->
+			bound_source = source
+			@_bind( 'notification', context, 
+				( caller, source, args... ) -> 
+					if source is bound_source
+						callback.apply( context, [ caller, source ].concat( args ) )
+			)	
+			
+		# Notificates all listeners
+		#
+		# @param context [Context] the caller to trigger from
+		# @param source [Context] the source of the message
+		# @param identifier [any] the message identifier
+		# @param message [String] the message
+		# @param args [Array<any>] the additional arguments
+		# @return [self] chainable self
+		#
+		_notificate: ( caller, source, identifier, message, args, type = EventBindings.ClassMethods.Notification.Info ) ->
+			return @_trigger( 'notification', caller, [ source, identifier, type, message, args ] )
 			
 ( exports ? this ).Mixin.EventBindings = EventBindings

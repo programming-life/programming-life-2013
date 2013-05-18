@@ -1,6 +1,6 @@
 # Class to generate graphs from a set of data points
 #
-class View.Graph extends View.Base
+class View.Graph extends View.RaphaelBase
 	
 	# @property [Integer] Maximum number of simultaneously displayed data sets
 	#
@@ -17,7 +17,7 @@ class View.Graph extends View.Base
 	#
 	constructor: ( paper, @_title, @_parent) ->
 		@_container = $('<div class="graph-container"></div>')
-		@_width = 1000
+		@_width = 300
 		@_height = 200
 		console.log("constructor")
 		@clear()
@@ -55,7 +55,10 @@ class View.Graph extends View.Base
 			addData data
 			return @
 
-		@_datasets[ @_datasets.length - 1 ]  = @_datasets[ @_datasets.length - 1 ].concat _( data ).rest()
+		lastX = _( @_datasets[ @_datasets.length - 1 ][0] ).last()
+		for x in data[0]
+			@_datasets[ @_datasets.length - 1 ][0].push (x + lastX)
+		@_datasets[ @_datasets.length - 1 ][1]  = @_datasets[ @_datasets.length - 1 ][1].concat _( data[1] ).rest()
 		#@_frame = [@_frame[0] + 20, @_frame[1] + 20]
 		
 		return @
@@ -82,13 +85,9 @@ class View.Graph extends View.Base
 
 		@_paper = @_getPaper()
 
-		[xValues, yValues] = @_getValues(@_frame)
-		@_drawChart(xValues, yValues)
+		@_drawChart(@_frame)
 
 		@_drawTitle()
-
-		# Draw the chart
-		@_drawChart(@_frame)
 
 		@_parent._container.append @_container
 	
@@ -107,18 +106,12 @@ class View.Graph extends View.Base
 	# @param scale [Float] the scale
 	# @retun [Raphael] The chart object
 	#
-	_getValues: (frame) ->
+	_getValues: (frame = @_frame) ->
 		# Only show the last MAX_DATASETS of data
 		max = @_datasets.length
 		min = Math.max( max - @MAX_DATASETS, 0 )
 		datasets = _( @_datasets ).rest min
-		
-		# Only show the last MAX_LENGTH of xvalues
-		for set in datasets
-			max = set.length - 1
-			min = Math.max( max - @MAX_LENGTH, 0 )
-			xValues = ( num for num in [ min..max ] by 1 )
-			
+
 		# Make sure the yvalues are valid
 		yValues = _( datasets )
 			.chain()
@@ -131,18 +124,17 @@ class View.Graph extends View.Base
 			.map( ( set ) ->	
 				return set if xValues.length is set.length
 				set_min = _( set ).min()
-				while set.length < xValues.length
+				while set.length < @MAX_LENGTH
 					set.push set_min
 				return set
 			).value()
 
-		yValues = _.first(yValues[0],20)
-
 		return [xValues, yValues]
 
 
-	_drawChart:(xValues, yValues) ->
-		chart = @_paper.linechart(0,0,300,175,xValues, yValues[0], @_options )
+	_drawChart:(frame = @_frame) ->
+		[xValues,yValues] = _( @_datasets ).last()
+		chart = @_paper.linechart(0,0,300,175,xValues, yValues, @_options )
 		#chart.hoverColumn ( event ) =>
 		#	unless @_parent._running
 		#		@_parent._drawRedLines( event.x - @_x - @_paper.canvas.offsetLeft )
