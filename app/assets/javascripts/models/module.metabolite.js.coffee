@@ -62,7 +62,7 @@ class Model.Metabolite extends Model.Module
 		
 		super params, step, metadata
 		
-		@_name = name.split( '#' )[0]
+		@_name = name?.split( '#' )[0]
 		@_dynamicProperties.push 'name'
 		
 	# Add the getters for this module
