@@ -124,6 +124,7 @@ class Model.Metabolite extends Model.Module
 	#
 	_getParameterMetaData: () ->
 		return {
+		
 			properties:
 				parameters: [ 'supply' ]
 				enumerations: [ 
@@ -139,6 +140,9 @@ class Model.Metabolite extends Model.Module
 							Product: Model.Metabolite.Product
 					}
 				]
+				
+			tests:
+				compounds: [ 'name' ]
 		}
 		
 	# Constructor for External Substrates

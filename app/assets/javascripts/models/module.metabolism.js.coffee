@@ -152,9 +152,14 @@ class Model.Metabolism extends Model.Module
 	#
 	_getParameterMetaData: () ->
 		return {
+		
 			properties:
 				metabolites: [ 'orig', 'dest' ]
 				parameters: [ 'k', 'k_m', 'v', 'k_d' ]
+				
+			tests:
+				compounds: [ 'name', 'dna', 'orig', 'dest' ]
+				
 		}
 
 (exports ? this).Model.Metabolism = Model.Metabolism
