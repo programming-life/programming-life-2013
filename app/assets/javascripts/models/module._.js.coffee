@@ -225,7 +225,7 @@ class Model.Module extends Helper.Mixable
 			@_notificate( 
 				@, @, 
 				"module.test.#{ @name }",
-				"I need #{ missing } in #{ @constructor.name }:#{ @name } but they are not available. #{ message ? '' }",
+				"I need #{ missing } in order to function correctly",
 				[ compounds, tests ],
 				Model.Module.Notification.Error
 			)	
