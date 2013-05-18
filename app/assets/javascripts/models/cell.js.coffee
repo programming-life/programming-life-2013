@@ -458,11 +458,12 @@ class Model.Cell extends Helper.Mixable
 		if base_values.length > 0
 			@_notificate( @, @, 
 				'cell.run.basevalues'
-				'Compounds have been added or removed since the last run, so I can not continue the calculation.',
+				'The number of compounds has changed. Restarting the calculations.',
 				[ 
 					values,
 					base_values
-				]
+				],
+				Model.Cell.Notification.Info
 			)
 			return [ values, off ]
 			
