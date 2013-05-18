@@ -38,6 +38,10 @@ class View.Notification extends View.HTMLPopOver
 		@draw()
 		@setPosition()
 		
+	hide: () ->
+		@_setSelected off
+		@_messages = {}
+		
 	# Nullifies the header
 	#
 	_createHeader: () ->	
@@ -50,10 +54,8 @@ class View.Notification extends View.HTMLPopOver
 	_createBody: () ->
 		body = super
 		@_closeButton = $('<button class="close">&times;</button>')
-		@_closeButton.on( 'click', => 
-			@_setSelected off
-			@_messages = {}
-		)
+		@_closeButton.on( 'click', _( @hide ).bind @ )
+		
 		body.append @_closeButton
 		for identifier, message of @_messages
 			classname = '' #View.Notification.getAlertClassFromType( message.type )
