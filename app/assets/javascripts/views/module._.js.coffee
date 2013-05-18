@@ -1,6 +1,6 @@
 # The module view shows a module
 #
-class View.Module extends View.Base
+class View.Module extends View.RaphaelBase
 
 	@concern Mixin.EventBindings
 

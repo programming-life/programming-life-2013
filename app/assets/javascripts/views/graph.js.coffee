@@ -1,6 +1,6 @@
 # Class to generate graphs from a set of data points
 #
-class View.Graph extends View.Base
+class View.Graph extends View.RaphaelBase
 	
 	# @property [Integer] Maximum number of simultaneously displayed data sets
 	#

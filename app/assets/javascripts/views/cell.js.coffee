@@ -1,6 +1,6 @@
 #  Class to generate a view for a cell model
 #
-class View.Cell extends View.Base
+class View.Cell extends View.RaphaelBase
 
 	@concern Mixin.EventBindings
 

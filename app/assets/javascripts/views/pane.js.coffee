@@ -1,6 +1,6 @@
 # View for extensible Pane
 #
-class View.Pane extends View.Base
+class View.Pane extends View.RaphaelBase
 	
 	@LEFT_SIDE : "left"
 	@RIGHT_SIDE : "right"
