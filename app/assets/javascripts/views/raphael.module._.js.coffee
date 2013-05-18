@@ -36,8 +36,8 @@ class View.Module extends View.RaphaelBase
 		@_visible = on
 		@activated = on
 
-		@_propertiesView = new View.ModuleProperties( @, @_parent, @_cell, @module)
-		@_notificationsView = new View.Notification( @, @module )
+		@_propertiesView = new View.ModuleProperties( @, @_parent, @_cell, @module )
+		@_notificationsView = new View.ModuleNotification( @, @_parent, @_cell, @module )
 		
 		@_allowEventBindings()
 		
