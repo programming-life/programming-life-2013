@@ -36,9 +36,11 @@ class View.Module extends View.RaphaelBase
 		@_visible = on
 		@activated = on
 
-		@_propertiesView = new View.ModuleProperties(@, @_parent, @_cell, @module)
+		@_propertiesView = new View.ModuleProperties( @, @_parent, @_cell, @module)
+		@_notificationsView = new View.Notification( @, @module )
 		
 		@_allowEventBindings()
+		
 		@_bind( 'module.set.property', @, @onModuleInvalidated )
 		@_bind( 'module.set.selected', @, @onModuleSelected )
 		@_bind( 'module.set.hovered', @, @onModuleHovered )
@@ -147,11 +149,18 @@ class View.Module extends View.RaphaelBase
 	# @return [self] chainable self
 	#
 	kill: () ->
+		
 		@_visible = off
 		@_unbindAll()
+		
+		@_propertiesView.kill()
+		@_notificationsView.kill()
+		
 		@clear()
 		return this
 
+	#
+	#
 	getBBox: ( ) -> 
 		return @_box?.getBBox() ? { x:0, y:0, x2:0, y2:0, width:0, height:0 }
 

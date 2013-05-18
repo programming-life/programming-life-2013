@@ -96,11 +96,19 @@ body {
 	stroke-width: 4px;
 }
 
-
-.module-properties {
+.module-properties, .notification {
 	max-width: 251px;
 	position: absolute;
 	display: none;
+	
+	&.selected {
+		display: block;
+		opacity: 1;
+		z-index: 999;
+	}
+}
+
+.module-properties {
 
 	.control-group {
 		margin-bottom:8px;
@@ -124,30 +132,24 @@ body {
 	hr {
 		margin:8px;
 	}
-}
+	
+	&.hovered {
+		display: block;
+		opacity: .9;
+		z-index: 1000;
 
-.module-properties.selected {
-	display: block;
-	opacity: 1;
-	z-index: 999;
-}
+		.close {
+			display: none;
+		}
 
-.module-properties.hovered {
-	display: block;
-	opacity: .9;
-	z-index: 1000;
+		.modal-footer {
+			display: none;
+		}
 
-	.close {
-		display: none;
-	}
-
-	.modal-footer {
-		display: none;
-	}
-
-	input, select {
-		border-color: rgba(0, 0, 0, 0);
-		box-shadow: none;
+		input, select {
+			border-color: rgba(0, 0, 0, 0);
+			box-shadow: none;
+		}
 	}
 }
 

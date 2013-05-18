@@ -53,6 +53,8 @@ class View.Cell extends View.RaphaelBase
 				@_bind( 'cell.remove.module', @, @onModuleRemove )
 				@_bind( 'cell.remove.metabolite', @, @onModuleRemove )
 				
+				@_notificationsView = new View.Notification( @, @cell )
+				
 			configurable: false
 			enumerable: true
 		)
@@ -61,6 +63,8 @@ class View.Cell extends View.RaphaelBase
 	#
 	#
 	kill: () ->
+		@_notificationsView?.kill()
+		
 		if @_views?
 			for view in @_views
 				view.kill?()
@@ -75,6 +79,11 @@ class View.Cell extends View.RaphaelBase
 		@_views = []
 		@_graphs = {}
 		@_numGraphs = 0
+		
+	#
+	#
+	getBBox: ( ) -> 
+		return @_contents?.getBBox() ? { x:0, y:0, x2:0, y2:0, width:0, height:0 }
 		
 	#
 	# @todo hide buttons if module present etc.
@@ -470,5 +479,4 @@ class View.Cell extends View.RaphaelBase
 		for key, graph of @_graphs
 			graph._drawRedLine( x )
 			
-
 (exports ? this).View.Cell = View.Cell
