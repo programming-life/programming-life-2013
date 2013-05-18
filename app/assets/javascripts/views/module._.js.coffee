@@ -4,6 +4,14 @@ class View.Module extends View.Base
 
 	@concern Mixin.EventBindings
 
+	Location:
+		Entrance: -1
+		Exit: 1
+
+	Direction:
+		Inward: -1
+		Outward: 1
+
 	activated: on
 	
 	# Creates a new module view
@@ -137,6 +145,31 @@ class View.Module extends View.Base
 	getBBox: ( ) -> 
 		return @_box?.getBBox() ? { x:0, y:0, x2:0, y2:0, width:0, height:0 }
 
+	getPoint: ( location ) ->
+		box = @getBBox()
+
+		switch location
+			when @Location.Entrance
+				return [box.x ,@y]
+			when @Location.Exit
+				return [box.x2 ,@y]
+
+	_getSplineDirection: ( metabolitePlacement ) ->
+		if @type is 'Transporter'
+			switch @module.direction
+				when Model.Transporter.Inward
+					switch metabolitePlacement
+						when Model.Metabolite.Inside
+							return @Direction.Outward
+						when Model.Metabolite.Outside
+							return @Direction.Inward
+				when Model.Transporter.Outward
+					switch metabolitePlacement
+						when Model.Metabolite.Inside
+							return @Direction.Inward
+						when Model.Metabolite.Outside
+							return @Direction.Outward
+
 	# Redraws this view iff it has been drawn before
 	#
 	redraw: ( ) ->
@@ -179,21 +212,41 @@ class View.Module extends View.Base
 
 		# Draw splines
 		if @type is 'Transporter' and @activated
-			metaboliteInside = @_cell.getMetabolite(@module.transported, Model.Metabolite.Inside)
-			metaboliteOutside = @_cell.getMetabolite(@module.transported, Model.Metabolite.Outside)
-			for metabolite in [metaboliteInside, metaboliteOutside]
+			for placement in [Model.Metabolite.Inside, Model.Metabolite.Outside]
+				metabolite = @_cell.getMetabolite(@module.transported, placement)
 				if metabolite
 					metaboliteView = @_parent.getView(metabolite)
-					spline = @drawSpline(@x, @y, metaboliteView.x, metaboliteView.y, metaboliteView.color)
-					spline.insertBefore(@_paper.bottom)
+					direction = @_getSplineDirection(placement)
 
-		if @type is 'Metabolism' and @activated
-			for metaboliteName in @module.orig.concat( @module.dest )
-				metabolite = @_cell.getMetabolite(metaboliteName.split("#")[0], Model.Metabolite.Inside)
+					((direction, metaboliteView) =>
+						_.defer ( ) =>
+							spline = @drawSpline(direction, metaboliteView)
+							@_view.push(spline)
+							spline.insertAfter(@_paper.bottom)
+					) direction, metaboliteView
+
+		else if @type is 'Metabolism' and @activated
+			inwards = ([metabolite, @Direction.Inward] for metabolite in @module.orig.map( 
+				( name ) => 
+					@_cell.getMetabolite(name.split('#')[0], Model.Metabolite.Inside)
+				)
+			)
+
+			outwards = ([metabolite, @Direction.Outward] for metabolite in @module.dest.map( 
+				( name ) => 
+					@_cell.getMetabolite(name.split('#')[0], Model.Metabolite.Inside)
+				)
+			)
+			
+			for [metabolite, direction] in inwards.concat(outwards)
 				if metabolite
 					metaboliteView = @_parent.getView(metabolite)
-					spline = @drawSpline(@x, @y, metaboliteView.x, metaboliteView.y, metaboliteView.color)
-					spline.insertBefore(@_paper.bottom)
+					((direction, metaboliteView) =>
+						_.defer ( ) =>
+							spline = @drawSpline(direction, metaboliteView)
+							@_view.push(spline)
+							spline.insertAfter(@_paper.bottom)
+					) direction, metaboliteView
 
 		# Draw hitbox
 		hitbox = @drawHitbox(@_box, scale)
@@ -319,14 +372,36 @@ class View.Module extends View.Base
 	# @param destY [float] the terminal y coordinate
 	# @return [Raphael] the spline path
 	#
-	drawSpline : ( origX, origY, destX, destY, color) ->
-		x1 = destX
-		y1 = origY
+	drawSpline : ( direction, target ) ->
+		switch direction
+			when @Direction.Inward
+				[origX, origY] = @getPoint(@Location.Entrance)
+				[destX, destY] = target.getPoint(@Location.Exit)
 
-		x2 = origX		
-		y2 = destY
+				dX = -Math.abs(destX - origX)
+				dY = destY - origY
+
+				x1 = origX + 2/3 * dX - 20 * @_scale
+				y1 = origY + 1/4 * dY
+				x2 = destX - 2/3 * dX + 20 * @_scale
+				y2 = destY - 1/4 * dY
+
+			when @Direction.Outward
+				[origX, origY] = @getPoint(@Location.Exit)
+				[destX, destY] = target.getPoint(@Location.Entrance)
+
+				dX = Math.abs(destX - origX)
+				dY = destY - origY
+
+				x1 = origX + 2/3 * dX + 20 * @_scale
+				y1 = origY + 1/4 * dY
+				x2 = destX - 2/3 * dX - 20 * @_scale
+				y2 = destY - 1/4 * dY
+
+		
+
 		spline = @_paper.path("M#{origX},#{origY}C#{x1},#{y1} #{x2},#{y2} #{destX},#{destY}")
-		spline.attr('stroke', color)
+		spline.attr('stroke', target.color)
 		spline.node.setAttribute('class', 'metabolite-spline')
 
 		return spline
@@ -396,10 +471,18 @@ class View.Module extends View.Base
 					'fill': @hashColor substrateText
 				
 				if ( params.showText )
-					substrateText = @_paper.text( x, y, substrateText )
-					substrateText.node.setAttribute('class', "#{module}-substrate-text" )
-					substrateText.attr
+					substrateTextShadow = @_paper.text( x, y - 1, substrateText )
+					substrateTextShadow.node.setAttribute('class', "#{module}-substrate-text-shadow" )
+					substrateTextShadow.attr
 						'font-size': 18 * scale
+
+					substrateTextActual = @_paper.text( x, y, substrateText )
+					substrateTextActual.node.setAttribute('class', "#{module}-substrate-text" )
+					substrateTextActual.attr
+						'font-size': 18 * scale
+
+					substrateText = @_paper.set()
+					substrateText.push(substrateTextShadow, substrateTextActual)
 				
 				return [ substrateCircle, substrateText ]
 				
@@ -412,6 +495,8 @@ class View.Module extends View.Base
 				x2 = x + r * Math.cos( -endAngle * rad)
 				y1 = y + r * Math.sin( -startAngle * rad)
 				y2 = y + r * Math.sin( -endAngle * rad )
+				path = @_paper.path( ["M", x, y, "L", x1, y1, "A", r, r, 0, +(endAngle - startAngle > 180), 0, x2, y2, "z"] )
+				path.node.setAttribute('class', "#{module}-substrate-sector")
 				return [ @_paper.path( ["M", x, y, "L", x1, y1, "A", r, r, 0, +(endAngle - startAngle > 180), 0, x2, y2, "z"] ) ]
 				
 			when 'EnzymCircle'

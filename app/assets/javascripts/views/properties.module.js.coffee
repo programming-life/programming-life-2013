@@ -13,8 +13,9 @@ class View.ModuleProperties extends Helper.Mixable
 	#
 	constructor: ( parent, cellView, cell, module, params = {} ) ->
 		@_parent = parent
-		@module = module
+		@_cellView = cellView
 		@_cell = cell
+		@module = module
 
 		@_changes = {}
 		@_inputs = {}
@@ -90,6 +91,7 @@ class View.ModuleProperties extends Helper.Mixable
 		form = $('<div class="form-horizontal"></div>')
 		paramSection = $('<div></div>')
 		metaboliteSection = $('<div></div>')
+		metabolitesSection = $('<div></div>')
 		enumSection = $('<div></div>')		
 
 		properties = @module.metadata.properties
@@ -112,6 +114,17 @@ class View.ModuleProperties extends Helper.Mixable
 			metaboliteSection.prepend('<hr />')
 
 		form.append(metaboliteSection)
+
+		for key in properties.metabolites ? []
+			value = @module[key]
+
+			input = @_drawInput('metabolites', key, value)
+			metabolitesSection.append(input)
+
+		if metabolitesSection.children().length > 0
+			metabolitesSection.prepend('<hr />')
+
+		form.append(metabolitesSection)
 
 		for enumeration in properties.enumerations ? []
 			key = enumeration.name
@@ -149,8 +162,19 @@ class View.ModuleProperties extends Helper.Mixable
 				) key
 
 			when 'metabolite'
-				input = $('<input type="text" id="' + id + '" class="input-small" value="' + value + '" />')
-				controls.append(input)
+				text = value.split('#')[0]
+				color = @_parent.hashColor(text)
+				label = $('<span class="badge badge-metabolite">' + text + '</span>')
+				label.css('background-color', color)
+				controls.append(label)
+
+			when 'metabolites'
+				for v in value
+					text = v.split('#')[0]
+					color = @_parent.hashColor(text)					
+					label = $('<span class="badge badge-metabolite">' + text + '</span> ')
+					label.css('background-color', color)
+					controls.append(label)
 
 			when 'enumeration'
 				select = $('<select id = "' + id + '" class="input-small"></select>')
@@ -175,7 +199,6 @@ class View.ModuleProperties extends Helper.Mixable
 	#
 	_save: ( ) ->
 		for key, value of @_changes
-			console.log key, value
 			@module[key] = value
 
 	# Sets the position of the popover so the arrow points straight at the module view
@@ -197,7 +220,6 @@ class View.ModuleProperties extends Helper.Mixable
 	#
 	_setSelected: ( selected ) ->
 		if selected
-			console.log  -1 == "-1"
 			@_setHovered(false)
 			@_elem.addClass('selected')
 		else
