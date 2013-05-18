@@ -1,14 +1,14 @@
-# Class View.ModuleProperties
-#
 # Displays the properties of a module in a neat HTML popover
 #
 class View.ModuleProperties extends View.HTMLPopOver
 
 	# Constructs a new ModuleProperties view.
 	#
-	# @param view [Module.View] the accompanying module view
-	# @param module [Module] the module for which to display its properties
-	# @param cell [Cell] the parent cell of the module
+	# @param parent [View.Module] the accompanying module view
+	# @param module [Model.Module] the module for which to display its properties
+	# @param cellView [View.Cell] the accompanying cell view
+	# @param cell [Model.Cell] the parent cell of the module
+	# @param params [Object] options
 	#
 	constructor: ( parent, cellView, cell, module, params = {} ) ->
 		@_cellView = cellView
@@ -18,7 +18,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 		@_changes = {}
 		@_inputs = {}
 
-		super parent
+		super parent, module.constructor.name, ' module-properties', 'bottom'
 		
 		@_bind('module.drawn', @, @onModuleDrawn)
 		@_bind('module.set.hovered', @, @onModuleHovered)
@@ -203,5 +203,5 @@ class View.ModuleProperties extends View.HTMLPopOver
 	onModuleInvalidated: ( module, prop ) ->
 		if module is @module
 			@_drawForm()
-
+			
 (exports ? this).View.ModuleProperties = View.ModuleProperties
