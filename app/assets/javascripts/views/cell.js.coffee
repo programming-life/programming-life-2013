@@ -14,9 +14,9 @@ class View.Cell extends View.Base
 	constructor: ( paper, cell, container = "#graphs" ) ->
 		super(paper)
 		
-		container =  if $( container )[0] then $( container )[0] else $("<div></div>")[0]
-		@_container = Raphael( container, "100%", 1 )
-		@_container.setViewBox( 0, 0, 1000, 1000 ) # 1000 pixels, 1000 pixels
+		@_container =  if $( container )[0] then $( container ) else $("<div></div>")
+		#@_container = Raphael( container, "100%", 1 )
+		#@_container.setViewBox( 0, 0, 1000, 1000 ) # 1000 pixels, 1000 pixels
 
 		@_views = []
 		@_drawn = []
@@ -353,8 +353,8 @@ class View.Cell extends View.Base
 		for key, dataset of datasets
 			if ( !@_graphs[ key ]? )
 				height = y + 100 + Math.ceil( (graph_num + 1) / 2 ) * 175 + ( Math.ceil( (graph_num + 1) / 2 ) - 1 ) * 100
-				@_container.setViewBox( 0, 0, 1000, height )
-				@_container.setSize( "100%", height )
+				#@_container.setViewBox( 0, 0, 1000, height )
+				#@_container.setSize( "100%", height )
 				@_graphs[ key ] = new View.Graph( @_container, key, @ )
 
 			

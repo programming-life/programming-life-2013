@@ -16,10 +16,18 @@ class View.Graph extends View.Base
 	# @param parent [View.Cell] The cell view this graph belongs to
 	#
 	constructor: ( paper, @_title, @_parent) ->
-		super(paper)
+		@_container = $('<div class="graph-container"></div>')
+		@_width = 1000
+		@_height = 200
+		console.log("constructor")
+		@clear()
+		@_paper = @_getPaper()
+		super(@_paper)
+
 		@_datasets = []
 
 		@_dt = 1
+		@_frame = [0,20]
 		@_options = {
 			smooth: true
 			axis: '0 0 1 1'
@@ -48,12 +56,16 @@ class View.Graph extends View.Base
 			return @
 
 		@_datasets[ @_datasets.length - 1 ]  = @_datasets[ @_datasets.length - 1 ].concat _( data ).rest()
+		#@_frame = [@_frame[0] + 20, @_frame[1] + 20]
+		
 		return @
 		
 	# Clears the view
 	#
 	clear: () ->
-		@_contents?.remove()
+		@_container.empty()
+		@_container.remove()
+		@_paper?.remove()
 		@_line?.remove()
 		@_line = null
 	
@@ -63,19 +75,30 @@ class View.Graph extends View.Base
 	# @param y [Integer] The y coordinate
 	# @param scale [Integer] The scale
 	#
-	draw: ( @_x, @_y, @_scale ) ->
+	draw: ( ) ->
 		@clear()
 
-		# Show the title
-		text = @_drawTitle( @_x, @_y, @_scale )
-		bbox = text.getBBox()
-		@_contents.push text
+		@_container = $('<div class="graph-container"></div>')
+
+		@_paper = @_getPaper()
+
+		[xValues, yValues] = @_getValues(@_frame)
+		@_drawChart(xValues, yValues)
+
+		@_drawTitle()
 
 		# Draw the chart
-		set = @_drawChart(@_x, @_y + bbox.height, @_scale)
-		@_chart = set[ 0 ]
-		@_contents.push set
+		@_drawChart(@_frame)
 
+		@_parent._container.append @_container
+	
+	# Gets a new paper in the container for this graph
+	#
+	# @return [Object] A new paper
+	#
+	_getPaper: ( ) ->
+		paper = Raphael( @_container[0], @_width, @_height)
+		return paper
 			
 	# Draws the chart
 	#
@@ -83,11 +106,8 @@ class View.Graph extends View.Base
 	# @param y [Integer] the y position
 	# @param scale [Float] the scale
 	# @retun [Raphael] The chart object
-	_drawChart: (x, y, scale ) ->
-		
-		width = 350
-		height = 175
-		
+	#
+	_getValues: (frame) ->
 		# Only show the last MAX_DATASETS of data
 		max = @_datasets.length
 		min = Math.max( max - @MAX_DATASETS, 0 )
@@ -97,7 +117,6 @@ class View.Graph extends View.Base
 		for set in datasets
 			max = set.length - 1
 			min = Math.max( max - @MAX_LENGTH, 0 )
-			#console.log "x: #{min} > #{max}"
 			xValues = ( num for num in [ min..max ] by 1 )
 			
 		# Make sure the yvalues are valid
@@ -106,41 +125,27 @@ class View.Graph extends View.Base
 			.map( ( set ) -> 
 				set =  _( set ).rest( min )
 				set_min = _( set ).min()
-			#	console.log "set: #{set_min} > #{_( set ).max()} | diff: #{  _( set ).max() - set_min }"
 				return set unless ( diff = Math.abs( _( set ).max() - set_min ) ) < 1e-12
 				return [ set_min ] 
 			)
 			.map( ( set ) ->	
 				return set if xValues.length is set.length
-				#console.log "y: #{set.length} != #{xValues.length}"
 				set_min = _( set ).min()
 				while set.length < xValues.length
 					set.push set_min
 				return set
 			).value()
 
-		set = @_paper.set()
+		yValues = _.first(yValues[0],20)
 
-		chart = @_paper.linechart( x , y, width, height, xValues, yValues, @_options )
-		chart.hoverColumn ( event ) =>
-			unless @_parent._running
-				@_parent._drawRedLines( event.x - @_x - @_paper.canvas.offsetLeft )
+		return [xValues, yValues]
 
-		
-		# Draw the gridlines
-		lines = @_paper.set()
-		for i in [ 0..chart.axis[1].text.items.length - 1 ]
-			lines.push( @_paper
-				.path( [ 'M', x, chart.axis[1].text.items[i].attrs.y, 'H', width + x ] )
-				.attr
-					stroke : '#EEE'
-				.toBack()
-			)
 
-		set.push(chart)
-		set.push(lines)
-				
-		return set
+	_drawChart:(xValues, yValues) ->
+		chart = @_paper.linechart(0,0,300,175,xValues, yValues[0], @_options )
+		#chart.hoverColumn ( event ) =>
+		#	unless @_parent._running
+		#		@_parent._drawRedLines( event.x - @_x - @_paper.canvas.offsetLeft )
 	
 	# Draws the title
 	#
@@ -150,10 +155,10 @@ class View.Graph extends View.Base
 	# @return [Raphael] the text object
 	#
 	_drawTitle: ( x, y, scale ) ->
-		text = @_paper.text( x, y, @_title )
-		text.attr
-			'font-size': 32 * scale
-		return text
+		h2 = $('<h2>'+ @_title + '</h2>')
+		@_container.prepend( h2 )
+
+		return h2
 	
 	# Draws the gridlines
 	#
