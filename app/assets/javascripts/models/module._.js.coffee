@@ -221,11 +221,13 @@ class Model.Module extends Helper.Mixable
 		)
 		
 		unless result
+			missing = _( _( tests ).flatten() ).difference( _( compounds ).keys() )
 			@_notificate( 
 				@, @, 
 				"module.test.#{ @name }",
-				"I need compounds in #{ @constructor.name }:#{ @name } but they are not available. #{ message ? 'No additional message.' }",
-				[ compounds, tests ]  
+				"I need #{ missing } in #{ @constructor.name }:#{ @name } but they are not available. #{ message ? '' }",
+				[ compounds, tests ],
+				Model.Module.Notification.Error
 			)	
 		
 		return result
@@ -242,7 +244,8 @@ class Model.Module extends Helper.Mixable
 			@_notificate( @, @, 
 				"module.ensure.#{ @name }",
 				"In #{ @constructor.name }:#{ @name } an ensure failed: #{ message ? 'No additional message.' }",
-				[]  
+				[],
+				Model.Module.Notification.Error
 			)		
 		
 		return test
@@ -291,7 +294,7 @@ class Model.Module extends Helper.Mixable
 	# @return [Object] combined instance data
 	#
 	_getModuleInstanceData: ( instance, template, cell ) ->
-		results = {
+		result = {
 			module_instance:
 				module_template_id: template.id
 				cell_id: cell
