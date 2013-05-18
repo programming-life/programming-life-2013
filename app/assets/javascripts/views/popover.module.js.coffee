@@ -162,6 +162,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 			@module[key] = value
 		
 		@_trigger( 'module.set.selected', @module, [ off ] )
+		@_trigger( 'module.set.hovered', @module, [ off ] )
 			
 	# Gets called when a module view is drawn.
 	#
