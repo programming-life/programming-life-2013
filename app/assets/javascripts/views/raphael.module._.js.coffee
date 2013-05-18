@@ -12,8 +12,6 @@ class View.Module extends View.RaphaelBase
 		Inward: -1
 		Outward: 1
 
-	activated: on
-	
 	# Creates a new module view
 	#
 	# @param paper [Raphael.Paper] the raphael paper
@@ -36,6 +34,7 @@ class View.Module extends View.RaphaelBase
 
 		@_selected = off	
 		@_visible = on
+		@activated = on
 
 		@_propertiesView = new View.ModuleProperties(@, @_parent, @_cell, @module)
 		

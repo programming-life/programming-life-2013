@@ -11,8 +11,8 @@ class View.DummyModule extends View.Module
 	# @param params [Object] the params
 	#
 	constructor: ( paper, parent, cell, module, params = {} ) ->
-		@activated = off
 		super paper, parent, cell, module, params
+		@activated = off
 		
 	# Runs if module is selected
 	# 
