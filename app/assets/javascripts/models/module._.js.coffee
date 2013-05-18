@@ -291,15 +291,15 @@ class Model.Module extends Helper.Mixable
 	# @return [Object] combined instance data
 	#
 	_getModuleInstanceData: ( instance, template, cell ) ->
-		return {
+		results = {
 			module_instance:
-				id: instance.id unless @isLocal()
 				module_template_id: template.id
 				cell_id: cell
 				name: instance.name
 				amount: instance.amount
 		}
-		
+		result.id = instance.id unless @isLocal()
+		return result
 		
 	# Updates the parameters givin
 	#

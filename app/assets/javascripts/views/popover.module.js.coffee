@@ -2,8 +2,7 @@
 #
 # Displays the properties of a module in a neat HTML popover
 #
-class View.ModuleProperties extends Helper.Mixable
-	@concern Mixin.EventBindings
+class View.ModuleProperties extends View.HTMLPopOver
 
 	# Constructs a new ModuleProperties view.
 	#
@@ -12,69 +11,38 @@ class View.ModuleProperties extends Helper.Mixable
 	# @param cell [Cell] the parent cell of the module
 	#
 	constructor: ( parent, cellView, cell, module, params = {} ) ->
-		@_parent = parent
-		@module = module
+		@_cellView = cellView
 		@_cell = cell
+		@module = module
 
 		@_changes = {}
 		@_inputs = {}
 
-		@_allowEventBindings()
+		super parent
+		
 		@_bind('module.drawn', @, @onModuleDrawn)
 		@_bind('module.set.hovered', @, @onModuleHovered)
 		@_bind('module.set.selected', @, @onModuleSelected)
 		@_bind('module.set.property', @, @onModuleInvalidated)
-
-		@draw()
-
-	# Removes the properties' popover from the body
+		
+	# Create the popover header
 	#
-	clear: ( ) ->
-		@_elem?.remove()
-
-	# Draws the properties popover
+	_createHeader: ( ) ->
+		onclick = () => Model.EventManager.trigger('module.set.selected', @module, [ off ])
+		return super onclick
+		
+	# Create the popover body
 	#
-	draw: ( ) ->
-		@clear()
-
-		# Create the popover
-		@_elem = $('<div class="popover bottom module-properties"></div>')
-		@_elem.append('<div class="arrow"></div>')
-
-		# Create the popover header
-		@_header = $('<div class="popover-title"></div>')
-		@_elem.append(@_header)
-
-		# Create closebutton and title and append to header
-		closeButton = $('<button class="close">&times;</button>')
-		closeButton.on('click', =>
-			Model.EventManager.trigger('module.set.selected', @module, [ off ])
-		)
-
-		@_header.append(@module.constructor.name)
-		@_header.append(closeButton)
-
-		# Create the popover body
-		@_body = $('<div class="popover-content"></div>')
-		@_elem.append(@_body)
-
-		# Create body content and append to body
+	_createBody: () ->
+		@_body = super
 		@_drawForm()
+		return @_body
 
-		# Create the popover footer
-		@_footer = $('<div class="modal-footer"></div>')
-		@_elem.append(@_footer)		
-
-		# Create footer content and append to footer
-		@_saveButton = $('<button class="btn btn-primary">Save</button>')
-		@_saveButton.on('click', =>
-			@_save()
-		)
-
-		@_footer.append(@_saveButton)
-
-		# Append popover to body
-		$('body').append(@_elem)
+	#  Create footer content and append to footer
+	#
+	_createFooter: () ->
+		onclick = () => @_save()
+		return super onclick
 
 	# Populates the popover body with the required forms to reflect the module.
 	#
@@ -83,6 +51,7 @@ class View.ModuleProperties extends Helper.Mixable
 		form = $('<div class="form-horizontal"></div>')
 		paramSection = $('<div></div>')
 		metaboliteSection = $('<div></div>')
+		metabolitesSection = $('<div></div>')
 		enumSection = $('<div></div>')		
 
 		properties = @module.metadata.properties
@@ -105,6 +74,17 @@ class View.ModuleProperties extends Helper.Mixable
 			metaboliteSection.prepend('<hr />')
 
 		form.append(metaboliteSection)
+
+		for key in properties.metabolites ? []
+			value = @module[key]
+
+			input = @_drawInput('metabolites', key, value)
+			metabolitesSection.append(input)
+
+		if metabolitesSection.children().length > 0
+			metabolitesSection.prepend('<hr />')
+
+		form.append(metabolitesSection)
 
 		for enumeration in properties.enumerations ? []
 			key = enumeration.name
@@ -142,8 +122,19 @@ class View.ModuleProperties extends Helper.Mixable
 				) key
 
 			when 'metabolite'
-				input = $('<input type="text" id="' + id + '" class="input-small" value="' + value + '" />')
-				controls.append(input)
+				text = value.split('#')[0]
+				color = @_parent.hashColor(text)
+				label = $('<span class="badge badge-metabolite">' + text + '</span>')
+				label.css('background-color', color)
+				controls.append(label)
+
+			when 'metabolites'
+				for v in value
+					text = v.split('#')[0]
+					color = @_parent.hashColor(text)					
+					label = $('<span class="badge badge-metabolite">' + text + '</span> ')
+					label.css('background-color', color)
+					controls.append(label)
 
 			when 'enumeration'
 				select = $('<select id = "' + id + '" class="input-small"></select>')
@@ -156,11 +147,11 @@ class View.ModuleProperties extends Helper.Mixable
 
 				((key) => 
 					select.on('change', (event) => 
-						@_changes[key] = parseInt(event.target.value)
+						@_changes[key] = parseInt event.target.value
 					)
 				) key			
 
-		controlGroup.append(controls)
+		controlGroup.append controls
 		return controlGroup
 
 
@@ -168,48 +159,11 @@ class View.ModuleProperties extends Helper.Mixable
 	#
 	_save: ( ) ->
 		for key, value of @_changes
-			console.log key, value
 			@module[key] = value
-
-	# Sets the position of the popover so the arrow points straight at the module view
-	#
-	setPosition: ( ) ->
-		rect = @_parent.getBBox()
-		x = rect.x + rect.width / 2
-		y = rect.y + rect.height
-
-		width = @_elem.width()
-		left = x - width / 2
-		top = y
-
-		@_elem.css({left: left, top: top})
-
-	# Sets wether or not the module is selected
-	#
-	# @param selected [Boolean] selection state
-	#
-	_setSelected: ( selected ) ->
-		if selected
-			console.log  -1 == "-1"
-			@_setHovered(false)
-			@_elem.addClass('selected')
-		else
-			@_elem.removeClass('selected')
-
-		@_selected = selected
-
-	# Sets wether or not the module is hovered
-	#
-	# @param hovered [Boolean] hover state
-	#
-	_setHovered: ( hovered ) ->
-		if hovered and not @_selected
-			@_elem.addClass('hovered')
-		else
-			@_elem.removeClass('hovered')
-
-		@_hovered = hovered
-
+		
+		@_trigger( 'module.set.selected', @module, [ off ] )
+		@_trigger( 'module.set.hovered', @module, [ off ] )
+			
 	# Gets called when a module view is drawn.
 	#
 	# @param module [Module] the module that is being drawn
@@ -224,10 +178,11 @@ class View.ModuleProperties extends Helper.Mixable
 	# @param selected [Boolean] the selection state of the module
 	#
 	onModuleSelected: ( module, selected ) ->
-		if module is @module and @_parent.activated
-			@_setSelected(selected)
-		else
-			@_setSelected(false)
+		if module is @module 
+			if @_parent.activated and @_selected isnt selected
+				@_setSelected selected 
+		else if @_selected isnt off
+			@_setSelected off
 
 	# Gets called when a module view hovered.
 	#
@@ -235,10 +190,11 @@ class View.ModuleProperties extends Helper.Mixable
 	# @param selected [Boolean] the hover state of the module
 	#
 	onModuleHovered: ( module, hovered ) ->
-		if module is @module and @_parent.activated
-			@_setHovered(hovered)
-		else
-			@_setHovered(false)
+		if module is @module 
+			if @_parent.activated and @_hovered isnt hovered
+				@_setHovered hovered
+		else if @_hovered isnt off
+			@_setHovered off
 
 	# Gets called when a module's parameters have changed
 	#
