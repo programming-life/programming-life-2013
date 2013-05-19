@@ -143,5 +143,3 @@ class View.Node extends View.RaphaelBase
 		})
 
 		return @_arrow
-
-(exports ? this).View.Node = View.Node

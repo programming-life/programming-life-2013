@@ -1,4 +1,6 @@
-# 
+# Provides an HTML Popover
+#
+# @concern Mixin.EventBindings
 #
 class View.HTMLPopOver extends Helper.Mixable
 
@@ -149,5 +151,3 @@ class View.HTMLPopOver extends Helper.Mixable
 
 		@_hovered = hovered
 		return this
-
-(exports ? this).View.HTMLPopOver = View.HTMLPopOver

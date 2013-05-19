@@ -203,5 +203,3 @@ class View.ModuleProperties extends View.HTMLPopOver
 	onModuleInvalidated: ( module, prop ) ->
 		if module is @module
 			@_drawForm()
-			
-(exports ? this).View.ModuleProperties = View.ModuleProperties

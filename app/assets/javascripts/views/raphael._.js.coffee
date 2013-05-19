@@ -87,5 +87,3 @@ class View.RaphaelBase extends Helper.Mixable
 
 		for view in @_views
 			view.kill()
-
-(exports ? this).View.Base = View.Base

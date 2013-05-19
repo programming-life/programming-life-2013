@@ -27,8 +27,6 @@ class Model.Module extends Helper.Mixable
 		
 	# Defines All the properties
 	#
-	# @see {DynamicProperties} for function calls
-	#
 	# @return [self] chainable self
 	#
 	_defineProperties: ( params, step, metadata ) ->
@@ -55,7 +53,6 @@ class Model.Module extends Helper.Mixable
 		
 	# Defines the getters
 	#
-	# @see {DynamicProperties} for function calls
 	# @return [self] chainable self
 	#
 	_defineGetters: ( step, metadata ) ->
@@ -492,5 +489,3 @@ class Model.Module extends Helper.Mixable
 			)
 			
 		return promise
-	
-(exports ? this).Model.Module = Model.Module

@@ -192,5 +192,3 @@ class Model.Metabolite extends Model.Module
 	#
 	@pext: ( params = {}, start = 0, name = "p" ) -> 
 		return new Model.Metabolite( params, start, name,  Model.Metabolite.Outside, Metabolite.Product )
-
-(exports ? this).Model.Metabolite = Model.Metabolite

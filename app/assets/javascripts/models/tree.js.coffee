@@ -107,6 +107,3 @@ class Model.Tree extends Helper.Mixable
 		if node._parent?
 			node._parent._branch = node
 			@_current = node
-		
-		
-(exports ? this).Model.Tree = Model.Tree

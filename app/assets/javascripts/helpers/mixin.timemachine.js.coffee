@@ -3,7 +3,9 @@
 # @see {Model.UndoTree} for the storage datastructure
 # @see {Model.Action} for the action datastructure
 #
-TimeMachine = 
+# @mixin
+#
+Mixin.TimeMachine = 
 	
 	ClassMethods: {}
 	
@@ -56,5 +58,3 @@ TimeMachine =
 		#
 		_createAction: ( description, context = @ ) ->
 			return new Model.Action( context, undefined, undefined, description )
-			
-( exports ? this ).Mixin.TimeMachine = TimeMachine

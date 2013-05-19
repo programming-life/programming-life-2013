@@ -54,5 +54,3 @@ class Model.Node
 		
 		for child in @_children
 			child._parent = other
-
-(exports ? this).Model.Node = Model.Node
