@@ -1,6 +1,6 @@
 #  Class to generate a view for a cell model
 #
-class View.Cell extends View.Base
+class View.Cell extends View.RaphaelBase
 
 	@concern Mixin.EventBindings
 
@@ -45,13 +45,15 @@ class View.Cell extends View.Base
 				
 				@_cell = value
 				for module in @_cell._modules
-					@_views.push new View.Module( @_paper, @_cell, @, module)
+					@_views.push new View.Module( @_paper, @, @_cell, module)
 			
 				@_createButtons()
 				@_bind( 'cell.add.module', @, @onModuleAdd )
 				@_bind( 'cell.add.metabolite', @, @onModuleAdd )
 				@_bind( 'cell.remove.module', @, @onModuleRemove )
 				@_bind( 'cell.remove.metabolite', @, @onModuleRemove )
+				
+				@_notificationsView = new View.Notification( @, @cell )
 				
 			configurable: false
 			enumerable: true
@@ -61,6 +63,8 @@ class View.Cell extends View.Base
 	#
 	#
 	kill: () ->
+		@_notificationsView?.kill()
+		
 		if @_views?
 			for view in @_views
 				view.kill?()
@@ -77,17 +81,22 @@ class View.Cell extends View.Base
 		@_numGraphs = 0
 		
 	#
+	#
+	getBBox: ( ) -> 
+		return @_contents?.getBBox() ? { x:0, y:0, x2:0, y2:0, width:0, height:0 }
+		
+	#
 	# @todo hide buttons if module present etc.
 	#
 	_createButtons: () ->
 		
-		@_views.push new View.DummyModule( @_paper, @_cell, @, new Model.DNA() )
-		@_views.push new View.DummyModule( @_paper, @_cell, @, new Model.Lipid() )
-		@_views.push new View.DummyModule( @_paper, @_cell, @, new Model.Metabolite( { name: 's' } ), { name: 's', inside_cell: false, is_product: false, amount: 1, supply: 1 } )
-		@_views.push new View.DummyModule( @_paper, @_cell, @, Model.Transporter.int(), { direction: Model.Transporter.Inward } )
-		@_views.push new View.DummyModule( @_paper, @_cell, @, new Model.Metabolism() )
-		@_views.push new View.DummyModule( @_paper, @_cell, @, new Model.Protein() )
-		@_views.push new View.DummyModule( @_paper, @_cell, @, Model.Transporter.ext(), { direction: Model.Transporter.Outward } )
+		@_views.push new View.DummyModule( @_paper, @, @_cell, new Model.DNA() )
+		@_views.push new View.DummyModule( @_paper, @, @_cell, new Model.Lipid() )
+		@_views.push new View.DummyModule( @_paper, @, @_cell, new Model.Metabolite( { name: 's' } ), { name: 's', inside_cell: false, is_product: false, amount: 1, supply: 1 } )
+		@_views.push new View.DummyModule( @_paper, @, @_cell, Model.Transporter.int(), { direction: Model.Transporter.Inward } )
+		@_views.push new View.DummyModule( @_paper, @, @_cell, new Model.Metabolism() )
+		@_views.push new View.DummyModule( @_paper, @, @_cell, new Model.Protein() )
+		@_views.push new View.DummyModule( @_paper, @, @_cell, Model.Transporter.ext(), { direction: Model.Transporter.Outward } )
 			
 		#@_views.push new View.Tree( @_paper, @_cell._tree)
 		
@@ -131,7 +140,7 @@ class View.Cell extends View.Base
 				type = view.module.constructor.name
 				direction = if view.module.direction? then view.module.direction else 0
 				placement = if view.module.placement? then view.module.placement else 0
-				placement_type = if view.module.type? then view.module.type else 0
+				placement_type = if view.module.type? and type is "Metabolite" then view.module.type else 0
 				counter_name = "#{type}_#{direction}_#{placement}_#{placement_type}"
 				counter = counters[ counter_name ] ? 0
 
@@ -173,7 +182,7 @@ class View.Cell extends View.Base
 		unless cell isnt @_cell
 			unless _( @_drawn ).indexOf( module.id ) isnt -1
 				@_drawn.unshift module.id
-				@_views.unshift new View.Module( @_paper, @_cell, @, module )
+				@_views.unshift new View.Module( @_paper, @, @_cell, module )
 				@redraw()
 			
 	# On module removed, removed it from the cell
@@ -470,5 +479,4 @@ class View.Cell extends View.Base
 		for key, graph of @_graphs
 			graph._drawRedLine( x )
 			
-
 (exports ? this).View.Cell = View.Cell

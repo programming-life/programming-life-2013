@@ -207,6 +207,7 @@ class Model.Transporter extends Model.Module
 	#
 	_getParameterMetaData: () ->
 		return {
+		
 			properties:
 				parameters: [ 'k', 'k_tr', 'k_m' ]
 				metabolites: [ 'consume' ]
@@ -223,6 +224,9 @@ class Model.Transporter extends Model.Module
 							Passive: Model.Transporter.Passive
 					}
 				]
+				
+			tests:
+				compounds: [ 'name', 'dna', 'consume', 'cell', 'orig', 'dest' ]
 		}
 	
 	# Validates that the type is set

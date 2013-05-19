@@ -60,7 +60,7 @@ class Model.Lipid extends Model.Module
 				dilution = mu * compounds[ @name ]
 			
 			# If all components are available 
-			if ( vlipidprod? )
+			if vlipidprod?
 			
 				# The Lipid increase is the rate minus dilution
 				#
@@ -108,9 +108,13 @@ class Model.Lipid extends Model.Module
 	#
 	_getParameterMetaData: () ->
 		return {
+		
 			properties:
 				metabolites: [ 'consume' ]
 				parameters: [ 'k' ]
+				
+			tests:
+				compounds: [ 'dna', 'name', 'consume' ]
 		}
 
 (exports ? this).Model.Lipid = Model.Lipid

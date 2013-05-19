@@ -1,6 +1,6 @@
 # The play view adds controlls to a cell's simulation.
 # 
-class View.Play extends View.Base
+class View.Play extends View.RaphaelBase
 	
 	# Creates a new action view
 	# 

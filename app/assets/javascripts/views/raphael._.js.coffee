@@ -1,6 +1,6 @@
-# Base class for views
+# Base class for views that use Raphael
 # 
-class View.Base extends Helper.Mixable
+class View.RaphaelBase extends Helper.Mixable
 	
 	@concern Mixin.EventBindings
 
