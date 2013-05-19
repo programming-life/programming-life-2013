@@ -88,13 +88,13 @@ class View.Graph extends View.RaphaelBase
 		
 		# Only show the last MAX_DATASETS of data
 		max = @_datasets.length
-		min = Math.max( max - @MAX_DATASETS, 0 )
+		min = Math.max( max - View.Graph.MAX_DATASETS, 0 )
 		datasets = _( @_datasets ).rest min
 		
 		# Only show the last MAX_LENGTH of xvalues
 		for set in datasets
 			max = set.length - 1
-			min = Math.max( max - @MAX_LENGTH, 0 )
+			min = Math.max( max - View.Graph.MAX_LENGTH, 0 )
 			#console.log "x: #{min} > #{max}"
 			xValues = ( num for num in [ min..max ] by 1 )
 			
