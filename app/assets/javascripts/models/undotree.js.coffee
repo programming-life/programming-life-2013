@@ -56,3 +56,22 @@ class Model.UndoTree extends Model.Tree
 		if branch is @_root
 			@_root = parent
 		return this
+	
+	# Rewinds the tree from the current node and up to the node to jump to
+	#
+	# @param [Model.Node] The node to jump to
+	# @return [Object] An object containing two arrays of the nodes, in order of steps from the current node to the node to jump to
+	jump: ( node ) ->
+		todo = []
+		undo = []
+
+		# Behind the current node
+		if node._creation < @_current._creation
+			undo = @_getReverseTrail( node )
+		# In front of current node
+		else if node._creation > @_current._creation
+			todo = @_getForwardTrail( node )
+
+		@_current = node
+
+		return {reverse: undo, forward: todo}
