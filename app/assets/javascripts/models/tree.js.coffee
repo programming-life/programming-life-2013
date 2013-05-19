@@ -102,8 +102,11 @@ class Model.Tree extends Helper.Mixable
 	# Switches the branch of the tree to contain the node
 	#
 	# @param node [Model.Node] The node to switch the branch to
+	# @retun [Model.Node] The old branch
 	#
 	switchBranch: ( node ) ->
+		old = @_current
 		if node._parent?
 			node._parent._branch = node
 			@_current = node
+		return old

@@ -149,6 +149,7 @@ class View.Undo extends Helper.Mixable
 			undo._object.undo()
 		for redo in nodes.forward
 			redo._object.redo()
+		console.log(nodes)
 		@draw()
 	
 	# Is called when the left button is clicked
@@ -163,7 +164,9 @@ class View.Undo extends Helper.Mixable
 			else
 				index = @_branchIndex - 1
 		node = @_tree._current._parent._children[index]
-		@_tree.switchBranch( node )
+		old = @_tree.switchBranch( node )
+		old._object.undo()
+		node._object.redo()
 		@draw()
 
 	# Is called when the right button is clicked
@@ -178,7 +181,9 @@ class View.Undo extends Helper.Mixable
 			else
 				index = @_branchIndex + 1
 		node = @_tree._current._parent._children[index]
-		@_tree.switchBranch( node )
+		old = @_tree.switchBranch( node )
+		old._object.undo()
+		node._object.redo()
 		@draw()
 
 

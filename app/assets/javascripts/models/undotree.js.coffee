@@ -65,11 +65,14 @@ class Model.UndoTree extends Model.Tree
 		todo = []
 		undo = []
 
+
 		# Behind the current node
 		if node._creation < @_current._creation
+			console.log("Behind")
 			undo = @_getReverseTrail( node )
 		# In front of current node
 		else if node._creation > @_current._creation
+			console.log("Forward")
 			todo = @_getForwardTrail( node )
 
 		@_current = node
@@ -81,12 +84,12 @@ class Model.UndoTree extends Model.Tree
 	# @param node [Model.Node] The node to get the path to
 	#
 	_getReverseTrail: ( node ) ->
-		undo = []
+		undo = [@_current]
 		
 		back = @_current
 		until back is node or back = @_root
-			undo.push back
 			back = back._parent
+			undo.push back
 		
 		return undo
 		
@@ -98,8 +101,8 @@ class Model.UndoTree extends Model.Tree
 		todo = []
 		forward = base 
 		until forward is node or forward._branch is null
-			todo.push
 			forward = forward._branch
+			todo.push forward
 		return todo
 	
 		
