@@ -162,7 +162,6 @@ class View.Undo extends Helper.Mixable
 				index = !@_branchIndex + 0
 			else
 				index = @_branchIndex - 1
-		console.log(@_tree._current._children, index)
 		node = @_tree._current._parent._children[index]
 		@_tree.switchBranch( node )
 		@draw()
@@ -178,7 +177,6 @@ class View.Undo extends Helper.Mixable
 				index = !@_branchIndex + 0
 			else
 				index = @_branchIndex + 1
-		console.log(@_tree._current._children, index)
 		node = @_tree._current._parent._children[index]
 		@_tree.switchBranch( node )
 		@draw()

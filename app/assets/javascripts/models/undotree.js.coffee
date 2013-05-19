@@ -75,3 +75,32 @@ class Model.UndoTree extends Model.Tree
 		@_current = node
 
 		return {reverse: undo, forward: todo}
+	
+	# Returns the path from the current node to the given node
+	#
+	# @param node [Model.Node] The node to get the path to
+	#
+	_getReverseTrail: ( node ) ->
+		undo = []
+		
+		back = @_current
+		until back is node or back = @_root
+			undo.push back
+			back = back._parent
+		
+		return undo
+		
+	# Returns the path from the base node to the given node, assuming it's on the current branch
+	#
+	# @param node [Model.Node] The node to get the path to
+	#
+	_getForwardTrail: ( node, base = @_root ) ->
+		todo = []
+		forward = base 
+		until forward is node or forward._branch is null
+			todo.push
+			forward = forward._branch
+		return todo
+	
+		
+	
