@@ -62,23 +62,27 @@ class Model.UndoTree extends Model.Tree
 	# @param [Model.Node] The node to jump to
 	# @return [Object] An object containing two arrays of the nodes, in order of steps from the current node to the node to jump to
 	jump: ( node ) ->
-		undo = @_getReverseTrail( node )
-		unless undo.length is 0 or _.last(undo)._parent is node
+		todo = []
+		undo = []
+
+		# Behind the current node
+		if node._creation < @_current._creation
+			undo = @_getReverseTrail( node )
+		# In front of current node
+		else if node._creation > @_current._creation
 			todo = @_getForwardTrail( node )
-		else
-			todo = []
 
 		@_current = node
 
-		res = [undo,todo]
-
 		return {reverse: undo, forward: todo}
 			
-	_getReverseTrail:( node ) ->
+	# Gets the trail from the the current node back to the given node
+	#
+	_getReverseTrail:( node = @_root) ->
 		undo = []
 
 		back = @_current
-		until back._parent is null
+		until back is node or back._parent is null
 			if back is node
 				break
 			undo.push back
@@ -87,6 +91,10 @@ class Model.UndoTree extends Model.Tree
 		return undo
 
 
+	# Gets the trail from the root node to the given node, assuming it's on the current branch
+	#
+	# @param node [Model.Node] The node to get to
+	#
 	_getForwardTrail:( node ) ->
 		todo = []
 		

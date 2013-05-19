@@ -98,6 +98,15 @@ class Model.Tree extends Helper.Mixable
 			res.push @depthfirst(child)...
 
 		return res
+	
+	# Switches the branch of the tree to contain the node
+	#
+	# @param node [Model.Node] The node to switch the branch to
+	#
+	switchBranch: ( node ) ->
+		if node._parent?
+			node._parent._branch = node
+			@_current = node
 		
 		
 (exports ? this).Model.Tree = Model.Tree

@@ -200,6 +200,20 @@ body {
 
 .undo {
 	padding: 10px;
+	h2 {
+		position: relative;
+		text-align: center;
+	}
+	.btn-left{
+		position: absolute;
+		top: 0;
+		left: 0;
+	}
+	.btn-right {
+		position: absolute;
+		top: 0;
+		right: 0;
+	}
 	dl dl{
 		width: 100%;
 	}
