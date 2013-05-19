@@ -10,8 +10,8 @@ describe("Main", function() {
 		console.log(main);
 	});
 	
-	describe("", function() {
-		it("should test", function() {
+	describe("when initialized", function() {
+		it("should contain the main view", function() {
 			console.log(view_name);
 			expect( view_name ).toBe( "Main" );
 		});

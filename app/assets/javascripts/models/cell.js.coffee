@@ -29,6 +29,8 @@ class Model.Cell extends Helper.Mixable
 		
 		@_allowEventBindings()
 		@_allowTimeMachine()
+		action = @_createAction( "Created cell" )
+		@_tree.setRoot( new Model.Node(action, null) )
 		
 		@_defineProperties( paramscell )
 		

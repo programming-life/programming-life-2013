@@ -8,43 +8,66 @@ class View.Pane extends View.RaphaelBase
 	# Creates a new Pane
 	#
 	# @param side [String] The side the pane needs to be on
-	constructor: ( @_side ) ->
+	# @param withPaper [Boolean] Wheter to fill the container with a paper or not
+	#
+	constructor: ( @_side, withPaper = true ) ->
 		@_id = new Date().getMilliseconds()
-		@_paper = @_addPaper()
 
-		super(@_paper)
+		paper = @_addPaper()
+		super(paper, withPaper)
 
-		@_extended = off
+		@_extended = on
 		@_buttonWidth = 40
 
-		@_buttonOptions = {
-		}
 		@_containerOptions = {
 		}
 	
+	# Clears this view
+	#
+	clear: ( ) ->
+		@_container?.remove()
+		@_button?.remove()
+		super()
+	
 	# Resizes the view
 	#
-	resize: ( ) ->
-		@_width = @_container.width()
-		@_height = $( window ).height()
-		@_paper.setSize( @_width, @_height )
-		#@_paper.setViewBox( x, y, @_width, @_height, true )
+	resize: ( scaleGraphics = true) ->
+		if @_withPaper
+			@_width = @_parent.width()
+			@_height = $( window ).height()
+			@_paper.setSize( @_width, @_height )
+			super()
+			#@_paper.setViewBox( x, y, @_width, @_height, scaleGraphics)
+		else
+			@draw()
 	
 	# Kills the view
 	#
 	kill: ( ) ->
 		super()
-		node = $( "#pane-" + @_id ).remove()
+		@_container?.remove()
 		
 	# Draw the view
 	#
 	# @param side [String] The side the pane needs to be on
 	draw: ( side = @_side ) ->
-		super()
-		[ button, container ] = @_getXY()
+		@clear()
+		[ container ] = @_getXY()
 
-		@_contents.push @_drawButton(button.x, button.y)
-		@_contents.push @_drawContainer(container.x, container.y)
+		@_button = @_drawButton()
+		@_container = @_addContainerNode()
+
+		if @_withPaper
+			@_paper = @_addPaper()
+			@_contents.push @_drawContainer(container.x, container.y)
+
+		for view in @_views
+			if @_withPaper	
+				placement = @_getViewPlacement( view )
+				view._paper = @_paper
+				@_contents.push view.draw( placement.x, placement.y, 1)
+			else
+				view.draw(@_container)
 
 		if @_extended
 			@extend(0)
@@ -58,24 +81,16 @@ class View.Pane extends View.RaphaelBase
 	_getXY: ( side = @_side ) ->
 		switch side
 			when View.Pane.LEFT_SIDE
-				buttonX = @_width - @_buttonWidth
-				buttonY = 0
 				containerX = 0
 				containerY = 0
 			when View.Pane.RIGHT_SIDE
-				buttonX = 0
-				buttonY = 0
-				containerX = @_buttonWidth
+				containerX = 0
 				containerY = 0
-		button = {
-			x : buttonX
-			y : buttonY
-		}
 		container = {
 			x : containerX
 			y : containerY
 		}
-		return [button, container]
+		return [container]
 	
 	# Add paper to the container node
 	#
@@ -83,27 +98,41 @@ class View.Pane extends View.RaphaelBase
 		unless @_container?
 			@_container= @_addContainerNode()
 
-		paper = Raphael("pane-"+@_id,"100%", @_height)
+		paper = Raphael(@_container[0],"100%", @_height)
 		return paper
 	
+	_addParentNode: ( ) ->
+		parent = $("<div id='pane-" + @_id + "' class='pane pane-" + @_side + "'></div>")
+		$( "body" ).append( parent )
+
+		return parent
+
 	# Adds a node to act as the container for the pane
 	#
 	# @retun [Object] The node that will contain the pane
 	_addContainerNode: ( ) ->
-		node = $("<div id='pane-" + @_id + "' class='pane pane-" + @_side + "'></div>")
-		$( "body" ).append( node )
+		unless @_parent?
+			@_parent = @_addParentNode()
+
+		container = $("<div class='pane-container'></div>")
+		@_parent.append( container )
 		
-		return node
+		return container
 
 	# Draw the button to extend or retract the pane
 	#
 	# @param x [Integer] The x position
 	# @param y [Integer] The y position
 	_drawButton: ( x, y ) ->
-		button = @_paper.rect(x, y, @_buttonWidth, @_height)
-		button.attr( @_buttonOptions )
-		button.node.setAttribute("class","pane-button")
-		button.click((() => @_switchState()))
+		button = $("<button class='btn pane-button' type='button'>")
+		button.on('click', =>
+			@_switchState()
+		).on('drag', (event) =>
+			@_onDrag(event)
+		)
+
+		@_parent.append(button)
+
 		return button
 	
 	# Draws container and any elements to be drawn within it
@@ -111,8 +140,7 @@ class View.Pane extends View.RaphaelBase
 	# @param x [Integer] The x position
 	# @param y [Integer] The y position
 	_drawContainer: ( x, y ) ->
-		box = @_paper.rect(x, y, @_width - @_buttonWidth, @_height).attr(@_containerOptions)
-		box.node.setAttribute("class","pane-container")
+		box = @_paper.rect(x, y, @_width, @_height).attr(@_containerOptions)
 		box.toBack()
 		return box
 	
@@ -137,7 +165,7 @@ class View.Pane extends View.RaphaelBase
 					animation = {left: 0}
 				when View.Pane.RIGHT_SIDE
 					animation = {right: 0}
-			@_container.animate(animation, time)
+			@_parent.animate(animation, time)
 			@_extended = on
 
 	
@@ -151,17 +179,11 @@ class View.Pane extends View.RaphaelBase
 
 			switch @_side
 				when View.Pane.LEFT_SIDE
-					animation = {left: (@_width - @_buttonWidth) * -1}
+					animation = {left: (@_container.width() ) * -1}
 				when View.Pane.RIGHT_SIDE
-					animation = {right: (@_width - @_buttonWidth) * -1}
-			@_container.animate(animation, time)
+					animation = {right: (@_container.width() ) * -1}
+			@_parent.animate(animation, time)
 			@_extended = off
-
-	# Set the button options
-	#
-	# @param options [Object] The new options
-	setButtonOptions: ( options = {} ) ->
-		@_buttonOptions = options
 	
 	# Set the container options
 	#
@@ -174,6 +196,6 @@ class View.Pane extends View.RaphaelBase
 	# @param view [View.Base] The view to get placement for
 	# @return [Object] An object containing an x and y for the view
 	_getViewPlacement:( view ) ->
-		x = 100
-		y = 100
+		x = 200
+		y = 200
 		return {x: x, y: y}

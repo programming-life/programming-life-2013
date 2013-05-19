@@ -1,6 +1,6 @@
 // Place all the styles related to the main controller here.
 // They will automatically be included in application.css.
-// You can use Sass (SCSS) here: http: //sass-lang.com/
+// You can use Sass (SCSS) here: http://sass-lang.com/
 
 body {
 	
@@ -160,26 +160,67 @@ body {
 }
 
 .pane {
-	position: fixed;
-	width: 500px;
 	height: 100%;
-	fill: green;
+	position: fixed;
+	backgrond-color: white;
+	
+	.pane-container {
+		width: 400px;
+		height: 100%;
+		background-color: white;
+		overflow: auto;
+	}
+
+	.pane-button{
+		width: 40px;
+		height: 100%
+	}
 }
 .pane-left {
 	top: 0;
 	left: 0;
+	padding-right: 40px;
+
+	.pane-button {
+		position: absolute;
+		right: 0;
+	}
 }
 
 .pane-right {
 	top: 0;
 	right: 0;
+	padding-left: 40px;
+
+	.pane-button {
+		position: absolute;
+		left: 0;
+	}
 }
-.pane-button{
-	fill: #cacaca;
-	stroke: black;
-}
-.pane-container {
-	fill: white;
-	stroke: black;
-	overflow: auto;
+
+.undo {
+	padding: 10px;
+	h2 {
+		position: relative;
+		text-align: center;
+	}
+	.btn-left{
+		position: absolute;
+		top: 0;
+		left: 0;
+	}
+	.btn-right {
+		position: absolute;
+		top: 0;
+		right: 0;
+	}
+	dl dl{
+		width: 100%;
+	}
+	dl .undo-node:hover {
+		background-color: #cacaca;
+	}
+	dl dl.undo-current {
+		border: 2px solid #009ACD
+	}
 }
