@@ -301,7 +301,11 @@ class View.Cell extends View.RaphaelBase
 				interpolation[ time ] = results.at time;
 
 		datasets = {}
-		
+
+		xValues = []
+		for val in results.x
+			xValues.push (val + ((iteration - 1) * duration))
+
 		for key, value of mapping
 			dataset = []
 
@@ -310,11 +314,10 @@ class View.Cell extends View.RaphaelBase
 				for time in [ 0 .. duration ] by dt
 					dataset.push( interpolation[ time ][ value ] ) 
 			else
-				console.log("No interpolation!")
 				for substance in results.y
 					dataset.push(substance[value])
 				
-			datasets[ key ] = [results.x,dataset]
+			datasets[ key ] = [xValues,dataset]
 
 		return { 
 			results: results
@@ -332,7 +335,6 @@ class View.Cell extends View.RaphaelBase
 	#
 	_getGraphPlacement: ( basex, basey, scale, graph_num ) ->
 	
-		console.log basex, basey
 		x = basex + 100
 		y = basey + 50
 		
@@ -368,17 +370,17 @@ class View.Cell extends View.RaphaelBase
 		
 		for key, dataset of datasets
 			if ( !@_graphs[ key ]? )
-				height = y + 100 + Math.ceil( (graph_num + 1) / 2 ) * 175 + ( Math.ceil( (graph_num + 1) / 2 ) - 1 ) * 100
-				#@_container.setViewBox( 0, 0, 1000, height )
-				#@_container.setSize( "100%", height )
+				#height = y + 100 + Math.ceil( (graph_num + 1) / 2 ) * 175 + ( Math.ceil( (graph_num + 1) / 2 ) - 1 ) * 100
 				@_graphs[ key ] = new View.Graph( @_container, key, @ )
 
 			
 			@_graphs[ key ].appendData( dataset ) if append
 			@_graphs[ key ].addData( dataset ) unless append
 			
-			placement = @_getGraphPlacement( x, y, scale, graph_num++ )
-			@_graphs[ key ].draw( placement.x, placement.y, scale )
+			#placement = @_getGraphPlacement( x, y, scale, graph_num++ )
+			@_graphs[ key ].draw( )
+
+			#@_graphs[ key ].play( undefined, 2500)
 			
 		
 		return @_graphs

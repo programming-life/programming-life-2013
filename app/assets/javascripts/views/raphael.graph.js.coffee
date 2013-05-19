@@ -16,24 +16,27 @@ class View.Graph extends View.RaphaelBase
 	# @param parent [View.Cell] The cell view this graph belongs to
 	#
 	constructor: ( paper, @_title, @_parent) ->
-		@_container = $('<div class="graph-container"></div>')
+		@_id = new Date().getMilliseconds()
+		@_container = $('<div id="graph-'+ @_id + '" class="graph-container"></div>')
+		console.log(@_parent._container[0])
+		@_parent._container.append( @_container )
 		@_width = 300
-		@_height = 200
-		console.log("constructor")
+		@_height = 175
 		@clear()
-		@_paper = @_getPaper()
+		@_paper = Raphael("graph-"+@_id, @_width, @_height)
 		super(@_paper)
+
+		@_text = @_drawTitle()
 
 		@_datasets = []
 
 		@_dt = 1
-		@_frame = [0,20]
 		@_options = {
 			smooth: true
 			axis: '0 0 1 1'
-			axisxstep: @_dt
+			#axisxstep: @_dt
 			shade : false
-			colors: [ "blue", "red" ]
+			colors: [ "blue", "red", "green", "yellow", "orange" ]
 		}
 
 	# Add a dataset to visualize in this graphs
@@ -42,103 +45,85 @@ class View.Graph extends View.RaphaelBase
 	# @return [self] chainable self
 	#
 	addData: ( data ) ->
-		@_datasets.push data
+		@_datasets.push [[data[0],data[1]]]
 		return @
 	
 	# Append a dataset to the most recently added dataset
 	#
 	# @param data [Array] The data to append
 	# @param return [View.Graph] This for easy chaining
+	#
 	appendData: ( data ) ->
-		
 		if @_datasets.length is 0
 			addData data
 			return @
 
-		lastX = _( @_datasets[ @_datasets.length - 1 ][0] ).last()
-		for x in data[0]
-			@_datasets[ @_datasets.length - 1 ][0].push (x + lastX)
-		@_datasets[ @_datasets.length - 1 ][1]  = @_datasets[ @_datasets.length - 1 ][1].concat _( data[1] ).rest()
-		#@_frame = [@_frame[0] + 20, @_frame[1] + 20]
+		_( @_datasets ).last().push [data[0],data[1]]
 		
 		return @
 		
 	# Clears the view
 	#
 	clear: () ->
-		@_container.empty()
-		@_container.remove()
-		@_paper?.remove()
+		@_chart?.remove()
 		@_line?.remove()
 		@_line = null
 	
 	# Draws the graph
 	#
-	# @param x [Integer] The x coordinate
-	# @param y [Integer] The y coordinate
-	# @param scale [Integer] The scale
-	#
 	draw: ( ) ->
 		@clear()
 
-		@_container = $('<div class="graph-container"></div>')
+		@_drawChart()
 
-		@_paper = @_getPaper()
 
-		@_drawChart(@_frame)
-
-		@_drawTitle()
-
-		@_parent._container.append @_container
-	
-	# Gets a new paper in the container for this graph
-	#
-	# @return [Object] A new paper
-	#
-	_getPaper: ( ) ->
-		paper = Raphael( @_container[0], @_width, @_height)
-		return paper
-			
 	# Draws the chart
 	#
-	# @param x [Integer] the x position
-	# @param y [Integer] the y position
-	# @param scale [Float] the scale
-	# @retun [Raphael] The chart object
-	#
-	_getValues: (frame = @_frame) ->
-		# Only show the last MAX_DATASETS of data
-		max = @_datasets.length
-		min = Math.max( max - @MAX_DATASETS, 0 )
-		datasets = _( @_datasets ).rest min
+	_drawChart:() ->
+		datasets = _( @_datasets ).last()
+		@_framesize = datasets[0].length
 
-		# Make sure the yvalues are valid
-		yValues = _( datasets )
-			.chain()
-			.map( ( set ) -> 
-				set =  _( set ).rest( min )
-				set_min = _( set ).min()
-				return set unless ( diff = Math.abs( _( set ).max() - set_min ) ) < 1e-12
-				return [ set_min ] 
-			)
-			.map( ( set ) ->	
-				return set if xValues.length is set.length
-				set_min = _( set ).min()
-				while set.length < @MAX_LENGTH
-					set.push set_min
-				return set
-			).value()
+		xValues = []
+		yValues = []
 
-		return [xValues, yValues]
+		for i in [0...datasets.length]
+			xValues.push datasets[i][0]
+			yValues.push datasets[i][1]
 
+			@_chart?.remove()
+			@_drawn = off
+			@_chart = @_paper.linechart(0,0, (i + 1) * @_width, @_height ,xValues, yValues, @_options )
 
-	_drawChart:(frame = @_frame) ->
-		[xValues,yValues] = _( @_datasets ).last()
-		chart = @_paper.linechart(0,0,300,175,xValues, yValues, @_options )
-		#chart.hoverColumn ( event ) =>
-		#	unless @_parent._running
-		#		@_parent._drawRedLines( event.x - @_x - @_paper.canvas.offsetLeft )
+		unless @_drawn
+			@_chart.hoverColumn ( event ) =>
+				unless @_parent._running
+					@_parent._drawRedLines( event.x - @_paper.canvas.offsetLeft )
+		@_drawn = on
 	
+	# Move the viewbox of the chart
+	#
+	# @param x [Integer] The amount of pixels to move the viewbox to the right
+	#
+	moveViewBox: ( x ) ->
+		play(x, 10)
+	
+	# Plays the graphs forward over a timespan
+	#
+	# @param x [Integer] The x to move to
+	# @param time [Integer] The timespan to animate over
+	play: ( x = ( _(@_datasets).last().length - 1) * @_width, time = 500 ) ->
+		@_paper.animateViewBox(x, 0, @_width, @_height, time)
+
+	# Draws the sliders
+	#
+	# @param length [Integer] The number of steps the sliders needs to control
+	_drawSliders: ( length ) ->
+		hSlider = $('<input type="text" class="slider" data-slider-min="0" data-slider-max="' + @_width * length + '" data-slider-step="1" data-slider-value="0" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="hide">').slider().on(
+			"slide", (event) =>
+				@_onHorizontalSlide(event)
+			)
+		return [hSlider]
+		
 	# Draws the title
 	#
 	# @param x [Integer] the x position
@@ -178,14 +163,14 @@ class View.Graph extends View.RaphaelBase
 	_drawRedLine: ( x ) ->
 		unless @_line?	
 			@_line = @_paper
-				.path( [ 'M', x + @_x, @_y, 'V', @_chart.axis[0].text.items[0].attrs.y] )
+				.path( [ 'M', 0 + x,0, 'V', @_height ] )
 				.attr
 					stroke : '#F00'
 				.toFront()
-			@_line.x = x + @_x + @_paper.canvas.offsetLeft
+			@_line.x = x + @_paper.canvas.offsetLeft
 			@_line.toFront()
 		else
-			translation = (x + @_x + @_paper.canvas.offsetLeft - @_line.x)
+			translation = (x + @_paper.canvas.offsetLeft - @_line.x)
 			@_line.x = @_line.x + translation
 			@_line.translate( translation )
 			@_line.toFront()
