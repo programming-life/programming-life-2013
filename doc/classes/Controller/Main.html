@@ -27,7 +27,7 @@
     </nav>
     <div id='search'>
       <a id='class_list_link' href='../../class_list.html'>Classes</a>
-      <a id='file_list_link' href='../../file_list.html'>Files</a>
+      <a id='mixin_list_link' href='../../mixin_list.html'>Mixins</a>
       <a id='method_list_link' href='../../method_list.html'>Methods</a>
       <a id='extra_list_link' href='../../extra_list.html'>Extras</a>
     </div>
@@ -127,7 +127,7 @@
   <li>
     <span class='signature'>
       <a href='#constructor-instance'>
-        - (void) <strong>constructor</strong>()
+        - (void) <strong>constructor</strong>(container)
       </a>
     </span>
     <span class='constructor note title'>Constructor</span>
@@ -135,97 +135,26 @@
       Creates a new instance of Main
     </span>
   </li>
-  <li>
-    <span class='signature'>
-      <a href='#undo-instance'>
-        - (void) <strong>undo</strong>()
-      </a>
-    </span>
-    <span class='desc'>
-      Undoes the last move.
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#redo-instance'>
-        - (void) <strong>redo</strong>()
-      </a>
-    </span>
-    <span class='desc'>
-      Redoes the last move.
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#addMove-instance'>
-        - (void) <strong>addMove</strong>(type, module)
-      </a>
-    </span>
-    <span class='desc'>
-      Adds a move to the undotree
-    </span>
-  </li>
 </ul>
       <h2>Constructor Details</h2>
       <div class='methods'>
   <div class='method_details'>
     <p class='signature' id='constructor-instance'>
-      - (void) <strong>constructor</strong>()
+      - (void) <strong>constructor</strong>(container)
     </p>
     <div class='docstring'>
   <p>Creates a new instance of Main</p>
 </div>
 <div class='tags'>
-</div>
-  </div>
-</div>
-      <h2>Instance Method Details</h2>
-      <div class='methods'>
-  <div class='method_details'>
-    <p class='signature' id='undo-instance'>
-      - (void) <strong>undo</strong>()
-    </p>
-    <div class='docstring'>
-  <p>Undoes the last move.</p>
-</div>
-<div class='tags'>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='redo-instance'>
-      - (void) <strong>redo</strong>()
-    </p>
-    <div class='docstring'>
-  <p>Redoes the last move.</p>
-</div>
-<div class='tags'>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='addMove-instance'>
-      - (void) <strong>addMove</strong>(type, module)
-    </p>
-    <div class='docstring'>
-  <p>Adds a move to the undotree</p>
-</div>
-<div class='tags'>
   <h3>Parameters:</h3>
   <ul class='param'>
     <li>
-      <span class='name'>type,</span>
+      <span class='name'>container</span>
       <span class='type'>
-        (<tt>String</tt>)
+        (<tt>String, Object</tt>)
       </span>
       &mdash;
-      <span class='desc'>the type of move. For now, &#39;modify&#39; is implemented.</span>
-    </li>
-    <li>
-      <span class='name'>module,</span>
-      <span class='type'>
-        (<tt>Module</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the module that has done the move.</span>
+      <span class='desc'>A string with an id or a DOM node to serve as a container for the view</span>
     </li>
   </ul>
 </div>
@@ -234,7 +163,7 @@
     </div>
     <div id='footer'>
   Generated on
-  Sun May 12 2013 04:54:49 GMT+0200 (W. Europe Daylight Time)
+  Sun May 19 2013 15:38:42 GMT+0200 (W. Europe Daylight Time)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

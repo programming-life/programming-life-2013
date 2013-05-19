@@ -27,7 +27,7 @@
     </nav>
     <div id='search'>
       <a id='class_list_link' href='../../class_list.html'>Classes</a>
-      <a id='file_list_link' href='../../file_list.html'>Files</a>
+      <a id='mixin_list_link' href='../../mixin_list.html'>Mixins</a>
       <a id='method_list_link' href='../../method_list.html'>Methods</a>
       <a id='extra_list_link' href='../../extra_list.html'>Extras</a>
     </div>
@@ -115,6 +115,20 @@
           <td>Defined in:</td>
           <td>app&#47;assets&#47;javascripts&#47;models&#47;cell.js.coffee</td>
         </tr>
+        <tr>
+          <td>Inherits:</td>
+          <td>
+            <a href='../../classes/Helper/Mixable.html'>Helper.Mixable</a>
+          </td>
+        </tr>
+        <tr>
+          <td>Concerns:</td>
+          <td>
+                        <a href='../../mixins/Mixin/DynamicProperties.html'>Mixin.DynamicProperties</a>,
+                        <a href='../../mixins/Mixin/EventBindings.html'>Mixin.EventBindings</a>,
+            <a href='../../mixins/Mixin/TimeMachine.html'>Mixin.TimeMachine</a>
+          </td>
+        </tr>
       </table>
       <h2>Overview</h2>
       <div class='docstring'>
@@ -172,6 +186,47 @@ module which is the Cell Growth.</p>
   </li>
   <li>
     <span class='signature'>
+      <a href='#_defineProperties-instance'>
+        - (self) <strong>_defineProperties</strong>(params)
+      </a>
+    </span>
+    <span class='desc'>
+      Defines All the properties
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_defineValues-instance'>
+        - (self) <strong>_defineValues</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Defines the value properties
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_defineGetters-instance'>
+        - (self) <strong>_defineGetters</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Defines the getters
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#onPropertySet-instance'>
+        - (void) <strong>onPropertySet</strong>(caller, action)
+      </a>
+    </span>
+    <span class='bound note title'>Bound</span>
+    <span class='desc'>
+      Triggered when a property is set
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
       <a href='#isLocal-instance'>
         - (Boolean) <strong>isLocal</strong>()
       </a>
@@ -188,6 +243,46 @@ module which is the Cell Growth.</p>
     </span>
     <span class='desc'>
       Add module to cell
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_addModule-instance'>
+        - (self) <strong>_addModule</strong>(module)
+      </a>
+    </span>
+    <span class='desc'>
+      Actually adds the module to the cell
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_ensureMetaboliteAllocation-instance'>
+        - (self) <strong>_ensureMetaboliteAllocation</strong>(name)
+      </a>
+    </span>
+    <span class='desc'>
+      Ensures that metabolite can be accessed
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#addMetaboliteModule-instance'>
+        - (self) <strong>addMetaboliteModule</strong>(metabolite)
+      </a>
+    </span>
+    <span class='desc'>
+      Actually adds the metabolite to the cell
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_addMetabolite-instance'>
+        - (self) <strong>_addMetabolite</strong>(name, placement, metabolite)
+      </a>
+    </span>
+    <span class='desc'>
+      Actually adds the metabolite to the cell
     </span>
   </li>
   <li>
@@ -232,12 +327,32 @@ module which is the Cell Growth.</p>
   </li>
   <li>
     <span class='signature'>
+      <a href='#_removeModule-instance'>
+        - (self) <strong>_removeModule</strong>(module)
+      </a>
+    </span>
+    <span class='desc'>
+      Actually removes the module from the cell
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
       <a href='#removeMetabolite-instance'>
         - (self) <strong>removeMetabolite</strong>(name, placement)
       </a>
     </span>
     <span class='desc'>
       Removes this metabolite from cell
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_removeMetabolite-instance'>
+        - (self) <strong>_removeMetabolite</strong>(name, placement)
+      </a>
+    </span>
+    <span class='desc'>
+      Actually removes the metabolite from the cell
     </span>
   </li>
   <li>
@@ -342,12 +457,52 @@ module which is the Cell Growth.</p>
   </li>
   <li>
     <span class='signature'>
+      <a href='#_getModules-instance'>
+        - (Array&lt;Model.Module&gt;) <strong>_getModules</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Gets all the modules that are steppable
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_getModulesAndCompounds-instance'>
+        - (Array) <strong>_getModulesAndCompounds</strong>(exclude = [])
+      </a>
+    </span>
+    <span class='desc'>
+      Gets all the modules that are steppable, and their compounds
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_tryUsingBaseValues-instance'>
+        - (Array) <strong>_tryUsingBaseValues</strong>(base_values, values)
+      </a>
+    </span>
+    <span class='desc'>
+      Tries using the base values as values
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
       <a href='#run-instance'>
         - (self) <strong>run</strong>(timespan, base_values = [])
       </a>
     </span>
     <span class='desc'>
       Runs this cell
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_step-instance'>
+        - (Array) <strong>_step</strong>(modules, mapping, map)
+      </a>
+    </span>
+    <span class='desc'>
+      The step function for the cell @param mapping @param map
     </span>
   </li>
   <li>
@@ -362,15 +517,105 @@ module which is the Cell Growth.</p>
   </li>
   <li>
     <span class='signature'>
+      <a href='#_save_modules-instance'>
+        - (jQuery.Promise) <strong>_save_modules</strong>()
+      </a>
+    </span>
+    <span class='bound note title'>Bound</span>
+    <span class='desc'>
+      Save modules
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
       <a href='#save-instance'>
-        - (void) <strong>save</strong>()
+        - (JQuery.Promise) <strong>save</strong>()
       </a>
     </span>
     <span class='desc'>
       Tries to save a module
     </span>
   </li>
+  <li>
+    <span class='signature'>
+      <a href='#_getData-instance'>
+        - (Object) <strong>_getData</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Gets the data to save for this cell
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_create-instance'>
+        - (jQuery.Promise) <strong>_create</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Creates (new) this cell
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_update-instance'>
+        - (jQuery.Promise) <strong>_update</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Updates (existing) this cell
+    </span>
+  </li>
 </ul>
+      <h2>
+        <small>Inherited Method Summary</small>
+      </h2>
+      <h3 class='inherited'>
+        Methods inherited from
+        <a href='../../classes/Helper/Mixable.html'>Helper.Mixable</a>
+      </h3>
+      <p class='inherited'>
+                <a href='../../classes/Helper/Mixable.html#extend-class'>.extend</a>,
+                <a href='../../classes/Helper/Mixable.html#include-class'>.include</a>,
+        <a href='../../classes/Helper/Mixable.html#concern-class'>.concern</a>
+      </p>
+      <h2>
+        <small>Concern Method Summary</small>
+      </h2>
+      <h3 class='included'>
+        Methods mixed in from
+        <a href='../../mixins/Mixin/DynamicProperties.html'>Mixin.DynamicProperties</a>
+      </h3>
+      <p class='included'>
+                <a href='../../mixins/Mixin/DynamicProperties.html#_propertiesFromParams-instance'>#_propertiesFromParams</a>,
+                <a href='../../mixins/Mixin/DynamicProperties.html#_nonEnumerableValue-instance'>#_nonEnumerableValue</a>,
+        <a href='../../mixins/Mixin/DynamicProperties.html#_nonEnumerableGetter-instance'>#_nonEnumerableGetter</a>
+      </p>
+      <h3 class='included'>
+        Methods mixed in from
+        <a href='../../mixins/Mixin/EventBindings.html'>Mixin.EventBindings</a>
+      </h3>
+      <p class='included'>
+                <a href='../../mixins/Mixin/EventBindings.html#_allowEventBindings-instance'>#_allowEventBindings</a>,
+                <a href='../../mixins/Mixin/EventBindings.html#_unbindAll-instance'>#_unbindAll</a>,
+                <a href='../../mixins/Mixin/EventBindings.html#_bind-instance'>#_bind</a>,
+                <a href='../../mixins/Mixin/EventBindings.html#_unbind-instance'>#_unbind</a>,
+                <a href='../../mixins/Mixin/EventBindings.html#_trigger-instance'>#_trigger</a>,
+                <a href='../../mixins/Mixin/EventBindings.html#_onNotificate-instance'>#_onNotificate</a>,
+        <a href='../../mixins/Mixin/EventBindings.html#_notificate-instance'>#_notificate</a>
+      </p>
+      <h3 class='included'>
+        Methods mixed in from
+        <a href='../../mixins/Mixin/TimeMachine.html'>Mixin.TimeMachine</a>
+      </h3>
+      <p class='included'>
+                <a href='../../mixins/Mixin/TimeMachine.html#_allowTimeMachine-instance'>#_allowTimeMachine</a>,
+                <a href='../../mixins/Mixin/TimeMachine.html#addUndoableEvent-instance'>#addUndoableEvent</a>,
+                <a href='../../mixins/Mixin/TimeMachine.html#addUndoableEventToSub-instance'>#addUndoableEventToSub</a>,
+                <a href='../../mixins/Mixin/TimeMachine.html#undo-instance'>#undo</a>,
+                <a href='../../mixins/Mixin/TimeMachine.html#redo-instance'>#redo</a>,
+        <a href='../../mixins/Mixin/TimeMachine.html#_createAction-instance'>#_createAction</a>
+      </p>
       <h2>Class Method Details</h2>
       <div class='methods'>
   <div class='method_details'>
@@ -574,6 +819,93 @@ module which is the Cell Growth.</p>
       <h2>Instance Method Details</h2>
       <div class='methods'>
   <div class='method_details'>
+    <p class='signature' id='_defineProperties-instance'>
+      - (self) <strong>_defineProperties</strong>(params)
+    </p>
+    <div class='docstring'>
+  <p>Defines All the properties</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>self</tt>)
+      &mdash;
+      <span class='desc'>chainable self</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_defineValues-instance'>
+      - (self) <strong>_defineValues</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Defines the value properties</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>self</tt>)
+      &mdash;
+      <span class='desc'>chainable self</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_defineGetters-instance'>
+      - (self) <strong>_defineGetters</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Defines the getters</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>self</tt>)
+      &mdash;
+      <span class='desc'>chainable self</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='onPropertySet-instance'>
+      - (void) <strong>onPropertySet</strong>(caller, action)
+      (bound)
+    </p>
+    <div class='docstring'>
+  <p>Triggered when a property is set</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>caller</span>
+      <span class='type'>
+        (<tt>any</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the originating property</span>
+    </li>
+    <li>
+      <span class='name'>action</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Model/Action.html'>Model.Action</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the action invoked</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
     <p class='signature' id='isLocal-instance'>
       - (Boolean) <strong>isLocal</strong>()
     </p>
@@ -609,6 +941,142 @@ module which is the Cell Growth.</p>
       </span>
       &mdash;
       <span class='desc'>module to add to this cell</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>self</tt>)
+      &mdash;
+      <span class='desc'>chainable instance</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_addModule-instance'>
+      - (self) <strong>_addModule</strong>(module)
+    </p>
+    <div class='docstring'>
+  <p>Actually adds the module to the cell</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>module</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Model/Module.html'>Model.Module</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>module to add to the cell</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>self</tt>)
+      &mdash;
+      <span class='desc'>chainable instance</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_ensureMetaboliteAllocation-instance'>
+      - (self) <strong>_ensureMetaboliteAllocation</strong>(name)
+    </p>
+    <div class='docstring'>
+  <p>Ensures that metabolite can be accessed</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>name</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>metabolite name</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>self</tt>)
+      &mdash;
+      <span class='desc'>chainable instance</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='addMetaboliteModule-instance'>
+      - (self) <strong>addMetaboliteModule</strong>(metabolite)
+    </p>
+    <div class='docstring'>
+  <p>Actually adds the metabolite to the cell</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>metabolite</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Model/Metabolite.html'>Model.Metabolite</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>metabolite to add</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>self</tt>)
+      &mdash;
+      <span class='desc'>chainable self</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_addMetabolite-instance'>
+      - (self) <strong>_addMetabolite</strong>(name, placement, metabolite)
+    </p>
+    <div class='docstring'>
+  <p>Actually adds the metabolite to the cell</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>name</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the name of the metabolite</span>
+    </li>
+    <li>
+      <span class='name'>placement</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the placement of the metabolite</span>
+    </li>
+    <li>
+      <span class='name'>metabolite</span>
+      <span class='type'>
+        (<tt>Model.Metabolie</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>Metabolie to add to the cell</span>
     </li>
   </ul>
   <h3>Returns:</h3>
@@ -815,6 +1283,36 @@ module which is the Cell Growth.</p>
 </div>
   </div>
   <div class='method_details'>
+    <p class='signature' id='_removeModule-instance'>
+      - (self) <strong>_removeModule</strong>(module)
+    </p>
+    <div class='docstring'>
+  <p>Actually removes the module from the cell</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>module</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Model/Module.html'>Model.Module</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>module to remove</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>self</tt>)
+      &mdash;
+      <span class='desc'>the chainable self</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
     <p class='signature' id='removeMetabolite-instance'>
       - (self) <strong>removeMetabolite</strong>(name, placement)
     </p>
@@ -839,6 +1337,52 @@ module which is the Cell Growth.</p>
       </span>
       &mdash;
       <span class='desc'>metabolite placement to remove from this cell</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>self</tt>)
+      &mdash;
+      <span class='desc'>chainable instance</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_removeMetabolite-instance'>
+      - (self) <strong>_removeMetabolite</strong>(name, placement)
+    </p>
+    <div class='docstring'>
+  <p>Actually removes the metabolite from the cell</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>name</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the name of the metabolite</span>
+    </li>
+    <li>
+      <span class='name'>placement</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the placement of the metabolite</span>
+    </li>
+    <li>
+      <span class='name'>metabolite</span>
+      <span class='type'>
+        (<tt>Model.Metabolie</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>Metabolie to remove from the cell</span>
     </li>
   </ul>
   <h3>Returns:</h3>
@@ -1217,6 +1761,82 @@ module which is the Cell Growth.</p>
 </div>
   </div>
   <div class='method_details'>
+    <p class='signature' id='_getModules-instance'>
+      - (Array&lt;Model.Module&gt;) <strong>_getModules</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Gets all the modules that are steppable</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Array&lt;<a href='../../classes/Model/Module.html'>Model.Module</a>&gt;</tt>)
+      &mdash;
+      <span class='desc'>modules</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_getModulesAndCompounds-instance'>
+      - (Array) <strong>_getModulesAndCompounds</strong>(exclude = [])
+    </p>
+    <div class='docstring'>
+  <p>Gets all the modules that are steppable, and their compounds</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Array</tt>)
+      &mdash;
+      <span class='desc'><a href='../../classes/Model/Module.html'>modules</a>, variables, values</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_tryUsingBaseValues-instance'>
+      - (Array) <strong>_tryUsingBaseValues</strong>(base_values, values)
+    </p>
+    <div class='docstring'>
+  <p>Tries using the base values as values</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>base_values</span>
+      <span class='type'>
+        (<tt>Array&lt;Float&gt;</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the base values to try</span>
+    </li>
+    <li>
+      <span class='name'>values</span>
+      <span class='type'>
+        (<tt>Array&lt;Float&gt;</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the default values</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Array</tt>)
+      &mdash;
+      <span class='desc'>values, used base values</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
     <p class='signature' id='run-instance'>
       - (self) <strong>run</strong>(timespan, base_values = [])
     </p>
@@ -1234,6 +1854,14 @@ module which is the Cell Growth.</p>
       &mdash;
       <span class='desc'>the time it should run for</span>
     </li>
+    <li>
+      <span class='name'>base_values</span>
+      <span class='type'>
+        (<tt>Array</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the base values to try</span>
+    </li>
   </ul>
   <h3>Returns:</h3>
   <ul class='return'>
@@ -1242,6 +1870,45 @@ module which is the Cell Growth.</p>
       (<tt>self</tt>)
       &mdash;
       <span class='desc'>chainable instance</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_step-instance'>
+      - (Array) <strong>_step</strong>(modules, mapping, map)
+    </p>
+    <div class='docstring'>
+  <p>The step function for the cell</p><p>@param mapping
+@param map</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>t</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the current time</span>
+    </li>
+    <li>
+      <span class='name'>v</span>
+      <span class='type'>
+        (<tt>Array</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the current value array</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Array</tt>)
+      &mdash;
+      <span class='desc'>the delta values    </span>
     </li>
   </ul>
 </div>
@@ -1277,20 +1944,106 @@ module which is the Cell Growth.</p>
 </div>
   </div>
   <div class='method_details'>
+    <p class='signature' id='_save_modules-instance'>
+      - (jQuery.Promise) <strong>_save_modules</strong>()
+      (bound)
+    </p>
+    <div class='docstring'>
+  <p>Save modules</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>jQuery.Promise</tt>)
+      &mdash;
+      <span class='desc'>the promiseses deffered </span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
     <p class='signature' id='save-instance'>
-      - (void) <strong>save</strong>()
+      - (JQuery.Promise) <strong>save</strong>()
     </p>
     <div class='docstring'>
   <p>Tries to save a module</p>
 </div>
 <div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>JQuery.Promise</tt>)
+      &mdash;
+      <span class='desc'>promise</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_getData-instance'>
+      - (Object) <strong>_getData</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Gets the data to save for this cell</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Object</tt>)
+      &mdash;
+      <span class='desc'>the data</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_create-instance'>
+      - (jQuery.Promise) <strong>_create</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Creates (new) this cell</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>jQuery.Promise</tt>)
+      &mdash;
+      <span class='desc'>the promise</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_update-instance'>
+      - (jQuery.Promise) <strong>_update</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Updates (existing) this cell</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>jQuery.Promise</tt>)
+      &mdash;
+      <span class='desc'>the promise</span>
+    </li>
+  </ul>
 </div>
   </div>
 </div>
     </div>
     <div id='footer'>
   Generated on
-  Sun May 12 2013 04:54:49 GMT+0200 (W. Europe Daylight Time)
+  Sun May 19 2013 15:38:42 GMT+0200 (W. Europe Daylight Time)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6
