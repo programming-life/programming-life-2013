@@ -129,5 +129,3 @@ class Model.Protein extends Model.Module
 			tests:
 				compounds: [ 'dna', 'consume', 'name' ]
 		}
-
-(exports ? this).Model.Protein = Model.Protein

@@ -293,5 +293,3 @@ class Model.Transporter extends Model.Module
 	#
 	@ext : ( params = { k_m: 0 }, start = 0, transported = "p", type = Model.Transporter.Passive, consume = "s#int" ) ->
 		return new Model.Transporter( params, start, "#{transported}", "transporter_#{transported}_out", Model.Transporter.Outward, type, consume )
-		
-(exports ? this).Model.Transporter = Model.Transporter

@@ -1,5 +1,7 @@
 # The module view shows a module
 #
+# @concern Mixin.EventBindings
+#
 class View.Module extends View.RaphaelBase
 
 	@concern Mixin.EventBindings
@@ -610,6 +612,4 @@ class View.Module extends View.RaphaelBase
 				
 				return [ text, line ]
 		
-		return []			
-
-(exports ? this).View.Module = View.Module
+		return []

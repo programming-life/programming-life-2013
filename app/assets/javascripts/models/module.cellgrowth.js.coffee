@@ -121,8 +121,3 @@ class Model.CellGrowth extends Model.Module
 			tests:
 				compounds: [ 'name', 'metabolites', 'infrastructure' ]
 		}
-
-# Makes this available globally.
-(exports ? this).Model.CellGrowth = Model.CellGrowth
-
-			

@@ -177,5 +177,3 @@ class View.Pane extends View.RaphaelBase
 		x = 100
 		y = 100
 		return {x: x, y: y}
-
-(exports ? this).View.Pane = View.Pane

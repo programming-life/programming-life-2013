@@ -1,6 +1,8 @@
 # Mixin for classes that allow dynamic properties
 #
-DynamicProperties =
+# @mixin
+#
+Mixin.DynamicProperties =
 
 	ClassMethods: {}
 	
@@ -86,6 +88,4 @@ DynamicProperties =
 				configurable: false
 				enumerable: false
 			)
-			return this	
-
-( exports ? this ).Mixin.DynamicProperties = DynamicProperties
+			return this

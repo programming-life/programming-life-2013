@@ -7,7 +7,8 @@ class View.RaphaelBase extends Helper.Mixable
 	# Constructs a new Base view
 	# 
 	# @param paper [Object] The paper to draw on
-	constructor: ( @_paper = null ) ->
+	#
+	constructor: ( @_paper ) ->
 		@_contents = @_paper?.set()
 		@_views = []
 
@@ -79,5 +80,3 @@ class View.RaphaelBase extends Helper.Mixable
 
 		for view in @_views
 			view.kill()
-
-(exports ? this).View.Base = View.Base

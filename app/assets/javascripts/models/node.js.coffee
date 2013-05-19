@@ -34,5 +34,3 @@ class Model.Node
 
 		@_parent = parent
 		return this
-
-(exports ? this).Model.Node = Model.Node

@@ -4,7 +4,8 @@ class View.Cell extends View.RaphaelBase
 
 	@concern Mixin.EventBindings
 
-	MAX_RUNTIME: 100
+	# Maximum t for the cell simulation
+	@MAX_RUNTIME: 100
 
 	# Constructor for this view
 	# 
@@ -409,7 +410,7 @@ class View.Cell extends View.RaphaelBase
 		# Actually simulate
 		@_simulate( step )
 	
-		Model.EventManager.trigger("simulation.start",@, [ @_cell ])
+		@_trigger("simulation.start",@, [ @_cell ])
 		
 		return this
 		
@@ -429,7 +430,7 @@ class View.Cell extends View.RaphaelBase
 		
 		@_drawGraphs( cell_data.datasets, 0, 0, @_scale, @_iteration > 1  )
 
-		if cell_data.to >= @MAX_RUNTIME
+		if cell_data.to >= View.Cell.MAX_RUNTIME
 			@stopSimulation()
 			
 		return _( cell_data.results.y ).last()
@@ -467,7 +468,7 @@ class View.Cell extends View.RaphaelBase
 		@_running = off
 		@_redrawGraphs()
 
-		Model.EventManager.trigger("simulation.stop",@, [ @_cell ])
+		@_trigger("simulation.stop",@, [ @_cell ])
 		return this
 
 
@@ -479,4 +480,3 @@ class View.Cell extends View.RaphaelBase
 		for key, graph of @_graphs
 			graph._drawRedLine( x )
 			
-(exports ? this).View.Cell = View.Cell

@@ -1,6 +1,7 @@
 # Basic tree class
 #
 class Model.Tree
+
 	# Constructor for tree
 	#
 	# @param [Node] root The root node of the tree
@@ -89,6 +90,3 @@ class Model.Tree
 			res.push @depthfirst(child)...
 
 		return res
-		
-		
-(exports ? this).Model.Tree = Model.Tree

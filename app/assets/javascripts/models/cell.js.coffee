@@ -38,8 +38,6 @@ class Model.Cell extends Helper.Mixable
 		
 	# Defines All the properties
 	#
-	# @see {DynamicProperties} for function calls
-	#
 	# @return [self] chainable self
 	#
 	_defineProperties: ( params ) ->
@@ -60,7 +58,6 @@ class Model.Cell extends Helper.Mixable
 		
 	# Defines the value properties
 	#
-	# @see {DynamicProperties} for function calls
 	# @return [self] chainable self
 	#
 	_defineValues: () ->
@@ -72,7 +69,6 @@ class Model.Cell extends Helper.Mixable
 		
 	# Defines the getters
 	#
-	# @see {DynamicProperties} for function calls
 	# @return [self] chainable self
 	#
 	_defineGetters: () ->
@@ -775,6 +771,3 @@ class Model.Cell extends Helper.Mixable
 		)
 
 		return promise
-
-# Makes this available globally.
-(exports ? this).Model.Cell = Model.Cell

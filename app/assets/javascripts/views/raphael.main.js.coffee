@@ -65,5 +65,3 @@ class View.Main extends View.RaphaelBase
 		super()
 		@_paper.remove()
 		$( window ).unbind()
-
-(exports ? this).View.Main = View.Main

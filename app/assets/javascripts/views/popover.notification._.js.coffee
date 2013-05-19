@@ -74,7 +74,7 @@ class View.Notification extends View.HTMLPopOver
 	# @return [String] classname
 	#
 	@getAlertClassFromType: ( type ) ->
-		console.log type
+
 		switch type
 			when View.Notification.Notification.Success
 				return 'alert-success'
@@ -84,5 +84,3 @@ class View.Notification extends View.HTMLPopOver
 				return 'alert-info'
 			else
 				return 'alert-warning'
-				
-(exports ? this).View.Notification = View.Notification

@@ -161,5 +161,3 @@ class Model.Metabolism extends Model.Module
 				compounds: [ 'name', 'dna', 'orig', 'dest' ]
 				
 		}
-
-(exports ? this).Model.Metabolism = Model.Metabolism

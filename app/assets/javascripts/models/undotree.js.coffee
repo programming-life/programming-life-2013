@@ -56,5 +56,3 @@ class Model.UndoTree extends Model.Tree
 		if branch is @_root
 			@_root = parent
 		return this
-			
-(exports ? this).Model.UndoTree = Model.UndoTree

@@ -137,5 +137,3 @@ class View.DummyModule extends View.Module
 			r: 10 * scale
 			
 		return box
-		
-(exports ? this).View.DummyModule = View.DummyModule

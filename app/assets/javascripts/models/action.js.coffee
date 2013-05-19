@@ -41,7 +41,3 @@ class Model.Action
 	# 
 	redo: ( ) ->
 		return @do()
-
-		
-	
-(exports ? this).Model.Action = Model.Action

@@ -6,6 +6,7 @@ class View.Play extends View.RaphaelBase
 	# 
 	# @param paper [Object] Raphael paper
 	# @param cell [View.Cell] The view of the cell to simulate
+	#
 	constructor: ( paper, cell) ->
 		super(paper)
 		@_cell = cell
@@ -138,9 +139,9 @@ class View.Play extends View.RaphaelBase
 					
 		return @_pause
 		
+	# Runs when simulation is stopped
+	#
 	_onSimulationStop: ( ) ->
 		unless @_cell._running
 			@_playing = off
 			@redraw()
-
-(exports ? this).View.Play = View.Play

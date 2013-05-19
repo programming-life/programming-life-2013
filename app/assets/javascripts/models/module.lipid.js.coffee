@@ -116,5 +116,3 @@ class Model.Lipid extends Model.Module
 			tests:
 				compounds: [ 'dna', 'name', 'consume' ]
 		}
-
-(exports ? this).Model.Lipid = Model.Lipid
