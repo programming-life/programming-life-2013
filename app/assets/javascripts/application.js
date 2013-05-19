@@ -35,6 +35,7 @@
 //= require g.line-min
 //= require raphael-triangle
 //= require raphael-arrow
+//= require raphael-animatevb
 //
 //= require chart
 //= require md5.min
