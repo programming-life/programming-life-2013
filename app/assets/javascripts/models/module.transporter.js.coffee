@@ -158,7 +158,28 @@ class Model.Transporter extends Model.Module
 			return results
 		
 		# Default parameters set here
-		defaults = { 
+		defaults = @_getParameterDefaults( start, name, consume, type, direction, transported )
+		params = _( params ).defaults( defaults )			
+		metadata = @_getParameterMetaData()
+
+		super params, step, metadata
+		
+	# Add the getters for this module
+	#
+	# @param step [Function] the step function
+	#
+	_defineGetters: ( step, metadata ) ->
+		@_nonEnumerableGetter( 'orig', () -> return @getTransportedNames( @transported )[0] )
+		@_nonEnumerableGetter( 'dest', () -> return @getTransportedNames( @transported )[1] )
+		super step, metadata
+		
+	# Get parameter defaults array
+	#
+	# @param start [Integer] the start value
+	# @return [Object] default values
+	#
+	_getParameterDefaults: ( start, name, consume, type, direction, transported ) ->
+		return { 
 		
 			# Parameters
 			k: 1
@@ -179,22 +200,34 @@ class Model.Transporter extends Model.Module
 			# The name
 			name : name ? "transporter_#{transported}"
 		}
-				
-		Object.defineProperty( @ , "orig",
-			get: ->	return @getTransportedNames( @transported )[0]
-			configurable: false
-			enumerable: false
-		)
 		
-		Object.defineProperty( @ , "dest",
-			get: ->	return @getTransportedNames( @transported )[1]
-			configurable: false
-			enumerable: false
-		)
-				
-		params = _( params ).defaults( defaults )
-		super params, step
+	# Get parameter metadata
+	#
+	# @return [Object] metadata values
+	#
+	_getParameterMetaData: () ->
+		return {
 		
+			properties:
+				parameters: [ 'k', 'k_tr', 'k_m' ]
+				metabolites: [ 'consume' ]
+				metabolite: [ 'transported' ]
+				enumerations: [ {
+						name: 'direction'
+						values:
+							Inward: Model.Transporter.Inward
+							Outward: Model.Transporter.Outward
+					}, {
+						name: 'type'
+						values:
+							Active: Model.Transporter.Active
+							Passive: Model.Transporter.Passive
+					}
+				]
+				
+			tests:
+				compounds: [ 'name', 'dna', 'consume', 'cell', 'orig', 'dest' ]
+		}
 	
 	# Validates that the type is set
 	# 
@@ -260,5 +293,3 @@ class Model.Transporter extends Model.Module
 	#
 	@ext : ( params = { k_m: 0 }, start = 0, transported = "p", type = Model.Transporter.Passive, consume = "s#int" ) ->
 		return new Model.Transporter( params, start, "#{transported}", "transporter_#{transported}_out", Model.Transporter.Outward, type, consume )
-		
-(exports ? this).Model.Transporter = Model.Transporter

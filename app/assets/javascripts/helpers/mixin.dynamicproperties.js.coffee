@@ -1,6 +1,8 @@
 # Mixin for classes that allow dynamic properties
 #
-DynamicProperties =
+# @mixin
+#
+Mixin.DynamicProperties =
 
 	ClassMethods: {}
 	
@@ -42,7 +44,6 @@ DynamicProperties =
 								@, todo, undo, 
 								"Change #{key} from #{value} to #{param}" 
 							)
-							
 							action.do()
 							
 							if ( event? )
@@ -87,6 +88,4 @@ DynamicProperties =
 				configurable: false
 				enumerable: false
 			)
-			return this	
-
-( exports ? this ).Mixin.DynamicProperties = DynamicProperties
+			return this

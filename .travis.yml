@@ -5,7 +5,7 @@ rvm:
     - 2.0.0
     - ruby-head
 env:
-    - DB=sqlite
+    - DB=sqlite DISPLAY=":99.0"
 matrix:  
   allow_failures:
     - rvm: ruby-head

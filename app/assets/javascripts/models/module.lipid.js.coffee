@@ -60,7 +60,7 @@ class Model.Lipid extends Model.Module
 				dilution = mu * compounds[ @name ]
 			
 			# If all components are available 
-			if ( vlipidprod? )
+			if vlipidprod?
 			
 				# The Lipid increase is the rate minus dilution
 				#
@@ -74,9 +74,20 @@ class Model.Lipid extends Model.Module
 			
 			return results
 		
-		# Define default parameters here
-		defaults = { 
-			
+		defaults = @_getParameterDefaults( start, consume )
+		params = _( params ).defaults( defaults )
+		metadata = @_getParameterMetaData()
+		
+		super params, step, metadata
+		
+	# Get parameter defaults array
+	#
+	# @param start [Integer] the start value
+	# @return [Object] default values
+	#
+	_getParameterDefaults: ( start, consume ) ->
+		return { 
+		
 			# Parameters
 			k : 1
 			consume: if _( consume ).isArray() then consume else [ consume ] 
@@ -91,7 +102,17 @@ class Model.Lipid extends Model.Module
 			name : "lipid"
 		}
 		
-		params = _( params ).defaults( defaults )
-		super params, step
-
-(exports ? this).Model.Lipid = Model.Lipid
+	# Get parameter metadata
+	#
+	# @return [Object] metadata values
+	#
+	_getParameterMetaData: () ->
+		return {
+		
+			properties:
+				metabolites: [ 'consume' ]
+				parameters: [ 'k' ]
+				
+			tests:
+				compounds: [ 'dna', 'name', 'consume' ]
+		}

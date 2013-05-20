@@ -27,7 +27,7 @@
     </nav>
     <div id='search'>
       <a id='class_list_link' href='../../class_list.html'>Classes</a>
-      <a id='file_list_link' href='../../file_list.html'>Files</a>
+      <a id='mixin_list_link' href='../../mixin_list.html'>Mixins</a>
       <a id='method_list_link' href='../../method_list.html'>Methods</a>
       <a id='extra_list_link' href='../../extra_list.html'>Extras</a>
     </div>
@@ -113,7 +113,13 @@
       <table class='box'>
         <tr>
           <td>Defined in:</td>
-          <td>app&#47;assets&#47;javascripts&#47;views&#47;cell.js.coffee</td>
+          <td>app&#47;assets&#47;javascripts&#47;views&#47;raphael.cell.js.coffee</td>
+        </tr>
+        <tr>
+          <td>Inherits:</td>
+          <td>
+            <a href='../../classes/View/RaphaelBase.html'>View.RaphaelBase</a>
+          </td>
         </tr>
       </table>
       <h2>Overview</h2>
@@ -122,17 +128,62 @@
 </div>
 <div class='tags'>
 </div>
+      <h2>Constant Summary</h2>
+      <dl class='constants'>
+        <dt id='MAX_RUNTIME-constant'>
+          MAX_RUNTIME
+          =
+          <div class='docstring'>
+  <p>Maximum t for the cell simulation</p>
+</div>
+<div class='tags'>
+</div>
+        </dt>
+        <dd>
+          <pre><code class='coffee'>100</code></pre>
+        </dd>
+      </dl>
       <h2>Instance Method Summary</h2>
       <ul class='summary'>
   <li>
     <span class='signature'>
       <a href='#constructor-instance'>
-        - (void) <strong>constructor</strong>(paper, cell)
+        - (void) <strong>constructor</strong>(paper, cell, container = "#graphs")
       </a>
     </span>
     <span class='constructor note title'>Constructor</span>
     <span class='desc'>
       Constructor for this view
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#kill-instance'>
+        - (void) <strong>kill</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#getBBox-instance'>
+        - (void) <strong>getBBox</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_createButtons-instance'>
+        - (void) <strong>_createButtons</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      
     </span>
   </li>
   <li>
@@ -189,6 +240,16 @@
   </li>
   <li>
     <span class='signature'>
+      <a href='#getView-instance'>
+        - (Module.View) <strong>getView</strong>(module)
+      </a>
+    </span>
+    <span class='desc'>
+      Get module view for the given module
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
       <a href='#_getCellData-instance'>
         - (Object) <strong>_getCellData</strong>(duration, base_values = [], dt = 1, iteration = 0)
       </a>
@@ -215,6 +276,16 @@
     </span>
     <span class='desc'>
       Draw the graphs with the data from the datasets
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_redrawGraphs-instance'>
+        - (void) <strong>_redrawGraphs</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Redraw graphs
     </span>
   </li>
   <li>
@@ -268,11 +339,37 @@
     </span>
   </li>
 </ul>
+      <h2>
+        <small>Inherited Method Summary</small>
+      </h2>
+      <h3 class='inherited'>
+        Methods inherited from
+        <a href='../../classes/View/RaphaelBase.html'>View.RaphaelBase</a>
+      </h3>
+      <p class='inherited'>
+                <a href='../../classes/View/RaphaelBase.html#constructor-instance'>#constructor</a>,
+                <a href='../../classes/View/RaphaelBase.html#clear-instance'>#clear</a>,
+                <a href='../../classes/View/RaphaelBase.html#draw-instance'>#draw</a>,
+                <a href='../../classes/View/RaphaelBase.html#redraw-instance'>#redraw</a>,
+                <a href='../../classes/View/RaphaelBase.html#addView-instance'>#addView</a>,
+                <a href='../../classes/View/RaphaelBase.html#removeView-instance'>#removeView</a>,
+                <a href='../../classes/View/RaphaelBase.html#resize-instance'>#resize</a>,
+        <a href='../../classes/View/RaphaelBase.html#kill-instance'>#kill</a>
+      </p>
+      <h3 class='inherited'>
+        Methods inherited from
+        <a href='../../classes/Helper/Mixable.html'>Helper.Mixable</a>
+      </h3>
+      <p class='inherited'>
+                <a href='../../classes/Helper/Mixable.html#extend-class'>.extend</a>,
+                <a href='../../classes/Helper/Mixable.html#include-class'>.include</a>,
+        <a href='../../classes/Helper/Mixable.html#concern-class'>.concern</a>
+      </p>
       <h2>Constructor Details</h2>
       <div class='methods'>
   <div class='method_details'>
     <p class='signature' id='constructor-instance'>
-      - (void) <strong>constructor</strong>(paper, cell)
+      - (void) <strong>constructor</strong>(paper, cell, container = "#graphs")
     </p>
     <div class='docstring'>
   <p>Constructor for this view</p>
@@ -302,6 +399,34 @@
 </div>
       <h2>Instance Method Details</h2>
       <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='kill-instance'>
+      - (void) <strong>kill</strong>()
+    </p>
+    <div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='getBBox-instance'>
+      - (void) <strong>getBBox</strong>()
+    </p>
+    <div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_createButtons-instance'>
+      - (void) <strong>_createButtons</strong>()
+    </p>
+    <div class='docstring'>
+  <div class='note todo'>
+    <strong>TODO:</strong>
+    hide buttons if module present etc.
+  </div>
+  
+</div>
+<div class='tags'>
+</div>
+  </div>
   <div class='method_details'>
     <p class='signature' id='redraw-instance'>
       - (void) <strong>redraw</strong>()
@@ -440,6 +565,36 @@
 </div>
   </div>
   <div class='method_details'>
+    <p class='signature' id='getView-instance'>
+      - (Module.View) <strong>getView</strong>(module)
+    </p>
+    <div class='docstring'>
+  <p>Get module view for the given module</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>module</span>
+      <span class='type'>
+        (<tt>Module</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the module for which to return the view</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Module.View</tt>)
+      &mdash;
+      <span class='desc'>the view which represents the given module</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
     <p class='signature' id='_getCellData-instance'>
       - (Object) <strong>_getCellData</strong>(duration, base_values = [], dt = 1, iteration = 0)
     </p>
@@ -563,6 +718,16 @@
 </div>
   </div>
   <div class='method_details'>
+    <p class='signature' id='_redrawGraphs-instance'>
+      - (void) <strong>_redrawGraphs</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Redraw graphs</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
     <p class='signature' id='startSimulation-instance'>
       - (void) <strong>startSimulation</strong>(step_duration = 20, step_update = 2000, dt = 1)
     </p>
@@ -606,7 +771,7 @@
     <div class='docstring'>
   <div class='note todo'>
     <strong>TODO:</strong>
-    append data instead of replace data
+    stopSimulation should throw event that is captured by play button
   </div>
   <p>Steps the simulation</p>
 </div>
@@ -695,7 +860,7 @@ and gracefully defers execution of this step function. </p>
     </div>
     <div id='footer'>
   Generated on
-  Sun May 12 2013 04:54:49 GMT+0200 (W. Europe Daylight Time)
+  Sun May 19 2013 15:38:42 GMT+0200 (W. Europe Daylight Time)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

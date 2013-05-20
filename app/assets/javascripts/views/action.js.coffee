@@ -1,5 +1,7 @@
 # Action views are simulated buttons
 #
+# @todo extend from RaphaelBase
+#
 class View.Action
 	
 	# Creates a new action view
@@ -89,5 +91,3 @@ class View.Action
 					@_func.call( @ )
 					@_selected = false
 					@draw( @_x, @_y, @_scale )
-
-(exports ? this).View.Action = View.Action
