@@ -604,6 +604,12 @@ class Model.Cell extends Helper.Mixable
 	# @return [JQuery.Promise] promise
 	#
 	save: ( ) ->
+	
+		@_notificate( @, @, 
+			'cell.save',
+			"Saving this cell..."
+			Model.Cell.Info
+		)	
 			
 		if @isLocal()
 			return @_create()
@@ -655,8 +661,7 @@ class Model.Cell extends Helper.Mixable
 		promise.done( ( data ) => 
 			@_notificate( @, @, 
 				'cell.save',
-				"Successfully saved the cell #{ @name }",
-				[ 'create' ],
+				"Successfully saved the cell"
 				Model.Cell.Success
 			)	
 		)
