@@ -316,6 +316,14 @@ class Model.Module extends Helper.Mixable
 	# @return [jQuery.Promise] the update promise
 	#
 	_updateParameters: ( parameters ) ->
+		
+		@_notificate( @,  @, 
+			"module.save.#{ @name }",
+			"Saving #{ @name }...",
+			[ 'update parameters' ],
+			Model.Module.Notification.Info
+		)		
+	
 		params = []
 		for key, value of parameters
 			params.push
@@ -359,6 +367,13 @@ class Model.Module extends Helper.Mixable
 	#
 	_create: ( instance, template, cell ) ->
 		
+		@_notificate( @,  @, 
+			"module.save.#{ @name }",
+			"Creating #{ @name }...",
+			[ 'create instance' ],
+			Model.Module.Notification.Info
+		)		
+		
 		module_instance_data = @_getModuleInstanceData( 
 			instance, template, cell 
 		)
@@ -372,7 +387,7 @@ class Model.Module extends Helper.Mixable
 				
 				@_notificate( @,  @, 
 					"module.save.#{ @name }",
-					"Succesfully saved module",
+					"Succesfully created #{ @name }",
 					[ 'create instance' ],
 					Model.Module.Notification.Success
 				)		
