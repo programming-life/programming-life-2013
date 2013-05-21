@@ -4,8 +4,8 @@
 <table class="table row">
 	<thead class="span12">
 		<tr>
-			<td class="span2"><strong>Key</strong></td>
-			<td class="span10"><strong>Value</strong></td>
+			<th class="span2">Key</th>
+			<th class="span10">Value</th>
 		</tr>
 	</thead>
 	<tbody class="span12">
@@ -17,6 +17,11 @@
 		<tr>
 			<td class="span2">Cell</td>
 			<td class="span10">#<%= @report.cell.id %> <%= link_to @report.cell.name, @report.cell %></td>
+		</tr>
+
+		<tr>
+			<td>Creation</td>
+			<td><%= @report.created_at.strftime("%a %d %B %Y at %H:%M") %></td>
 		</tr>
 
 		<tr>
@@ -52,8 +57,8 @@
 				<table class="table-condensed table-striped table">
 					<thead>
 						<tr>
-							<td class="span6"><strong> Name: </strong><%= module_instance.name %></td>
-							<td class="span6"><strong> Graph </strong></td>
+							<th class="span6">Name: <%= module_instance.name %></th>
+							<th class="span6">Graph</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -63,8 +68,8 @@
 								<table class="table-condensed table-striped table">
 									<thead>
 										<tr>
-											<td class="span3"><strong> Key </strong></td>
-											<td class="span9"><strong> Value </strong></td>
+											<th class="span3">Key</th>
+											<th class="span9">Value</th>
 										</tr>
 									</thead>
 									<tbody>
@@ -89,11 +94,6 @@
 			</td>
 		</tr>
 		<% end %>
-
-		<tr class="span12">
-			<td>Creation</td>
-			<td><%= @report.created_at.strftime("%a %d %B %Y at %H:%M") %></td>
-		</tr>
 	</tbody>
 </table>
 
