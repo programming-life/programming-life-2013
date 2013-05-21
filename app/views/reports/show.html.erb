@@ -53,29 +53,49 @@
 		<tr>
 			<td><%= @module_template.name %></td>
 			<td>
-				<span class="compound"><%= module_instance.name %></span>
+				<!-- Start module table -->
 				<table class="table-condensed table-striped table">
 					<thead>
 						<tr>
-							<td class="span3"><strong> Key </strong></td>
-							<td class="span9"><strong> Value </strong></td>
+							<td class="span6"><strong> Name: </strong><%= module_instance.name %></td>
+							<td class="span6"><strong> Graph </strong></td>
 						</tr>
 					</thead>
 					<tbody>
-						<% @module_hash.each { |key, value| %>
-							<tr>
-								<td class="span3"> <%= key %> </td>
-								<td class="span9"><%= value.nil? ? '<span class="label label-important">missing</span>'.html_safe : value  %>
-								</td>
-							</tr>
-						<% } %>
+						<tr>
+							<td>
+								<!-- Start parameter table -->						
+								<table class="table-condensed table-striped table">
+									<thead>
+										<tr>
+											<td class="span3"><strong> Key </strong></td>
+											<td class="span9"><strong> Value </strong></td>
+										</tr>
+									</thead>
+									<tbody>
+										<% @module_hash.each { |key, value| %>
+											<tr>
+												<td class="span3"> <%= key %> </td>
+												<td class="span9"><%= value.nil? ? '<span class="label label-important">missing</span>'.html_safe : value  %>
+												</td>
+											</tr>
+										<% } %>
+									</tbody>
+								</table>
+								<!-- End parameter table -->
+							</td>
+							<td>
+								<img src="http://placehold.it/300x175.png&text=graph" alt="graph">
+							</td>
+						</tr>
 					</tbody>
 				</table>
+				<!-- End module table -->
 			</td>
 		</tr>
 		<% end %>
 
-		<tr>
+		<tr class="span12">
 			<td>Creation</td>
 			<td><%= @report.created_at.strftime("%a %d %B %Y at %H:%M") %></td>
 		</tr>
