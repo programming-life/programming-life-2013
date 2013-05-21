@@ -27,9 +27,18 @@ class View.ModuleProperties extends View.HTMLPopOver
 		
 	# Create the popover header
 	#
+	# @return [Array<jQuery.Elem>] the header and the button element
+	#
 	_createHeader: ( ) ->
-		onclick = () => Model.EventManager.trigger('module.set.selected', @module, [ off ])
-		return super onclick
+		@_header = $('<div class="popover-title"></div>')
+
+		onclick = () => Model.EventManager.trigger( 'module.set.selected', @module, [ off ] )
+		@_closeButton = $('<button class="close">&times;</button>')
+		@_closeButton.on('click', onclick ) if onclick?
+		
+		@_header.append @title
+		@_header.append @_closeButton
+		return [ @_header, @_closeButton ]
 		
 	# Create the popover body
 	#
@@ -37,12 +46,22 @@ class View.ModuleProperties extends View.HTMLPopOver
 		@_body = super
 		@_drawForm()
 		return @_body
-
+		
 	#  Create footer content and append to footer
 	#
-	_createFooter: () ->
+	# @param onclick [Function] the function to yield on click
+	# @param saveText [String] the text on the save button
+	# @return [Array<jQuery.Elem>] the footer and the button element
+	#
+	_createFooter: ( saveText = 'Save' ) ->
+		@_footer = $('<div class="modal-footer"></div>')
+
 		onclick = () => @_save()
-		return super onclick
+		@_saveButton = $('<button class="btn btn-primary">' + saveText + '</button>')
+		@_saveButton.on('click', onclick ) if onclick?
+
+		@_footer.append @_saveButton
+		return [ @_footer, @_saveButton ]
 
 	# Populates the popover body with the required forms to reflect the module.
 	#

@@ -55,22 +55,12 @@ class View.HTMLPopOver extends Helper.Mixable
 		
 		@_elem.append header if header?
 		@_elem.append @_createBody()
-		@_elem.append footer if footer?	
+		@_elem.append footer if footer?			
 		
-	# Create the popover header
+	# Nullifies the header
 	#
-	# @param onclick [Function] the function to yield on click
-	# @return [Array<jQuery.Elem>] the header and the button element
-	#
-	_createHeader: ( onclick ) ->
-		@_header = $('<div class="popover-title"></div>')
-
-		@_closeButton = $('<button class="close">&times;</button>')
-		@_closeButton.on('click', onclick ) if onclick?
-		
-		@_header.append @title
-		@_header.append @_closeButton
-		return [ @_header, @_closeButton ]
+	_createHeader: () ->	
+		return [ undefined ]
 		
 	# Create the popover body
 	#
@@ -80,20 +70,10 @@ class View.HTMLPopOver extends Helper.Mixable
 		@_body = $('<div class="popover-content"></div>')
 		return @_body
 		
-	#  Create footer content and append to footer
+	# Nullifies the footer
 	#
-	# @param onclick [Function] the function to yield on click
-	# @param saveText [String] the text on the save button
-	# @return [Array<jQuery.Elem>] the footer and the button element
-	#
-	_createFooter: ( onclick, saveText = 'Save' ) ->
-		@_footer = $('<div class="modal-footer"></div>')
-
-		@_saveButton = $('<button class="btn btn-primary">' + saveText + '</button>')
-		@_saveButton.on('click', onclick ) if onclick?
-
-		@_footer.append @_saveButton
-		return [ @_footer, @_saveButton ]
+	_createFooter: () ->
+		return [ undefined ]
 		
 	# Sets the position of the popover so the arrow points straight at the module view
 	#
