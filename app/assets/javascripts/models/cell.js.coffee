@@ -609,7 +609,7 @@ class Model.Cell extends Helper.Mixable
 			'cell.save',
 			"Saving this cell...",
 			[],
-			Model.Cell.Info
+			Model.Cell.Notification.Info
 		)	
 			
 		if @isLocal()
@@ -620,9 +620,9 @@ class Model.Cell extends Helper.Mixable
 		promise.done( ( data ) => 
 			@_notificate( @, @, 
 				'cell.save',
-				"Successfully saved the cell",
+				"Successfully saved this cell",
 				[]
-				Model.Cell.Success
+				Model.Cell.Notification.Success
 			)	
 		)
 		
@@ -660,13 +660,13 @@ class Model.Cell extends Helper.Mixable
 			, ( data ) => 
 				@_notificate( @, @, 
 					'cell.save',
-					"I am trying to save the cell #{ @id } but an error occured: #{ data }",
+					"I am trying to save the cell #{ @id } but an error occured: #{ data.status } - #{ data.statusText }",
 					[ 
 						'create', 
 						data, 
 						module_instance_data 
 					],
-					Model.Cell.Error
+					Model.Cell.Notification.Error
 				)	
 			)
 
@@ -691,13 +691,13 @@ class Model.Cell extends Helper.Mixable
 			( data ) => 
 			
 				@_notificate( @ , @, 'cell.save',
-					"I am trying to update the cell #{ @id } but an error occured: #{ data }",
+					"I am trying to update the cell #{ @id } but an error occured: #{ data.status } - #{ data.statusText }",
 					[ 
 							'update', 
 							data, 
 							cell_data  
 					],
-					Model.Cell.Success
+					Model.Cell.Notification.Error
 				)	
 			)
 		
@@ -730,6 +730,7 @@ class Model.Cell extends Helper.Mixable
 	#
 	@load : ( cell_id, callback ) ->
 	
+		result = undefined
 		cell = new Model.Cell( undefined, undefined, { id: cell_id } )
 		promise = $.get( cell.url, { all: true } )
 		promise = promise.then( 
@@ -748,36 +749,49 @@ class Model.Cell extends Helper.Mixable
 				for module in result._modules
 					result.remove module
 				
+				callback.apply( @, [ result ] ) if callback?
+				result._notificate( @, result,
+					'cell.load',
+					'Loading cell...',
+					[ 'load' ],
+					Model.Cell.Notification.Info
+				);
+				
 				promiseses = []
 				for module_id in data.modules
 					promiseses.push Model.Module.load( module_id, result )
-					
-				callback.apply( @, [ result ] ) if callback?
 				
 				return $.when( promiseses... )
 				
 			# Fail
 			, ( data ) => 
 			
-				cell._notificate( @, cell, 
+				if !result?
+					result = cell
+					
+				for module in result._modules
+					result.remove module
+					
+				callback.apply( @, [ result ] ) if callback?
+				result._notificate( @, result, 
 					'cell.load',
-					"I am trying to load the cell #{ cell_id } but an error occured: #{ data }",
+					"I am trying to load the cell #{ cell_id } but an error occured: #{ data.status } - #{ data.statusText }",
 					[ 
 						'load', 
 						data, 
 						cell_id 
 					],
-					Model.Cell.error
+					Model.Cell.Notification.Error
 				)	
 			)
 			
 		promise.done( ( data ) => 
 		
-			cell._notificate( @, cell, 
+			result._notificate( @, result, 
 				'cell.load',
-				"Successfully loaded the cell #{ cell.name }",
+				"Successfully loaded the cell #{ result.name }",
 				[ 'load' ],
-				Model.Cell.Success
+				Model.Cell.Notification.Success
 			)	
 		)
 
