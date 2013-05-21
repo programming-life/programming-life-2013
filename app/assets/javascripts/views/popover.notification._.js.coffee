@@ -70,7 +70,7 @@ class View.Notification extends View.HTMLPopOver
 			@_closeButton.on( 'click', _( @hide ).bind @ )
 			body.append @_closeButton
 			
-		for identifier, message of @_messages
+		for identifier, message of @_messages when message.visible is on
 			classname = '' #View.Notification.getAlertClassFromType( message.type )
 			elem = $('<div class="' + classname + '">' + message.message + '</div>')
 			body.append( elem )

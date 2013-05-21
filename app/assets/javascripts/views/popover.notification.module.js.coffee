@@ -41,5 +41,3 @@ class View.ModuleNotification extends View.Notification
 					'
 			else
 				message.visible = off
-		
-		console.log message
