@@ -21,7 +21,6 @@ class View.Undo extends Helper.Mixable
 	kill: ( ) ->
 		@_parent?.remove()
 
-
 	# Clears this view
 	#
 	clear: ( ) ->
@@ -144,6 +143,7 @@ class View.Undo extends Helper.Mixable
 	# @param node [Model.Node] The node that was clicked
 	#
 	_onClick: ( node ) ->
+		console.log("Clicked", node._object._description)
 		nodes = @_tree.jump( node )
 		for undo in nodes.reverse
 			undo._object.undo()

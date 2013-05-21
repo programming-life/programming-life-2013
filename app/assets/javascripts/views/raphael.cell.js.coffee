@@ -46,6 +46,7 @@ class View.Cell extends View.RaphaelBase
 				@_cell = value
 				for module in @_cell._modules
 					@_views.push new View.Module( @_paper, @, @_cell, module)
+					@_drawn.push module.id
 			
 				@_createButtons()
 				@_bind( 'cell.add.module', @, @onModuleAdd )
@@ -179,7 +180,7 @@ class View.Cell extends View.RaphaelBase
 	#
 	onModuleAdd: ( cell, module ) =>
 		unless cell isnt @_cell
-			unless _( @_drawn ).indexOf( module.id ) isnt -1
+			if _( @_drawn ).indexOf( module.id ) is -1
 				@_drawn.unshift module.id
 				@_views.unshift new View.Module( @_paper, @, @_cell, module )
 				@redraw()
