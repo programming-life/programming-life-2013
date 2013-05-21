@@ -14,6 +14,7 @@ class View.Notification extends View.HTMLPopOver
 		
 		super parent, model.constructor.name, 'notification', 'top'
 		
+		@_closable = on
 		@_onNotificate( @, model, @display )
 	
 	# Displays a notification
@@ -31,13 +32,23 @@ class View.Notification extends View.HTMLPopOver
 			source: source
 			message: message
 			type: type
+			identifier: identifier
+			args: args
+			visible: on
+			closable: on
 		}
 		
-		@_setSelected on
+		@_filter? @_messages[ identifier ]
+				
+		if _( @_messages ).some( (message) -> message.visible )
+			@_setSelected on
+			@draw()
+			@setPosition()
+		else
+			@hide()
 		
-		@draw()
-		@setPosition()
-		
+	#
+	#
 	hide: () ->
 		@_setSelected off
 		@_messages = {}
@@ -53,10 +64,12 @@ class View.Notification extends View.HTMLPopOver
 	#
 	_createBody: () ->
 		body = super
-		@_closeButton = $('<button class="close">&times;</button>')
-		@_closeButton.on( 'click', _( @hide ).bind @ )
 		
-		body.append @_closeButton
+		if _( @_messages ).some( (message) -> message.closable )
+			@_closeButton = $('<button class="close">&times;</button>')
+			@_closeButton.on( 'click', _( @hide ).bind @ )
+			body.append @_closeButton
+			
 		for identifier, message of @_messages
 			classname = '' #View.Notification.getAlertClassFromType( message.type )
 			elem = $('<div class="' + classname + '">' + message.message + '</div>')
