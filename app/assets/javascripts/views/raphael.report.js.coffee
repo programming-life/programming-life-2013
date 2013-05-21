@@ -41,5 +41,5 @@ class View.Report extends View.RaphaelBase
 				$('#report_data').attr("value", cell_svg)
 
 				# Start the simulation
-				document.mvc._views[0].startSimulation(25, 10, 1)
+				#document.mvc._views[0].startSimulation(25, 10, 1)
 			)
