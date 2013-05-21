@@ -187,11 +187,18 @@ class View.Module extends View.RaphaelBase
 		@clear()
 		return this
 
+	# Returns the bounding box of this view
 	#
+	# @return [Object] a bounding box object with coordinates
 	#
 	getBBox: ( ) -> 
 		return @_box?.getBBox() ? { x:0, y:0, x2:0, y2:0, width:0, height:0 }
 
+	# Returns the coordinates of either the entrance or exit of this view
+	#
+	# @param location [View.Module.Location] the location (entrance or exit)
+	# @return [[float, float]] a tuple of the x and y coordinates
+	#
 	getPoint: ( location ) ->
 		box = @getBBox()
 
@@ -201,6 +208,11 @@ class View.Module extends View.RaphaelBase
 			when @Location.Exit
 				return [box.x2 ,@y]
 
+	# Returns the direction in which a spline should be drawn wrt a metabolite
+	#
+	# @param metabolitePlacement [Placement] the placement of the metabolite
+	# @return [View.Module.Direction] the direction of the spline
+	#
 	_getSplineDirection: ( metabolitePlacement ) ->
 		if @type is 'Transporter'
 			switch @module.direction
@@ -407,13 +419,6 @@ class View.Module extends View.RaphaelBase
 		$(box.node).addClass('module-box')
 		box.attr('r', 5)
 		
-		#classname = 'module-box'
-		#classname += ' hovered' if @_hovered
-		#classname += ' selected' if @_selected
-		#box.node.setAttribute( 'class', classname )
-		#box.attr
-		#	r: 10 * scale
-
 		return box
 
 	# Draws a spline from between two points
