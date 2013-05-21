@@ -27,8 +27,6 @@ class Model.Module extends Helper.Mixable
 		
 	# Defines All the properties
 	#
-	# @see {DynamicProperties} for function calls
-	#
 	# @return [self] chainable self
 	#
 	_defineProperties: ( params, step, metadata ) ->
@@ -55,7 +53,6 @@ class Model.Module extends Helper.Mixable
 		
 	# Defines the getters
 	#
-	# @see {DynamicProperties} for function calls
 	# @return [self] chainable self
 	#
 	_defineGetters: ( step, metadata ) ->
@@ -225,7 +222,7 @@ class Model.Module extends Helper.Mixable
 			@_notificate( 
 				@, @, 
 				"module.test.#{ @name }",
-				"I need #{ missing } in #{ @constructor.name }:#{ @name } but they are not available. #{ message ? '' }",
+				"I need #{ missing } in order to function correctly",
 				[ compounds, tests ],
 				Model.Module.Notification.Error
 			)	
@@ -310,6 +307,14 @@ class Model.Module extends Helper.Mixable
 	# @return [jQuery.Promise] the update promise
 	#
 	_updateParameters: ( parameters ) ->
+		
+		@_notificate( @,  @, 
+			"module.save.#{ @name }",
+			"Saving #{ @name }...",
+			[ 'update parameters' ],
+			Model.Module.Notification.Info
+		)		
+	
 		params = []
 		for key, value of parameters
 			params.push
@@ -353,6 +358,13 @@ class Model.Module extends Helper.Mixable
 	#
 	_create: ( instance, template, cell ) ->
 		
+		@_notificate( @,  @, 
+			"module.save.#{ @name }",
+			"Creating #{ @name }...",
+			[ 'create instance' ],
+			Model.Module.Notification.Info
+		)		
+		
 		module_instance_data = @_getModuleInstanceData( 
 			instance, template, cell 
 		)
@@ -366,7 +378,7 @@ class Model.Module extends Helper.Mixable
 				
 				@_notificate( @,  @, 
 					"module.save.#{ @name }",
-					"Succesfully saved module",
+					"Succesfully created #{ @name }",
 					[ 'create instance' ],
 					Model.Module.Notification.Success
 				)		
@@ -492,5 +504,3 @@ class Model.Module extends Helper.Mixable
 			)
 			
 		return promise
-	
-(exports ? this).Model.Module = Model.Module

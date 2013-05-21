@@ -2,13 +2,11 @@
 #
 class View.Graph extends View.RaphaelBase
 	
-	# @property [Integer] Maximum number of simultaneously displayed data sets
-	#
-	MAX_DATASETS : 2
+	# Maximum number of simultaneously displayed data sets
+	@MAX_DATASETS : 2
 	
-	# @property [Integer] Maximum length of a set
-	#
-	MAX_LENGTH : 100
+	# Maximum length of a set
+	@MAX_LENGTH : 100
 	
 	# Construct a new Graph object
 	#
@@ -24,7 +22,7 @@ class View.Graph extends View.RaphaelBase
 		@_height = 175
 		@clear()
 
-		@_paper = Raphael("graph-"+@_id, @_width, @_height + 20)
+		@_paper = Raphael("graph-"+@_id, @_width + 20, @_height + 20)
 		super(@_paper)
 
 		@_text = @_drawTitle()
@@ -72,13 +70,21 @@ class View.Graph extends View.RaphaelBase
 	
 	# Draws the graph
 	#
+	# @param x [Integer] The x coordinate
+	# @param y [Integer] The y coordinate
+	# @param scale [Integer] The scale
+	#
 	draw: ( ) ->
 		@clear()
 
 		@_drawChart()
 
-
 	# Draws the chart
+	#
+	# @param x [Integer] the x position
+	# @param y [Integer] the y position
+	# @param scale [Float] the scale
+	# @retun [Raphael] The chart object
 	#
 	_drawChart:() ->
 		datasets = _( @_datasets ).last()
@@ -93,7 +99,7 @@ class View.Graph extends View.RaphaelBase
 
 			@_chart?.remove()
 			@_drawn = off
-			@_chart = @_paper.linechart(0,0, (i + 1) * @_width, @_height ,xValues, yValues, @_options )
+			@_chart = @_paper.linechart(20,0, (i + 1) * @_width, @_height ,xValues, yValues, @_options )
 
 	#	unless @_drawn
 	#		@_chart.hoverColumn ( event ) =>
@@ -146,5 +152,3 @@ class View.Graph extends View.RaphaelBase
 			@_line.x = @_line.x + translation
 			@_line.translate( translation )
 			@_line.toFront()
-
-(exports ? this).View.Graph = View.Graph

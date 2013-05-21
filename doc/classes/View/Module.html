@@ -27,7 +27,7 @@
     </nav>
     <div id='search'>
       <a id='class_list_link' href='../../class_list.html'>Classes</a>
-      <a id='file_list_link' href='../../file_list.html'>Files</a>
+      <a id='mixin_list_link' href='../../mixin_list.html'>Mixins</a>
       <a id='method_list_link' href='../../method_list.html'>Methods</a>
       <a id='extra_list_link' href='../../extra_list.html'>Extras</a>
     </div>
@@ -113,7 +113,19 @@
       <table class='box'>
         <tr>
           <td>Defined in:</td>
-          <td>app&#47;assets&#47;javascripts&#47;views&#47;module._.js.coffee</td>
+          <td>app&#47;assets&#47;javascripts&#47;views&#47;raphael.module._.js.coffee</td>
+        </tr>
+        <tr>
+          <td>Inherits:</td>
+          <td>
+            <a href='../../classes/View/RaphaelBase.html'>View.RaphaelBase</a>
+          </td>
+        </tr>
+        <tr>
+          <td>Concerns:</td>
+          <td>
+            <a href='../../mixins/Mixin/EventBindings.html'>Mixin.EventBindings</a>
+          </td>
         </tr>
       </table>
       <h2>Overview</h2>
@@ -131,7 +143,7 @@
   <li>
     <span class='signature'>
       <a href='#constructor-instance'>
-        - (void) <strong>constructor</strong>(paper, module)
+        - (void) <strong>constructor</strong>(paper, parent, cell, module, params = {})
       </a>
     </span>
     <span class='constructor note title'>Constructor</span>
@@ -204,12 +216,63 @@
   </li>
   <li>
     <span class='signature'>
+      <a href='#onPaperResize-instance'>
+        - (void) <strong>onPaperResize</strong>()
+      </a>
+    </span>
+    <span class='bound note title'>Bound</span>
+    <span class='desc'>
+      Runs if paper is resized
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
       <a href='#clear-instance'>
-        - (void) <strong>clear</strong>()
+        - (self) <strong>clear</strong>()
       </a>
     </span>
     <span class='desc'>
       Clears the module view
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#kill-instance'>
+        - (self) <strong>kill</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Kills the module view
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#getBBox-instance'>
+        - (void) <strong>getBBox</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#getPoint-instance'>
+        - (void) <strong>getPoint</strong>(location)
+      </a>
+    </span>
+    <span class='desc'>
+      
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_getSplineDirection-instance'>
+        - (void) <strong>_getSplineDirection</strong>(metabolitePlacement)
+      </a>
+    </span>
+    <span class='desc'>
+      
     </span>
   </li>
   <li>
@@ -254,12 +317,12 @@
   </li>
   <li>
     <span class='signature'>
-      <a href='#drawCloseButton-instance'>
-        - (Raphael) <strong>drawCloseButton</strong>(elem, scale)
+      <a href='#drawSpline-instance'>
+        - (Raphael) <strong>drawSpline</strong>(direction, target)
       </a>
     </span>
     <span class='desc'>
-      Draws this view close buttons
+      Draws a spline from between two points
     </span>
   </li>
   <li>
@@ -293,11 +356,53 @@
     </span>
   </li>
 </ul>
+      <h2>
+        <small>Inherited Method Summary</small>
+      </h2>
+      <h3 class='inherited'>
+        Methods inherited from
+        <a href='../../classes/View/RaphaelBase.html'>View.RaphaelBase</a>
+      </h3>
+      <p class='inherited'>
+                <a href='../../classes/View/RaphaelBase.html#constructor-instance'>#constructor</a>,
+                <a href='../../classes/View/RaphaelBase.html#clear-instance'>#clear</a>,
+                <a href='../../classes/View/RaphaelBase.html#draw-instance'>#draw</a>,
+                <a href='../../classes/View/RaphaelBase.html#redraw-instance'>#redraw</a>,
+                <a href='../../classes/View/RaphaelBase.html#addView-instance'>#addView</a>,
+                <a href='../../classes/View/RaphaelBase.html#removeView-instance'>#removeView</a>,
+                <a href='../../classes/View/RaphaelBase.html#resize-instance'>#resize</a>,
+        <a href='../../classes/View/RaphaelBase.html#kill-instance'>#kill</a>
+      </p>
+      <h3 class='inherited'>
+        Methods inherited from
+        <a href='../../classes/Helper/Mixable.html'>Helper.Mixable</a>
+      </h3>
+      <p class='inherited'>
+                <a href='../../classes/Helper/Mixable.html#extend-class'>.extend</a>,
+                <a href='../../classes/Helper/Mixable.html#include-class'>.include</a>,
+        <a href='../../classes/Helper/Mixable.html#concern-class'>.concern</a>
+      </p>
+      <h2>
+        <small>Concern Method Summary</small>
+      </h2>
+      <h3 class='included'>
+        Methods mixed in from
+        <a href='../../mixins/Mixin/EventBindings.html'>Mixin.EventBindings</a>
+      </h3>
+      <p class='included'>
+                <a href='../../mixins/Mixin/EventBindings.html#_allowEventBindings-instance'>#_allowEventBindings</a>,
+                <a href='../../mixins/Mixin/EventBindings.html#_unbindAll-instance'>#_unbindAll</a>,
+                <a href='../../mixins/Mixin/EventBindings.html#_bind-instance'>#_bind</a>,
+                <a href='../../mixins/Mixin/EventBindings.html#_unbind-instance'>#_unbind</a>,
+                <a href='../../mixins/Mixin/EventBindings.html#_trigger-instance'>#_trigger</a>,
+                <a href='../../mixins/Mixin/EventBindings.html#_onNotificate-instance'>#_onNotificate</a>,
+        <a href='../../mixins/Mixin/EventBindings.html#_notificate-instance'>#_notificate</a>
+      </p>
       <h2>Constructor Details</h2>
       <div class='methods'>
   <div class='method_details'>
     <p class='signature' id='constructor-instance'>
-      - (void) <strong>constructor</strong>(paper, module)
+      - (void) <strong>constructor</strong>(paper, parent, cell, module, params = {})
     </p>
     <div class='docstring'>
   <p>Creates a new module view</p>
@@ -524,13 +629,73 @@
 </div>
   </div>
   <div class='method_details'>
+    <p class='signature' id='onPaperResize-instance'>
+      - (void) <strong>onPaperResize</strong>()
+      (bound)
+    </p>
+    <div class='docstring'>
+  <p>Runs if paper is resized</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
     <p class='signature' id='clear-instance'>
-      - (void) <strong>clear</strong>()
+      - (self) <strong>clear</strong>()
     </p>
     <div class='docstring'>
   <p>Clears the module view</p>
 </div>
 <div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>self</tt>)
+      &mdash;
+      <span class='desc'>chainable self</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='kill-instance'>
+      - (self) <strong>kill</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Kills the module view</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>self</tt>)
+      &mdash;
+      <span class='desc'>chainable self</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='getBBox-instance'>
+      - (void) <strong>getBBox</strong>()
+    </p>
+    <div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='getPoint-instance'>
+      - (void) <strong>getPoint</strong>(location)
+    </p>
+    <div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_getSplineDirection-instance'>
+      - (void) <strong>_getSplineDirection</strong>(metabolitePlacement)
+    </p>
+    <div class='tags'>
 </div>
   </div>
   <div class='method_details'>
@@ -654,30 +819,46 @@
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='drawCloseButton-instance'>
-      - (Raphael) <strong>drawCloseButton</strong>(elem, scale)
+    <p class='signature' id='drawSpline-instance'>
+      - (Raphael) <strong>drawSpline</strong>(direction, target)
     </p>
     <div class='docstring'>
-  <p>Draws this view close buttons</p>
+  <p>Draws a spline from between two points</p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
   <ul class='param'>
     <li>
-      <span class='name'>elem</span>
+      <span class='name'>origX</span>
       <span class='type'>
-        (<tt>Raphael</tt>)
+        (<tt>float</tt>)
       </span>
       &mdash;
-      <span class='desc'>element to draw for</span>
+      <span class='desc'>the starting x coordinate</span>
     </li>
     <li>
-      <span class='name'>scale</span>
+      <span class='name'>origY</span>
       <span class='type'>
-        (<tt>Integer</tt>)
+        (<tt>float</tt>)
       </span>
       &mdash;
-      <span class='desc'>the scale</span>
+      <span class='desc'>the starting y coordinate</span>
+    </li>
+    <li>
+      <span class='name'>destX</span>
+      <span class='type'>
+        (<tt>float</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the terminal x coordinate</span>
+    </li>
+    <li>
+      <span class='name'>destY</span>
+      <span class='type'>
+        (<tt>float</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the terminal y coordinate</span>
     </li>
   </ul>
   <h3>Returns:</h3>
@@ -686,7 +867,7 @@
       <span class='type'></span>
       (<tt>Raphael</tt>)
       &mdash;
-      <span class='desc'>the contents</span>
+      <span class='desc'>the spline path</span>
     </li>
   </ul>
 </div>
@@ -841,7 +1022,7 @@
     </div>
     <div id='footer'>
   Generated on
-  Sun May 12 2013 04:54:49 GMT+0200 (W. Europe Daylight Time)
+  Sun May 19 2013 15:38:42 GMT+0200 (W. Europe Daylight Time)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

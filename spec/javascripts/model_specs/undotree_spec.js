@@ -193,5 +193,37 @@ describe("UndoTree", function() {
 			});
 
 		});
+
+		describe("when jumping from one node to another", function() {
+			var jump;
+			beforeEach( function() {
+				for (i = 0; i<6;i++) {
+					tree.undo();
+				}
+				newNode = tree.add({newNode: "new"});
+				for (i = 0; i<6;i++) {
+					tree.redo();
+				}
+				rightOrder = {
+					reverse : [newNode,root],
+					forward: node
+				}
+				order = tree.jump(node[5])
+			});
+
+			it("should have set the tree to the node", function() {
+				expect( tree._current ).toBe( node[5] );
+			});
+
+			it("should have returned the nodes in between in the right order", function() {
+				console.log(order)
+				for (i = 0; i < order.reverse.length; i++) {
+					expect( order.reverse[i] ).toBe( rightOrder.reverse[i] );
+				}
+				for (i = 0; i < order.forward.length; i++) {
+					expect( order.forward[i] ).toBe( rightOrder.forward[i] );
+				}
+			});
+		});
 	});
 });

@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset='UTF-8'>
+  <title>CoffeeScript API Documentation</title>
+  <link rel='stylesheet' href='../../assets/codo.css' type='text/css'>
+  <script src='../../assets/codo.js'></script>
+  <script src='../../assets/search_data.js'></script>
+</head>
+  <body>
+    <div id='base' data-path='../../'></div>
+<div id='header'>
+  <div id='menu'>
+    <a href='../../README.md.html' title='Programming-life'>Programming-life</a>
+    &raquo;
+    <a href='../../class_index.html' title='Index'>Index</a>
+    &raquo;
+    <span class='title'>Mixin</span>
+    &raquo;
+    <span class='title'>EventBindings</span>
+    <nav>
+      <ul>
+        <li class='noframes'>
+          (<a class='noframes' href='#'>no frames</a>)
+        </li>
+      </ul>
+    </nav>
+    <div id='search'>
+      <a id='class_list_link' href='../../class_list.html'>Classes</a>
+      <a id='mixin_list_link' href='../../mixin_list.html'>Mixins</a>
+      <a id='method_list_link' href='../../method_list.html'>Methods</a>
+      <a id='extra_list_link' href='../../extra_list.html'>Extras</a>
+    </div>
+  </div>
+  <iframe id='search_frame'></iframe>
+  <div id='fuzzySearch'>
+    <input type='text'>
+    <ol></ol>
+  </div>
+  <div id='help'>
+    <p>
+      Quickly fuzzy find classes, mixins, methods, file:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-T</span>
+        Open fuzzy finder dialog
+      </li>
+    </ul>
+    <p>
+      In frame mode you can toggle the list naviation frame on the left side:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-L</span>
+        Toggle list view
+      </li>
+    </ul>
+    <p>
+      You can focus a list in frame mode or toggle a tab in frameless mode:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-C</span>
+        Class list
+      </li>
+      <li>
+        <span>Ctrl-I</span>
+        Mixin list
+      </li>
+      <li>
+        <span>Ctrl-F</span>
+        File list
+      </li>
+      <li>
+        <span>Ctrl-M</span>
+        Method list
+      </li>
+      <li>
+        <span>Ctrl-E</span>
+        Extras list
+      </li>
+    </ul>
+    <p>
+      You can focus and blur the search input:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-S</span>
+        Focus search input
+      </li>
+      <li>
+        <span>Esc</span>
+        Blur search input
+      </li>
+    </ul>
+    <p>
+      In frameless mode you can close the list tab:
+    </p>
+    <ul>
+      <li>
+        <span>Esc</span>
+        Close list tab
+      </li>
+    </ul>
+  </div>
+</div>
+    <div id='content'>
+      <h1>
+        Mixin:
+        Mixin.EventBindings
+        <span class='concern note'>Concern</span>
+      </h1>
+      <table class='box'>
+        <tr>
+          <td>Defined in:</td>
+          <td>app&#47;assets&#47;javascripts&#47;helpers&#47;mixin.eventbindings.js.coffee</td>
+        </tr>
+      </table>
+      <h2>Overview</h2>
+      <div class='docstring'>
+  <p>Mixin for event enabled classes</p>
+</div>
+<div class='tags'>
+</div>
+      <h2>Instance Method Summary</h2>
+      <ul class='summary'>
+  <li>
+    <span class='signature'>
+      <a href='#_allowEventBindings-instance'>
+        - (self) <strong>_allowEventBindings</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Enables bindings
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_unbindAll-instance'>
+        - (self) <strong>_unbindAll</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Unbinds all events
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_bind-instance'>
+        - (self) <strong>_bind</strong>(event, context, method)
+      </a>
+    </span>
+    <span class='desc'>
+      Binds an event
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_unbind-instance'>
+        - (self) <strong>_unbind</strong>(event, context, func)
+      </a>
+    </span>
+    <span class='desc'>
+      Unbinds an event
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_trigger-instance'>
+        - (self) <strong>_trigger</strong>(event, caller, args)
+      </a>
+    </span>
+    <span class='desc'>
+      Triggers an event
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_onNotificate-instance'>
+        - (void) <strong>_onNotificate</strong>(context, source, callback)
+      </a>
+    </span>
+    <span class='desc'>
+      Notification for a source binder event handler
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_notificate-instance'>
+        - (self) <strong>_notificate</strong>(caller, source, identifier, message, args, type = Mixin.EventBindings.ClassMethods.Notification.Info)
+      </a>
+    </span>
+    <span class='desc'>
+      Notificates all listeners
+    </span>
+  </li>
+</ul>
+      <h2>Instance Method Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='_allowEventBindings-instance'>
+      - (self) <strong>_allowEventBindings</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Enables bindings</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>self</tt>)
+      &mdash;
+      <span class='desc'>chainable self</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_unbindAll-instance'>
+      - (self) <strong>_unbindAll</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Unbinds all events</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>self</tt>)
+      &mdash;
+      <span class='desc'>chainable self</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_bind-instance'>
+      - (self) <strong>_bind</strong>(event, context, method)
+    </p>
+    <div class='docstring'>
+  <p>Binds an event</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>event</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the event to bind to</span>
+    </li>
+    <li>
+      <span class='name'>context</span>
+      <span class='type'>
+        (<tt>Context</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the context to bind with</span>
+    </li>
+    <li>
+      <span class='name'>method</span>
+      <span class='type'>
+        (<tt>Function</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the method to bind</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>self</tt>)
+      &mdash;
+      <span class='desc'>chainable self</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_unbind-instance'>
+      - (self) <strong>_unbind</strong>(event, context, func)
+    </p>
+    <div class='docstring'>
+  <p>Unbinds an event</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>event</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the event to unbind from</span>
+    </li>
+    <li>
+      <span class='name'>context</span>
+      <span class='type'>
+        (<tt>Context</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the context to unbind for</span>
+    </li>
+    <li>
+      <span class='name'>method</span>
+      <span class='type'>
+        (<tt>Function</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the method to unbind</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>self</tt>)
+      &mdash;
+      <span class='desc'>chainable self</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_trigger-instance'>
+      - (self) <strong>_trigger</strong>(event, caller, args)
+    </p>
+    <div class='docstring'>
+  <p>Triggers an event</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>event</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the event to trigger for</span>
+    </li>
+    <li>
+      <span class='name'>caller</span>
+      <span class='type'>
+        (<tt>Context</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the caller to trigger from</span>
+    </li>
+    <li>
+      <span class='name'>args</span>
+      <span class='type'>
+        (<tt>Array</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the arguments to send</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>self</tt>)
+      &mdash;
+      <span class='desc'>chainable self</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_onNotificate-instance'>
+      - (void) <strong>_onNotificate</strong>(context, source, callback)
+    </p>
+    <div class='docstring'>
+  <p>Notification for a source binder event handler</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>context</span>
+      <span class='type'>
+        (<tt>Context</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the context for the callback</span>
+    </li>
+    <li>
+      <span class='name'>source</span>
+      <span class='type'>
+        (<tt>Context</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the source of the message</span>
+    </li>
+    <li>
+      <span class='name'>callback</span>
+      <span class='type'>
+        (<tt>Function</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the function to run</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_notificate-instance'>
+      - (self) <strong>_notificate</strong>(caller, source, identifier, message, args, type = Mixin.EventBindings.ClassMethods.Notification.Info)
+    </p>
+    <div class='docstring'>
+  <p>Notificates all listeners</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>context</span>
+      <span class='type'>
+        (<tt>Context</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the caller to trigger from</span>
+    </li>
+    <li>
+      <span class='name'>source</span>
+      <span class='type'>
+        (<tt>Context</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the source of the message</span>
+    </li>
+    <li>
+      <span class='name'>identifier</span>
+      <span class='type'>
+        (<tt>any</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the message identifier</span>
+    </li>
+    <li>
+      <span class='name'>message</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the message</span>
+    </li>
+    <li>
+      <span class='name'>args</span>
+      <span class='type'>
+        (<tt>Array&lt;any&gt;</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the additional arguments</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>self</tt>)
+      &mdash;
+      <span class='desc'>chainable self</span>
+    </li>
+  </ul>
+</div>
+  </div>
+</div>
+    </div>
+    <div id='footer'>
+  Generated on
+  Sun May 19 2013 15:38:42 GMT+0200 (W. Europe Daylight Time)
+  by
+  <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
+  v1.5.6
+  (Node.js v0.10.4).
+  &#10034;
+  Press Ctrl-h to see the keyboard shortcuts
+  &#10034;
+  <a href='http://twitter.com/#!/netzpirat'>@netzpirat</a>
+  &#10034;
+  <a href='https://mksoft.ch'>mksoft.ch</a>
+</div>
+  </body>
+</html>
