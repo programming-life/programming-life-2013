@@ -4,7 +4,7 @@ class View.Cell extends View.RaphaelBase
 
 	@concern Mixin.EventBindings
 
-	MAX_RUNTIME: 100
+	@MAX_RUNTIME: 100
 
 	# Constructor for this view
 	# 
@@ -471,8 +471,8 @@ class View.Cell extends View.RaphaelBase
 		
 		@_running = off
 		@_redrawGraphs()
-		if @cell.isLocal
-			$('#generate')[0].disabled = false;
+		#if @cell.isLocal
+			#$('#generate')[0].disabled = false;
 
 		@_trigger("simulation.stop",@, [ @_cell ])
 		return this
