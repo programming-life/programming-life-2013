@@ -331,7 +331,7 @@ class Model.Module extends Helper.Mixable
 				"module.save.#{ @name }",
 				"Succesfully saved #{ @name }",
 				[ 'update parameters' ],
-				Model.Module.Success
+				Model.Module.Notification.Success
 			)		
 		)
 			
@@ -344,7 +344,7 @@ class Model.Module extends Helper.Mixable
 					data,
 					module_parameters_data, 
 				],
-				Model.Module.Error
+				Model.Module.Notification.Error
 			)		
 		)
 		
@@ -364,6 +364,8 @@ class Model.Module extends Helper.Mixable
 			[ 'create instance' ],
 			Model.Module.Notification.Info
 		)		
+		
+		console.log Model.Module.Notification
 		
 		module_instance_data = @_getModuleInstanceData( 
 			instance, template, cell 
@@ -393,7 +395,7 @@ class Model.Module extends Helper.Mixable
 						data,
 						module_instance_data
 					],
-					Model.Module.Error
+					Model.Module.Notification.Error
 				)		
 			)
 		
@@ -436,7 +438,8 @@ class Model.Module extends Helper.Mixable
 						'get instance',
 						data,
 						serialized_data
-					]
+					],
+					Model.Module.Notification.Error
 				)		
 			)
 		
@@ -483,7 +486,7 @@ class Model.Module extends Helper.Mixable
 					"module.load.:#{module_id}",
 					"Succesfully loaded #{module.name}",
 					[ 'load' ],
-					Model.Module.Success
+					Model.Module.Notification.Success
 				)	
 				
 			# Fail
@@ -499,7 +502,7 @@ class Model.Module extends Helper.Mixable
 						module_id,
 						cell
 					],
-					Model.Module.Error
+					Model.Module.Notification.Error
 				)	
 			)
 			
