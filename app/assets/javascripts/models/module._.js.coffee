@@ -198,11 +198,27 @@ class Model.Module extends Helper.Mixable
 		@_trigger( 'module.after.step', @, [ t, substrates, mu, results ] )
 		return results
 		
-	# Test function to override by submodules
+	# Test if compounds are available. Automatically maps keys to actual properties.
 	#
 	# @param compounds [Object] the available subs
+	# @param keys... [String] comma delimited list of keys that should be mapped to tests
+	# @return [Boolean] true if all are available
 	#
-	test: ( compounds ) ->
+	test: ( compounds, keys... ) ->
+		
+		tests = _( _( keys ).flatten() ).map( ( t ) => @[ t ] )
+		unless @_test( compounds, tests )
+			missing = _( _( tests ).flatten()  ).difference( _( compounds ).keys() )
+			
+			@_notificate( 
+				@, @, 
+				"module.test.#{ @name }",
+				"I need #{ missing }. #{ message ? '' }",
+				[ missing ],
+				Model.Module.Notification.Error
+			)
+			return false
+	
 		return true
 		
 	# Tests if substrates are available
@@ -216,16 +232,6 @@ class Model.Module extends Helper.Mixable
 		result = not _( _( tests ).flatten() ).some( 
 			( test ) -> return not ( compounds[ test ]? ) 
 		)
-		
-		unless result
-			missing = _( _( tests ).flatten() ).difference( _( compounds ).keys() )
-			@_notificate( 
-				@, @, 
-				"module.test.#{ @name }",
-				"I need #{ missing } in order to function correctly",
-				[ compounds, tests ],
-				Model.Module.Notification.Error
-			)	
 		
 		return result
 		
