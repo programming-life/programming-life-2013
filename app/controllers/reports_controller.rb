@@ -14,6 +14,8 @@ class ReportsController < ApplicationController
 	def show
 		@report = Report.find(params[:id])
 		@module_instances = @report.cell.module_instances
+		@isPDF = false
+		@controller = 'View.Report'
 
 		respond_to do |format|
 			format.html
@@ -26,6 +28,7 @@ class ReportsController < ApplicationController
 	def new
 		@report = Report.new
 		@report.build_cell
+		@p = params[:test]
 		
 		respond_to do |format|
 			format.html # new.html.erb
@@ -54,6 +57,7 @@ class ReportsController < ApplicationController
 		@report = Report.find(params[:id])
 		@module_instances = @report.cell.module_instances
 		@report_params = params[:report]
+		@isPDF = true
 
 		if ( @report_params[:format] == 'pdf' )
 			respond_to do |format|
