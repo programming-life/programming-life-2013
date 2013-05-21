@@ -158,7 +158,6 @@ class View.Pane extends View.RaphaelBase
 	# @param time [Integer] The time for the animation to take
 	#
 	extend: ( time = 500 ) ->
-		console.log("Extending")
 		switch @_side
 			when View.Pane.LEFT_SIDE
 				animation = {left: 0}
@@ -173,8 +172,6 @@ class View.Pane extends View.RaphaelBase
 	# @param time [Integer] The time for the animation to take
 	#
 	retract: ( time = 500 ) ->
-		console.log("Retracting")
-
 		switch @_side
 			when View.Pane.LEFT_SIDE
 				animation = {left: (@_container.width() ) * -1}

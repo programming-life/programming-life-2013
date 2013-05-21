@@ -67,11 +67,9 @@ class Model.UndoTree extends Model.Tree
 
 		# Behind the current node
 		if node._creation < @_current._creation
-			console.log("Behind")
 			undo = @_getReverseTrail( node )
 		# In front of current node
 		else if node._creation > @_current._creation
-			console.log("Forward")
 			todo = @_getForwardTrail( node, @_current )
 
 		@_current = node

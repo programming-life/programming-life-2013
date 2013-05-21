@@ -143,13 +143,11 @@ class View.Undo extends Helper.Mixable
 	# @param node [Model.Node] The node that was clicked
 	#
 	_onClick: ( node ) ->
-		console.log("Clicked", node._object._description)
 		nodes = @_tree.jump( node )
 		for undo in nodes.reverse
 			undo._object.undo()
 		for redo in nodes.forward
 			redo._object.redo()
-		console.log(nodes)
 		@draw()
 	
 	# Is called when the left button is clicked
