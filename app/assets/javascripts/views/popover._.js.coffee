@@ -57,6 +57,8 @@ class View.HTMLPopOver extends Helper.Mixable
 		@_elem.append @_createBody()
 		@_elem.append footer if footer?	
 		
+		@setPosition()
+		
 	# Create the popover header
 	#
 	# @param onclick [Function] the function to yield on click

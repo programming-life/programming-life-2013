@@ -14,7 +14,7 @@ class View.Notification extends View.HTMLPopOver
 		
 		super parent, model.constructor.name, 'notification', 'top'
 		
-		@_closable = on
+		@_visible = off
 		@_onNotificate( @, model, @display )
 	
 	# Displays a notification
@@ -41,16 +41,27 @@ class View.Notification extends View.HTMLPopOver
 		@_filter? @_messages[ identifier ]
 				
 		if _( @_messages ).some( (message) -> message.visible )
-			@_setSelected on
 			@draw()
-			@setPosition()
-		else
+			elem = $ @_elem 
+			unless @_visible is on
+				elem.hide() 
+				@show()
+		else if @_visible is on
 			@hide()
+	
+	#
+	#
+	show: () ->
+		elem = $ @_elem
+		elem.fadeIn('fast')
+		@_visible = on
 		
 	#
 	#
 	hide: () ->
-		@_setSelected off
+		elem = $ @_elem
+		elem.fadeOut('fast')
+		@_visible = off
 		@_messages = {}
 		
 	# Nullifies the header
@@ -80,6 +91,7 @@ class View.Notification extends View.HTMLPopOver
 	#
 	_createFooter: () ->
 		return [ undefined ]
+
 		
 	# Gets the alert class from a type
 	#
