@@ -16,6 +16,8 @@
 //= require json2
 //= require lodash
 //= require big.min
+//= require jquery.svg.js
+//= require jquery.svgdom.patched.js
 //
 //= require MVC
 //

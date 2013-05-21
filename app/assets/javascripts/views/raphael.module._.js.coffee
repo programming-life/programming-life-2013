@@ -94,6 +94,35 @@ class View.Module extends View.RaphaelBase
 		# (0.2126*R) + (0.7152*G) + (0.0722*B) << luminance
 		return "rgba(#{[r, g, b, a].join ','})"
 
+	# Sets wether or not the module is selected
+	#
+	# @param selected [Boolean] selection state
+	#
+	_setSelected: ( selected ) ->
+		if selected isnt @_selected
+			if selected
+				@_setHovered off
+				$(@_box.node).addClass('selected')
+			else
+				$(@_box.node).removeClass('selected')
+
+		@_selected = selected
+		return this
+
+	# Sets wether or not the module is hovered
+	#
+	# @param hovered [Boolean] hover state
+	#
+	_setHovered: ( hovered ) ->
+		if hovered isnt @_hovered 
+			if hovered and not @_selected
+				$(@_box.node).addClass('hovered')
+			else
+				$(@_box.node).removeClass('hovered')
+
+		@_hovered = hovered
+		return this
+
 	# Runs if module is invalidated
 	# 
 	# @param module [Model.Module] the module invalidated
@@ -103,33 +132,30 @@ class View.Module extends View.RaphaelBase
 		if module is @module
 			@redraw()
 
-	# Runs if module is selected
-	# 
-	# @param module [Model.Module] the module selected/deslected
-	# @param selected [Mixed] selected state
+	# Gets called when a module view selected.
 	#
-	onModuleSelected: ( module, selected ) =>
-		if module is @module
-			if selected isnt @_selected
-				@_selected = selected
-				@redraw()
-		else if selected is on and @_selected is on
-			@_selected = off
-			@redraw()
+	# @param module [Module] the module that is being selected
+	# @param selected [Boolean] the selection state of the module
+	#
+	onModuleSelected: ( module, selected ) ->
+		if module is @module 
+			if @_selected isnt selected
+				@_setSelected selected 
+		else if @_selected isnt off
+			@_setSelected off
 
-	# Runs if module is hovered
-	# 
-	# @param module [Model.Module] the module hovered/dehovered
-	# @param selected [Mixed] hovered state
+	# Gets called when a module view hovered.
 	#
-	onModuleHovered: ( module, hovered ) =>		
-		if module is @module
-			if hovered isnt @_hovered
-				@_hovered = hovered
-				@redraw()
-		else if hovered is on and @_hovered is on
-			@_hovered = off
-			@redraw()
+	# @param module [Module] the module that is being hovered
+	# @param selected [Boolean] the hover state of the module
+	#
+	onModuleHovered: ( module, hovered ) ->
+		if module is @module 
+			console.log 'yolo'
+			if @_hovered isnt hovered
+				@_setHovered hovered
+		else if @_hovered isnt off
+			@_setHovered off
 
 	# Runs if paper is resized
 	#
@@ -161,11 +187,18 @@ class View.Module extends View.RaphaelBase
 		@clear()
 		return this
 
+	# Returns the bounding box of this view
 	#
+	# @return [Object] a bounding box object with coordinates
 	#
 	getBBox: ( ) -> 
 		return @_box?.getBBox() ? { x:0, y:0, x2:0, y2:0, width:0, height:0 }
 
+	# Returns the coordinates of either the entrance or exit of this view
+	#
+	# @param location [View.Module.Location] the location (entrance or exit)
+	# @return [[float, float]] a tuple of the x and y coordinates
+	#
 	getPoint: ( location ) ->
 		box = @getBBox()
 
@@ -175,6 +208,11 @@ class View.Module extends View.RaphaelBase
 			when @Location.Exit
 				return [box.x2 ,@y]
 
+	# Returns the direction in which a spline should be drawn wrt a metabolite
+	#
+	# @param metabolitePlacement [Placement] the placement of the metabolite
+	# @return [View.Module.Direction] the direction of the spline
+	#
 	_getSplineDirection: ( metabolitePlacement ) ->
 		if @type is 'Transporter'
 			switch @module.direction
@@ -272,19 +310,17 @@ class View.Module extends View.RaphaelBase
 		# Draw hitbox
 		hitbox = @drawHitbox(@_box, scale)
 
-		unless @_selected
-			hitbox.click =>
-				_( @_trigger( 'module.set.selected', @module, [ on ]) ).debounce( 100 )
-				
-		if @_hovered
-			hitbox.mouseout =>			
-				_( @_trigger( 'module.set.hovered', @module, [ off ]) ).debounce( 100 )
-		else
-			hitbox.mouseover =>
-				_( @_trigger( 'module.set.hovered', @module, [ on ]) ).debounce( 100 )
+		hitbox.click =>
+			_( @_trigger( 'module.set.selected', @module, [ on ]) ).debounce( 100 )
+
+		hitbox.mouseout =>
+			_( @_trigger( 'module.set.hovered', @module, [ off ]) ).debounce( 100 )
+		
+		hitbox.mouseover =>
+			_( @_trigger( 'module.set.hovered', @module, [ on ]) ).debounce( 100 )
 
 		@_view = @_paper.setFinish()
-		@_view.push( contents )
+		@_view.push( contents )		
 
 		Model.EventManager.trigger( 'module.drawn', @module )
 
@@ -379,14 +415,10 @@ class View.Module extends View.RaphaelBase
 		rect = elem.getBBox()
 		padding = 15 * scale
 		box = @_paper.rect(rect.x - padding, rect.y - padding, rect.width + 2 * padding, rect.height + 2 * padding)
-		
-		classname = 'module-box'
-		classname += ' hovered' if @_hovered
-		classname += ' selected' if @_selected
-		box.node.setAttribute( 'class', classname )
-		box.attr
-			r: 10 * scale
 
+		$(box.node).addClass('module-box')
+		box.attr('r', 5)
+		
 		return box
 
 	# Draws a spline from between two points
