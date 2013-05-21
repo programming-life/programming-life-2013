@@ -94,6 +94,35 @@ class View.Module extends View.RaphaelBase
 		# (0.2126*R) + (0.7152*G) + (0.0722*B) << luminance
 		return "rgba(#{[r, g, b, a].join ','})"
 
+	# Sets wether or not the module is selected
+	#
+	# @param selected [Boolean] selection state
+	#
+	_setSelected: ( selected ) ->
+		if selected isnt @_selected
+			if selected
+				@_setHovered off
+				$(@_box.node).addClass('selected')
+			else
+				$(@_box.node).removeClass('selected')
+
+		@_selected = selected
+		return this
+
+	# Sets wether or not the module is hovered
+	#
+	# @param hovered [Boolean] hover state
+	#
+	_setHovered: ( hovered ) ->
+		if hovered isnt @_hovered 
+			if hovered and not @_selected
+				$(@_box.node).addClass('hovered')
+			else
+				$(@_box.node).removeClass('hovered')
+
+		@_hovered = hovered
+		return this
+
 	# Runs if module is invalidated
 	# 
 	# @param module [Model.Module] the module invalidated
@@ -103,33 +132,30 @@ class View.Module extends View.RaphaelBase
 		if module is @module
 			@redraw()
 
-	# Runs if module is selected
-	# 
-	# @param module [Model.Module] the module selected/deslected
-	# @param selected [Mixed] selected state
+	# Gets called when a module view selected.
 	#
-	onModuleSelected: ( module, selected ) =>
-		if module is @module
-			if selected isnt @_selected
-				@_selected = selected
-				@redraw()
-		else if selected is on and @_selected is on
-			@_selected = off
-			@redraw()
+	# @param module [Module] the module that is being selected
+	# @param selected [Boolean] the selection state of the module
+	#
+	onModuleSelected: ( module, selected ) ->
+		if module is @module 
+			if @_selected isnt selected
+				@_setSelected selected 
+		else if @_selected isnt off
+			@_setSelected off
 
-	# Runs if module is hovered
-	# 
-	# @param module [Model.Module] the module hovered/dehovered
-	# @param selected [Mixed] hovered state
+	# Gets called when a module view hovered.
 	#
-	onModuleHovered: ( module, hovered ) =>		
-		if module is @module
-			if hovered isnt @_hovered
-				@_hovered = hovered
-				@redraw()
-		else if hovered is on and @_hovered is on
-			@_hovered = off
-			@redraw()
+	# @param module [Module] the module that is being hovered
+	# @param selected [Boolean] the hover state of the module
+	#
+	onModuleHovered: ( module, hovered ) ->
+		if module is @module 
+			console.log 'yolo'
+			if @_hovered isnt hovered
+				@_setHovered hovered
+		else if @_hovered isnt off
+			@_setHovered off
 
 	# Runs if paper is resized
 	#
@@ -272,19 +298,17 @@ class View.Module extends View.RaphaelBase
 		# Draw hitbox
 		hitbox = @drawHitbox(@_box, scale)
 
-		unless @_selected
-			hitbox.click =>
-				_( @_trigger( 'module.set.selected', @module, [ on ]) ).debounce( 100 )
-				
-		if @_hovered
-			hitbox.mouseout =>			
-				_( @_trigger( 'module.set.hovered', @module, [ off ]) ).debounce( 100 )
-		else
-			hitbox.mouseover =>
-				_( @_trigger( 'module.set.hovered', @module, [ on ]) ).debounce( 100 )
+		hitbox.click =>
+			_( @_trigger( 'module.set.selected', @module, [ on ]) ).debounce( 100 )
+
+		hitbox.mouseout =>
+			_( @_trigger( 'module.set.hovered', @module, [ off ]) ).debounce( 100 )
+		
+		hitbox.mouseover =>
+			_( @_trigger( 'module.set.hovered', @module, [ on ]) ).debounce( 100 )
 
 		@_view = @_paper.setFinish()
-		@_view.push( contents )
+		@_view.push( contents )		
 
 		Model.EventManager.trigger( 'module.drawn', @module )
 
@@ -379,13 +403,16 @@ class View.Module extends View.RaphaelBase
 		rect = elem.getBBox()
 		padding = 15 * scale
 		box = @_paper.rect(rect.x - padding, rect.y - padding, rect.width + 2 * padding, rect.height + 2 * padding)
+
+		$(box.node).addClass('module-box')
+		box.attr('r', 5)
 		
-		classname = 'module-box'
-		classname += ' hovered' if @_hovered
-		classname += ' selected' if @_selected
-		box.node.setAttribute( 'class', classname )
-		box.attr
-			r: 10 * scale
+		#classname = 'module-box'
+		#classname += ' hovered' if @_hovered
+		#classname += ' selected' if @_selected
+		#box.node.setAttribute( 'class', classname )
+		#box.attr
+		#	r: 10 * scale
 
 		return box
 
