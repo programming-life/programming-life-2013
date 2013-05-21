@@ -15,6 +15,7 @@ class View.Report extends View.RaphaelBase
 		@_draw()
 		@load( cell_id )
 
+
 	# Draws the cell
 	#
 	_draw: () ->
@@ -38,4 +39,7 @@ class View.Report extends View.RaphaelBase
 				# Serialize the SVG and set it as hidden value in the form
 				cell_svg = (new XMLSerializer).serializeToString($('#paper')[0].children[0])
 				$('#report_data').attr("value", cell_svg)
+
+				# Start the simulation
+				document.mvc._views[0].startSimulation(25, 10, 1)
 			)

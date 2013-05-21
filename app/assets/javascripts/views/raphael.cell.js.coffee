@@ -467,9 +467,6 @@ class View.Cell extends View.RaphaelBase
 		
 		@_running = off
 		@_redrawGraphs()
-		if @cell.isLocal
-			$('#generate')[0].disabled = false;
-
 		@_trigger("simulation.stop",@, [ @_cell ])
 		return this
 
