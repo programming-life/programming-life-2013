@@ -65,7 +65,7 @@ class View.Notification extends View.HTMLPopOver
 	_createBody: () ->
 		body = super
 		
-		if _( @_messages ).some( (message) -> message.closable )
+		if _( @_messages ).all( (message) -> !message.visible or message.closable )
 			@_closeButton = $('<button class="close">&times;</button>')
 			@_closeButton.on( 'click', _( @hide ).bind @ )
 			body.append @_closeButton

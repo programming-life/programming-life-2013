@@ -21,7 +21,7 @@ class View.ModuleNotification extends View.Notification
 		@_bind( 'cell.add.metabolite', @, ( cell ) => @hide() if cell is @_cell )
 		@_bind( 'cell.before.run', @, ( cell ) => @hide() if cell is @_cell )
 		
-	#
+	# Filters incoming messages
 	#
 	_filter: ( message ) ->
 
