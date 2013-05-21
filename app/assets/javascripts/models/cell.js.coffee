@@ -607,14 +607,26 @@ class Model.Cell extends Helper.Mixable
 	
 		@_notificate( @, @, 
 			'cell.save',
-			"Saving this cell..."
+			"Saving this cell...",
+			[],
 			Model.Cell.Info
 		)	
 			
 		if @isLocal()
-			return @_create()
-
-		return @_update()
+			promise = @_create()
+		else 
+			promise = @_update()
+		
+		promise.done( ( data ) => 
+			@_notificate( @, @, 
+				'cell.save',
+				"Successfully saved the cell",
+				[]
+				Model.Cell.Success
+			)	
+		)
+		
+		return promise
 		
 	# Gets the data to save for this cell
 	#
@@ -657,14 +669,6 @@ class Model.Cell extends Helper.Mixable
 					Model.Cell.Error
 				)	
 			)
-			
-		promise.done( ( data ) => 
-			@_notificate( @, @, 
-				'cell.save',
-				"Successfully saved the cell"
-				Model.Cell.Success
-			)	
-		)
 
 		return promise
 		
