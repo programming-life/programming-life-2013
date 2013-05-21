@@ -113,7 +113,7 @@ class View.Module extends View.RaphaelBase
 			if selected isnt @_selected
 				@_selected = selected
 				@redraw()
-		else if selected isnt off
+		else if selected is on and @_selected is on
 			@_selected = off
 			@redraw()
 
@@ -127,7 +127,7 @@ class View.Module extends View.RaphaelBase
 			if hovered isnt @_hovered
 				@_hovered = hovered
 				@redraw()
-		else if hovered isnt off
+		else if hovered is on and @_hovered is on
 			@_hovered = off
 			@redraw()
 

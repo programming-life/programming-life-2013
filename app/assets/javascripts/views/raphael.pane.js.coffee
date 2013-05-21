@@ -16,7 +16,7 @@ class View.Pane extends View.RaphaelBase
 		paper = @_addPaper()
 		super(paper, withPaper)
 
-		@_extended = on
+		@_extended = off
 		@_buttonWidth = 40
 
 		@_containerOptions = {
@@ -37,7 +37,6 @@ class View.Pane extends View.RaphaelBase
 			@_height = $( window ).height()
 			@_paper.setSize( @_width, @_height )
 			super()
-			#@_paper.setViewBox( x, y, @_width, @_height, scaleGraphics)
 		else
 			@draw()
 	
@@ -50,6 +49,7 @@ class View.Pane extends View.RaphaelBase
 	# Draw the view
 	#
 	# @param side [String] The side the pane needs to be on
+	#
 	draw: ( side = @_side ) ->
 		@clear()
 		[ container ] = @_getXY()
@@ -57,6 +57,11 @@ class View.Pane extends View.RaphaelBase
 		@_button = @_drawButton()
 		@_container = @_addContainerNode()
 
+		if @_extended
+			@extend(0)
+		else
+			@retract(0)
+	
 		if @_withPaper
 			@_paper = @_addPaper()
 			@_contents.push @_drawContainer(container.x, container.y)
@@ -69,11 +74,6 @@ class View.Pane extends View.RaphaelBase
 			else
 				view.draw(@_container)
 
-		if @_extended
-			@extend(0)
-		else
-			@retract(0)
-	
 	# Get the x and y for this view based on the side
 	#
 	# @param side [String] The side to base the coordinates on
@@ -174,7 +174,7 @@ class View.Pane extends View.RaphaelBase
 	# @param time [Integer] The time for the animation to take
 	#
 	retract: ( time = 500 ) ->
-		if @_extended?
+		if @_extended
 			console.log("Retracting")
 
 			switch @_side

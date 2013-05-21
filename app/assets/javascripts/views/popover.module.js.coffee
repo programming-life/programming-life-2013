@@ -55,6 +55,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 		enumSection = $('<div></div>')		
 
 		properties = @module.metadata.properties
+		properties.parameters.sort()
 
 		for key in properties.parameters ? []
 			value = @module[key]
