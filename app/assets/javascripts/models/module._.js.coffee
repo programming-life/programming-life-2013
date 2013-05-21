@@ -198,6 +198,11 @@ class Model.Module extends Helper.Mixable
 		@_trigger( 'module.after.step', @, [ t, substrates, mu, results ] )
 		return results
 		
+	_listify: ( items, bind = 'and', nothing = 'nothing' ) ->
+		return nothing if items.length is 0
+		return items[0] if items.length is 1
+		return ( _( items ).without ( last = _( items ).last() ) ).join(', ') + " #{bind} #{last}"
+		
 	# Test if compounds are available. Automatically maps keys to actual properties.
 	#
 	# @param compounds [Object] the available subs
@@ -209,11 +214,10 @@ class Model.Module extends Helper.Mixable
 		tests = _( _( keys ).flatten() ).map( ( t ) => @[ t ] )
 		unless @_test( compounds, tests )
 			missing = _( _( tests ).flatten()  ).difference( _( compounds ).keys() )
-			
 			@_notificate( 
 				@, @, 
 				"module.test.#{ @name }",
-				"I need #{ missing }. #{ message ? '' }",
+				"I need #{ @_listify missing } #{ message ? '' }",
 				[ missing ],
 				Model.Module.Notification.Error
 			)
