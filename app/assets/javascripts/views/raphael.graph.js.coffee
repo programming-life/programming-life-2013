@@ -18,12 +18,13 @@ class View.Graph extends View.RaphaelBase
 	constructor: ( paper, @_title, @_parent) ->
 		@_id = new Date().getMilliseconds()
 		@_container = $('<div id="graph-'+ @_id + '" class="graph-container"></div>')
-		console.log(@_parent._container[0])
 		@_parent._container.append( @_container )
+
 		@_width = 300
 		@_height = 175
 		@clear()
-		@_paper = Raphael("graph-"+@_id, @_width, @_height)
+
+		@_paper = Raphael("graph-"+@_id, @_width, @_height + 20)
 		super(@_paper)
 
 		@_text = @_drawTitle()
@@ -94,11 +95,11 @@ class View.Graph extends View.RaphaelBase
 			@_drawn = off
 			@_chart = @_paper.linechart(0,0, (i + 1) * @_width, @_height ,xValues, yValues, @_options )
 
-		unless @_drawn
-			@_chart.hoverColumn ( event ) =>
-				unless @_parent._running
-					@_parent._drawRedLines( event.x - @_paper.canvas.offsetLeft )
-		@_drawn = on
+	#	unless @_drawn
+	#		@_chart.hoverColumn ( event ) =>
+	#			unless @_parent._running
+	#				@_parent._drawRedLines( event.x - @_paper.canvas.offsetLeft )
+	#	@_drawn = on
 	
 	# Move the viewbox of the chart
 	#
@@ -114,47 +115,18 @@ class View.Graph extends View.RaphaelBase
 	play: ( x = ( _(@_datasets).last().length - 1) * @_width, time = 500 ) ->
 		@_paper.animateViewBox(x, 0, @_width, @_height, time)
 
-	# Draws the sliders
-	#
-	# @param length [Integer] The number of steps the sliders needs to control
-	_drawSliders: ( length ) ->
-		hSlider = $('<input type="text" class="slider" data-slider-min="0" data-slider-max="' + @_width * length + '" data-slider-step="1" data-slider-value="0" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="hide">').slider().on(
-			"slide", (event) =>
-				@_onHorizontalSlide(event)
-			)
-		return [hSlider]
-		
 	# Draws the title
 	#
 	# @param x [Integer] the x position
 	# @param y [Integer] the y position
 	# @param scale [Float] the scale
-	# @return [Raphael] the text object
+	# @return [JQuery] the text object
 	#
 	_drawTitle: ( x, y, scale ) ->
 		h2 = $('<h2>'+ @_title + '</h2>')
 		@_container.prepend( h2 )
 
 		return h2
-	
-	# Draws the gridlines
-	#
-	# @param x [Integer] the x position
-	# @param width [Integer] the width
-	# @return [Raphael] the lines object
-	#
-	_drawGridLines: ( x, width ) ->
-	
-		lines = @_paper.set()
-		for i in [ 0..@_chart.axis[1].text.items.length - 1 ]
-			lines.push( @_paper
-				.path( [ 'M', x, @_chart.axis[1].text.items[i].attrs.y, 'H', width + x ] )
-				.attr
-					stroke : '#EEE'
-				.toBack()
-			)
-				
-		return lines
 	
 	# Draws a red line over the chart
 	#

@@ -99,8 +99,6 @@ class View.Cell extends View.RaphaelBase
 		@_views.push new View.DummyModule( @_paper, @, @_cell, new Model.Protein() )
 		@_views.push new View.DummyModule( @_paper, @, @_cell, Model.Transporter.ext(), { direction: Model.Transporter.Outward } )
 			
-		#@_views.push new View.Tree( @_paper, @_cell._tree)
-		
 		@_views.push new View.Play( @_paper, @ )
 		
 	# Redraws the cell
@@ -307,17 +305,17 @@ class View.Cell extends View.RaphaelBase
 			xValues.push (val + ((iteration - 1) * duration))
 
 		for key, value of mapping
-			dataset = []
+			yValues = []
 
 			if @_interpolation
 				# Push all the values
 				for time in [ 0 .. duration ] by dt
-					dataset.push( interpolation[ time ][ value ] ) 
+					yValues.push( interpolation[ time ][ value ] ) 
 			else
 				for substance in results.y
-					dataset.push(substance[value])
+					yValues.push(substance[value])
 				
-			datasets[ key ] = [xValues,dataset]
+			datasets[ key ] = [xValues,yValues]
 
 		return { 
 			results: results
