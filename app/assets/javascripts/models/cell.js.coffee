@@ -129,7 +129,7 @@ class Model.Cell extends Helper.Mixable
 			return this
 		
 		action = 
-			@_createAction( "Added #{module.name}")
+			@_createAction( "Added a #{module.constructor.name}:#{module.name}")
 				.set( 
 					_( @_addModule ).bind( @, module ),
 					_( @_removeModule ).bind( @, module )
@@ -172,7 +172,7 @@ class Model.Cell extends Helper.Mixable
 		@_ensureMetaboliteAllocation( name )
 		
 		action = 
-			@_createAction( "Added metabolite #{name} with amount #{metabolite.amount}" )
+			@_createAction( "Added a #{metabolite.constructor.name}:#{metabolite.name} with amount #{metabolite.amount}" )
 				.set( 
 					_( @_addMetabolite ).bind( @, name, metabolite.placement, metabolite ),
 					_( @_removeMetabolite ).bind( @, name, metabolite.placement )

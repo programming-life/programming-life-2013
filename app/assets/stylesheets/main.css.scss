@@ -175,28 +175,40 @@ body {
 		width: 40px;
 		height: 100%
 	}
-}
-.pane-left {
-	top: 0;
-	left: 0;
-	padding-right: 40px;
-
-	.pane-button {
-		position: absolute;
-		right: 0;
-	}
-}
-
-.pane-right {
-	top: 0;
-	right: 0;
-	padding-left: 40px;
-
-	.pane-button {
-		position: absolute;
+	&.pane-left {
+		top: 0;
 		left: 0;
+		padding-right: 40px;
+	
+		.pane-button {
+			position: absolute;
+			right: 0;
+		}
+	}
+	&.pane-right {
+		top: 0;
+		right: 0;
+		padding-left: 40px;
+	
+		.pane-button {
+			position: absolute;
+			left: 0;
+		}
 	}
 }
+
+@media (max-width: 980px) and (min-width: 770px) {
+	.pane .pane-container {
+		width: 200px;
+	}
+}
+
+@media (max-width: 769px) and (min-width: 481px) {
+	.pane .pane-container {
+		width: 100px;
+	}
+}
+
 
 .undo {
 	padding: 10px;
