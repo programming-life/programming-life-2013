@@ -22,7 +22,7 @@ class View.Graph extends View.RaphaelBase
 		@_height = 175
 		@clear()
 
-		@_paper = Raphael("graph-"+@_id, @_width, @_height + 20)
+		@_paper = Raphael("graph-"+@_id, @_width + 20, @_height + 20)
 		super(@_paper)
 
 		@_text = @_drawTitle()
@@ -99,7 +99,7 @@ class View.Graph extends View.RaphaelBase
 
 			@_chart?.remove()
 			@_drawn = off
-			@_chart = @_paper.linechart(0,0, (i + 1) * @_width, @_height ,xValues, yValues, @_options )
+			@_chart = @_paper.linechart(20,0, (i + 1) * @_width, @_height ,xValues, yValues, @_options )
 
 	#	unless @_drawn
 	#		@_chart.hoverColumn ( event ) =>
