@@ -104,6 +104,12 @@ class View.Cell extends View.RaphaelBase
 			
 		@_views.push new View.Play( @_paper, @ )
 
+	# Resize cell
+	#
+	resize: ( scale ) ->
+		super scale
+		@_notificationsView.draw()
+		
 	# Redraws the cell
 	# 		
 	redraw: () ->
@@ -458,9 +464,8 @@ class View.Cell extends View.RaphaelBase
 		# @param results [any*] arguments to pass
 		simulation = ( step, args ) => 
 		
-			if @_running
-				results = step( args )
-				_.defer( simulation, step, results )
+			results = step( args ) if @_running
+			_.defer( simulation, step, results ) if @_running
 			
 		# At the end of the call stack, start the simulation loop
 		_.defer( simulation, step, [] )

@@ -162,6 +162,7 @@ class View.Module extends View.RaphaelBase
 	onPaperResize: ( ) =>
 		if @_selected
 			@redraw()
+		@_notificationsView.draw()
 
 
 	# Clears the module view
