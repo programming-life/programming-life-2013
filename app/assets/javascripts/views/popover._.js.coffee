@@ -34,7 +34,7 @@ class View.HTMLPopOver extends Helper.Mixable
 	# Kills the popover
 	#
 	kill: () ->
-		@elem?.remove()
+		@_elem?.remove()
 		@_unbindAll()
 		return this
 		
