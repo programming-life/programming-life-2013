@@ -10,8 +10,13 @@ describe( "Module Substrate", function() {
 		it( "should have no name", function() {
 			expect( module.name ).toBe( "undefined#ext" );
 		});
+		
+		it( "should be able to set the name", function() {
+			module.name = 'magix'
+			expect( module.name ).toBe( "magix#ext" );
+		});
 
-		it( "should be inside the cell", function() {
+		it( "should be outside the cell", function() {
 			expect( module.placement ).toBe( Model.Metabolite.Outside );
 		});
 		
@@ -29,6 +34,10 @@ describe( "Module Substrate", function() {
 			serialized = module.serialize( true )
 			expect( serialized ).toBeDefined();
 			expect( serialized.length ).toBeGreaterThan( 2 )
+		});
+		
+		it( "should have supply of 1", function() {
+			expect( module.supply ).toBe( 1 );
 		});
 		
 		describe("and when serialized", function() {
@@ -53,7 +62,7 @@ describe( "Module Substrate", function() {
 					expect( module.name ).toBe( "undefined#ext" );
 				});
 
-				it( "should be inside the cell", function() {
+				it( "should be outside the cell", function() {
 					expect( module.placement ).toBe( Model.Metabolite.Outside );
 				});
 				
@@ -182,6 +191,290 @@ describe( "Module Substrate", function() {
 
 			it( "should have the correct type", function(){
 				expect( module.type ).toBe( Model.Metabolite.Substrate );
+			});
+		});
+	});
+	
+	describe( "when using external substrate constructor", function() {
+
+		describe( "with default values", function() {
+			var module;
+			beforeEach( function() {
+				module = Model.Metabolite.sext();
+			});
+
+			it( "should have name s", function() {
+				expect( module.name ).toBe( "s#ext" );
+			});
+			
+			it( "should be able to set the name", function() {
+				module.name = 'magix'
+				expect( module.name ).toBe( "magix#ext" );
+			});
+
+			it( "should be inside the cell", function() {
+				expect( module.placement ).toBe( Model.Metabolite.Outside );
+			});
+			
+			it( "should be a substrate", function() {
+				expect( module.type ).toBe( Model.Metabolite.Substrate );
+			});
+			
+			it( "should have supply of 1", function() {
+				expect( module.supply ).toBe( 1 );
+			});
+			
+			it( "should have amount of 1", function() {
+				expect( module.amount ).toBe( 1 );
+			});
+		});
+		
+		describe( "with custom values", function() {
+			var module;
+			beforeEach( function() {
+				module = Model.Metabolite.sext( { foo: 'foo' }, 5, 7, 'bar' );
+			});
+
+			it( "should have the name", function() {
+				expect( module.name ).toBe( "bar#ext" );
+			});
+			
+			it( "should be able to set the name", function() {
+				module.name = 'magix'
+				expect( module.name ).toBe( "magix#ext" );
+			});
+
+			it( "should be outside the cell", function() {
+				expect( module.placement ).toBe( Model.Metabolite.Outside );
+			});
+			
+			it( "should be a substrate", function() {
+				expect( module.type ).toBe( Model.Metabolite.Substrate );
+			});
+			
+			it( "should have supply given", function() {
+				expect( module.supply ).toBe( 5 );
+			});
+			
+			it( "should have amount given", function() {
+				expect( module.amount ).toBe( 7 );
+			});
+			
+			it( "should have the custom params", function() {
+				expect( module.foo ).toBe( "foo" );
+			});
+		});
+	});
+	
+	describe( "when using internal substrate constructor", function() {
+
+		describe( "with default values", function() {
+			var module;
+			beforeEach( function() {
+				module = Model.Metabolite.sint();
+			});
+
+			it( "should have name s", function() {
+				expect( module.name ).toBe( "s#int" );
+			});
+			
+			it( "should be able to set the name", function() {
+				module.name = 'magix'
+				expect( module.name ).toBe( "magix#int" );
+			});
+
+			it( "should be inside the cell", function() {
+				expect( module.placement ).toBe( Model.Metabolite.Inside );
+			});
+			
+			it( "should be a substrate", function() {
+				expect( module.type ).toBe( Model.Metabolite.Substrate );
+			});
+			
+			it( "should have supply of 0", function() {
+				expect( module.supply ).toBe( 0 );
+			});
+			
+			it( "should have amount of 0", function() {
+				expect( module.amount ).toBe( 0 );
+			});
+		});
+		
+		describe( "with custom values", function() {
+			var module;
+			beforeEach( function() {
+				module = Model.Metabolite.sint( { foo: 'foo' }, 7, 'bar' );
+			});
+			
+			it( "should have the name", function() {
+				expect( module.name ).toBe( "bar#int" );
+			});
+			
+			it( "should be able to set the name", function() {
+				module.name = 'magix'
+				expect( module.name ).toBe( "magix#int" );
+			});
+
+			it( "should be inside the cell", function() {
+				expect( module.placement ).toBe( Model.Metabolite.Inside );
+			});
+			
+			it( "should be a substrate", function() {
+				expect( module.type ).toBe( Model.Metabolite.Substrate );
+			});
+			
+			it( "should have supply 0", function() {
+				expect( module.supply ).toBe( 0 );
+			});
+			
+			it( "should have amount given", function() {
+				expect( module.amount ).toBe( 7 );
+			});
+			
+			it( "should have the custom params", function() {
+				expect( module.foo ).toBe( "foo" );
+			});
+		});
+	});
+	
+	describe( "when using internal product constructor", function() {
+
+		describe( "with default values", function() {
+			var module;
+			beforeEach( function() {
+				module = Model.Metabolite.pint();
+			});
+
+			it( "should have name p", function() {
+				expect( module.name ).toBe( "p#int" );
+			});
+			
+			it( "should be able to set the name", function() {
+				module.name = 'magix'
+				expect( module.name ).toBe( "magix#int" );
+			});
+
+			it( "should be inside the cell", function() {
+				expect( module.placement ).toBe( Model.Metabolite.Inside );
+			});
+			
+			it( "should be a product", function() {
+				expect( module.type ).toBe( Model.Metabolite.Product );
+			});
+			
+			it( "should have supply of 0", function() {
+				expect( module.supply ).toBe( 0 );
+			});
+			
+			it( "should have amount of 0", function() {
+				expect( module.amount ).toBe( 0 );
+			});
+		});
+		
+		describe( "with custom values", function() {
+			var module;
+			beforeEach( function() {
+				module = Model.Metabolite.pint( { foo: 'foo' }, 7, 'bar' );
+			});
+			
+			it( "should have the name", function() {
+				expect( module.name ).toBe( "bar#int" );
+			});
+			
+			it( "should be able to set the name", function() {
+				module.name = 'magix'
+				expect( module.name ).toBe( "magix#int" );
+			});
+
+			it( "should be inside the cell", function() {
+				expect( module.placement ).toBe( Model.Metabolite.Inside );
+			});
+			
+			it( "should be a product", function() {
+				expect( module.type ).toBe( Model.Metabolite.Product );
+			});
+			
+			it( "should have supply 0", function() {
+				expect( module.supply ).toBe( 0 );
+			});
+			
+			it( "should have amount given", function() {
+				expect( module.amount ).toBe( 7 );
+			});
+			
+			it( "should have the custom params", function() {
+				expect( module.foo ).toBe( "foo" );
+			});
+		});
+	});
+	
+	describe( "when using external product constructor", function() {
+
+		describe( "with default values", function() {
+			var module;
+			beforeEach( function() {
+				module = Model.Metabolite.pext();
+			});
+
+			it( "should have name p", function() {
+				expect( module.name ).toBe( "p#ext" );
+			});
+			
+			it( "should be able to set the name", function() {
+				module.name = 'magix'
+				expect( module.name ).toBe( "magix#ext" );
+			});
+
+			it( "should be outside the cell", function() {
+				expect( module.placement ).toBe( Model.Metabolite.Outside );
+			});
+			
+			it( "should be a product", function() {
+				expect( module.type ).toBe( Model.Metabolite.Product );
+			});
+			
+			it( "should have supply of 0", function() {
+				expect( module.supply ).toBe( 0 );
+			});
+			
+			it( "should have amount of 0", function() {
+				expect( module.amount ).toBe( 0 );
+			});
+		});
+		
+		describe( "with custom values", function() {
+			var module;
+			beforeEach( function() {
+				module = Model.Metabolite.pext( { foo: 'foo' }, 7, 'bar' );
+			});
+			
+			it( "should have name bar", function() {
+				expect( module.name ).toBe( "bar#ext" );
+			});
+			
+			it( "should be able to set the name", function() {
+				module.name = 'magix'
+				expect( module.name ).toBe( "magix#ext" );
+			});
+
+			it( "should be outside the cell", function() {
+				expect( module.placement ).toBe( Model.Metabolite.Outside );
+			});
+			
+			it( "should be a product", function() {
+				expect( module.type ).toBe( Model.Metabolite.Product );
+			});
+			
+			it( "should have supply 0", function() {
+				expect( module.supply ).toBe( 0 );
+			});
+			
+			it( "should have amount given", function() {
+				expect( module.amount ).toBe( 7 );
+			});
+			
+			it( "should have the custom params", function() {
+				expect( module.foo ).toBe( "foo" );
 			});
 		});
 	});

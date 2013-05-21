@@ -113,12 +113,11 @@ class Model.CellGrowth extends Model.Module
 	#
 	_getParameterMetaData: () ->
 		return {
+		
 			properties:
 				metabolites: [ 'metabolites' ]
 				compounds: [ 'infrastructure' ]
+				
+			tests:
+				compounds: [ 'name', 'metabolites', 'infrastructure' ]
 		}
-
-# Makes this available globally.
-(exports ? this).Model.CellGrowth = Model.CellGrowth
-
-			

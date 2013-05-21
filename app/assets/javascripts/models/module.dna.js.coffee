@@ -106,9 +106,12 @@ class Model.DNA extends Model.Module
 	#
 	_getParameterMetaData: () ->
 		return {
+		
 			properties:
 				metabolites: [ 'consume' ]
 				parameters: [ 'k' ]
-		}
+				
+			tests:
+				compounds: [ 'name', 'consume' ]
 
-(exports ? this).Model.DNA = Model.DNA
+		}

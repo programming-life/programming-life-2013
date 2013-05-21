@@ -29,6 +29,8 @@ class Model.Cell extends Helper.Mixable
 		
 		@_allowEventBindings()
 		@_allowTimeMachine()
+		action = @_createAction( "Created cell" )
+		@_tree.setRoot( new Model.Node(action, null) )
 		
 		@_defineProperties( paramscell )
 		
@@ -37,8 +39,6 @@ class Model.Cell extends Helper.Mixable
 		@add new Model.CellGrowth( params, start )
 		
 	# Defines All the properties
-	#
-	# @see {DynamicProperties} for function calls
 	#
 	# @return [self] chainable self
 	#
@@ -60,7 +60,6 @@ class Model.Cell extends Helper.Mixable
 		
 	# Defines the value properties
 	#
-	# @see {DynamicProperties} for function calls
 	# @return [self] chainable self
 	#
 	_defineValues: () ->
@@ -72,7 +71,6 @@ class Model.Cell extends Helper.Mixable
 		
 	# Defines the getters
 	#
-	# @see {DynamicProperties} for function calls
 	# @return [self] chainable self
 	#
 	_defineGetters: () ->
@@ -424,11 +422,12 @@ class Model.Cell extends Helper.Mixable
 	# 
 	# @return [Array] {Model.Module modules}, variables, values
 	#
-	_getModulesAndCompounds: () ->
+	_getModulesAndCompounds: ( exclude = [] ) ->
 	
-		modules = @_getModules()
+		modules = _( @_getModules() ).difference exclude
 		values = []
 		variables = []
+		
 		for module in modules
 			for metabolite, value of module.starts
 				names = module[ metabolite ]
@@ -457,11 +456,12 @@ class Model.Cell extends Helper.Mixable
 		if base_values.length > 0
 			@_notificate( @, @, 
 				'cell.run.basevalues'
-				'Compounds have been added or removed since the last run, so I can not continue the calculation.',
+				'The number of compounds has changed. Restarting the calculations.',
 				[ 
 					values,
 					base_values
-				]
+				],
+				Model.Cell.Notification.Info
 			)
 			return [ values, off ]
 			
@@ -476,19 +476,26 @@ class Model.Cell extends Helper.Mixable
 	run : ( timespan, base_values = [] ) ->
 		
 		@_trigger( 'cell.before.run', @, [ timespan ] )
+								
+		exclude = []
+		while not ( finished ? off )
 		
-		substrates = { }
-						
-		# We would like to get all the variables in all the equations, so
-		# that's what we are going to do. Then we can insert the value indices
-		# into the equations.
-		[ modules, variables, values ] = @_getModulesAndCompounds()
-		[ values, continuation ] = @_tryUsingBaseValues( base_values, values )
-	
-		# Create the mapping from variable to value index
-		mapping = { }
-		for i, variable of variables
-			mapping[variable] = parseInt i
+			# We would like to get all the variables in all the equations, so
+			# that's what we are going to do. Then we can insert the value indices
+			# into the equations.
+			[ modules, variables, values ] = @_getModulesAndCompounds( exclude )
+			
+			# Create the mapping from variable to value index
+			mapping = { }
+			for i, variable of variables
+				mapping[variable] = parseInt i
+			
+			# Check modules
+			finished = on
+			for module in modules when module.metadata.tests? and module.metadata.tests.compounds?
+				if !module.test( mapping, module.metadata.tests.compounds )
+					exclude.push module
+					finished = off
 			
 		# The map function to map substrates
 		#
@@ -502,6 +509,7 @@ class Model.Cell extends Helper.Mixable
 			return variables
 
 		# Run the ODE from 0...timespan with starting values and step function
+		[ values, continuation ] = @_tryUsingBaseValues( base_values, values )
 		sol = numeric.dopri( 0, timespan, values, @_step( modules, mapping, map ) )
 		
 		@_trigger( 'cell.after.run', @, [ timespan, sol, mapping ] )
@@ -596,6 +604,12 @@ class Model.Cell extends Helper.Mixable
 	# @return [JQuery.Promise] promise
 	#
 	save: ( ) ->
+	
+		@_notificate( @, @, 
+			'cell.save',
+			"Saving this cell..."
+			Model.Cell.Info
+		)	
 			
 		if @isLocal()
 			return @_create()
@@ -647,8 +661,7 @@ class Model.Cell extends Helper.Mixable
 		promise.done( ( data ) => 
 			@_notificate( @, @, 
 				'cell.save',
-				"Successfully saved the cell #{ @name }",
-				[ 'create' ],
+				"Successfully saved the cell"
 				Model.Cell.Success
 			)	
 		)
@@ -765,6 +778,3 @@ class Model.Cell extends Helper.Mixable
 		)
 
 		return promise
-
-# Makes this available globally.
-(exports ? this).Model.Cell = Model.Cell

@@ -25,7 +25,7 @@ class View.Node extends View.RaphaelBase
 	# @param y [Integer] The y position
 	# @param scale [Integer] The scale
 	#
-	draw: ( x, y, scale ) ->
+	draw: ( x = @_x, y = @_y, scale = @_scale ) ->
 		@clear()
 		@_x = x
 		@_y = y
@@ -89,6 +89,8 @@ class View.Node extends View.RaphaelBase
 		else
 			id += "Cell creation"
 
+		console.log(@_paper)
+
 		@_text = @_paper.text(@_x, @_y, id)
 		@_text.attr
 			'font-size': 16 * @_scale
@@ -141,5 +143,3 @@ class View.Node extends View.RaphaelBase
 		})
 
 		return @_arrow
-
-(exports ? this).View.Node = View.Node

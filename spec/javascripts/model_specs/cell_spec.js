@@ -143,14 +143,11 @@ describe("Cell", function() {
 	});
   
 	describe("when a module has been added", function() {
-		var oldLength;
+		var old;
 		beforeEach(function() {
 			module = new Model.Module()
 
-			if (cell._tree._current._parent != null)
-				oldLength = cell._tree._current._parent._children.length;
-			else
-				oldLength = 0
+			old = cell._tree._current;
 
 			cell.add( module );
 		});
@@ -165,8 +162,7 @@ describe("Cell", function() {
 		});
 
 		it("should have added a node to the undotree", function() {
-			console.log( cell._tree )
-			expect( cell._tree._current._parent._children.length ).toBe( oldLength + 1 );
+			expect( cell._tree._current._parent ).toBe( old );
 		});
 
 	});

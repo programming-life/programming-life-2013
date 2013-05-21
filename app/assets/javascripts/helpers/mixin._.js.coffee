@@ -28,7 +28,7 @@ class Helper.Mixable
 				@::[ key ] = value
 
 			mixin.included?.apply( @ )
-		this
+		return this
 		
 	# Concerns automagically include and extend a class
 	#
@@ -40,6 +40,4 @@ class Helper.Mixable
 			@include concern.InstanceMethods
 			@extend concern.ClassMethods
 			
-		this
-		
-( exports ? this ).Helper.Mixable = Helper.Mixable
+		return this

@@ -1,6 +1,8 @@
 # Mixin for event enabled classes
 #
-EventBindings =
+# @mixin
+#
+Mixin.EventBindings =
 	 
 	ClassMethods: 
 	
@@ -92,7 +94,5 @@ EventBindings =
 		# @param args [Array<any>] the additional arguments
 		# @return [self] chainable self
 		#
-		_notificate: ( caller, source, identifier, message, args, type = EventBindings.ClassMethods.Notification.Info ) ->
+		_notificate: ( caller, source, identifier, message, args, type = Mixin.EventBindings.ClassMethods.Notification.Info ) ->
 			return @_trigger( 'notification', caller, [ source, identifier, type, message, args ] )
-			
-( exports ? this ).Mixin.EventBindings = EventBindings

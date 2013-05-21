@@ -7,8 +7,9 @@ class View.RaphaelBase extends Helper.Mixable
 	# Constructs a new Base view
 	# 
 	# @param paper [Object] The paper to draw on
-	constructor: ( @_paper = null ) ->
-		@_contents = @_paper?.set()
+	constructor: ( @_paper = null, @_withPaper = true ) ->
+		if @_withPaper
+			@_contents = @_paper?.set()
 		@_views = []
 
 		@_allowEventBindings()
@@ -16,7 +17,8 @@ class View.RaphaelBase extends Helper.Mixable
 	# Clear the contents of this view and it's children
 	# 
 	clear: ( ) ->
-		@_contents?.remove()
+		if @_withPaper
+			@_contents?.remove()
 
 		for view in @_views
 			view.clear()
@@ -32,7 +34,10 @@ class View.RaphaelBase extends Helper.Mixable
 
 		for view in @_views
 			placement = @_getViewPlacement( view )
-			@_contents.push view.draw( placement.x, placement.y, 1)
+			if @_withPaper
+				@_contents.push view.draw( placement.x, placement.y, 1)
+			else
+				view.draw()
 
 		return @_contents
 	
@@ -50,7 +55,10 @@ class View.RaphaelBase extends Helper.Mixable
 	addView: ( view ) ->
 		@_views.push( view )
 		placement = @_getViewPlacement( view )
-		@_contents.push view.draw( placement.x, placement.y, 1)
+		if (@_withPaper)
+			@_contents.push view.draw( placement.x, placement.y, 1)
+		else
+			view.draw()
 	
 	# Removes a view from the container
 	#
@@ -79,5 +87,3 @@ class View.RaphaelBase extends Helper.Mixable
 
 		for view in @_views
 			view.kill()
-
-(exports ? this).View.Base = View.Base
