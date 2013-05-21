@@ -224,3 +224,13 @@ body {
 		border: 2px solid #009ACD
 	}
 }
+#graphs {
+	height: 100%;
+}
+.graph-container {
+	width: 300px;
+	height: 200px;
+	margin: 20px;
+	display: inline;
+	float: left;
+}
