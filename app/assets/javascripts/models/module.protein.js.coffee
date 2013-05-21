@@ -121,9 +121,11 @@ class Model.Protein extends Model.Module
 	#
 	_getParameterMetaData: () ->
 		return {
+		
 			properties:
 				parameters: [ 'k', 'k_d' ]
 				metabolites: [ 'consume' ]
+				
+			tests:
+				compounds: [ 'dna', 'consume', 'name' ]
 		}
-
-(exports ? this).Model.Protein = Model.Protein

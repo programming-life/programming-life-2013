@@ -39,8 +39,6 @@ class Model.Cell extends Helper.Mixable
 		
 	# Defines All the properties
 	#
-	# @see {DynamicProperties} for function calls
-	#
 	# @return [self] chainable self
 	#
 	_defineProperties: ( params ) ->
@@ -61,7 +59,6 @@ class Model.Cell extends Helper.Mixable
 		
 	# Defines the value properties
 	#
-	# @see {DynamicProperties} for function calls
 	# @return [self] chainable self
 	#
 	_defineValues: () ->
@@ -73,7 +70,6 @@ class Model.Cell extends Helper.Mixable
 		
 	# Defines the getters
 	#
-	# @see {DynamicProperties} for function calls
 	# @return [self] chainable self
 	#
 	_defineGetters: () ->
@@ -425,11 +421,12 @@ class Model.Cell extends Helper.Mixable
 	# 
 	# @return [Array] {Model.Module modules}, variables, values
 	#
-	_getModulesAndCompounds: () ->
+	_getModulesAndCompounds: ( exclude = [] ) ->
 	
-		modules = @_getModules()
+		modules = _( @_getModules() ).difference exclude
 		values = []
 		variables = []
+		
 		for module in modules
 			for metabolite, value of module.starts
 				names = module[ metabolite ]
@@ -456,15 +453,14 @@ class Model.Cell extends Helper.Mixable
 			return [ base_values, on ]
 			
 		if base_values.length > 0
-			@_trigger( 'notification', @, 
+			@_notificate( @, @, 
+				'cell.run.basevalues'
+				'The number of compounds has changed. Restarting the calculations.',
 				[ 
-					'cell', 'run', 'cell:basevalues',
-					'Compounds have been added or removed since the last run, so I can not continue the calculation.',
-					[
-						values,
-						base_values
-					]
-				] 
+					values,
+					base_values
+				],
+				Model.Cell.Notification.Info
 			)
 			return [ values, off ]
 			
@@ -479,19 +475,26 @@ class Model.Cell extends Helper.Mixable
 	run : ( timespan, base_values = [] ) ->
 		
 		@_trigger( 'cell.before.run', @, [ timespan ] )
+								
+		exclude = []
+		while not ( finished ? off )
 		
-		substrates = { }
-						
-		# We would like to get all the variables in all the equations, so
-		# that's what we are going to do. Then we can insert the value indices
-		# into the equations.
-		[ modules, variables, values ] = @_getModulesAndCompounds()
-		[ values, continuation ] = @_tryUsingBaseValues( base_values, values )
-	
-		# Create the mapping from variable to value index
-		mapping = { }
-		for i, variable of variables
-			mapping[variable] = parseInt i
+			# We would like to get all the variables in all the equations, so
+			# that's what we are going to do. Then we can insert the value indices
+			# into the equations.
+			[ modules, variables, values ] = @_getModulesAndCompounds( exclude )
+			
+			# Create the mapping from variable to value index
+			mapping = { }
+			for i, variable of variables
+				mapping[variable] = parseInt i
+			
+			# Check modules
+			finished = on
+			for module in modules when module.metadata.tests? and module.metadata.tests.compounds?
+				if !module.test( mapping, module.metadata.tests.compounds )
+					exclude.push module
+					finished = off
 			
 		# The map function to map substrates
 		#
@@ -505,6 +508,7 @@ class Model.Cell extends Helper.Mixable
 			return variables
 
 		# Run the ODE from 0...timespan with starting values and step function
+		[ values, continuation ] = @_tryUsingBaseValues( base_values, values )
 		sol = numeric.dopri( 0, timespan, values, @_step( modules, mapping, map ) )
 		
 		@_trigger( 'cell.after.run', @, [ timespan, sol, mapping ] )
@@ -612,11 +616,12 @@ class Model.Cell extends Helper.Mixable
 	_getData: () ->
 	
 		save_data = @serialize( false )
-		return {
+		result = {
 			cell:
-				id: save_data.id unless @isLocal()
-				name: 'My Test Cell'	
+				name: 'My Test Cell'
 		}
+		result.cell.id = save_data.id unless @isLocal()
+		return result
 		
 	# Creates (new) this cell
 	# 
@@ -634,20 +639,27 @@ class Model.Cell extends Helper.Mixable
 			
 			# Fail
 			, ( data ) => 
-				@_trigger( 
-					'notification', @, 
+				@_notificate( @, @, 
+					'cell.save',
+					"I am trying to save the cell #{ @id } but an error occured: #{ data }",
 					[ 
-						'cell', 'save', 'cell.save',
-						"I am trying to save the cell #{ @id } but an error occured: #{ data }",
-						[ 
-							'create', 
-							data, 
-							module_instance_data 
-						] 
-					] 
+						'create', 
+						data, 
+						module_instance_data 
+					],
+					Model.Cell.Error
 				)	
 			)
-		
+			
+		promise.done( ( data ) => 
+			@_notificate( @, @, 
+				'cell.save',
+				"Successfully saved the cell #{ @name }",
+				[ 'create' ],
+				Model.Cell.Success
+			)	
+		)
+
 		return promise
 		
 	# Updates (existing) this cell
@@ -668,17 +680,14 @@ class Model.Cell extends Helper.Mixable
 			# Fail
 			( data ) => 
 			
-				@_trigger( 
-					'notification', @, 
+				@_notificate( @ , @, 'cell.save',
+					"I am trying to update the cell #{ @id } but an error occured: #{ data }",
 					[ 
-						'cell', 'save', 'cell.save',
-						"I am trying to update the cell #{ @id } but an error occured: #{ data }",
-						[ 
 							'update', 
 							data, 
-							cell_data 
-						] 
-					] 
+							cell_data  
+					],
+					Model.Cell.Success
 				)	
 			)
 		
@@ -740,21 +749,26 @@ class Model.Cell extends Helper.Mixable
 			# Fail
 			, ( data ) => 
 			
-				cell._trigger( 
-					'notification', cell, 
+				cell._notificate( @, cell, 
+					'cell.load',
+					"I am trying to load the cell #{ cell_id } but an error occured: #{ data }",
 					[ 
-						'cell', 'load', 'cell.load:#{cell_id}',
-						"I am trying to load the cell #{ cell_id } but an error occured: #{ data }",
-						[ 
-							'load', 
-							data, 
-							cell_id 
-						] 
-					] 
+						'load', 
+						data, 
+						cell_id 
+					],
+					Model.Cell.error
 				)	
 			)
+			
+		promise.done( ( data ) => 
+		
+			cell._notificate( @, cell, 
+				'cell.load',
+				"Successfully loaded the cell #{ cell.name }",
+				[ 'load' ],
+				Model.Cell.Success
+			)	
+		)
 
 		return promise
-
-# Makes this available globally.
-(exports ? this).Model.Cell = Model.Cell

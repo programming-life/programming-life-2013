@@ -62,7 +62,7 @@ class Model.Metabolite extends Model.Module
 		
 		super params, step, metadata
 		
-		@name = name
+		@_name = name?.split( '#' )[0]
 		@_dynamicProperties.push 'name'
 		
 	# Add the getters for this module
@@ -75,7 +75,7 @@ class Model.Metabolite extends Model.Module
 		Object.defineProperty( @ , "name",
 		
 			set: ( param ) ->
-			
+				console.log param
 				todo = _( ( value ) => @['_name'] = value ).bind( @, param?.split( '#' )[0] )
 				undo = _( ( value ) => @['_name'] = value ).bind( @, @[ '_name' ] )
 				
@@ -124,6 +124,7 @@ class Model.Metabolite extends Model.Module
 	#
 	_getParameterMetaData: () ->
 		return {
+		
 			properties:
 				parameters: [ 'supply' ]
 				enumerations: [ 
@@ -139,6 +140,9 @@ class Model.Metabolite extends Model.Module
 							Product: Model.Metabolite.Product
 					}
 				]
+				
+			tests:
+				compounds: [ 'name' ]
 		}
 		
 	# Constructor for External Substrates
@@ -188,5 +192,3 @@ class Model.Metabolite extends Model.Module
 	#
 	@pext: ( params = {}, start = 0, name = "p" ) -> 
 		return new Model.Metabolite( params, start, name,  Model.Metabolite.Outside, Metabolite.Product )
-
-(exports ? this).Model.Metabolite = Model.Metabolite

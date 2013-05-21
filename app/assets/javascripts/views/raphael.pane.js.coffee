@@ -1,6 +1,6 @@
 # View for extensible Pane
 #
-class View.Pane extends View.Base
+class View.Pane extends View.RaphaelBase
 	
 	@LEFT_SIDE : "left"
 	@RIGHT_SIDE : "right"
@@ -199,5 +199,3 @@ class View.Pane extends View.Base
 		x = 200
 		y = 200
 		return {x: x, y: y}
-
-(exports ? this).View.Pane = View.Pane

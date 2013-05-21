@@ -1,14 +1,12 @@
 # Class to generate graphs from a set of data points
 #
-class View.Graph extends View.Base
+class View.Graph extends View.RaphaelBase
 	
-	# @property [Integer] Maximum number of simultaneously displayed data sets
-	#
-	MAX_DATASETS : 2
+	# Maximum number of simultaneously displayed data sets
+	@MAX_DATASETS : 2
 	
-	# @property [Integer] Maximum length of a set
-	#
-	MAX_LENGTH : 100
+	# Maximum length of a set
+	@MAX_LENGTH : 100
 	
 	# Construct a new Graph object
 	#
@@ -192,5 +190,3 @@ class View.Graph extends View.Base
 			@_line.x = @_line.x + translation
 			@_line.translate( translation )
 			@_line.toFront()
-
-(exports ? this).View.Graph = View.Graph

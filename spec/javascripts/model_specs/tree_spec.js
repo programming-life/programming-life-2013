@@ -96,6 +96,13 @@ describe("Tree", function() {
 				}
 			});
 
+			it( "should be able to switch branches", function() {
+				oldBranch = nodes[1]._parent._branch
+				tree.switchBranch( nodes[1] )
+				expect( oldBranch ).not.toBe( nodes[1]._parent._branch );
+				expect( nodes[1]._parent._branch ).toBe( nodes[1] );
+			});
+
 		});
 
 		describe("when a node is added", function() {

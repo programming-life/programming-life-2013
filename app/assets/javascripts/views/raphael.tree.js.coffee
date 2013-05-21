@@ -1,6 +1,6 @@
 # View for UndoTree
 #
-class View.Tree extends View.Base
+class View.Tree extends View.RaphaelBase
 	
 	# Creates a new UndoTree view
 	# 
@@ -66,5 +66,3 @@ class View.Tree extends View.Base
 			width: 35
 			opacity: .125
 		@_shadow?.scale(.8, .8)
-
-(exports ? this).View.Tree = View.Tree

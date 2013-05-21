@@ -62,41 +62,48 @@ class Model.UndoTree extends Model.Tree
 	# @param [Model.Node] The node to jump to
 	# @return [Object] An object containing two arrays of the nodes, in order of steps from the current node to the node to jump to
 	jump: ( node ) ->
-		undo = @_getReverseTrail( node )
-		unless undo.length is 0 or _.last(undo)._parent is node
+		todo = []
+		undo = []
+
+
+		# Behind the current node
+		if node._creation < @_current._creation
+			console.log("Behind")
+			undo = @_getReverseTrail( node )
+		# In front of current node
+		else if node._creation > @_current._creation
+			console.log("Forward")
 			todo = @_getForwardTrail( node )
-		else
-			todo = []
 
 		@_current = node
 
-		res = [undo,todo]
-
 		return {reverse: undo, forward: todo}
-			
-	_getReverseTrail:( node ) ->
-		undo = []
-
+	
+	# Returns the path from the current node to the given node
+	#
+	# @param node [Model.Node] The node to get the path to
+	#
+	_getReverseTrail: ( node ) ->
+		undo = [@_current]
+		
 		back = @_current
-		until back._parent is null
-			if back is node
-				break
-			undo.push back
+		until back is node or back = @_root
 			back = back._parent
+			undo.push back
 		
 		return undo
-
-
-	_getForwardTrail:( node ) ->
-		todo = []
 		
-		forward = node
-		until forward is @_root
-			todo.unshift forward
-			forward = forward._parent
-		todo.unshift forward
-
+	# Returns the path from the base node to the given node, assuming it's on the current branch
+	#
+	# @param node [Model.Node] The node to get the path to
+	#
+	_getForwardTrail: ( node, base = @_root ) ->
+		todo = []
+		forward = base 
+		until forward is node or forward._branch is null
+			forward = forward._branch
+			todo.push forward
 		return todo
-			
-
-(exports ? this).Model.UndoTree = Model.UndoTree
+	
+		
+	

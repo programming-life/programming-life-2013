@@ -1,4 +1,9 @@
-class View.Node extends View.Base
+#
+#
+class View.Node extends View.RaphaelBase
+
+	#
+	#
 	constructor: ( node, paper, parent ) ->
 		super(paper)
 		@_node = node
@@ -138,5 +143,3 @@ class View.Node extends View.Base
 		})
 
 		return @_arrow
-
-(exports ? this).View.Node = View.Node

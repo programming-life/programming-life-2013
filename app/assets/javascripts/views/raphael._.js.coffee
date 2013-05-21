@@ -1,6 +1,6 @@
-# Base class for views
+# Base class for views that use Raphael
 # 
-class View.Base extends Helper.Mixable
+class View.RaphaelBase extends Helper.Mixable
 	
 	@concern Mixin.EventBindings
 
@@ -87,5 +87,3 @@ class View.Base extends Helper.Mixable
 
 		for view in @_views
 			view.kill()
-
-(exports ? this).View.Base = View.Base

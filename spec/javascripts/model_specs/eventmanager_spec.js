@@ -7,6 +7,8 @@ describe("Event Manager", function() {
 		var previousCount;
 		
 		beforeEach( function() {
+			Model.EventManager.clear();
+			
 			previousCount =  Model.EventManager.bindings( event ).length;
 			Model.EventManager.bind( event, this, method );
 		});
@@ -30,13 +32,15 @@ describe("Event Manager", function() {
 				expect( method ).toHaveBeenCalledWith( caller, arg )
 			});
 			
-			xit( "should have called it xxx", function() {
+			it( "should have called it xxx", function() {
 				expect( method.callCount - previousCount ).toBe( Model.EventManager.bindings( event ).length );
 			});
+			
 		});
 	
 		describe("and that event unbound", function() {
 	
+			var caller = { a: 1 };
 			var event = 'foo';
 			
 			beforeEach( function() {
@@ -82,7 +86,7 @@ describe("Event Manager", function() {
 					expect( Model.EventManager.bindings( eventb ) ).toBeDefined();
 					expect( previousCount - Model.EventManager.bindings( eventb ).length ).toBe( 1 );
 				});
-			
+				
 			});
 
 		});
@@ -94,6 +98,7 @@ describe("Event Manager", function() {
 		var method = function(){};
 		
 		beforeEach( function() {
+			Model.EventManager.clear();
 			spyOn( Model.EventManager.constructor.prototype, 'bind' );
 			Model.EventManager.on( event, this, method );
 		});
@@ -102,22 +107,22 @@ describe("Event Manager", function() {
 			expect( Model.EventManager.constructor.prototype.bind ).toHaveBeenCalledWith( event, this, method );
 			expect( Model.EventManager.constructor.prototype.bind.callCount ).toBe( 1 );
 		});
+	});
 		
-		describe( "and unbound through off", function() {
+	describe( "when event unbound through off", function() {
+			
+		var event = 'foo';
+		var method = function(){};
 		
-			var event = 'foo';
-			var method = function(){};
-			
-			beforeEach( function() {
-				spyOn( Model.EventManager.constructor.prototype, 'unbind' );
-				Model.EventManager.off( event, this, method );
-			});
-			
-			it( "should have unbound that event", function() {
-				expect( Model.EventManager.constructor.prototype.unbind ).toHaveBeenCalledWith( event, this, method );
-				expect( Model.EventManager.constructor.prototype.unbind.callCount ).toBe( 1 );
-			});
-			
+		beforeEach( function() {
+			Model.EventManager.clear();
+			spyOn( Model.EventManager.constructor.prototype, 'unbind' );
+			Model.EventManager.off( event, this, method );
 		});
+		
+		it( "should have unbound that event", function() {
+			expect( Model.EventManager.constructor.prototype.unbind ).toHaveBeenCalledWith( event, this, method );
+			expect( Model.EventManager.constructor.prototype.unbind.callCount ).toBe( 1 );
+		});		
 	});
 });

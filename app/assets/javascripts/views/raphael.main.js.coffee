@@ -1,7 +1,7 @@
 # The main view is the view used on the main page. It shows
 # A cell and allows interaction on this cell.
 #
-class View.Main extends View.Base
+class View.Main extends View.RaphaelBase
 
 	# Creates a new Main view
 	#
@@ -68,5 +68,3 @@ class View.Main extends View.Base
 		super()
 		@_paper.remove()
 		$( window ).unbind()
-
-(exports ? this).View.Main = View.Main

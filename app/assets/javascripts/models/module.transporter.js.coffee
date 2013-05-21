@@ -207,6 +207,7 @@ class Model.Transporter extends Model.Module
 	#
 	_getParameterMetaData: () ->
 		return {
+		
 			properties:
 				parameters: [ 'k', 'k_tr', 'k_m' ]
 				metabolites: [ 'consume' ]
@@ -223,6 +224,9 @@ class Model.Transporter extends Model.Module
 							Passive: Model.Transporter.Passive
 					}
 				]
+				
+			tests:
+				compounds: [ 'name', 'dna', 'consume', 'cell', 'orig', 'dest' ]
 		}
 	
 	# Validates that the type is set
@@ -289,5 +293,3 @@ class Model.Transporter extends Model.Module
 	#
 	@ext : ( params = { k_m: 0 }, start = 0, transported = "p", type = Model.Transporter.Passive, consume = "s#int" ) ->
 		return new Model.Transporter( params, start, "#{transported}", "transporter_#{transported}_out", Model.Transporter.Outward, type, consume )
-		
-(exports ? this).Model.Transporter = Model.Transporter
