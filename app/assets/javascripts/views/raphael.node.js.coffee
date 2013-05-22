@@ -17,7 +17,6 @@ class View.Node extends View.RaphaelBase
 	# Performs the desired action on click
 	#
 	onClick: ( ) ->
-		console.log("Clicked " + @_node._object)
 
 	# Draws the view and thus the model
 	#
@@ -88,8 +87,6 @@ class View.Node extends View.RaphaelBase
 			id += @_node._object._description
 		else
 			id += "Cell creation"
-
-		console.log(@_paper)
 
 		@_text = @_paper.text(@_x, @_y, id)
 		@_text.attr

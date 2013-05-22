@@ -14,6 +14,7 @@ class View.Notification extends View.HTMLPopOver
 		
 		super parent, model.constructor.name, 'notification', 'top'
 		
+		@_visible = off
 		@_onNotificate( @, model, @display )
 	
 	# Displays a notification
@@ -31,15 +32,36 @@ class View.Notification extends View.HTMLPopOver
 			source: source
 			message: message
 			type: type
+			identifier: identifier
+			args: args
+			visible: on
+			closable: on
 		}
 		
-		@_setSelected on
+		@_filter? @_messages[ identifier ]
+				
+		if _( @_messages ).some( (message) -> message.visible )
+			@draw()
+			elem = $ @_elem 
+			unless @_visible is on
+				elem.hide() 
+				@show()
+		else if @_visible is on
+			@hide()
+	
+	#
+	#
+	show: () ->
+		elem = $ @_elem
+		elem.fadeIn('fast')
+		@_visible = on
 		
-		@draw()
-		@setPosition()
-		
+	#
+	#
 	hide: () ->
-		@_setSelected off
+		elem = $ @_elem
+		elem.fadeOut('fast')
+		@_visible = off
 		@_messages = {}
 	
 	# Creates the body of the message
@@ -48,11 +70,13 @@ class View.Notification extends View.HTMLPopOver
 	#
 	_createBody: () ->
 		body = super
-		@_closeButton = $('<button class="close">&times;</button>')
-		@_closeButton.on( 'click', _( @hide ).bind @ )
 		
-		body.append @_closeButton
-		for identifier, message of @_messages
+		if _( @_messages ).all( (message) -> !message.visible or message.closable )
+			@_closeButton = $('<button class="close">&times;</button>')
+			@_closeButton.on( 'click', _( @hide ).bind @ )
+			body.append @_closeButton
+			
+		for identifier, message of @_messages when message.visible is on
 			classname = '' #View.Notification.getAlertClassFromType( message.type )
 			elem = $('<div class="' + classname + '">' + message.message + '</div>')
 			body.append( elem )

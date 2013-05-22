@@ -21,7 +21,6 @@ class View.Undo extends Helper.Mixable
 	kill: ( ) ->
 		@_parent?.remove()
 
-
 	# Clears this view
 	#
 	clear: ( ) ->
@@ -149,7 +148,6 @@ class View.Undo extends Helper.Mixable
 			undo._object.undo()
 		for redo in nodes.forward
 			redo._object.redo()
-		console.log(nodes)
 		@draw()
 	
 	# Is called when the left button is clicked

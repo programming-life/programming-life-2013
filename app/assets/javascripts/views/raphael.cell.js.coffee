@@ -4,7 +4,7 @@ class View.Cell extends View.RaphaelBase
 
 	@concern Mixin.EventBindings
 
-	MAX_RUNTIME: 100
+	@MAX_RUNTIME: 100
 
 	# Constructor for this view
 	# 
@@ -46,15 +46,18 @@ class View.Cell extends View.RaphaelBase
 				@_cell = value
 				for module in @_cell._modules
 					@_views.push new View.Module( @_paper, @, @_cell, module)
+					@_drawn.push module.id
 			
 				@_createButtons()
 				@_bind( 'cell.add.module', @, @onModuleAdd )
 				@_bind( 'cell.add.metabolite', @, @onModuleAdd )
 				@_bind( 'cell.remove.module', @, @onModuleRemove )
 				@_bind( 'cell.remove.metabolite', @, @onModuleRemove )
+	
+				@_notificationsView = new View.Notification( @, value )
 				
-				@_notificationsView = new View.Notification( @, @cell )
-				
+				@redraw() if @_x? and @_y? and @_scale?
+
 			configurable: false
 			enumerable: true
 		)
@@ -100,6 +103,12 @@ class View.Cell extends View.RaphaelBase
 		@_views.push new View.DummyModule( @_paper, @, @_cell, Model.Transporter.ext(), { direction: Model.Transporter.Outward } )
 			
 		@_views.push new View.Play( @_paper, @ )
+
+	# Resize cell
+	#
+	resize: ( scale ) ->
+		super scale
+		@_notificationsView.draw()
 		
 	# Redraws the cell
 	# 		
@@ -179,7 +188,7 @@ class View.Cell extends View.RaphaelBase
 	#
 	onModuleAdd: ( cell, module ) =>
 		unless cell isnt @_cell
-			unless _( @_drawn ).indexOf( module.id ) isnt -1
+			if _( @_drawn ).indexOf( module.id ) is -1
 				@_drawn.unshift module.id
 				@_views.unshift new View.Module( @_paper, @, @_cell, module )
 				@redraw()
@@ -455,9 +464,8 @@ class View.Cell extends View.RaphaelBase
 		# @param results [any*] arguments to pass
 		simulation = ( step, args ) => 
 		
-			if @_running
-				results = step( args )
-				_.defer( simulation, step, results )
+			results = step( args ) if @_running
+			_.defer( simulation, step, results ) if @_running
 			
 		# At the end of the call stack, start the simulation loop
 		_.defer( simulation, step, [] )
@@ -470,8 +478,8 @@ class View.Cell extends View.RaphaelBase
 		
 		@_running = off
 		@_redrawGraphs()
-		if @cell.isLocal
-			$('#generate')[0].disabled = false;
+		#if @cell.isLocal
+			#$('#generate')[0].disabled = false;
 
 		@_trigger("simulation.stop",@, [ @_cell ])
 		return this
