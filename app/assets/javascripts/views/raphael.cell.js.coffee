@@ -42,10 +42,10 @@ class View.Cell extends View.RaphaelBase
 				@kill()
 				
 				@_cell = value
-				for module in @_cell._modules
+				for module in @_cell._getModules()
 					@_views.push new View.Module( @_paper, @, @_cell, module, @_interaction )
 					@_drawn.push module.id
-			
+				
 				@_createButtons() if @_interaction
 				@_bind( 'cell.add.module', @, @onModuleAdd )
 				@_bind( 'cell.add.metabolite', @, @onModuleAdd )
@@ -87,11 +87,11 @@ class View.Cell extends View.RaphaelBase
 		@_views.push new View.DummyModule( @_paper, @, @_cell, Model.CellGrowth, 1 )
 		@_views.push new View.DummyModule( @_paper, @, @_cell, Model.DNA, 1 )
 		@_views.push new View.DummyModule( @_paper, @, @_cell, Model.Lipid, 1 )
-		@_views.push new View.DummyModule( @_paper, @, @_cell, Model.Metabolite, -1, { name: 's', inside_cell: false, is_product: false, amount: 1, supply: 1 } )
-		@_views.push new View.DummyModule( @_paper, @, @_cell, Model.Transporter, -1, { direction: Model.Transporter.Inward } )
+		@_views.push new View.DummyModule( @_paper, @, @_cell, Model.Metabolite, -1, { name: 's', placement: Model.Metabolite.Outside, type: Model.Metabolite.Substrate, amount: 1, supply: 1 } )
+		@_views.push new View.DummyModule( @_paper, @, @_cell, Model.Transporter, -1, { direction: Model.Transporter.Inward, transported: 's' } )
 		@_views.push new View.DummyModule( @_paper, @, @_cell, Model.Metabolism, -1 )
 		@_views.push new View.DummyModule( @_paper, @, @_cell, Model.Protein, -1 )
-		@_views.push new View.DummyModule( @_paper, @, @_cell, Model.Transporter, -1, { direction: Model.Transporter.Outward } )
+		@_views.push new View.DummyModule( @_paper, @, @_cell, Model.Transporter, -1, { direction: Model.Transporter.Outward, transported: 'p' } )
 			
 		@_views.push new View.Play( @_paper, @ )
 
@@ -113,8 +113,6 @@ class View.Cell extends View.RaphaelBase
 	# @param scale [Integer] scale
 	#
 	draw: ( x, y, scale ) ->
-		console.log @_contents
-		
 		@clear()
 	
 		@_x = x
@@ -136,9 +134,9 @@ class View.Cell extends View.RaphaelBase
 		# Draw each module
 		for view in @_views when view.visible
 			
-			if ( view instanceof View.Module )
+			if ( view instanceof View.Module or view instanceof View.DummyModule)
 				
-				type = view.module.constructor.name
+				type = view.type
 				direction = if view.module.direction? then view.module.direction else 0
 				placement = if view.module.placement? then view.module.placement else 0
 				placement_type = if view.module.type? and type is "Metabolite" then view.module.type else 0
@@ -160,7 +158,7 @@ class View.Cell extends View.RaphaelBase
 					scale: scale
 				}
 				
-				placement = @getLocationForModule( view.module, params )
+				placement = @getLocationForModule( params )
 				
 				counters[ counter_name ] = ++counter
 				
@@ -201,10 +199,9 @@ class View.Cell extends View.RaphaelBase
 
 	# Returns the location for a module
 	#
-	# @param module [Model.Module] the module to get the location for
 	# @return [Object] the size as an object with x, y
 	#
-	getLocationForModule: ( module, params ) ->
+	getLocationForModule: ( params ) ->
 		x = 0
 		y = 0
 		

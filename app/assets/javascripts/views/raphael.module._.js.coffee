@@ -27,7 +27,6 @@ class View.Module extends View.RaphaelBase
 
 		@_selected = off	
 		@_visible = on
-		@activated = on
 
 		@_propertiesView = new View.ModuleProperties( @, @_parent, @_cell, @module )
 		@_notificationsView = new View.ModuleNotification( @, @_parent, @_cell, @module )
@@ -38,9 +37,13 @@ class View.Module extends View.RaphaelBase
 		@_bind( 'paper.resize', @, @onPaperResize)
 		
 		Object.defineProperty( @, 'visible',
-			# @property [Function] the step function
 			get: ->
 				return @_visible
+		)
+		
+		Object.defineProperty( @, 'type',
+			get: ->
+				return @_type
 		)
 		
 	# Generates a hashcode based on the module name
@@ -259,7 +262,7 @@ class View.Module extends View.RaphaelBase
 		@_box.insertBefore(contents)
 
 		# Draw splines
-		if @_type is 'Transporter' and @activated
+		if @_type is 'Transporter'
 			for placement in [Model.Metabolite.Inside, Model.Metabolite.Outside]
 				metabolite = @_cell.getMetabolite(@module.transported, placement)
 				if metabolite
@@ -273,7 +276,7 @@ class View.Module extends View.RaphaelBase
 							spline.insertAfter(@_paper.bottom)
 					) direction, metaboliteView
 
-		else if @_type is 'Metabolism' and @activated
+		else if @_type is 'Metabolism'
 			inwards = ([metabolite, @Direction.Inward] for metabolite in @module.orig.map( 
 				( name ) => 
 					@_cell.getMetabolite(name.split('#')[0], Model.Metabolite.Inside)
