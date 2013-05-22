@@ -63,7 +63,7 @@ class View.Cell extends View.RaphaelBase
 		
 	# Adds interaction to the cell
 	#
-	addInteraction: () ->
+	_addInteraction: () ->
 		@_createButtons()
 		@_notificationsView = new View.Notification( @, @_cell )
 	
