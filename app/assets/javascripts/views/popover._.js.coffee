@@ -13,10 +13,8 @@ class View.HTMLPopOver extends Helper.Mixable
 	# @param classname [String] the classname
 	# @param placement [String] the placement
 	#
-	constructor: ( parent, @title = '', classname = '', @placement = 'bottom' ) ->
-		@_parent = parent
-		
-		@_elem = @_create( classname )
+	constructor: ( @_parent , @title = '', classname = '', @placement = 'bottom' ) ->
+		@_elem = @_create classname
 		
 		@_allowEventBindings()
 		@draw()
@@ -55,7 +53,9 @@ class View.HTMLPopOver extends Helper.Mixable
 		
 		@_elem.append header if header?
 		@_elem.append @_createBody()
-		@_elem.append footer if footer?			
+		@_elem.append footer if footer?	
+
+		@setPosition()
 		
 	# Nullifies the header
 	#
@@ -75,14 +75,14 @@ class View.HTMLPopOver extends Helper.Mixable
 	_createFooter: () ->
 		return [ undefined ]
 		
-	# Sets the position of the popover so the arrow points straight at the module view
+	# Sets the position of the popover so the arrow points straight at the model view
 	#
 	setPosition: ( ) ->
 	
 		rect = @_parent.getBBox()
 		cx = rect.x + rect.width / 2
 		cy = rect.y + rect.height / 2
-
+		
 		width = @_elem.width()
 		height = @_elem.height()
 		
