@@ -18,7 +18,12 @@
 			<td class="span2">Cell</td>
 			<td class="span10">#<%= @report.cell.id %> <%= link_to @report.cell.name, @report.cell %></td>
 		</tr>
-
+		<tr>
+			<td class="span2"></td>
+			<td class="span10">
+				<%= render 'cell' %>
+			</td>
+		</tr>
 		<tr>
 			<td> Modules </td>
 			<td> 
@@ -76,10 +81,6 @@
 		</tr>
 	</tbody>
 </table>
-
-<div class="row">
-	<%= render 'cell' %>
-</div>
 
 <% if @isPDF %>
 	<% encodedsvg = "data:image/svg+xml;base64,#{Base64.encode64(@report_params[:data])}" %>
