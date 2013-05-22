@@ -11,7 +11,7 @@ class View.Report extends View.RaphaelBase
 		super( Raphael(container,750,500))
 
 		cell = new Model.Cell()
-		@_views.push new View.Cell( @_paper, cell, '#graphs' )
+		@_views.push new View.Cell( @_paper, cell, '#graphs', off )
 		@_draw()
 		@load( cell_id )
 
