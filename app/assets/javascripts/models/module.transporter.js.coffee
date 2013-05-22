@@ -198,7 +198,7 @@ class Model.Transporter extends Model.Module
 			starts: { name : start, dest : 0 }
 			
 			# The name
-			name : name ? "transporter_#{transported}:"
+			name : name ? "transporter_#{transported}"
 		}
 		
 	# Get parameter metadata
