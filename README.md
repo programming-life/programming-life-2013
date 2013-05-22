@@ -40,3 +40,7 @@ We are always open to pull requests. After June 2013 the project will no longer 
 fixed in direction, so more freedom on where to go. We do not allow pull requests on master
 or release branches. Fork the repository, create a patch/feature/issue branch and 
 merge to develop.
+
+Your code should be `rdoc` or `codo/coffeedoc` commented, assets should be `/spec/` tested 
+and when applied should have `/test/functional` integration tests. Server side code should
+also be `/test/` unit tested.
