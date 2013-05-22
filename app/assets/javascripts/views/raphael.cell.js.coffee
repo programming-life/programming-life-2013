@@ -46,13 +46,11 @@ class View.Cell extends View.RaphaelBase
 					@_views.push new View.Module( @_paper, @, @_cell, module, @_interaction )
 					@_drawn.push module.id
 				
-				@_createButtons() if @_interaction
+				@_addInteraction() if @_interaction
 				@_bind( 'cell.add.module', @, @onModuleAdd )
 				@_bind( 'cell.add.metabolite', @, @onModuleAdd )
 				@_bind( 'cell.remove.module', @, @onModuleRemove )
 				@_bind( 'cell.remove.metabolite', @, @onModuleRemove )
-	
-				@_notificationsView = new View.Notification( @, value )
 				
 				@redraw() if @_x? and @_y? and @_scale?
 
@@ -63,6 +61,12 @@ class View.Cell extends View.RaphaelBase
 		@cell = cell		
 		@_interpolation = off
 		
+	# Adds interaction to the cell
+	#
+	addInteraction: () ->
+		@_createButtons()
+		@_notificationsView = new View.Notification( @, @_cell )
+	
 	# Kills the cell view by resetting itself and its children
 	#
 	kill: () ->
@@ -99,7 +103,7 @@ class View.Cell extends View.RaphaelBase
 	#
 	resize: ( scale ) ->
 		super scale
-		@_notificationsView.draw()
+		@_notificationsView?.draw()
 		
 	# Redraws the cell
 	# 		
@@ -181,7 +185,7 @@ class View.Cell extends View.RaphaelBase
 		unless cell isnt @_cell
 			if _( @_drawn ).indexOf( module.id ) is -1
 				@_drawn.unshift module.id
-				@_views.unshift new View.Module( @_paper, @, @_cell, module )
+				@_views.unshift new View.Module( @_paper, @, @_cell, module, @_interaction )
 				@redraw()
 			
 	# On module removed, removed it from the cell

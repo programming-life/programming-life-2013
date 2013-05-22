@@ -15,7 +15,7 @@ class View.Module extends View.RaphaelBase
 	# @param paper [Raphael.Paper] the raphael paper
 	# @param module [Model.Module] the module to show
 	#
-	constructor: ( paper, @_parent, @_cell, @module, @_params = {}, @_interaction = on ) ->
+	constructor: ( paper, @_parent, @_cell, @module, @_interaction = on ) ->
 		super paper
 	
 		@_type = module.constructor.name
@@ -28,14 +28,9 @@ class View.Module extends View.RaphaelBase
 		@_selected = off	
 		@_visible = on
 
-		@_propertiesView = new View.ModuleProperties( @, @_parent, @_cell, @module )
-		@_notificationsView = new View.ModuleNotification( @, @_parent, @_cell, @module )
-		
-		@_bind( 'module.set.property', @, @onModuleInvalidated )
-		@_bind( 'module.set.selected', @, @onModuleSelected )
-		@_bind( 'module.set.hovered', @, @onModuleHovered )
+		@addInteraction() if @_interaction is on
 		@_bind( 'paper.resize', @, @onPaperResize)
-		
+				
 		Object.defineProperty( @, 'visible',
 			get: ->
 				return @_visible
@@ -45,6 +40,17 @@ class View.Module extends View.RaphaelBase
 			get: ->
 				return @_type
 		)
+		
+	# Adds interaction to the module
+	#
+	addInteraction: () ->
+		@_propertiesView = new View.ModuleProperties( @, @_parent, @_cell, @module )
+		@_notificationsView = new View.ModuleNotification( @, @_parent, @_cell, @module )
+	
+		@_bind( 'module.set.property', @, @onModuleInvalidated )
+		@_bind( 'module.set.selected', @, @onModuleSelected )
+		@_bind( 'module.set.hovered', @, @onModuleHovered )
+		return this
 		
 	# Generates a hashcode based on the module name
 	#
@@ -142,7 +148,6 @@ class View.Module extends View.RaphaelBase
 	#
 	onModuleHovered: ( module, hovered ) ->
 		if module is @module 
-			console.log 'yolo'
 			if @_hovered isnt hovered
 				@_setHovered hovered
 		else if @_hovered isnt off
@@ -151,9 +156,8 @@ class View.Module extends View.RaphaelBase
 	# Runs if paper is resized
 	#
 	onPaperResize: ( ) =>
-		if @_selected
-			@redraw()
-		@_notificationsView.draw()
+		@redraw() if @_selected
+		@_notificationsView?.draw() 
 
 
 	# Clears the module view
@@ -173,8 +177,8 @@ class View.Module extends View.RaphaelBase
 		@_visible = off
 		@_unbindAll()
 		
-		@_propertiesView.kill()
-		@_notificationsView.kill()
+		@_propertiesView?.kill()
+		@_notificationsView?.kill()
 		
 		@clear()
 		return this
