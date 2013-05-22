@@ -4,20 +4,18 @@ class View.Cell extends View.RaphaelBase
 
 	@concern Mixin.EventBindings
 
-	MAX_RUNTIME: 100
+	@MAX_RUNTIME: 100
 
 	# Constructor for this view
 	# 
 	# @param paper [Raphael] paper parent
 	# @param cell [Model.Cell] cell to view
 	# 	
-	constructor: ( paper, cell, container = "#graphs" ) ->
-		super(paper)
-		
-		@_container =  if $( container )[0] then $( container ) else $("<div></div>")
-		#@_container = Raphael( container, "100%", 1 )
-		#@_container.setViewBox( 0, 0, 1000, 1000 ) # 1000 pixels, 1000 pixels
+	constructor: ( paper, cell, container = "#graphs", @_interaction = on ) ->
+		super paper
 
+		@_container =  if $( container )[0] then $( container ) else $("<div></div>")
+		
 		@_views = []
 		@_drawn = []
 		@_graphs = {}
@@ -44,37 +42,41 @@ class View.Cell extends View.RaphaelBase
 				@kill()
 				
 				@_cell = value
-				for module in @_cell._modules
-					@_views.push new View.Module( @_paper, @, @_cell, module)
-			
-				@_createButtons()
+				for module in @_cell._getModules()
+					@_views.push new View.Module( @_paper, @, @_cell, module, @_interaction )
+					@_drawn.push module.id
+				
+				@_addInteraction() if @_interaction
 				@_bind( 'cell.add.module', @, @onModuleAdd )
 				@_bind( 'cell.add.metabolite', @, @onModuleAdd )
 				@_bind( 'cell.remove.module', @, @onModuleRemove )
 				@_bind( 'cell.remove.metabolite', @, @onModuleRemove )
 				
-				@_notificationsView = new View.Notification( @, @cell )
-				
+				@redraw() if @_x? and @_y? and @_scale?
+
 			configurable: false
 			enumerable: true
 		)
 				
 		@cell = cell		
 		@_interpolation = off
+		
+	# Adds interaction to the cell
 	#
+	_addInteraction: () ->
+		@_createButtons()
+		@_notificationsView = new View.Notification( @, @_cell )
+	
+	# Kills the cell view by resetting itself and its children
 	#
 	kill: () ->
+		super
+		
 		@_notificationsView?.kill()
-		
-		if @_views?
-			for view in @_views
-				view.kill?()
-		
+
 		if @_graphs?
 			for name, graph of @_graphs
 				graph.clear()
-				
-		@_unbindAll()
 		
 		@_drawn = []
 		@_views = []
@@ -82,24 +84,26 @@ class View.Cell extends View.RaphaelBase
 		@_numGraphs = 0
 		
 	#
-	#
-	getBBox: ( ) -> 
-		return @_contents?.getBBox() ? { x:0, y:0, x2:0, y2:0, width:0, height:0 }
-		
-	#
 	# @todo hide buttons if module present etc.
 	#
 	_createButtons: () ->
 		
-		@_views.push new View.DummyModule( @_paper, @, @_cell, new Model.DNA() )
-		@_views.push new View.DummyModule( @_paper, @, @_cell, new Model.Lipid() )
-		@_views.push new View.DummyModule( @_paper, @, @_cell, new Model.Metabolite( { name: 's' } ), { name: 's', inside_cell: false, is_product: false, amount: 1, supply: 1 } )
-		@_views.push new View.DummyModule( @_paper, @, @_cell, Model.Transporter.int(), { direction: Model.Transporter.Inward } )
-		@_views.push new View.DummyModule( @_paper, @, @_cell, new Model.Metabolism() )
-		@_views.push new View.DummyModule( @_paper, @, @_cell, new Model.Protein() )
-		@_views.push new View.DummyModule( @_paper, @, @_cell, Model.Transporter.ext(), { direction: Model.Transporter.Outward } )
+		@_views.push new View.DummyModule( @_paper, @, @_cell, Model.CellGrowth, 1 )
+		@_views.push new View.DummyModule( @_paper, @, @_cell, Model.DNA, 1 )
+		@_views.push new View.DummyModule( @_paper, @, @_cell, Model.Lipid, 1 )
+		@_views.push new View.DummyModule( @_paper, @, @_cell, Model.Metabolite, -1, { name: 's', placement: Model.Metabolite.Outside, type: Model.Metabolite.Substrate, amount: 1, supply: 1 } )
+		@_views.push new View.DummyModule( @_paper, @, @_cell, Model.Transporter, -1, { direction: Model.Transporter.Inward, transported: 's' } )
+		@_views.push new View.DummyModule( @_paper, @, @_cell, Model.Metabolism, -1 )
+		@_views.push new View.DummyModule( @_paper, @, @_cell, Model.Protein, -1 )
+		@_views.push new View.DummyModule( @_paper, @, @_cell, Model.Transporter, -1, { direction: Model.Transporter.Outward, transported: 'p' } )
 			
 		@_views.push new View.Play( @_paper, @ )
+
+	# Resize cell
+	#
+	resize: ( scale ) ->
+		super scale
+		@_notificationsView?.draw()
 		
 	# Redraws the cell
 	# 		
@@ -134,9 +138,9 @@ class View.Cell extends View.RaphaelBase
 		# Draw each module
 		for view in @_views when view.visible
 			
-			if ( view instanceof View.Module )
+			if ( view instanceof View.Module or view instanceof View.DummyModule)
 				
-				type = view.module.constructor.name
+				type = view.type
 				direction = if view.module.direction? then view.module.direction else 0
 				placement = if view.module.placement? then view.module.placement else 0
 				placement_type = if view.module.type? and type is "Metabolite" then view.module.type else 0
@@ -158,7 +162,7 @@ class View.Cell extends View.RaphaelBase
 					scale: scale
 				}
 				
-				placement = @getLocationForModule( view.module, params )
+				placement = @getLocationForModule( params )
 				
 				counters[ counter_name ] = ++counter
 				
@@ -179,9 +183,9 @@ class View.Cell extends View.RaphaelBase
 	#
 	onModuleAdd: ( cell, module ) =>
 		unless cell isnt @_cell
-			unless _( @_drawn ).indexOf( module.id ) isnt -1
+			if _( @_drawn ).indexOf( module.id ) is -1
 				@_drawn.unshift module.id
-				@_views.unshift new View.Module( @_paper, @, @_cell, module )
+				@_views.unshift new View.Module( @_paper, @, @_cell, module, @_interaction )
 				@redraw()
 			
 	# On module removed, removed it from the cell
@@ -199,10 +203,9 @@ class View.Cell extends View.RaphaelBase
 
 	# Returns the location for a module
 	#
-	# @param module [Model.Module] the module to get the location for
 	# @return [Object] the size as an object with x, y
 	#
-	getLocationForModule: ( module, params ) ->
+	getLocationForModule: ( params ) ->
 		x = 0
 		y = 0
 		
@@ -427,6 +430,8 @@ class View.Cell extends View.RaphaelBase
 	# @todo stopSimulation should throw event that is captured by play button
 	#
 	_step : ( duration, dt, base_values ) ->
+	
+		return base_values unless @_running
 		
 		cell_data = @_getCellData( duration, base_values, dt, @_iteration )
 		@_iteration = cell_data.iteration
@@ -455,9 +460,8 @@ class View.Cell extends View.RaphaelBase
 		# @param results [any*] arguments to pass
 		simulation = ( step, args ) => 
 		
-			if @_running
-				results = step( args )
-				_.defer( simulation, step, results )
+			results = step( args ) if @_running
+			_.defer( simulation, step, results ) if @_running
 			
 		# At the end of the call stack, start the simulation loop
 		_.defer( simulation, step, [] )
@@ -470,6 +474,7 @@ class View.Cell extends View.RaphaelBase
 		
 		@_running = off
 		@_redrawGraphs()
+
 		@_trigger("simulation.stop",@, [ @_cell ])
 		return this
 

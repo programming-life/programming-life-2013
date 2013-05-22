@@ -27,9 +27,18 @@ class View.ModuleProperties extends View.HTMLPopOver
 		
 	# Create the popover header
 	#
+	# @return [Array<jQuery.Elem>] the header and the button element
+	#
 	_createHeader: ( ) ->
-		onclick = () => Model.EventManager.trigger('module.set.selected', @module, [ off ])
-		return super onclick
+		@_header = $('<div class="popover-title"></div>')
+
+		onclick = () => Model.EventManager.trigger( 'module.set.selected', @module, [ off ] )
+		@_closeButton = $('<button class="close">&times;</button>')
+		@_closeButton.on('click', onclick ) if onclick?
+		
+		@_header.append @title
+		@_header.append @_closeButton
+		return [ @_header, @_closeButton ]
 		
 	# Create the popover body
 	#
@@ -37,12 +46,22 @@ class View.ModuleProperties extends View.HTMLPopOver
 		@_body = super
 		@_drawForm()
 		return @_body
-
+		
 	#  Create footer content and append to footer
 	#
-	_createFooter: () ->
+	# @param onclick [Function] the function to yield on click
+	# @param saveText [String] the text on the save button
+	# @return [Array<jQuery.Elem>] the footer and the button element
+	#
+	_createFooter: ( saveText = 'Save' ) ->
+		@_footer = $('<div class="modal-footer"></div>')
+
 		onclick = () => @_save()
-		return super onclick
+		@_saveButton = $('<button class="btn btn-primary">' + saveText + '</button>')
+		@_saveButton.on('click', onclick ) if onclick?
+
+		@_footer.append @_saveButton
+		return [ @_footer, @_saveButton ]
 
 	# Populates the popover body with the required forms to reflect the module.
 	#
@@ -160,7 +179,8 @@ class View.ModuleProperties extends View.HTMLPopOver
 	#
 	_save: ( ) ->
 		for key, value of @_changes
-			@module[key] = value
+			console.log key, value
+			@module[ key ] = value
 		
 		@_trigger( 'module.set.selected', @module, [ off ] )
 		@_trigger( 'module.set.hovered', @module, [ off ] )
@@ -170,7 +190,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 	# @param module [Module] the module that is being drawn
 	#
 	onModuleDrawn: ( module ) ->
-		if module is @module and @_parent.activated
+		if module is @module
 			@setPosition()
 
 	# Gets called when a module view selected.
@@ -180,7 +200,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 	#
 	onModuleSelected: ( module, selected ) ->
 		if module is @module 
-			if @_parent.activated and @_selected isnt selected
+			if @_selected isnt selected
 				@_setSelected selected 
 		else if @_selected isnt off
 			@_setSelected off
@@ -192,7 +212,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 	#
 	onModuleHovered: ( module, hovered ) ->
 		if module is @module 
-			if @_parent.activated and @_hovered isnt hovered
+			if @_hovered isnt hovered
 				@_setHovered hovered
 		else if @_hovered isnt off
 			@_setHovered off

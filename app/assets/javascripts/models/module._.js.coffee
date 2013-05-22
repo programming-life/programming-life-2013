@@ -22,7 +22,8 @@ class Model.Module extends Helper.Mixable
 		
 		@_defineProperties( params, step, metadata )
 					
-		@_bind( 'module.set.property', @, @onPropertySet )
+		@_bind( 'module.set.property', @, @onActionDo )
+		@_bind( 'module.set.compound', @, @onActionDo )
 		@_trigger( 'module.creation', @, [ @creation, @id ] )	
 		
 	# Defines All the properties
@@ -86,12 +87,12 @@ class Model.Module extends Helper.Mixable
 			enumerable: false
 		)
 		
-	# Triggered when a property is set
+	# Triggered when an action is done
 	#
 	# @param caller [any] the originating property
 	# @param action [Model.Action] the action invoked
 	#
-	onPropertySet: ( caller, action ) =>
+	onActionDo: ( caller, action ) =>
 		if caller is @
 			@addUndoableEvent( action )
 		
@@ -154,9 +155,18 @@ class Model.Module extends Helper.Mixable
 	# @return [self] for chaining
 	#
 	setCompound: ( compound, value ) ->
-		@_trigger( 'module.set.compound', @, [ compound, @starts[ compound ] ? 0, value ] )	
 		
-		@starts[ compound ] = value
+		todo = _( ( compound, value ) -> @starts[ compound ] = value ).bind( @, compound, value )
+		undo = _( ( compound, value ) -> @starts[ compound ] = value ).bind( @, compound, @starts[ compound ] )
+		
+		action = new Model.Action( 
+			@, todo, undo, 
+			"Change #{compound} from #{ @starts[ compound ] } to #{value}" 
+		)
+		action.do()
+		
+		@_trigger( 'module.set.compound', @, [ action ] )	
+		
 		return this
 		
 	# Sets the metabolite to the start values (alias for setCompound)
@@ -198,11 +208,35 @@ class Model.Module extends Helper.Mixable
 		@_trigger( 'module.after.step', @, [ t, substrates, mu, results ] )
 		return results
 		
-	# Test function to override by submodules
+	# Listify a list
+	#
+	# @todo make this a helper function
+	#
+	_listify: ( items, bind = 'and', nothing = 'nothing' ) ->
+		return nothing if items.length is 0
+		return items[0] if items.length is 1
+		return ( _( items ).without ( last = _( items ).last() ) ).join(', ') + " #{bind} #{last}"
+		
+	# Test if compounds are available. Automatically maps keys to actual properties.
 	#
 	# @param compounds [Object] the available subs
+	# @param keys... [String] comma delimited list of keys that should be mapped to tests
+	# @return [Boolean] true if all are available
 	#
-	test: ( compounds ) ->
+	test: ( compounds, keys... ) ->
+		
+		tests = _( _( keys ).flatten() ).map( ( t ) => @[ t ] )
+		unless @_test( compounds, tests )
+			missing = _( _( tests ).flatten()  ).difference( _( compounds ).keys() )
+			@_notificate( 
+				@, @, 
+				"module.test.#{ @name }",
+				"I need #{ @_listify missing } #{ message ? '' }",
+				[ missing ],
+				Model.Module.Notification.Error
+			)
+			return false
+	
 		return true
 		
 	# Tests if substrates are available
@@ -216,16 +250,6 @@ class Model.Module extends Helper.Mixable
 		result = not _( _( tests ).flatten() ).some( 
 			( test ) -> return not ( compounds[ test ]? ) 
 		)
-		
-		unless result
-			missing = _( _( tests ).flatten() ).difference( _( compounds ).keys() )
-			@_notificate( 
-				@, @, 
-				"module.test.#{ @name }",
-				"I need #{ missing } in order to function correctly",
-				[ compounds, tests ],
-				Model.Module.Notification.Error
-			)	
 		
 		return result
 		
@@ -331,7 +355,7 @@ class Model.Module extends Helper.Mixable
 				"module.save.#{ @name }",
 				"Succesfully saved #{ @name }",
 				[ 'update parameters' ],
-				Model.Module.Success
+				Model.Module.Notification.Success
 			)		
 		)
 			
@@ -344,7 +368,7 @@ class Model.Module extends Helper.Mixable
 					data,
 					module_parameters_data, 
 				],
-				Model.Module.Error
+				Model.Module.Notification.Error
 			)		
 		)
 		
@@ -364,6 +388,8 @@ class Model.Module extends Helper.Mixable
 			[ 'create instance' ],
 			Model.Module.Notification.Info
 		)		
+		
+		console.log Model.Module.Notification
 		
 		module_instance_data = @_getModuleInstanceData( 
 			instance, template, cell 
@@ -393,7 +419,7 @@ class Model.Module extends Helper.Mixable
 						data,
 						module_instance_data
 					],
-					Model.Module.Error
+					Model.Module.Notification.Error
 				)		
 			)
 		
@@ -436,7 +462,8 @@ class Model.Module extends Helper.Mixable
 						'get instance',
 						data,
 						serialized_data
-					]
+					],
+					Model.Module.Notification.Error
 				)		
 			)
 		
@@ -483,7 +510,7 @@ class Model.Module extends Helper.Mixable
 					"module.load.:#{module_id}",
 					"Succesfully loaded #{module.name}",
 					[ 'load' ],
-					Model.Module.Success
+					Model.Module.Notification.Success
 				)	
 				
 			# Fail
@@ -499,7 +526,7 @@ class Model.Module extends Helper.Mixable
 						module_id,
 						cell
 					],
-					Model.Module.Error
+					Model.Module.Notification.Error
 				)	
 			)
 			

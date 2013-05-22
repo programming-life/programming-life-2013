@@ -10,7 +10,7 @@ class View.Main extends View.RaphaelBase
 	#
 	constructor: ( container = "#paper" ) ->
 		container = $( container )[0]
-		super( Raphael(container, 0,0) )
+		super Raphael(container, 0,0) 
 
 		cell = new Model.Cell()
 		@_views.push  new View.Cell( @_paper, cell)
@@ -20,7 +20,6 @@ class View.Main extends View.RaphaelBase
 		@_rightPane = new View.Pane(View.Pane.RIGHT_SIDE)
 		#@_rightPane.addView( new View.Tree( @_rightPane._paper, cell._tree ) )
 		@_views.push @_rightPane
-
 
 		@resize()
 		$( window ).on( 'resize', @resize )

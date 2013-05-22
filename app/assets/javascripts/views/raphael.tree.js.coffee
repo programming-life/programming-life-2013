@@ -28,7 +28,6 @@ class View.Tree extends View.RaphaelBase
 	# @param scale [Integer] The scale
 	#
 	draw: ( x, y, scale ) ->
-		console.log("Drawing undotree")
 		if @_view._x and @_view._y
 			@_x = @_view._x
 			@_y = @_view._y

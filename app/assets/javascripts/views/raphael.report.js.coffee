@@ -11,7 +11,7 @@ class View.Report extends View.RaphaelBase
 		super( Raphael(container,750,500))
 
 		cell = new Model.Cell()
-		@_views.push new View.Cell( @_paper, cell, '#graphs' )
+		@_views.push new View.Cell( @_paper, cell, '#graphs', off )
 		@_draw()
 		@load( cell_id )
 
@@ -37,7 +37,7 @@ class View.Report extends View.RaphaelBase
 				$('#create-pdf')[0].removeAttribute('disabled')
 
 				# Serialize the SVG and set it as hidden value in the form
-				cell_svg = (new XMLSerializer).serializeToString($('#paper')[0].children[0])
+				cell_svg = (new XMLSerializer).serializeToString($('#paper').children('svg')[0])
 				$('#report_data').attr("value", cell_svg)
 
 				# Start the simulation

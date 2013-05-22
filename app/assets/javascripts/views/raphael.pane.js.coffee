@@ -38,7 +38,7 @@ class View.Pane extends View.RaphaelBase
 			@_paper.setSize( @_width, @_height )
 			super()
 		else
-			@draw()
+			#@draw()
 	
 	# Kills the view
 	#
@@ -158,15 +158,13 @@ class View.Pane extends View.RaphaelBase
 	# @param time [Integer] The time for the animation to take
 	#
 	extend: ( time = 500 ) ->
-		unless @_extended
-			console.log("Extending")
-			switch @_side
-				when View.Pane.LEFT_SIDE
-					animation = {left: 0}
-				when View.Pane.RIGHT_SIDE
-					animation = {right: 0}
-			@_parent.animate(animation, time)
-			@_extended = on
+		switch @_side
+			when View.Pane.LEFT_SIDE
+				animation = {left: 0}
+			when View.Pane.RIGHT_SIDE
+				animation = {right: 0}
+		@_parent.animate(animation, time)
+		@_extended = on
 
 	
 	# Retracts the pane if not already retracted
@@ -174,16 +172,13 @@ class View.Pane extends View.RaphaelBase
 	# @param time [Integer] The time for the animation to take
 	#
 	retract: ( time = 500 ) ->
-		if @_extended
-			console.log("Retracting")
-
-			switch @_side
-				when View.Pane.LEFT_SIDE
-					animation = {left: (@_container.width() ) * -1}
-				when View.Pane.RIGHT_SIDE
-					animation = {right: (@_container.width() ) * -1}
-			@_parent.animate(animation, time)
-			@_extended = off
+		switch @_side
+			when View.Pane.LEFT_SIDE
+				animation = {left: (@_container.width() ) * -1}
+			when View.Pane.RIGHT_SIDE
+				animation = {right: (@_container.width() ) * -1}
+		@_parent.animate(animation, time)
+		@_extended = off
 	
 	# Set the container options
 	#

@@ -18,7 +18,12 @@
 			<td class="span2">Cell</td>
 			<td class="span10">#<%= @report.cell.id %> <%= link_to @report.cell.name, @report.cell %></td>
 		</tr>
-
+		<tr>
+			<td class="span2"></td>
+			<td class="span10">
+				<%= render 'cell' %>
+			</td>
+		</tr>
 		<tr>
 			<td>Creation</td>
 			<td><%= @report.created_at.strftime("%a %d %B %Y at %H:%M") %></td>
@@ -97,13 +102,8 @@
 	</tbody>
 </table>
 
-<div class="row">
-	<%= render 'cell' %>
-</div>
-
 <% if @isPDF %>
-	<% encodedsvg = "data:image/svg+xml;base64,#{Base64.encode64(@report_params[:data])}" %>
-	<img src= "<%= encodedsvg %>"></img>
+
 <% else %>
 	<footer class="row">
 		<div class="form-actions span12">
