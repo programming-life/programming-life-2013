@@ -669,7 +669,7 @@ class Model.Cell extends Helper.Mixable
 					[ 
 						'create', 
 						data, 
-						module_instance_data 
+						cell_data 
 					],
 					Model.Cell.Notification.Error
 				)	
