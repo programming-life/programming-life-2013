@@ -1,18 +1,21 @@
 # The module dummy view shows a potential module.
 # It also allows for interaction adding this potential module to a cell.
 #
-class View.DummyModule extends View.Module
+class View.DummyModule extends View.RaphaelBase
 	
 	# Creates a new module view
 	# 
 	# @param paper [Raphael.Paper] the raphael paper
-	# @param cell [Model.Cell] the cell to show
-	# @param module [Model.Module] the module to show
-	# @param params [Object] the params
+	# @param _parent [View.cell] the cell view this dummy belongs to
+	# @param _cell [Model.Cell] the cell model displayed in the parent
+	# @param _module [Function] the module constructor
+	# @param _number [Integer] the number of instances allowed [ -1 is unlimted, 0 is none ]
+	# @param _params [Object] the params
 	#
-	constructor: ( paper, parent, cell, module, params = {} ) ->
-		super paper, parent, cell, module, params
+	constructor: ( paper, @_parent, @_cell, @_module, @_number, @_params = {} ) ->
+		super paper
 		@activated = off
+		@_type = @_module.name
 		
 	# Runs if module is selected
 	# 
@@ -31,7 +34,7 @@ class View.DummyModule extends View.Module
 	#
 	onActivate : ( ) ->
 		
-		switch @type
+		switch @_type
 		
 			when "DNA"
 				@_visible = off
@@ -87,7 +90,7 @@ class View.DummyModule extends View.Module
 		
 		@_paper.setStart()
 		
-		switch @type
+		switch @_type
 									
 			when "DNA"
 						

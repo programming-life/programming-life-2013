@@ -11,13 +11,11 @@ class View.Cell extends View.RaphaelBase
 	# @param paper [Raphael] paper parent
 	# @param cell [Model.Cell] cell to view
 	# 	
-	constructor: ( paper, cell, container = "#graphs" ) ->
-		super(paper)
-		
-		@_container =  if $( container )[0] then $( container ) else $("<div></div>")
-		#@_container = Raphael( container, "100%", 1 )
-		#@_container.setViewBox( 0, 0, 1000, 1000 ) # 1000 pixels, 1000 pixels
+	constructor: ( paper, cell, container = "#graphs", @_interaction = on ) ->
+		super paper
 
+		@_container =  if $( container )[0] then $( container ) else $("<div></div>")
+		
 		@_views = []
 		@_drawn = []
 		@_graphs = {}
@@ -45,10 +43,10 @@ class View.Cell extends View.RaphaelBase
 				
 				@_cell = value
 				for module in @_cell._modules
-					@_views.push new View.Module( @_paper, @, @_cell, module)
+					@_views.push new View.Module( @_paper, @, @_cell, module, @_interaction )
 					@_drawn.push module.id
 			
-				@_createButtons()
+				@_createButtons() if @_interaction
 				@_bind( 'cell.add.module', @, @onModuleAdd )
 				@_bind( 'cell.add.metabolite', @, @onModuleAdd )
 				@_bind( 'cell.remove.module', @, @onModuleRemove )
@@ -64,20 +62,17 @@ class View.Cell extends View.RaphaelBase
 				
 		@cell = cell		
 		@_interpolation = off
-	#
+		
+	# Kills the cell view by resetting itself and its children
 	#
 	kill: () ->
+		super
+		
 		@_notificationsView?.kill()
-		
-		if @_views?
-			for view in @_views
-				view.kill?()
-		
+
 		if @_graphs?
 			for name, graph of @_graphs
 				graph.clear()
-				
-		@_unbindAll()
 		
 		@_drawn = []
 		@_views = []
@@ -85,22 +80,18 @@ class View.Cell extends View.RaphaelBase
 		@_numGraphs = 0
 		
 	#
-	#
-	getBBox: ( ) -> 
-		return @_contents?.getBBox() ? { x:0, y:0, x2:0, y2:0, width:0, height:0 }
-		
-	#
 	# @todo hide buttons if module present etc.
 	#
 	_createButtons: () ->
 		
-		@_views.push new View.DummyModule( @_paper, @, @_cell, new Model.DNA() )
-		@_views.push new View.DummyModule( @_paper, @, @_cell, new Model.Lipid() )
-		@_views.push new View.DummyModule( @_paper, @, @_cell, new Model.Metabolite( { name: 's' } ), { name: 's', inside_cell: false, is_product: false, amount: 1, supply: 1 } )
-		@_views.push new View.DummyModule( @_paper, @, @_cell, Model.Transporter.int(), { direction: Model.Transporter.Inward } )
-		@_views.push new View.DummyModule( @_paper, @, @_cell, new Model.Metabolism() )
-		@_views.push new View.DummyModule( @_paper, @, @_cell, new Model.Protein() )
-		@_views.push new View.DummyModule( @_paper, @, @_cell, Model.Transporter.ext(), { direction: Model.Transporter.Outward } )
+		@_views.push new View.DummyModule( @_paper, @, @_cell, Model.CellGrowth, 1 )
+		@_views.push new View.DummyModule( @_paper, @, @_cell, Model.DNA, 1 )
+		@_views.push new View.DummyModule( @_paper, @, @_cell, Model.Lipid, 1 )
+		@_views.push new View.DummyModule( @_paper, @, @_cell, Model.Metabolite, -1, { name: 's', inside_cell: false, is_product: false, amount: 1, supply: 1 } )
+		@_views.push new View.DummyModule( @_paper, @, @_cell, Model.Transporter, -1, { direction: Model.Transporter.Inward } )
+		@_views.push new View.DummyModule( @_paper, @, @_cell, Model.Metabolism, -1 )
+		@_views.push new View.DummyModule( @_paper, @, @_cell, Model.Protein, -1 )
+		@_views.push new View.DummyModule( @_paper, @, @_cell, Model.Transporter, -1, { direction: Model.Transporter.Outward } )
 			
 		@_views.push new View.Play( @_paper, @ )
 
@@ -122,6 +113,8 @@ class View.Cell extends View.RaphaelBase
 	# @param scale [Integer] scale
 	#
 	draw: ( x, y, scale ) ->
+		console.log @_contents
+		
 		@clear()
 	
 		@_x = x

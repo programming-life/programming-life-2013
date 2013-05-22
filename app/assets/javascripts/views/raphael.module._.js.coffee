@@ -1,10 +1,6 @@
 # The module view shows a module
 #
-# @concern Mixin.EventBindings
-#
 class View.Module extends View.RaphaelBase
-
-	@concern Mixin.EventBindings
 
 	Location:
 		Entrance: -1
@@ -19,16 +15,11 @@ class View.Module extends View.RaphaelBase
 	# @param paper [Raphael.Paper] the raphael paper
 	# @param module [Model.Module] the module to show
 	#
-	constructor: ( paper, parent, cell, module, params = {} ) ->
-		super(paper)
-		@_cell = cell
-		@_parent = parent
-
-		@module = module		
-		@type = module.constructor.name
-		@name = module.name
-
-		@_params = params
+	constructor: ( paper, @_parent, @_cell, @module, @_params = {}, @_interaction = on ) ->
+		super paper
+	
+		@_type = module.constructor.name
+		@_name = module.name
 		
 		@x = 0
 		@y = 0
@@ -40,8 +31,6 @@ class View.Module extends View.RaphaelBase
 
 		@_propertiesView = new View.ModuleProperties( @, @_parent, @_cell, @module )
 		@_notificationsView = new View.ModuleNotification( @, @_parent, @_cell, @module )
-		
-		@_allowEventBindings()
 		
 		@_bind( 'module.set.property', @, @onModuleInvalidated )
 		@_bind( 'module.set.selected', @, @onModuleSelected )
@@ -59,7 +48,7 @@ class View.Module extends View.RaphaelBase
 	# @param hashee [String] the name to use as hash
 	# @return [Integer] the hashcode
 	#
-	hashCode : ( hashee = @name ) ->
+	hashCode : ( hashee = @_name ) ->
 		hash = 0
 		return hash if ( hashee.length is 0 )
 		for i in [ 0...hashee.length ]
@@ -73,7 +62,7 @@ class View.Module extends View.RaphaelBase
 	# @param hashee [String] the name to use as hash
 	# @return [String] the CSS color
 	#
-	hashColor : ( hashee = @name ) ->
+	hashColor : ( hashee = @_name ) ->
 		return '#' + md5( hashee ).slice(0, 6) #@numToColor @hashCode hashee
 
 	# Generates a colour based on a numer
@@ -126,9 +115,8 @@ class View.Module extends View.RaphaelBase
 	# Runs if module is invalidated
 	# 
 	# @param module [Model.Module] the module invalidated
-	# @param params [Mixed] parameters pushed by event
 	#
-	onModuleInvalidated: ( module, params... ) =>
+	onModuleInvalidated: ( module ) =>
 		if module is @module
 			@redraw()
 
@@ -215,7 +203,7 @@ class View.Module extends View.RaphaelBase
 	# @return [View.Module.Direction] the direction of the spline
 	#
 	_getSplineDirection: ( metabolitePlacement ) ->
-		if @type is 'Transporter'
+		if @_type is 'Transporter'
 			switch @module.direction
 				when Model.Transporter.Inward
 					switch metabolitePlacement
@@ -271,7 +259,7 @@ class View.Module extends View.RaphaelBase
 		@_box.insertBefore(contents)
 
 		# Draw splines
-		if @type is 'Transporter' and @activated
+		if @_type is 'Transporter' and @activated
 			for placement in [Model.Metabolite.Inside, Model.Metabolite.Outside]
 				metabolite = @_cell.getMetabolite(@module.transported, placement)
 				if metabolite
@@ -285,7 +273,7 @@ class View.Module extends View.RaphaelBase
 							spline.insertAfter(@_paper.bottom)
 					) direction, metaboliteView
 
-		else if @type is 'Metabolism' and @activated
+		else if @_type is 'Metabolism' and @activated
 			inwards = ([metabolite, @Direction.Inward] for metabolite in @module.orig.map( 
 				( name ) => 
 					@_cell.getMetabolite(name.split('#')[0], Model.Metabolite.Inside)
@@ -336,7 +324,7 @@ class View.Module extends View.RaphaelBase
 	drawContents: ( x, y, scale, padding, big ) ->
 	
 		@_paper.setStart()		
-		switch @type
+		switch @_type
 		
 			when 'Transporter'
 			
@@ -385,24 +373,24 @@ class View.Module extends View.RaphaelBase
 										
 			when "DNA"
 						
-				text = @_paper.text(x, y, _.escape @type)
+				text = @_paper.text(x, y, _.escape @_type)
 				text.attr
 					'font-size': 20 * scale
 					
 			when "Lipid"
 						
-				text = @_paper.text(x, y, _.escape @type)
+				text = @_paper.text(x, y, _.escape @_type)
 				text.attr
 					'font-size': 20 * scale
 									
 			when "CellGrowth"
 						
-				text = @_paper.text(x, y, _.escape @type)
+				text = @_paper.text(x, y, _.escape @_type)
 				text.attr
 					'font-size': 20 * scale
 					
 			else
-				text = @_paper.text(x, y, _.escape @type)
+				text = @_paper.text(x, y, _.escape @_type)
 				text.attr
 					'font-size': 20 * scale
 
