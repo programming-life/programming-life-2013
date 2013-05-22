@@ -22,7 +22,8 @@ class Model.Module extends Helper.Mixable
 		
 		@_defineProperties( params, step, metadata )
 					
-		@_bind( 'module.set.property', @, @onPropertySet )
+		@_bind( 'module.set.property', @, @onActionDo )
+		@_bind( 'module.set.compound', @, @onActionDo )
 		@_trigger( 'module.creation', @, [ @creation, @id ] )	
 		
 	# Defines All the properties
@@ -86,12 +87,12 @@ class Model.Module extends Helper.Mixable
 			enumerable: false
 		)
 		
-	# Triggered when a property is set
+	# Triggered when an action is done
 	#
 	# @param caller [any] the originating property
 	# @param action [Model.Action] the action invoked
 	#
-	onPropertySet: ( caller, action ) =>
+	onActionDo: ( caller, action ) =>
 		if caller is @
 			@addUndoableEvent( action )
 		
@@ -154,9 +155,18 @@ class Model.Module extends Helper.Mixable
 	# @return [self] for chaining
 	#
 	setCompound: ( compound, value ) ->
-		@_trigger( 'module.set.compound', @, [ compound, @starts[ compound ] ? 0, value ] )	
 		
-		@starts[ compound ] = value
+		todo = _( ( compound, value ) -> @starts[ compound ] = value ).bind( @, compound, value )
+		undo = _( ( compound, value ) -> @starts[ compound ] = value ).bind( @, compound, @starts[ compound ] )
+		
+		action = new Model.Action( 
+			@, todo, undo, 
+			"Change #{compound} from #{ @starts[ compound ] } to #{value}" 
+		)
+		action.do()
+		
+		@_trigger( 'module.set.compound', @, [ action ] )	
+		
 		return this
 		
 	# Sets the metabolite to the start values (alias for setCompound)
@@ -198,6 +208,10 @@ class Model.Module extends Helper.Mixable
 		@_trigger( 'module.after.step', @, [ t, substrates, mu, results ] )
 		return results
 		
+	# Listify a list
+	#
+	# @todo make this a helper function
+	#
 	_listify: ( items, bind = 'and', nothing = 'nothing' ) ->
 		return nothing if items.length is 0
 		return items[0] if items.length is 1

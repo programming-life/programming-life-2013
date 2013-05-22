@@ -179,7 +179,8 @@ class View.ModuleProperties extends View.HTMLPopOver
 	#
 	_save: ( ) ->
 		for key, value of @_changes
-			@module[key] = value
+			console.log key, value
+			@module[ key ] = value
 		
 		@_trigger( 'module.set.selected', @module, [ off ] )
 		@_trigger( 'module.set.hovered', @module, [ off ] )
