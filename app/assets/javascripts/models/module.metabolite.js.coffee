@@ -54,10 +54,10 @@ class Model.Metabolite extends Model.Module
 				
 			return results
 
-		defaults = @_getParameterDefaults( start, placement, type )
+		defaults = @_getParameterDefaults( params.amount ? start, placement, type )
 		
 		name = params.name ? name ? undefined
-		params = _( _( params ).defaults( defaults ) ).omit( 'name' ) 
+		params = _( _( params ).defaults( defaults ) ).omit( 'name', 'amount' ) 
 		metadata = @_getParameterMetaData()
 		
 		super params, step, metadata

@@ -405,6 +405,11 @@ class Model.Cell extends Helper.Mixable
 	#
 	amountOf: ( name, placement ) ->
 		return @_metabolites[ name ][ placement ]?.amount
+		
+	# Returns the number of modules of this type
+	#
+	numberOf: ( module_type ) ->
+		return _( @_getModules() ).where( ( module ) -> module instanceof module_type ).length
 
 	# Gets all the modules that are steppable
 	# 
