@@ -83,8 +83,7 @@
 </table>
 
 <% if @isPDF %>
-	<% encodedsvg = "data:image/svg+xml;base64,#{Base64.encode64(@report_params[:data])}" %>
-	<img src= "<%= encodedsvg %>"></img>
+
 <% else %>
 	<footer class="row">
 		<div class="form-actions span12">
