@@ -430,6 +430,8 @@ class View.Cell extends View.RaphaelBase
 	# @todo stopSimulation should throw event that is captured by play button
 	#
 	_step : ( duration, dt, base_values ) ->
+	
+		return base_values unless @_running
 		
 		cell_data = @_getCellData( duration, base_values, dt, @_iteration )
 		@_iteration = cell_data.iteration
