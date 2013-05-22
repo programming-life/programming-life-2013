@@ -189,7 +189,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 	# @param module [Module] the module that is being drawn
 	#
 	onModuleDrawn: ( module ) ->
-		if module is @module and @_parent.activated
+		if module is @module
 			@setPosition()
 
 	# Gets called when a module view selected.
@@ -199,7 +199,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 	#
 	onModuleSelected: ( module, selected ) ->
 		if module is @module 
-			if @_parent.activated and @_selected isnt selected
+			if @_selected isnt selected
 				@_setSelected selected 
 		else if @_selected isnt off
 			@_setSelected off
@@ -211,7 +211,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 	#
 	onModuleHovered: ( module, hovered ) ->
 		if module is @module 
-			if @_parent.activated and @_hovered isnt hovered
+			if @_hovered isnt hovered
 				@_setHovered hovered
 		else if @_hovered isnt off
 			@_setHovered off
