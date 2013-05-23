@@ -66,7 +66,7 @@ class View.Cell extends View.RaphaelBase
 	#
 	_addInteraction: () ->
 		@_createButtons()
-		@_notificationsView = new View.Notification( @, @_cell )
+		@_notificationsView = new View.CellNotification( @, @_cell )
 	
 	# Kills the cell view by resetting itself and its children
 	#
