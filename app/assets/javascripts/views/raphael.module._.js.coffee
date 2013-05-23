@@ -105,8 +105,10 @@ class View.Module extends View.RaphaelBase
 			if selected
 				@_setHovered off
 				$(@_box.node).addClass('selected')
+				@_shadow.forEach(( e ) -> $(e.node).addClass('selected'))
 			else
 				$(@_box.node).removeClass('selected')
+				@_shadow.forEach(( e ) -> $(e.node).removeClass('selected'))
 
 		@_selected = selected
 		return this
@@ -284,6 +286,8 @@ class View.Module extends View.RaphaelBase
 		@_box = @drawBox(contents)
 		@_box.insertBefore(contents)
 
+		@_shadow = @drawShadow(@_box)
+
 		# Draw splines
 		if @_type is 'Transporter'
 			for property in [ 'orig', 'dest' ]
@@ -392,7 +396,7 @@ class View.Module extends View.RaphaelBase
 					r: 45
 					
 				[ substrateCircle, substrateText ] = @drawComponent( 
-					'protein', 
+					'Protein', 
 					'SubstrateCircle', 
 					x, y, params )
 										
@@ -428,10 +432,19 @@ class View.Module extends View.RaphaelBase
 	drawBox : ( elem ) ->
 		rect = elem.getBBox()
 		padding = 15
-		box = @_paper.rect(rect.x - padding, rect.y - padding, rect.width + 2 * padding, rect.height + 2 * padding)
+
+		switch @type
+			when 'Metabolite'
+				maxX = Math.max(rect.x2 - @x, @x - rect.x)
+				maxY = Math.max(rect.y2 - @y, @y - rect.y)
+				radius = Math.max(maxX, maxY) + padding
+				box = @_paper.circle(@x, @y, radius)
+			else
+				box = @_paper.rect(rect.x - padding, rect.y - padding, rect.width + 2 * padding, rect.height + 2 * padding)
+				box.attr('r', 5)
 
 		$(box.node).addClass('module-box')
-		box.attr('r', 5)
+		
 		
 		return box
 
@@ -485,8 +498,12 @@ class View.Module extends View.RaphaelBase
 	#
 	drawShadow : ( elem ) ->
 		shadow = elem.glow
-			width: 35
-			opacity: .125
+			fill: true
+			width: 10
+			opacity: 1
+			color: 'rgba(82, 168, 236, .25)'
+
+		shadow.forEach(( e ) -> $(e.node).addClass('module-shadow'))
 
 		return shadow
 
@@ -611,10 +628,18 @@ class View.Module extends View.RaphaelBase
 				
 				if ( params.showText )
 				
-					substrateText = @_paper.text( x, y, "#{origTexts}>#{destTexts}" )
-					substrateText.node.setAttribute('class', "#{module}-substrate-text" )
-					substrateText.attr
+					substrateTextShadow = @_paper.text( x, y - 1, substrateText )
+					substrateTextShadow.node.setAttribute('class', "#{module}-substrate-text-shadow" )
+					substrateTextShadow.attr
+						'font-size': 18 
+
+					substrateTextActual = @_paper.text( x, y, substrateText )
+					substrateTextActual.node.setAttribute('class', "#{module}-substrate-text" )
+					substrateTextActual.attr
 						'font-size': 18
+
+					substrateText = @_paper.set()
+					substrateText.push(substrateTextShadow, substrateTextActual)
 				
 				return [ enzymOrigCircles, enzymDestCircles, substrateText ]
 				

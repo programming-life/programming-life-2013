@@ -89,8 +89,6 @@ class View.HTMLPopOver extends Helper.Mixable
 		
 		width = @_elem.width()
 		height = @_elem.height()
-
-		console.log width, height
 		
 		switch @placement
 			when 'top'

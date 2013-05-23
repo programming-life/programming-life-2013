@@ -39,13 +39,15 @@ div#paper svg {
 
 rect, circle:not(.cell) {
 	vector-effect:non-scaling-stroke;
-
 }
 
 .module-box {
-	stroke: rgba(0, 0, 0, .2);
+	stroke: rgba(0, 0, 0, .2);	
 	stroke-width: 1px;
 	fill: rgba( 255, 255, 255, 1 );
+	opacity:1;
+
+	transition:stroke 0.5s;
 	
 	&.inactive {
 		stroke-dasharray: 5,5;
@@ -57,7 +59,7 @@ rect, circle:not(.cell) {
 	}
 	
 	&.selected {
-		stroke: rgb( 100, 100, 200 );
+		stroke: rgba(82, 168, 236, 0.8);
 	}
 }
 
@@ -80,6 +82,15 @@ rect, circle:not(.cell) {
 	opacity: 0;
 }
 
+.module-shadow {
+	opacity:0 !important;
+	transition: opacity .5s;
+}
+
+.module-shadow.selected {
+	opacity:.182 !important;
+}
+
 [class$='-substrate-circle'] {
 	stroke-width: 2px;
 }
@@ -89,7 +100,7 @@ rect, circle:not(.cell) {
 }
 
 
-.substrate-substrate-text, .substrate-substrate-text-shadow {
+[class$='-substrate-text'], [class$='-substrate-text-shadow'] {
 	font-weight: bolder !important;
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
 }
@@ -98,11 +109,11 @@ text, tspan {
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
 }
 
-.substrate-substrate-text {
+[class$='-substrate-text'] {
 	fill: #fff;
 }
 
-.substrate-substrate-text-shadow {
+[class$='-substrate-text-shadow'] {
 	fill: rgba(0, 0, 0, .25);
 }
 

@@ -43,7 +43,7 @@ class Model.Protein extends Model.Module
 	# @option params [Array<String>] consume the metabolite to convert, overrides consume
 	# @option params [String] name the name of the protein, overrides name
 	#
-	constructor: ( params = {}, start = 0, consume = "p#int", name = "protein" ) ->			
+	constructor: ( params = {}, start = 0, consume = "p#int", name = "Protein" ) ->			
 		
 		# Define differential equations here
 		step = ( t, compounds, mu ) ->
