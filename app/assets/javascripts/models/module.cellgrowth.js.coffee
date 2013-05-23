@@ -56,7 +56,7 @@ class Model.CellGrowth extends Model.Module
 	#
 	# @param step [Function] the step function
 	#
-	_defineGetters: ( step, metadata ) ->
+	_defineGetters: ( params, step, metadata ) ->
 	
 		cell_growth = @
 		Object.defineProperty( @, 'mu',
@@ -86,7 +86,7 @@ class Model.CellGrowth extends Model.Module
 						
 					return 0
 		)
-		super step, metadata
+		super params, step, metadata
 		
 	# Get parameter defaults array
 	#

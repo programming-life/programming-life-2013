@@ -310,10 +310,10 @@ class View.Module extends View.RaphaelBase
 			_( @_trigger( 'module.set.selected', @module, [ on ]) ).debounce( 100 )
 
 		hitbox.mouseout =>
-			_( @_trigger( 'module.set.hovered', @module, [ off ]) ).debounce( 100 )
+			_( @_trigger( 'module.set.hovered', @module, [ off, @_selected ]) ).debounce( 100 )
 		
 		hitbox.mouseover =>
-			_( @_trigger( 'module.set.hovered', @module, [ on ]) ).debounce( 100 )
+			_( @_trigger( 'module.set.hovered', @module, [ on, @_selected ]) ).debounce( 100 )
 
 		@_view = @_paper.setFinish()
 		@_view.push( contents )		

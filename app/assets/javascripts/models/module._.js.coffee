@@ -21,6 +21,9 @@ class Model.Module extends Helper.Mixable
 		@_allowEventBindings()
 		
 		@_defineProperties( params, step, metadata )
+
+		action = @_createAction( "Created #{this.constructor.name}:#{this.name}")
+		@_tree.setRoot( new Model.Node(action, null) )
 					
 		@_bind( 'module.set.property', @, @onActionDo )
 		@_bind( 'module.set.compound', @, @onActionDo )
@@ -37,17 +40,9 @@ class Model.Module extends Helper.Mixable
 		properties.parameters.push 'amount'
 		metadata.properties = properties
 		
-		@_defineGetters( step, metadata )
+		@_defineGetters( params, step, metadata )
 		@_defineAccessors()
-		
-		@_propertiesFromParams(  
-			_( params ).defaults( {
-				id: _.uniqueId "client:#{this.constructor.name}:"
-				creation: Date.now()
-				starts: {}
-			} ),
-			'module.set.property'
-		)
+		@_defineDynamicProperties( params )
 
 		Object.seal @ 
 		return this
@@ -56,7 +51,7 @@ class Model.Module extends Helper.Mixable
 	#
 	# @return [self] chainable self
 	#
-	_defineGetters: ( step, metadata ) ->
+	_defineGetters: ( params, step, metadata ) ->
 		
 		@_nonEnumerableGetter( '_step', () -> return step )
 		@_nonEnumerableGetter( 'metadata', () -> return metadata )
@@ -86,6 +81,16 @@ class Model.Module extends Helper.Mixable
 			configurable: false
 			enumerable: false
 		)
+	_defineDynamicProperties: ( params ) ->
+		@_propertiesFromParams(  
+			_( params ).defaults( {
+				id: _.uniqueId "client:#{this.constructor.name}:"
+				creation: Date.now()
+				starts: {}
+			} ),
+			'module.set.property'
+		)
+		return this
 		
 	# Triggered when an action is done
 	#

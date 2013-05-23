@@ -21,6 +21,19 @@ class View.Main extends View.RaphaelBase
 		@_bind( 'view.cell.set', @, (cell) => 
 			undo.setTree(cell.cell._tree)
 		)
+		@_bind( 'module.set.hovered', @, (module, hovered, selected) => 
+			if hovered
+				undo.setTree(module._tree)
+			else unless @_moduleSelected
+				undo.setTree(cell._tree)
+		)
+		@_bind( 'module.set.selected', @, (module, selected) => 
+			if selected
+				@_moduleSelected = on
+			else
+				@_moduleSelected = off
+				undo.setTree(cell._tree)
+		)
 
 		@_leftPane.addView( undo )
 		@_views.push  new View.Cell( @_paper, cell)

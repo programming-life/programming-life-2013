@@ -190,5 +190,6 @@ class View.Undo extends Helper.Mixable
 	#
 	setTree: ( tree ) ->
 		@_tree = tree
+		@redraw()
 
 (exports ? this).View.Undo = View.Undo

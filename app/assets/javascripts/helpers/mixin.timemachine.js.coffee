@@ -33,7 +33,7 @@ Mixin.TimeMachine =
 		#	
 		addUndoableEventToSub: ( action, sub ) ->
 			tree_node = @addUndoableEvent action
-			sub?._tree?.setRoot tree_node
+			#sub?._tree?.setRoot tree_node
 			return tree_node
 			
 		# Undoes the last action
