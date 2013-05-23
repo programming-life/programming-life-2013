@@ -158,7 +158,7 @@ class Model.Transporter extends Model.Module
 			return results
 		
 		# Default parameters set here
-		defaults = @_getParameterDefaults( start, name, consume, type, direction, transported )
+		defaults = @_getParameterDefaults( start, name, consume, type, direction, params.transported ? transported )
 		params = _( params ).defaults( defaults )			
 		metadata = @_getParameterMetaData()
 

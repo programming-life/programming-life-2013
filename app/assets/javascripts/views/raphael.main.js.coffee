@@ -10,20 +10,26 @@ class View.Main extends View.RaphaelBase
 	#
 	constructor: ( container = "#paper" ) ->
 		container = $( container )[0]
-		super( Raphael(container, 0,0) )
+		super Raphael(container, 0,0) 
 
 		cell = new Model.Cell()
-		@_views.push  new View.Cell( @_paper, cell)
-		@_leftPane = new View.Pane(View.Pane.LEFT_SIDE, false) 
-		@_leftPane.addView( new View.Undo( @_leftPane._container , cell._tree ) )
-		@_views.push @_leftPane
-		@_rightPane = new View.Pane(View.Pane.RIGHT_SIDE)
-		#@_rightPane.addView( new View.Tree( @_rightPane._paper, cell._tree ) )
-		@_views.push @_rightPane
 
+		@_leftPane = new View.Pane(View.Pane.LEFT_SIDE, false) 
+		@_rightPane = new View.Pane(View.Pane.RIGHT_SIDE)
+
+		undo = new View.Undo( @_leftPane._container, cell._tree )
+		@_bind( 'view.cell.set', @, (cell) => 
+			undo.setTree(cell.cell._tree)
+		)
+
+		@_leftPane.addView( undo )
+		@_views.push  new View.Cell( @_paper, cell)
+		@_views.push @_leftPane
+		@_views.push @_rightPane
 
 		@resize()
 		$( window ).on( 'resize', @resize )
+
 
 		@draw()
 

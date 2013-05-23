@@ -63,11 +63,6 @@ class View.Notification extends View.HTMLPopOver
 		elem.fadeOut('fast')
 		@_visible = off
 		@_messages = {}
-		
-	# Nullifies the header
-	#
-	_createHeader: () ->	
-		return [ undefined ]
 	
 	# Creates the body of the message
 	#
@@ -86,12 +81,6 @@ class View.Notification extends View.HTMLPopOver
 			elem = $('<div class="' + classname + '">' + message.message + '</div>')
 			body.append( elem )
 		return body
-		
-	# Nullifies the footer
-	#
-	_createFooter: () ->
-		return [ undefined ]
-
 		
 	# Gets the alert class from a type
 	#
