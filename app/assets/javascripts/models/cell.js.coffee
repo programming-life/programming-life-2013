@@ -294,8 +294,7 @@ class Model.Cell extends Helper.Mixable
 	# @param placement [Integer] the placement of the metabolite
 	# @return [self] chainable instance
 	#
-	_removeMetabolite: ( name ) -> 
-		module = @getMetabolite name 
+	_removeMetabolite: ( module ) -> 
 		return this unless module?
 		@_metabolites = _( @_metabolites ).without module
 		@_trigger( 'cell.remove.metabolite', @, [ module ] )
