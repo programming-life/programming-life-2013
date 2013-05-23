@@ -16,9 +16,8 @@ class View.CellNotification extends View.Notification
 	_filter: ( message ) ->
 
 		if message.identifier.indexOf('save') isnt -1 or message.identifier.indexOf('load') isnt -1
-			message.closable = off
-			
 			if message.type is View.CellNotification.Notification.Info
+				message.closable = off
 				message.message = '
 					<div class="loading active">
 						<div class="spinner">
@@ -29,3 +28,4 @@ class View.CellNotification extends View.Notification
 					</div>
 					<small>' + message.message + '</small>
 					'
+					
