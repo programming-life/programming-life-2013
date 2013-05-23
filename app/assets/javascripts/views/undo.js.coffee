@@ -184,5 +184,11 @@ class View.Undo extends Helper.Mixable
 		node._object.redo()
 		@draw()
 
+	# Sets the tree of the view
+	#
+	# @param tree [Model.UndoTree] The tree to view
+	#
+	setTree: ( tree ) ->
+		@_tree = tree
 
 (exports ? this).View.Undo = View.Undo
