@@ -10,17 +10,39 @@ class View.Main extends View.RaphaelBase
 	#
 	constructor: ( container = "#paper" ) ->
 		container = $( container )[0]
-		super( Raphael(container, 0,0) )
+		super Raphael(container, 0,0) 
 
 		cell = new Model.Cell()
+
+		@_leftPane = new View.Pane(View.Pane.LEFT_SIDE, false) 
+		@_rightPane = new View.Pane(View.Pane.RIGHT_SIDE)
+
+		undo = new View.Undo( @_leftPane._container, cell._tree )
+		@_bind( 'view.cell.set', @, (cell) => 
+			undo.setTree(cell.cell._tree)
+		)
+		@_bind( 'module.set.hovered', @, (module, hovered, selected) => 
+			if hovered
+				undo.setTree(module._tree)
+			else unless @_moduleSelected
+				undo.setTree(cell._tree)
+		)
+		@_bind( 'module.set.selected', @, (module, selected) => 
+			if selected
+				@_moduleSelected = on
+			else
+				@_moduleSelected = off
+				undo.setTree(cell._tree)
+		)
+
+		@_leftPane.addView( undo )
 		@_views.push  new View.Cell( @_paper, cell)
-		@_leftPane = new View.Pane(View.Pane.LEFT_SIDE) 
-		@_leftPane.addView( new View.Tree( @_leftPane._paper, cell._tree ) )
 		@_views.push @_leftPane
-		@_views.push  new View.Pane(View.Pane.RIGHT_SIDE)
+		@_views.push @_rightPane
 
 		@resize()
 		$( window ).on( 'resize', @resize )
+
 
 		@draw()
 
@@ -65,5 +87,3 @@ class View.Main extends View.RaphaelBase
 		super()
 		@_paper.remove()
 		$( window ).unbind()
-
-(exports ? this).View.Main = View.Main

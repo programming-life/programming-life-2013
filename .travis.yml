@@ -30,6 +30,6 @@ script:
 notifications:
     webhooks:
         urls:
-            -http://life.jstfy.com/hook
+            - http://life.jstfy.com/hook
         on_succes: always
         on_failure: never

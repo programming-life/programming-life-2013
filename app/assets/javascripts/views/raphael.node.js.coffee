@@ -17,7 +17,6 @@ class View.Node extends View.RaphaelBase
 	# Performs the desired action on click
 	#
 	onClick: ( ) ->
-		console.log("Clicked " + @_node._object)
 
 	# Draws the view and thus the model
 	#
@@ -25,7 +24,7 @@ class View.Node extends View.RaphaelBase
 	# @param y [Integer] The y position
 	# @param scale [Integer] The scale
 	#
-	draw: ( x, y, scale ) ->
+	draw: ( x = @_x, y = @_y, scale = @_scale ) ->
 		@clear()
 		@_x = x
 		@_y = y
@@ -141,5 +140,3 @@ class View.Node extends View.RaphaelBase
 		})
 
 		return @_arrow
-
-(exports ? this).View.Node = View.Node

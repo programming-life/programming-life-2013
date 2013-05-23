@@ -158,7 +158,7 @@ class Model.Transporter extends Model.Module
 			return results
 		
 		# Default parameters set here
-		defaults = @_getParameterDefaults( start, name, consume, type, direction, transported )
+		defaults = @_getParameterDefaults( start, name, consume, type, direction, params.transported ? transported )
 		params = _( params ).defaults( defaults )			
 		metadata = @_getParameterMetaData()
 
@@ -168,10 +168,10 @@ class Model.Transporter extends Model.Module
 	#
 	# @param step [Function] the step function
 	#
-	_defineGetters: ( step, metadata ) ->
+	_defineGetters: ( params, step, metadata ) ->
 		@_nonEnumerableGetter( 'orig', () -> return @getTransportedNames( @transported )[0] )
 		@_nonEnumerableGetter( 'dest', () -> return @getTransportedNames( @transported )[1] )
-		super step, metadata
+		super params, step, metadata
 		
 	# Get parameter defaults array
 	#
@@ -293,5 +293,3 @@ class Model.Transporter extends Model.Module
 	#
 	@ext : ( params = { k_m: 0 }, start = 0, transported = "p", type = Model.Transporter.Passive, consume = "s#int" ) ->
 		return new Model.Transporter( params, start, "#{transported}", "transporter_#{transported}_out", Model.Transporter.Outward, type, consume )
-		
-(exports ? this).Model.Transporter = Model.Transporter

@@ -36,8 +36,7 @@
 
 \let\oldfootnote\footnote % Save the old \footnote{...} command
 \renewcommand\footnote[1]{% Redefine the new footnote to also add 'List of Footnote' entries.
-    \refstepcounter{footnotes}% Add and step a reference to the
-footnote/counter.
+    \refstepcounter{footnotes}% Add and step a reference to the footnote/counter.
     \oldfootnote{#1}% Make a regular footnote.
     \addcontentsline{fnt}{footnotes}{\protect
 \numberline{\thefootnotes}#1}% Add the 'List of...' entry.
@@ -48,59 +47,22 @@ footnote/counter.
 		The design of this application is explained first in terms of its design goals. Then a subsystem decomposition follows, which serves to uncover the inner workings of the application, along with a description of the mapping of subsystems to processes and computers, a hardware/software mapping. After this, the management of data and shared resources is discussed. In conclusion a short summary of the system architecture is given.
 		\subsection{Design goals}
 			Because the application has a very specific use, modelling cells and the processes within, the main design goal is to make this task as easy and intuitive as possible.
-			Further, as requested by the user, we want to give users:
+			Further, as requested by the client, we want to give users:
 			\begin{itemize}
 				\item clear indication that changes can be made and to what these changes apply.
-				\item the ability to easily import and export datasets from and to frequently used data-formats.
-				\item assistance in not making mistakes with their edits. If mistakes are made, they need to be easily identified and corrected.
+				\item the ability to easily import and export datasets from and to frequently used data-formats e.g. CSV, SBML, HTML, PDF and Excel.
+				\item feedback on incomplete cell-models created by the user. If mistakes are made, they need to be easily identified and corrected.
 				\item compare simulations by plotting data on other simulations.
 				\item the ability to work locally without the need to be connected to the server.
 				\item feedback on and the ability to share what is saved.
 				\item an easy way to undo changes.
 			\end{itemize}
 			To broaden their knowledge and expand their experience, the developers agreed to use programming languages and frameworks previously unknown to them.
-			
-			
 	\clearpage
-	\section{Software architecture views}
-		This section contains all the information about the software architecture of the application. The section is divided into several subsections to group together interesting information and improve readability.	
-		
-		\subsection{Framework and Development}
-			This section describes the key technologies used during a release cycle.
-			It is divided into three subsections; development, testing and production.
-			The first subsection is about the development phase, where features are realised.
-			The second section is about the testing phase, in which the features mentioned before are tested.
-			The third section describes the production/release phase, in which a tested feature is implemented.
-			
-			\subsubsection{Development}
-				During development we are making use of Coffeescript \footnote{http://coffeescript.org/\#language} for writing interaction assets, SASS \footnote{http://sass-lang.com/docs/yardoc/file.SASS\_REFERENCE.html} for styling and SVG \footnote{http://www.w3.org/Graphics/SVG/} with the Raphael \footnote{http://raphaeljs.com/reference.html} framework for visualising part of the application.
-				Coffeescript and SASS are preprocessors for respectively Javascript and CSS. Using these preprocessors gives us the advantage of cleaner syntax.
-				By making use of SVG to render the cell every graphical object is also a DOM object, this enables us to attach Javascript event handlers and modify the objects itself.
-				
-			\subsubsection{Testing}
-				We test the application in a Behaviour Driven Development (BDD \footnote{http://en.wikipedia.org/wiki/Behavior\-driven\_development} ) and Test Driven Development (TDD \footnote{http://en.wikipedia.org/wiki/Test\-driven\_development} ) way. 
-				The Javascript assets are tested using the Jasmine framework \footnote{http://pivotal.github.io/jasmine/} . 
-				To run all tests in the browser we are making use of the Teabag framework \footnote{https://github.com/modeset/teabag} . 
-				To keep track of code coverage we are making use of the Istanbul framework \footnote{https://github.com/gotwarlost/istanbul} .
-				The Ruby assets (database, MVC architecture - models, controllers, views - and Rails) are tested using the Rspec framework \footnote{http://rubydoc.info/gems/rspec\-rails/frames} .  
-				All tests run automatically using Continuous Integration, a practice in which tests are ran every time work has been done within critical sections of the code. 
-				Tests and coverage are used to ensure maintainability, consistency and quality of the code.
-				
-			\subsubsection{Production release}
-				During the Production release the Coffeescript assets are compiled to Javascript \footnote{https://developer.mozilla.org/en-US/docs/JavaScript/Reference} and the SASS assets are compiled to CSS, after which they are minified and bundled using uglifier \footnote{http://rubydoc.info/gems/uglifier/2.1.0/frames} . Minified assets take up less space and increase page performance which results in a better user experience and less demand on the web server. 
-				SVG is still used for creating visualisations of the cell models.
-		\newpage		
-		\subsection{Ordinary Differential Equation Solver}
-			All computations run client-side and are performed by our ODE Solver, which is built upon the numericjs library. This is a library which makes it possible to perform sophisticated numerical computations in pure JavaScript and thus is able to run in the browser. The ODEs are solved using the Dormand-Prince RK method \footnote{http://en.wikipedia.org/wiki/Dormand\%E2\%80\%93Prince\_method} , also known as the ode45-function in MATLAB (previously used by our client).
-			
-		\subsection{API}
-			The API can be found online here: http://coffeedoc.info/github/Derkje-J/programming-life/develop/ \\
-			In the future there will be a Rubydoc online for server-side assets and is updated after each commit.
-		\newpage
-		\section{Server Client Architecture}
+	\section{Architecture}
 			
 			\subsection{Server}
-				The server subsystems consist of two key parts: the server back end and the database, this can be seen in figure 1. The server keeps an up-to-date copy of the database and sychronises with the client side when possible. In the future it could be used to do calculations that are too complicated for the client-side of the application (Calculations are deemed too complicated when they take a notable amount of time to complete).
+				The server subsystems consist of two key parts: the server back end and the database, this can be seen in figure 1. The server keeps an up-to-date copy of the database and sychronises with the client side when possible. In the future it could be used to do calculations that are too complicated for the client-side of the application (calculations are deemed too complicated when they take a notable amount of time to complete).
 				The database is used for storage of user data, modules for cell design, as well as cell models created using the application. It provides a centralised storage, so users can share their modelled cells and can access their data anywhere. However the client-side application can function on any platform without a persistent internet connection.	\\
 				\begin{figure}[htb]
 				\begin{center}
@@ -141,15 +103,51 @@ footnote/counter.
 			When the user has access to the server, it can export simulation results to a report in multiple standardised format, such as \emph{HTML}, \emph{Excel} and \emph{PDF} which can then be shared. Maintaining a standardised format allows for consistency in the reports as requested by the user.		
 	
 		\subsection{Concurrency}
-			Each client runs independently and uses asynchronous communication with the server through \emph{REST}/\emph{CRUD} and \emph{AJAX}. Because of this, concurrency issues are very improbable. The client-side application is web-based, and uses only one process. Shared resources are retrieved atomically from and synchronised atomically with the database. Upon failure, the user is notified and possible solutions are provided. At this point the system does not allow concurrent edits on the same data, but this functionality was not reuqested by the user. Such functionality could be added in the future.\\
+			Each client runs independently and uses asynchronous communication with the server through \emph{REST}/\emph{CRUD} and \emph{AJAX}. Because of this, concurrency issues are very improbable. The client-side application is web-based, and uses only one process. Shared resources are retrieved atomically from and synchronised atomically with the database. Upon failure, the user is notified and possible solutions are provided. At this point the system does not allow concurrent edits on the same data, but this functionality was not reuqested by the user. Such functionality could be added in the future.\\		
 			
 	\clearpage
+	\section{Software architecture views}
+		This section contains all the information about the software architecture of the application. The section is divided into several subsections to group together interesting information and improve readability.	
+		
+		\subsection{Framework and Development}
+			This section describes the key technologies used during a release cycle.
+			It is divided into three subsections; development, testing and production.
+			The first subsection is about the development phase, where features are realised.
+			The second section is about the testing phase, in which the features mentioned before are tested.
+			The third section describes the production/release phase, in which a tested feature is implemented.
+			
+			\subsubsection{Development}
+				During development we are making use of Coffeescript \footnote{http://coffeescript.org/\#language} for writing interaction assets, SASS \footnote{http://sass-lang.com/docs/yardoc/file.SASS\_REFERENCE.html} for styling and SVG \footnote{http://www.w3.org/Graphics/SVG/} with the Raphael \footnote{http://raphaeljs.com/reference.html} framework for visualising part of the application.
+				Coffeescript and SASS are preprocessors for respectively Javascript and CSS. Using these preprocessors gives us the advantage of cleaner syntax.
+				By making use of SVG to render the cell every graphical object is also a DOM object, this enables us to attach Javascript event handlers and modify the objects itself.
+				
+			\subsubsection{Testing}
+				We test the application in a Behaviour Driven Development (BDD \footnote{http://en.wikipedia.org/wiki/Behavior\-driven\_development} ) and Test Driven Development (TDD \footnote{http://en.wikipedia.org/wiki/Test\-driven\_development} ) way. 
+				The Javascript assets are tested using the Jasmine framework \footnote{http://pivotal.github.io/jasmine/} . 
+				To run all tests in the browser we are making use of the Teabag framework \footnote{https://github.com/modeset/teabag} . 
+				To keep track of code coverage we are making use of the Istanbul framework \footnote{https://github.com/gotwarlost/istanbul} .
+				The Ruby assets (database, MVC architecture - models, controllers, views - and Rails) are tested using the Rspec framework \footnote{http://rubydoc.info/gems/rspec\-rails/frames} .  
+				All tests run automatically using Continuous Integration, a practice in which tests are ran every time work has been done within critical sections of the code. 
+				Tests and coverage are used to ensure maintainability, consistency and quality of the code.
+				
+			\subsubsection{Release}
+				During the Production release the Coffeescript assets are compiled to Javascript \footnote{https://developer.mozilla.org/en-US/docs/JavaScript/Reference} and the SASS assets are compiled to CSS, after which they are minified and bundled using uglifier \footnote{http://rubydoc.info/gems/uglifier/2.1.0/frames} . Minified assets take up less space and increase page performance which results in a better user experience and less demand on the web server. 
+				SVG is still used for creating visualisations of the cell models.
+		\newpage		
+		\subsection{Ordinary Differential Equation Solver}
+			All computations run client-side and are performed by our ODE Solver, which is built upon the numericjs \footnote{http://www.numericjs.com/} library. This is a library which makes it possible to perform sophisticated numerical computations in pure JavaScript and thus is able to run in the browser. The ODEs are solved using the Dormand-Prince RK method \footnote{http://en.wikipedia.org/wiki/Dormand\%E2\%80\%93Prince\_method} , also known as the ode45-function in MATLAB (previously used by our client).
+			
+		\subsection{API}
+			The API can be found online here: \url{http://coffeedoc.info/github/Derkje-J/programming-life/develop/} \\
+			In the future there will be a Rubydoc online for server-side assets and is updated after each commit.
+		\newpage
+			
 	\section{Summary}
 		The application is a lightweight, cross-platform graphical design tool with a centralised storage database. The architecture ensures its functionality on different kinds of machines as well as the ease of simulating complex cell models. It not only offers stability, ease and intuitive design, it offers it on every modern machine. During development of this application the design goals are continuously used as a mandate for the functionality and dictates the production flow.
 	\section{Glossary}
-		This section explains any and all terms that may be ambiguous or unclear:
-		\paragraph{REST} 
-			Representational State Transfer, or REST, is an architectural style of large-scale networked software that takes advantage of the technologies and protocols of the World Wide Web. \\
+		This section explains any and all terms that may be ambiguous or unclear:\\
+		
+		\textbf{REST}: Representational State Transfer, or REST, is an architectural style of large-scale networked software that takes advantage of the technologies and protocols of the World Wide Web. \\
 See \href{http://goo.gl/Lfwhs}{http://goo.gl/Lfwhs} for more information.
 
 

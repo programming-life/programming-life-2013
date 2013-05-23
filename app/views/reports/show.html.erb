@@ -1,7 +1,6 @@
 <header class="row">
 	<h1 class="span12">Report #<%= @report.id %> on cell #<%= @report.cell_id %> </h1>
 </header>
-
 <table class="table row">
 	<thead class="span12">
 		<tr>
@@ -19,7 +18,12 @@
 			<td class="span2">Cell</td>
 			<td class="span10">#<%= @report.cell.id %> <%= link_to @report.cell.name, @report.cell %></td>
 		</tr>
-
+		<tr>
+			<td class="span2"></td>
+			<td class="span10">
+				<%= render 'cell' %>
+			</td>
+		</tr>
 		<tr>
 			<td> Modules </td>
 			<td> 
@@ -78,11 +82,17 @@
 	</tbody>
 </table>
 
-<% unless request.format.to_sym == :pdf %>
-<footer class="row">
-	<div class="form-actions span12">
-		<%= link_to 'Create PDF', :format => :pdf %> 
-		<%= link_to 'Back', reports_path %>
-	</div>
-</footer>
+<% if @isPDF %>
+
+<% else %>
+	<footer class="row">
+		<div class="form-actions span12">
+			<%= form_for(@report, :html => {:class => "no-form"} ) do |f| %>
+				<%= f.hidden_field :data, :value => nil %>
+				<%= f.hidden_field :format, :value => :pdf %>
+				<%= f.submit :id => 'create-pdf', :class => "btn btn-primary", :disabled => :disabled, :value => 'Create PDF' %>
+			<% end %>
+			<%= link_to 'Back', reports_path %>
+		</div>
+	</footer>
 <% end -%>

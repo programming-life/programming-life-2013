@@ -172,7 +172,7 @@ describe( "Mixin: Event Bindings", function() {
 				});
 				
 				it( "should have triggered the event", function() {
-					expect( callback ).toHaveBeenCalledWith( this, source, identifier, message, args );
+					expect( callback ).toHaveBeenCalled()
 				});
 			});	
 			

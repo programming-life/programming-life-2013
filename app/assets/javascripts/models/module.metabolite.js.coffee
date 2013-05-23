@@ -54,28 +54,23 @@ class Model.Metabolite extends Model.Module
 				
 			return results
 
-		defaults = @_getParameterDefaults( start, placement, type )
+		defaults = @_getParameterDefaults( params.amount ? start, placement, type )
 		
-		name = params.name ? name ? undefined
-		params = _( _( params ).defaults( defaults ) ).omit( 'name' ) 
+		params.name = params.name ? name ? undefined
+		params = _( _( params ).defaults( defaults ) ).omit( 'amount' ) 
 		metadata = @_getParameterMetaData()
 		
 		super params, step, metadata
 		
-		@_name = name?.split( '#' )[0]
-		@_dynamicProperties.push 'name'
-		
-	# Add the getters for this module
+	# Define the dynamic properties of the module
 	#
-	# @param step [Function] the step function
+	# @param params [Object] The parameters to define
 	#
-	_defineGetters: ( step, metadata ) ->
-		@_nonEnumerableValue( '_name', undefined )
-		
+	_defineDynamicProperties: ( params ) ->
+		@_nonEnumerableValue( '_name', params.name?.split("#")[0] )
 		Object.defineProperty( @ , "name",
 		
 			set: ( param ) ->
-				console.log param
 				todo = _( ( value ) => @['_name'] = value ).bind( @, param?.split( '#' )[0] )
 				undo = _( ( value ) => @['_name'] = value ).bind( @, @[ '_name' ] )
 				
@@ -96,8 +91,10 @@ class Model.Metabolite extends Model.Module
 			enumerable: true
 			configurable: false
 		)
+		params = _( params ).omit("name")
+		super params
 		
-		super step, metadata
+		@_dynamicProperties.push 'name'
 		
 	# Get parameter defaults array
 	#
@@ -192,5 +189,3 @@ class Model.Metabolite extends Model.Module
 	#
 	@pext: ( params = {}, start = 0, name = "p" ) -> 
 		return new Model.Metabolite( params, start, name,  Model.Metabolite.Outside, Metabolite.Product )
-
-(exports ? this).Model.Metabolite = Model.Metabolite

@@ -27,7 +27,7 @@
     </nav>
     <div id='search'>
       <a id='class_list_link' href='../../class_list.html'>Classes</a>
-      <a id='file_list_link' href='../../file_list.html'>Files</a>
+      <a id='mixin_list_link' href='../../mixin_list.html'>Mixins</a>
       <a id='method_list_link' href='../../method_list.html'>Methods</a>
       <a id='extra_list_link' href='../../extra_list.html'>Extras</a>
     </div>
@@ -141,12 +141,32 @@
   </li>
   <li>
     <span class='signature'>
+      <a href='#setRoot-instance'>
+        - (void) <strong>setRoot</strong>(root)
+      </a>
+    </span>
+    <span class='desc'>
+      Set a new root for the tree
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
       <a href='#add-instance'>
-        - (Node) <strong>add</strong>(object, parent = @_root)
+        - (Node) <strong>add</strong>(object, parent = @_current)
       </a>
     </span>
     <span class='desc'>
       Add an object to the tree
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#addNode-instance'>
+        - (void) <strong>addNode</strong>(node, parent = @_current)
+      </a>
+    </span>
+    <span class='desc'>
+      Add a node to the tree
     </span>
   </li>
   <li>
@@ -162,31 +182,31 @@
   <li>
     <span class='signature'>
       <a href='#iterator-instance'>
-        - (void) <strong>iterator</strong>()
+        - (Array) <strong>iterator</strong>()
       </a>
     </span>
     <span class='desc'>
-      
+      A wrapper method the breadthfirst iterator
     </span>
   </li>
   <li>
     <span class='signature'>
       <a href='#breadthfirst-instance'>
-        - (void) <strong>breadthfirst</strong>(start = @_root)
+        - (Array) <strong>breadthfirst</strong>(start = @_root)
       </a>
     </span>
     <span class='desc'>
-      
+      Returns a breadthfirst itarator array for the tree
     </span>
   </li>
   <li>
     <span class='signature'>
       <a href='#depthfirst-instance'>
-        - (void) <strong>depthfirst</strong>(start = @_root)
+        - (Array) <strong>depthfirst</strong>(start = @_root)
       </a>
     </span>
     <span class='desc'>
-      
+      Returns a depthfirst itarator array for the tree
     </span>
   </li>
 </ul>
@@ -217,8 +237,29 @@
       <h2>Instance Method Details</h2>
       <div class='methods'>
   <div class='method_details'>
+    <p class='signature' id='setRoot-instance'>
+      - (void) <strong>setRoot</strong>(root)
+    </p>
+    <div class='docstring'>
+  <p>Set a new root for the tree</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>root</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Model/Node.html'>Model.Node</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The new root</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
     <p class='signature' id='add-instance'>
-      - (Node) <strong>add</strong>(object, parent = @_root)
+      - (Node) <strong>add</strong>(object, parent = @_current)
     </p>
     <div class='docstring'>
   <p>Add an object to the tree</p>
@@ -250,6 +291,35 @@
       (<tt>Node</tt>)
       &mdash;
       <span class='desc'>the added node</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='addNode-instance'>
+      - (void) <strong>addNode</strong>(node, parent = @_current)
+    </p>
+    <div class='docstring'>
+  <p>Add a node to the tree</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>node</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Model/Node.html'>Model.Node</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The node to add.</span>
+    </li>
+    <li>
+      <span class='name'>parent</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Model/Node.html'>Model.Node</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The new parent of the node.</span>
     </li>
   </ul>
 </div>
@@ -294,30 +364,88 @@
   </div>
   <div class='method_details'>
     <p class='signature' id='iterator-instance'>
-      - (void) <strong>iterator</strong>()
+      - (Array) <strong>iterator</strong>()
     </p>
-    <div class='tags'>
+    <div class='docstring'>
+  <p>A wrapper method the breadthfirst iterator    </p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Array</tt>)
+      &mdash;
+      <span class='desc'>The resuls of breadthfirst()</span>
+    </li>
+  </ul>
 </div>
   </div>
   <div class='method_details'>
     <p class='signature' id='breadthfirst-instance'>
-      - (void) <strong>breadthfirst</strong>(start = @_root)
+      - (Array) <strong>breadthfirst</strong>(start = @_root)
     </p>
-    <div class='tags'>
+    <div class='docstring'>
+  <p>Returns a breadthfirst itarator array for the tree</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>start</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Model/Node.html'>Model.Node</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The root of the iterator</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Array</tt>)
+      &mdash;
+      <span class='desc'>An array with the nodes of the tree in breadthfirst order</span>
+    </li>
+  </ul>
 </div>
   </div>
   <div class='method_details'>
     <p class='signature' id='depthfirst-instance'>
-      - (void) <strong>depthfirst</strong>(start = @_root)
+      - (Array) <strong>depthfirst</strong>(start = @_root)
     </p>
-    <div class='tags'>
+    <div class='docstring'>
+  <p>Returns a depthfirst itarator array for the tree</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>start</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Model/Node.html'>Model.Node</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The root of the iterator</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Array</tt>)
+      &mdash;
+      <span class='desc'>An array with the nodes of the tree in depthfirst order</span>
+    </li>
+  </ul>
 </div>
   </div>
 </div>
     </div>
     <div id='footer'>
   Generated on
-  Sun May 12 2013 04:54:49 GMT+0200 (W. Europe Daylight Time)
+  Sun May 19 2013 15:38:42 GMT+0200 (W. Europe Daylight Time)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

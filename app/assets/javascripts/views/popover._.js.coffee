@@ -1,4 +1,6 @@
-# 
+# Provides an HTML Popover
+#
+# @concern Mixin.EventBindings
 #
 class View.HTMLPopOver extends Helper.Mixable
 
@@ -11,10 +13,8 @@ class View.HTMLPopOver extends Helper.Mixable
 	# @param classname [String] the classname
 	# @param placement [String] the placement
 	#
-	constructor: ( parent, @title = '', classname = '', @placement = 'bottom' ) ->
-		@_parent = parent
-		
-		@_elem = @_create( classname )
+	constructor: ( @_parent , @title = '', classname = '', @placement = 'bottom' ) ->
+		@_elem = @_create classname
 		
 		@_allowEventBindings()
 		@draw()
@@ -32,7 +32,7 @@ class View.HTMLPopOver extends Helper.Mixable
 	# Kills the popover
 	#
 	kill: () ->
-		@elem?.remove()
+		@_elem?.remove()
 		@_unbindAll()
 		return this
 		
@@ -54,21 +54,13 @@ class View.HTMLPopOver extends Helper.Mixable
 		@_elem.append header if header?
 		@_elem.append @_createBody()
 		@_elem.append footer if footer?	
-		
-	# Create the popover header
-	#
-	# @param onclick [Function] the function to yield on click
-	# @return [Array<jQuery.Elem>] the header and the button element
-	#
-	_createHeader: ( onclick ) ->
-		@_header = $('<div class="popover-title"></div>')
 
-		@_closeButton = $('<button class="close">&times;</button>')
-		@_closeButton.on('click', onclick ) if onclick?
+		@setPosition()
 		
-		@_header.append @title
-		@_header.append @_closeButton
-		return [ @_header, @_closeButton ]
+	# Nullifies the header
+	#
+	_createHeader: () ->	
+		return [ undefined ]
 		
 	# Create the popover body
 	#
@@ -78,29 +70,19 @@ class View.HTMLPopOver extends Helper.Mixable
 		@_body = $('<div class="popover-content"></div>')
 		return @_body
 		
-	#  Create footer content and append to footer
+	# Nullifies the footer
 	#
-	# @param onclick [Function] the function to yield on click
-	# @param saveText [String] the text on the save button
-	# @return [Array<jQuery.Elem>] the footer and the button element
-	#
-	_createFooter: ( onclick, saveText = 'Save' ) ->
-		@_footer = $('<div class="modal-footer"></div>')
-
-		@_saveButton = $('<button class="btn btn-primary">' + saveText + '</button>')
-		@_saveButton.on('click', onclick ) if onclick?
-
-		@_footer.append @_saveButton
-		return [ @_footer, @_saveButton ]
+	_createFooter: () ->
+		return [ undefined ]
 		
-	# Sets the position of the popover so the arrow points straight at the module view
+	# Sets the position of the popover so the arrow points straight at the model view
 	#
 	setPosition: ( ) ->
 	
 		rect = @_parent.getBBox()
 		cx = rect.x + rect.width / 2
 		cy = rect.y + rect.height / 2
-
+		
 		width = @_elem.width()
 		height = @_elem.height()
 		
@@ -149,5 +131,3 @@ class View.HTMLPopOver extends Helper.Mixable
 
 		@_hovered = hovered
 		return this
-
-(exports ? this).View.HTMLPopOver = View.HTMLPopOver

@@ -1,141 +1,191 @@
 # The module dummy view shows a potential module.
 # It also allows for interaction adding this potential module to a cell.
 #
-class View.DummyModule extends View.Module
+class View.DummyModule extends View.RaphaelBase
 	
 	# Creates a new module view
 	# 
 	# @param paper [Raphael.Paper] the raphael paper
-	# @param cell [Model.Cell] the cell to show
-	# @param module [Model.Module] the module to show
-	# @param params [Object] the params
+	# @param _parent [View.cell] the cell view this dummy belongs to
+	# @param _cell [Model.Cell] the cell model displayed in the parent
+	# @param _modulector [Function] the module constructor
+	# @param _number [Integer] the number of instances allowed [ -1 is unlimted, 0 is none ]
+	# @param _params [Object] the params
 	#
-	constructor: ( paper, parent, cell, module, params = {} ) ->
-		super paper, parent, cell, module, params
+	constructor: ( paper, @_parent, @_cell, @_modulector, @_number, @_params = {} ) ->
+		
+		super paper
+		
 		@activated = off
-		
-	# Runs if module is selected
-	# 
-	# @param module [Model.Module] the module selected/deslected
-	# @param selected [Mixed] selected state
-	#
-	onModuleSelected: ( module, selected ) =>
-		
-		# If action runs on this module
-		if module is @module 
-			if selected
-				@onActivate() 
-				@redraw()
-		
-	# Activate button action
-	#
-	onActivate : ( ) ->
-		
-		switch @type
-		
-			when "DNA"
-				@_visible = off
-				@_cell.add( new Model.DNA() )
-				
-			when "Lipid"
-				@_visible = off
-				@_cell.add( new Model.Lipid() )
-				
-			when "Metabolite"
-				
-				#@_visible = on
-				#@activated = off
-				@_visible = off
-				
-				@_cell.addMetabolite( @_params.name, @_params.amount, @_params.supply, @_params.inside_cell, @_params.is_product )
-				
-			when "Transporter"
-					
-				@_visible = on
+		@_type = @_modulector.name
+		@_count = @_cell.numberOf @_modulector
+		@_visible = @_number is -1 or @_count < @_number
 
-				if @_params.direction is Model.Transporter.Outward
-					@_cell.add Model.Transporter.ext()
-					@_cell.addProduct( 'p', 0, true )
-					@_cell.addProduct( 'p', 0, false )
-				if @_params.direction is Model.Transporter.Inward
-					@_cell.add Model.Transporter.int()
-					@_cell.addSubstrate( 's', 0, 0, true )
-					#@_cell.addSubstrate( 's_ext', 0, false, false )
+		@_bind( 'cell.add.module', @, @onModuleAdd )
+		@_bind( 'cell.add.metabolite', @, @onModuleAdd )
+		@_bind( 'cell.remove.module', @, @onModuleRemove )
+		@_bind( 'cell.remove.metabolite', @, @onModuleRemove )
+		@_bind( 'paper.resize', @, @onPaperResize)
+		
+		@_bind( 'dummy.add.activate', @, @onAddActivated )
+		
+		# Here you would like to load a module properties view that calls the dummy.add.activate event on save
+		# The correct constructor gets auto called and no need to check it anymore :)
+		#
+		#@_propertiesView = new View.ModuleProperties( @, @_parent, @_cell, @_modulector )
+		@_notificationsView = new View.ModuleNotification( @, @_parent, @_cell, @_modulector )
+		
+		Object.defineProperty( @, 'visible',
+			get: ->
+				return @_visible
+		)
+		
+		Object.defineProperty( @, 'type',
+			get: ->
+				return @_type
+		)
+		
+		Object.defineProperty( @, 'module',
+			get: ->
+				return @_params
+		)
+		
+
+	# Runs if paper is resized
+	#
+	onPaperResize: ( ) =>
+		if @_selected
+			@redraw()
+		@_notificationsView.draw()	
+		
+	# Clicked the add button
+	#
+	# @params caller [Context] the caller of the event
+	# @params dummy [View.DummyModule] the dummy to activate
+	# @params params [Object] the params to pass to the constructor
+	#
+	onAddActivated : ( caller, dummy, params ) ->
+		if dummy isnt this
+			return
 			
+		@_cell.add new @_modulector( _( params ).clone( true ) )
+		
+		switch @_type
+			when "Transporter"
+				if @_params.direction is Model.Transporter.Outward
+					@_cell.addProduct( @_params.transported ? 'p', 0, true )
+					@_cell.addProduct( @_params.transported ? 'p', 0, false )
+				if @_params.direction is Model.Transporter.Inward
+					@_cell.addSubstrate( @_params.transported ? 's', 0, 0, true )
 			when "Metabolism"
-					
-				@_visible = on
+				@_cell.addSubstrate( @_params.orig ?'s', 0, 0, true )
+				@_cell.addProduct( @_params.dest ? 'p', 0, true )
 				
-				@_cell.add new Model.Metabolism()
-				@_cell.addProduct( 'p', 0, true )
-				@_cell.addSubstrate( 's', 0, 0, true )
-				
-			when "Protein"
-				@_visible = off
-				@_cell.add( new Model.Protein() )
-				
-					
+	# On Module Added to the Cell
+	#
+	# @param cell [Model.Cell] the cell added to
+	# @param module [Model.Module] the module added
+	#
+	onModuleAdd : ( cell, module ) ->
+		if cell is @_cell and module instanceof @_modulector 
+			@_count += 1
+			if @_number isnt -1 and @_number <= @_count
+				@hide() if @_visible
+
+	# On Module Removed from the Cell
+	#
+	# @param cell [Model.Cell] the cell removed from
+	# @param module [Model.Module] the module removed
+	#
+	onModuleRemove : ( cell, module ) ->
+		if cell is @_cell and module instanceof @_modulector 
+			@_count -= 1
+			if @_number > @_count
+				@show() unless @_visible
+					# Redraws this view iff it has been drawn before
+
+	# Draws this view
+	#
+	draw: ( x, y, scale ) ->
+		
+		super x, y
+		padding = 15 * scale
+		
+		# Start a set for contents
+		contents = @drawContents( x, y, scale, padding )
+		
+		# Draw box
+		@_box = @drawBox( contents, scale )
+		@_box.insertBefore contents
+		
+		# Draw hitbox
+		hitbox = @drawHitbox(@_box, scale)
+
+		hitbox.click =>
+			# Here normally this dummy would be 'selected' so the properties box comes on. Instead we directly 
+			# mimic the behaviour of entering the fields and adding a compound
+			#
+			_( @_trigger( 'dummy.add.activate', @, [ @, @_params ]) ).debounce( 100 )
+		
+		@_contents.push hitbox
+		@_contents.push contents
+		@_contents.push @_box
+		
+	# Hides this view
+	#
+	hide: () ->
+		@_visible = off
+		return this
+		
+	# Shows this view
+	#
+	show: () ->
+		@_visible = on
+		return this
+		
+	# Draws the box
+	#
+	# @param elem [Raphael] element to draw for
+	# @param scale [Integer] the scale
+	# @return [Raphael] the contents
+	#
+	drawBox : ( elem, scale ) ->
+		rect = elem.getBBox()
+		padding = 15 * scale
+		box = @_paper.rect(rect.x - padding, rect.y - padding, rect.width + 2 * padding, rect.height + 2 * padding)
+
+		classname = 'module-box inactive'
+		classname += ' hovered' if @_hovered
+		classname += ' selected' if @_selected
+		$(box.node).addClass classname
+		box.attr('r', 5)
+		
+		return box
+		
 	# Draws contents
 	#
 	# @param x [Integer] x position
 	# @param y [Integer] y position
 	# @param scale [Integer] box scale
-	# @param big [Boolean] box is selected or hovered
 	# @return [Raphael] the contents
 	#
-	drawContents: ( x, y, scale, padding, big ) ->
+	drawContents: ( x, y, scale, padding ) ->
 		
 		@_paper.setStart()
-		
-		switch @type
-									
-			when "DNA"
-						
-				text = @_paper.text( x, y, _.escape "Add #{@type}" )
-				text.attr
-					'font-size': 20 * scale
-				
-					
-			when "Lipid"
-						
-				text = @_paper.text( x, y, _.escape "Add #{@type}" )
-				text.attr
-					'font-size': 20 * scale
-				
-			when "Metabolite"
-			
-				text = @_paper.text( x, y, _.escape "Add #{@name}" )
-				text.attr
-					'font-size': 20 * scale
-				
-			when "Transporter"
-			
-				text = @_paper.text( x, y, _.escape "Add #{@name}" )
-				text.attr
-					'font-size': 20 * scale
-									
-			else
-				text = @_paper.text( x, y, _.escape "Add #{@type}" )
-				text.attr
-					'font-size': 20 * scale
-					
+		text = @_paper.text( x, y, _.escape "Add #{@_type}" )
+		text.attr
+			'font-size': 20 * scale
 		return @_paper.setFinish()
-	
-	# Draws the box
+		
+	# Draws this view hitbox
 	#
 	# @param elem [Raphael] element to draw for
 	# @param scale [Integer] the scale
-	# @return [Raphael] the box raphael
-	drawBox : ( elem, scale ) ->
-		box = super elem, scale
-		
-		classname = 'module-box inactive'
-		classname += ' hovered' if @_hovered
-		classname += ' selected' if @_selected
-		box.node.setAttribute( 'class', classname )
-		box.attr
-			r: 10 * scale
-			
-		return box
-		
-(exports ? this).View.DummyModule = View.DummyModule
+	# @return [Raphael] the contents
+	#
+	drawHitbox : ( elem, scale ) ->
+		rect = elem.getBBox()
+		hitbox = @_paper.rect(rect.x, rect.y, rect.width, rect.height)
+		hitbox.node.setAttribute('class', 'module-hitbox')	
+
+		return hitbox

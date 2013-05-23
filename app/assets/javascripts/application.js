@@ -16,6 +16,8 @@
 //= require json2
 //= require lodash
 //= require big.min
+//= require jquery.svg.js
+//= require jquery.svgdom.patched.js
 //
 //= require MVC
 //
@@ -35,6 +37,7 @@
 //= require g.line-min
 //= require raphael-triangle
 //= require raphael-arrow
+//= require raphael-animatevb
 //
 //= require chart
 //= require md5.min

@@ -115,5 +115,3 @@ class Model.DNA extends Model.Module
 				compounds: [ 'name', 'consume' ]
 
 		}
-
-(exports ? this).Model.DNA = Model.DNA
