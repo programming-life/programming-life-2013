@@ -51,6 +51,8 @@ class View.Cell extends View.RaphaelBase
 				@_bind( 'cell.add.metabolite', @, @onModuleAdd )
 				@_bind( 'cell.remove.module', @, @onModuleRemove )
 				@_bind( 'cell.remove.metabolite', @, @onModuleRemove )
+
+				@_trigger( 'view.cell.set', @, [ @cell ] )
 				
 				@redraw() if @_x? and @_y? and @_scale?
 
