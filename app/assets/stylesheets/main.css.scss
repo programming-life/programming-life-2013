@@ -6,11 +6,6 @@ body {
 	
 }
 
-.bottom {
-	position: absolute;
-	bottom: 0px;
-}
-
 .left {
 	position: absolute;
 	left: 0px;
@@ -27,9 +22,9 @@ body {
 
 .graph-title {
 	display: block;
-	width:50px;
+	width: 50px;
 	margin: 0 auto;
-	margin-top:-40px;
+	margin-top: -40px;
 }
 
 .cell {
@@ -38,14 +33,13 @@ body {
 }
 
 .module-box {
-	stroke: #cacaca;
+	stroke: rgba(0, 0, 0, .2);
 	stroke-width: 1px;
 	fill: rgba( 255, 255, 255, 1 );
 	
 	&.inactive {
 		stroke-dasharray: 5,5;
-		fill: rgba( 255, 255, 255, 0.6 );
-		
+		fill: rgba( 255, 255, 255, 0.6 );		
 	}
 	
 	&.hovered {
@@ -59,14 +53,8 @@ body {
 
 .module-close {
 	fill: #fff;
-	stroke:#333333;
-	stroke-width:2px;
-}
-
-.module-seperator {
-	stroke:#ababab;
-	stroke-width:1px;
-	fill:red;
+	stroke: #333333;
+	stroke-width: 2px;
 }
 
 .module-hitbox {
@@ -82,25 +70,183 @@ body {
 	opacity: 0;
 }
 
-.module-label {
+[class$='-substrate-circle'] {
+	stroke-width: 2px;
+}
 
-	tspan {
-		font-family: sans-serif !important;
-		#font-size: 16px !important;
-		text-align: right;
-		fill: #000;
+[class$='-substrate-sector'] {
+	stroke-width: 2px;
+}
 
-		dominant-baseline:mathematical;
+
+.substrate-substrate-text, .substrate-substrate-text-shadow {
+	font-weight: bolder !important;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+}
+
+text, tspan {
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+}
+
+.substrate-substrate-text {
+	fill: #fff;
+}
+
+.substrate-substrate-text-shadow {
+	fill: rgba(0, 0, 0, .25);
+}
+
+.metabolite-spline {
+	stroke-width: 4px;
+}
+
+.module-properties, .notification {
+	max-width: 251px;
+	position: absolute;
+	display: none;
+	
+	&.selected {
+		display: block;
+		opacity: 1;
+		z-index: 999;
+	}
+}
+
+.module-properties {
+
+	.control-group {
+		margin-bottom:8px;
+	}
+
+	.control-label {
+		width: 104px;
+	}
+
+	.controls {
+		margin-left: 119px;
+
+		.badge-metabolite {
+			font-size:14px;
+			line-hight:18px;
+			margin-top:5px;
+			margin-left:5px;
+		}
+	}	
+
+	hr {
+		margin:8px;
+	}
+	
+	&.hovered {
+		display: block;
+		opacity: .9;
+		z-index: 1000;
+
+		.close {
+			display: none;
+		}
+
+		.modal-footer {
+			display: none;
+		}
+
+		input, select {
+			border-color: rgba(0, 0, 0, 0);
+			box-shadow: none;
+		}
 	}
 }
 
 .transporter-arrow {
 	fill: #000;
 	stroke: #333;
-	stroke-width:1px;
+	stroke-width: 1px;
 }
 
-.transporter-substrate-circle {
-	stroke:#333;
-	stroke-width:2px;
+.pane {
+	height: 100%;
+	position: fixed;
+	backgrond-color: white;
+	
+	.pane-container {
+		width: 400px;
+		height: 100%;
+		background-color: white;
+		overflow: auto;
+	}
+
+	.pane-button{
+		width: 40px;
+		height: 100%
+	}
+	&.pane-left {
+		top: 0;
+		left: 0;
+		padding-right: 40px;
+	
+		.pane-button {
+			position: absolute;
+			right: 0;
+		}
+	}
+	&.pane-right {
+		top: 0;
+		right: 0;
+		padding-left: 40px;
+	
+		.pane-button {
+			position: absolute;
+			left: 0;
+		}
+	}
+}
+
+@media (max-width: 980px) and (min-width: 770px) {
+	.pane .pane-container {
+		width: 200px;
+	}
+}
+
+@media (max-width: 769px) and (min-width: 481px) {
+	.pane .pane-container {
+		width: 100px;
+	}
+}
+
+
+.undo {
+	padding: 10px;
+	h2 {
+		position: relative;
+		text-align: center;
+	}
+	.btn-left{
+		position: absolute;
+		top: 0;
+		left: 0;
+	}
+	.btn-right {
+		position: absolute;
+		top: 0;
+		right: 0;
+	}
+	dl dl{
+		width: 100%;
+	}
+	dl .undo-node:hover {
+		background-color: #cacaca;
+	}
+	dl dl.undo-current {
+		border: 2px solid #009ACD
+	}
+}
+#graphs {
+	height: 100%;
+}
+.graph-container {
+	width: 300px;
+	height: 200px;
+	margin: 20px;
+	display: inline;
+	float: left;
 }

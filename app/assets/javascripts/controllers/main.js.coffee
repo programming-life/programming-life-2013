@@ -6,39 +6,8 @@
 #
 class Controller.Main
 
-	# The undo tree for this controller
-	#
-	@_tree: new Model.UndoTree()
-
 	# Creates a new instance of Main
 	#
-	constructor: ( ) ->
-		@view = new View.Main()
-	
-	# Undoes the last move.
-	# 
-	undo: ( ) ->
-		object = [type, module]
-		@_tree.add( object )
-
-	# Redoes the last move.
-	#
-	redo: ( ) ->
-		[type, module] = @_tree.redo()
-		switch type
-			when 'modify' then module.redo()
-
-	# Adds a move to the undotree
-	#
-	# @param [String] type, the type of move. For now, 'modify' is implemented.
-	# @param [Module] module, the module that has done the move.
-	#
-	addMove: ( type, module ) ->
-		object = [type, module]
-		@_tree.add( object )
-
-
-$(document).ready ->
-	(exports ? window).Controller.Main = Controller.Main
-		
-	
+	# @param container [String, Object] A string with an id or a DOM node to serve as a container for the view
+	constructor: ( container ) ->
+		@_view = new View.Main(container)

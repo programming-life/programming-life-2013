@@ -14,11 +14,14 @@
 //= require jquery_ujs
 //= require jquery_nested_form
 //= require json2
-//= require underscore
+//= require lodash
 //= require big.min
+//= require jquery.svg.js
+//= require jquery.svgdom.patched.js
 //
 //= require MVC
 //
+//= require_tree ./helpers
 //= require_tree ./models
 //= require_tree ./views
 //= require_tree ./controllers
@@ -34,6 +37,7 @@
 //= require g.line-min
 //= require raphael-triangle
 //= require raphael-arrow
+//= require raphael-animatevb
 //
 //= require chart
 //= require md5.min

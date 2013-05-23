@@ -75,7 +75,19 @@ class Model.DNA extends Model.Module
 			return results
 		
 		# Define default parameters here
-		defaults = { 
+		defaults = @_getParameterDefaults( start, prefix, consume )
+		params = _( params ).defaults( defaults )
+		metadata =  @_getParameterMetaData()
+		
+		super params, step, metadata
+		
+	# Get parameter defaults array
+	#
+	# @param start [Integer] the start value
+	# @return [Object] default values
+	#
+	_getParameterDefaults: ( start, prefix, consume ) ->
+		return { 
 		
 			# Parameters
 			k : 1
@@ -88,7 +100,18 @@ class Model.DNA extends Model.Module
 			name : if prefix then "#{prefix}_dna" else "dna"
 		}
 		
-		params = _( params ).defaults( defaults )
-		super params, step
+	# Get parameter metadata
+	#
+	# @return [Object] metadata values
+	#
+	_getParameterMetaData: () ->
+		return {
+		
+			properties:
+				metabolites: [ 'consume' ]
+				parameters: [ 'k' ]
+				
+			tests:
+				compounds: [ 'name', 'consume' ]
 
-(exports ? this).Model.DNA = Model.DNA
+		}

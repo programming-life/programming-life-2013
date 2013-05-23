@@ -70,6 +70,8 @@ class Model.EventManager
 	# @return [self] chaining self
 	#
 	bind : ( event, context, func ) ->
+		unless _( func ).isFunction()
+			throw new TypeError 'That is not a function'
 		unless @_events[ event ]?
 			@_events[ event ] = []
 		@_events[ event ].push [ context, func ]
@@ -97,6 +99,12 @@ class Model.EventManager
 		if ( event? )
 			return @_events[ event ] ? []
 		return @_events
-	
+		
+	# Purges all events
+	# @return [self] chaining self
+	#
+	clear: () ->
+		@_events = {}
+		return this
 
 (exports ? this).Model.EventManager = Model.EventManager.getSingleton()

@@ -8,6 +8,11 @@ Teabag.setup do |config|
   # set this to your engines root.. E.g. `Teabag::Engine.root`
   config.root = nil
 
+  # Driver / Server
+  config.driver           = "selenium" # available: phantomjs, selenium
+  #config.server           = nil # defaults to Rack::Server
+
+
   # These paths are appended to the Rails assets paths (relative to config.root), and by default is an array that you
   # can replace or add to.
   config.asset_paths = ["spec/javascripts", "spec/javascripts/stylesheets"]
@@ -15,6 +20,10 @@ Teabag.setup do |config|
   # Fixtures are rendered through a standard controller. This means you can use things like HAML or RABL/JBuilder, etc.
   # to generate fixtures within this path.
   config.fixture_path = "spec/javascripts/fixtures"
+
+  # Coverage (requires istanbul -- https://github.com/gotwarlost/istanbul)
+  config.coverage         = true
+  config.coverage_reports = "text,html,cobertura"
 
   # You can modify the default suite configuration and create new suites here. Suites can be isolated from one another.
   # When defining a suite you can provide a name and a block. If the name is left blank, :default is assumed. You can
@@ -54,6 +63,38 @@ Teabag.setup do |config|
     # suite.no_coverage << "jquery.min.js" # excludes jquery from coverage reports
 
   end
+
+  config.suite do |suite|
+    suite.no_coverage << %r{/spec/javascripts/*}
+  end 
+  
+  config.suite :models do |suite|
+    suite.matcher = "{spec/javascripts/model_specs/}/**/*_spec.{js,js.coffee,coffee}"
+    suite.no_coverage << %r{/app/assets/javascripts/views/*}
+    suite.no_coverage << %r{/app/assets/javascripts/controllers/*}
+    suite.no_coverage << %r{/app/assets/javascripts/helpers/*}
+  end 
+  
+  config.suite :controllers do |suite|
+    suite.matcher = "{spec/javascripts/controller_specs/}/**/*_spec.{js,js.coffee,coffee}"
+    suite.no_coverage << %r{/app/assets/javascripts/views/*}
+    suite.no_coverage << %r{/app/assets/javascripts/models/*}
+    suite.no_coverage << %r{/app/assets/javascripts/helpers/*}
+  end 
+
+  config.suite :views do |suite|
+    suite.matcher = "{spec/javascripts/view_specs/}/**/*_spec.{js,js.coffee,coffee}"
+    suite.no_coverage << %r{/app/assets/javascripts/controllers/*}
+    suite.no_coverage << %r{/app/assets/javascripts/models/*}
+    suite.no_coverage << %r{/app/assets/javascripts/helpers/*}
+  end 
+
+  config.suite :helpers do |suite|
+    suite.matcher = "{spec/javascripts/helper_specs/}/**/*_spec.{js,js.coffee,coffee}"
+    suite.no_coverage << %r{/app/assets/javascripts/views/*}
+    suite.no_coverage << %r{/app/assets/javascripts/models/*}
+    suite.no_coverage << %r{/app/assets/javascripts/controllers/*}
+  end 
 
   # Example suite. Since we're just filtering to files already within the root spec/javascripts, these files will also
   # be run in the default suite -- but can be focused into a more specific suite.

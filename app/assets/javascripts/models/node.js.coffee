@@ -17,6 +17,8 @@ class Model.Node
 
 		@_parent._children.push( this ) if @_parent
 
+		Model.EventManager.trigger( 'node.creation', @, [] )
+
 	# Rebase this branch on a different node than its current parent.
 	#
 	# @param parent [Node] The new parent for the branch.
@@ -32,5 +34,23 @@ class Model.Node
 
 		@_parent = parent
 		return this
+	
+	# Replace this node with a different node
+	#
+	# @param other [Model.Node] The other node
+	# @return [Model.Node] The other node
+	#
+	replace: ( other ) ->
+		other._branch = @_branch unless other._branch
 
-(exports ? this).Model.Node = Model.Node
+		if @_parent?._branch is this
+			@_parent._branch = other
+		
+		other._children.push @_children...
+
+		if @_parent?
+			index = @_parent._children.indexOf this
+			@_parent._children.splice( index, 1 )
+		
+		for child in @_children
+			child._parent = other

@@ -14,6 +14,8 @@ class ReportsController < ApplicationController
 	def show
 		@report = Report.find(params[:id])
 		@module_instances = @report.cell.module_instances
+		@isPDF = false
+		@controller = 'View.Report'
 
 		respond_to do |format|
 			format.html
@@ -26,6 +28,7 @@ class ReportsController < ApplicationController
 	def new
 		@report = Report.new
 		@report.build_cell
+		@p = params[:test]
 		
 		respond_to do |format|
 			format.html # new.html.erb
@@ -47,6 +50,26 @@ class ReportsController < ApplicationController
 				format.json { render json: @report.errors, status: :unprocessable_entity }
 			end
 		end
+	end
+
+	# PUT /report/1
+	def update
+		@report = Report.find(params[:id])
+		@module_instances = @report.cell.module_instances
+		@report_params = params[:report]
+		@isPDF = true
+
+		if ( @report_params[:format] == 'pdf' )
+			respond_to do |format|
+				format.html { 
+					render	:pdf 					=> "#{@report.created_at.strftime("%Y-%m-%d")}_#{@report.id}_#{@report.cell.id}",
+							:disable_internal_links		=> true,
+		           			:disable_external_links		=> true,
+	           				:template					=> 'reports/show.html.erb'
+	           	}
+	        end
+	        return
+		end	
 	end
 
 	# DELETE /reports/1

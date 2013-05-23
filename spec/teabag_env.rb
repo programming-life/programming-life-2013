@@ -30,4 +30,35 @@ Teabag.setup do |config|
   # Coverage (requires istanbul -- https://github.com/gotwarlost/istanbul)
   config.coverage         = true
   config.coverage_reports = "text,html,cobertura"
+  config.suite do |suite|
+	suite.no_coverage << %r{/spec/javascripts/*}
+  end
+  
+  config.suite :models do |suite|
+  	suite.matcher = "{spec/javascripts/model_specs/}/**/*_spec.{js,js.coffee,coffee}"
+	suite.no_coverage << %r{/app/assets/javascripts/views/*}
+	suite.no_coverage << %r{/app/assets/javascripts/controllers/*}
+	suite.no_coverage << %r{/app/assets/javascripts/helpers/*}
+  end
+  
+  config.suite :controllers do |suite|
+  	suite.matcher = "{spec/javascripts/controller_specs/}/**/*_spec.{js,js.coffee,coffee}"
+	suite.no_coverage << %r{/app/assets/javascripts/views/*}
+	suite.no_coverage << %r{/app/assets/javascripts/models/*}
+	suite.no_coverage << %r{/app/assets/javascripts/helpers/*}
+  end
+
+  config.suite :views do |suite|
+  	suite.matcher = "{spec/javascripts/view_specs/}/**/*_spec.{js,js.coffee,coffee}"
+	suite.no_coverage << %r{/app/assets/javascripts/controllers/*}
+	suite.no_coverage << %r{/app/assets/javascripts/models/*}
+	suite.no_coverage << %r{/app/assets/javascripts/helpers/*}
+  end
+
+  config.suite :helpers do |suite|
+  	suite.matcher = "{spec/javascripts/helper_specs/}/**/*_spec.{js,js.coffee,coffee}"
+	suite.no_coverage << %r{/app/assets/javascripts/views/*}
+	suite.no_coverage << %r{/app/assets/javascripts/models/*}
+	suite.no_coverage << %r{/app/assets/javascripts/controllers/*}
+  end
 end

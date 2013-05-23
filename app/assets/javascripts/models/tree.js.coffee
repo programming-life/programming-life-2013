@@ -1,6 +1,9 @@
 # Basic tree class
 #
-class Model.Tree
+class Model.Tree extends Helper.Mixable
+	
+	@concern Mixin.EventBindings
+
 	# Constructor for tree
 	#
 	# @param [Node] root The root node of the tree
@@ -8,6 +11,18 @@ class Model.Tree
 	constructor: ( root = new Model.Node( null, null ) ) -> 
 		@_root = root
 		@_current = @_root
+
+		@_allowEventBindings()
+
+	# Set a new root for the tree
+	#
+	# @param root [Model.Node] The new root
+	setRoot: ( root ) ->
+		if @_current is @_root
+			@_current = root
+
+		@_root.replace( root )
+		@_root = root
 	
 	# Add an object to the tree
 	#
@@ -15,11 +30,26 @@ class Model.Tree
 	# @param parent [Node] The future parent
 	# @return [Node] the added node
 	#
-	add: ( object, parent = @_root ) ->
+	add: ( object, parent = @_current ) ->
 		node = new Model.Node(object, parent)
-		current = node
+		@_current = node
 		if parent isnt null
-			parent._branch = current
+			parent._branch = node
+
+		@_trigger( "tree.add.node", this, [ node ])
+
+		return node
+	
+	# Add a node to the tree
+	#
+	# @param node [Model.Node] The node to add.
+	# @param parent [Model.Node] The new parent of the node.
+	#
+	addNode: ( node, parent = @_current ) ->
+		node._parent = parent
+		parent._branch = node
+		parent._children.push node
+		@_current = node
 		return node
 	
 	# Find an objects location in the tree
@@ -35,9 +65,16 @@ class Model.Tree
 			return res if res
 		return null
 	
+	# A wrapper method the breadthfirst iterator	
+	#
+	# @return [Array] The resuls of breadthfirst()
 	iterator: ( ) ->
 		return @breadthfirst()
 	
+	# Returns a breadthfirst itarator array for the tree
+	#
+	# @param start [Model.Node] The root of the iterator
+	# @return [Array] An array with the nodes of the tree in breadthfirst order
 	breadthfirst: ( start = @_root ) ->
 		res = [start]
 
@@ -50,6 +87,10 @@ class Model.Tree
 
 		return res
 	
+	# Returns a depthfirst itarator array for the tree
+	#
+	# @param start [Model.Node] The root of the iterator
+	# @return [Array] An array with the nodes of the tree in depthfirst order
 	depthfirst: ( start = @_root ) ->
 		res = [start]
 
@@ -57,6 +98,15 @@ class Model.Tree
 			res.push @depthfirst(child)...
 
 		return res
-		
-		
-(exports ? this).Model.Tree = Model.Tree
+	
+	# Switches the branch of the tree to contain the node
+	#
+	# @param node [Model.Node] The node to switch the branch to
+	# @retun [Model.Node] The old branch
+	#
+	switchBranch: ( node ) ->
+		old = @_current
+		if node._parent?
+			node._parent._branch = node
+			@_current = node
+		return old

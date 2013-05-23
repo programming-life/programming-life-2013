@@ -1,0 +1,62 @@
+@-webkit-keyframes spin {
+    from { -webkit-transform: rotate(0deg); }
+    to { -webkit-transform: rotate(360deg); }
+}
+
+@-moz-keyframes spin {
+    from { -webkit-transform: rotate(0deg); }
+    to { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+ 
+/* Loading animation container */
+.loading {
+    //position: absolute;
+    //top: 50%;
+    left: 50%;
+    width: 18px;
+    height: 18px;
+    margin: 0 0 0 -9px;
+	position:relative;
+	display: none;
+	
+	.maskedCircle {
+		width: 12px;
+		height: 12px;
+		border-radius: 12px;
+		border: 3px solid black;
+	}	
+	
+	.mask {
+		width: 10px;
+		height: 10px;
+		overflow: hidden;
+	}
+	
+	.spinner {
+		//position: absolute;
+		left: 1px;
+		top: 1px;
+		width: 16px;
+		height: 16px;
+		-webkit-animation: spin 1s infinite linear;
+		-moz-animation: spin 1s infinite linear;
+		animation: spin 1s infinite linear;
+	}
+	
+	&.active {
+		display: block;
+	}
+}
+
+.notification {
+	small {
+		font-size: .7rem;
+		color: grey;
+	}
+}
