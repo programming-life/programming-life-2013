@@ -559,7 +559,7 @@ class Model.Cell extends Helper.Mixable
 	_save_modules: () =>
 		
 		promiseses = []
-		for module in @_getModules
+		for module in @_getModules()
 			promiseses.push module.save @id
 		
 		return $.when( promiseses... )
