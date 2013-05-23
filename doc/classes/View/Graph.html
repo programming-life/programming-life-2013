@@ -27,7 +27,7 @@
     </nav>
     <div id='search'>
       <a id='class_list_link' href='../../class_list.html'>Classes</a>
-      <a id='file_list_link' href='../../file_list.html'>Files</a>
+      <a id='mixin_list_link' href='../../mixin_list.html'>Mixins</a>
       <a id='method_list_link' href='../../method_list.html'>Methods</a>
       <a id='extra_list_link' href='../../extra_list.html'>Extras</a>
     </div>
@@ -113,7 +113,13 @@
       <table class='box'>
         <tr>
           <td>Defined in:</td>
-          <td>app&#47;assets&#47;javascripts&#47;views&#47;graph.js.coffee</td>
+          <td>app&#47;assets&#47;javascripts&#47;views&#47;raphael.graph.js.coffee</td>
+        </tr>
+        <tr>
+          <td>Inherits:</td>
+          <td>
+            <a href='../../classes/View/RaphaelBase.html'>View.RaphaelBase</a>
+          </td>
         </tr>
       </table>
       <h2>Overview</h2>
@@ -127,7 +133,10 @@
         <dt id='MAX_DATASETS-constant'>
           MAX_DATASETS
           =
-          <div class='tags'>
+          <div class='docstring'>
+  <p>Maximum number of simultaneously displayed data sets</p>
+</div>
+<div class='tags'>
 </div>
         </dt>
         <dd>
@@ -136,7 +145,10 @@
         <dt id='MAX_LENGTH-constant'>
           MAX_LENGTH
           =
-          <div class='tags'>
+          <div class='docstring'>
+  <p>Maximum length of a set</p>
+</div>
+<div class='tags'>
 </div>
         </dt>
         <dd>
@@ -148,7 +160,7 @@
   <li>
     <span class='signature'>
       <a href='#constructor-instance'>
-        - (void) <strong>constructor</strong>(paper, title, parent)
+        - (void) <strong>constructor</strong>(paper, _title, _parent)
       </a>
     </span>
     <span class='constructor note title'>Constructor</span>
@@ -173,7 +185,7 @@
       </a>
     </span>
     <span class='desc'>
-      
+      Append a dataset to the most recently added dataset
     </span>
   </li>
   <li>
@@ -188,22 +200,22 @@
   </li>
   <li>
     <span class='signature'>
-      <a href='#redraw-instance'>
-        - (void) <strong>redraw</strong>()
-      </a>
-    </span>
-    <span class='desc'>
-      Redraw this component with its current parameters
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
       <a href='#draw-instance'>
-        - (void) <strong>draw</strong>(x, y, scale)
+        - (void) <strong>draw</strong>(_x, _y, _scale)
       </a>
     </span>
     <span class='desc'>
       Draws the graph
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_drawChart-instance'>
+        - (void) <strong>_drawChart</strong>(x, y, scale)
+      </a>
+    </span>
+    <span class='desc'>
+      Draws the chart @retun [Raphael] The chart object
     </span>
   </li>
   <li>
@@ -237,11 +249,37 @@
     </span>
   </li>
 </ul>
+      <h2>
+        <small>Inherited Method Summary</small>
+      </h2>
+      <h3 class='inherited'>
+        Methods inherited from
+        <a href='../../classes/View/RaphaelBase.html'>View.RaphaelBase</a>
+      </h3>
+      <p class='inherited'>
+                <a href='../../classes/View/RaphaelBase.html#constructor-instance'>#constructor</a>,
+                <a href='../../classes/View/RaphaelBase.html#clear-instance'>#clear</a>,
+                <a href='../../classes/View/RaphaelBase.html#draw-instance'>#draw</a>,
+                <a href='../../classes/View/RaphaelBase.html#redraw-instance'>#redraw</a>,
+                <a href='../../classes/View/RaphaelBase.html#addView-instance'>#addView</a>,
+                <a href='../../classes/View/RaphaelBase.html#removeView-instance'>#removeView</a>,
+                <a href='../../classes/View/RaphaelBase.html#resize-instance'>#resize</a>,
+        <a href='../../classes/View/RaphaelBase.html#kill-instance'>#kill</a>
+      </p>
+      <h3 class='inherited'>
+        Methods inherited from
+        <a href='../../classes/Helper/Mixable.html'>Helper.Mixable</a>
+      </h3>
+      <p class='inherited'>
+                <a href='../../classes/Helper/Mixable.html#extend-class'>.extend</a>,
+                <a href='../../classes/Helper/Mixable.html#include-class'>.include</a>,
+        <a href='../../classes/Helper/Mixable.html#concern-class'>.concern</a>
+      </p>
       <h2>Constructor Details</h2>
       <div class='methods'>
   <div class='method_details'>
     <p class='signature' id='constructor-instance'>
-      - (void) <strong>constructor</strong>(paper, title, parent)
+      - (void) <strong>constructor</strong>(paper, _title, _parent)
     </p>
     <div class='docstring'>
   <p>Construct a new Graph object</p>
@@ -250,20 +288,20 @@
   <h3>Parameters:</h3>
   <ul class='param'>
     <li>
-      <span class='name'>paper</span>
-      <span class='type'>
-        (<tt>Object</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>The paper to draw on</span>
-    </li>
-    <li>
       <span class='name'>title</span>
       <span class='type'>
         (<tt>String</tt>)
       </span>
       &mdash;
       <span class='desc'>The title of the graph    </span>
+    </li>
+    <li>
+      <span class='name'>parent</span>
+      <span class='type'>
+        (<tt><a href='../../classes/View/Cell.html'>View.Cell</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The cell view this graph belongs to</span>
     </li>
   </ul>
 </div>
@@ -305,7 +343,29 @@
     <p class='signature' id='appendData-instance'>
       - (void) <strong>appendData</strong>(data)
     </p>
-    <div class='tags'>
+    <div class='docstring'>
+  <p>Append a dataset to the most recently added dataset</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>data</span>
+      <span class='type'>
+        (<tt>Array</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The data to append</span>
+    </li>
+    <li>
+      <span class='name'>return</span>
+      <span class='type'>
+        (<tt><a href='../../classes/View/Graph.html'>View.Graph</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>This for easy chaining</span>
+    </li>
+  </ul>
 </div>
   </div>
   <div class='method_details'>
@@ -319,18 +379,8 @@
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='redraw-instance'>
-      - (void) <strong>redraw</strong>()
-    </p>
-    <div class='docstring'>
-  <p>Redraw this component with its current parameters</p>
-</div>
-<div class='tags'>
-</div>
-  </div>
-  <div class='method_details'>
     <p class='signature' id='draw-instance'>
-      - (void) <strong>draw</strong>(x, y, scale)
+      - (void) <strong>draw</strong>(_x, _y, _scale)
     </p>
     <div class='docstring'>
   <p>Draws the graph</p>
@@ -366,6 +416,43 @@
 </div>
   </div>
   <div class='method_details'>
+    <p class='signature' id='_drawChart-instance'>
+      - (void) <strong>_drawChart</strong>(x, y, scale)
+    </p>
+    <div class='docstring'>
+  <p>Draws the chart</p><p>@retun [Raphael] The chart object</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>x</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the x position</span>
+    </li>
+    <li>
+      <span class='name'>y</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the y position</span>
+    </li>
+    <li>
+      <span class='name'>scale</span>
+      <span class='type'>
+        (<tt>Float</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the scale</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
     <p class='signature' id='_drawTitle-instance'>
       - (Raphael) <strong>_drawTitle</strong>(x, y, scale)
     </p>
@@ -394,7 +481,7 @@
     <li>
       <span class='name'>scale</span>
       <span class='type'>
-        (<tt>Integer</tt>)
+        (<tt>Float</tt>)
       </span>
       &mdash;
       <span class='desc'>the scale</span>
@@ -474,7 +561,7 @@
     </div>
     <div id='footer'>
   Generated on
-  Sun May 12 2013 04:54:49 GMT+0200 (W. Europe Daylight Time)
+  Sun May 19 2013 15:38:42 GMT+0200 (W. Europe Daylight Time)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

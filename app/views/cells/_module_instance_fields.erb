@@ -2,7 +2,7 @@
 	<%= f.label :module_template_id, :class => "control-label" %>
 	<div class="controls">
 		<%= f.select :module_template_id, ModuleTemplate.all.collect {|x| [ x.name, x.id ] }, {}, :multiple => false %>
-
+		<%= f.text_field :name, :placeholder => "compound name" %>
 		<%= f.link_to_remove '<i class="icon-white icon-trash"></i>'.html_safe, :class => 'btn btn-danger' %>
 	</div>
 </div>

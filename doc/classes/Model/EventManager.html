@@ -27,7 +27,7 @@
     </nav>
     <div id='search'>
       <a id='class_list_link' href='../../class_list.html'>Classes</a>
-      <a id='file_list_link' href='../../file_list.html'>Files</a>
+      <a id='mixin_list_link' href='../../mixin_list.html'>Mixins</a>
       <a id='method_list_link' href='../../method_list.html'>Methods</a>
       <a id='extra_list_link' href='../../extra_list.html'>Extras</a>
     </div>
@@ -171,7 +171,7 @@
   <li>
     <span class='signature'>
       <a href='#off-instance'>
-        - (self) <strong>off</strong>(event, func)
+        - (self) <strong>off</strong>(event, context, func)
       </a>
     </span>
     <span class='desc'>
@@ -191,7 +191,7 @@
   <li>
     <span class='signature'>
       <a href='#unbind-instance'>
-        - (self) <strong>unbind</strong>(event, func)
+        - (self) <strong>unbind</strong>(event, context, func)
       </a>
     </span>
     <span class='desc'>
@@ -206,6 +206,16 @@
     </span>
     <span class='desc'>
       Bindings for an event
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#clear-instance'>
+        - (self) <strong>clear</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Purges all events
     </span>
   </li>
 </ul>
@@ -340,7 +350,7 @@
   </div>
   <div class='method_details'>
     <p class='signature' id='off-instance'>
-      - (self) <strong>off</strong>(event, func)
+      - (self) <strong>off</strong>(event, context, func)
     </p>
     <div class='docstring'>
   <p>Unbinds an event (alias for unbind)</p>
@@ -355,6 +365,14 @@
       </span>
       &mdash;
       <span class='desc'>event name</span>
+    </li>
+    <li>
+      <span class='name'>context</span>
+      <span class='type'>
+        (<tt>Context</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>context</span>
     </li>
     <li>
       <span class='name'>func</span>
@@ -400,7 +418,7 @@
         (<tt>Context</tt>)
       </span>
       &mdash;
-      <span class='desc'>will serve as this</span>
+      <span class='desc'>context</span>
     </li>
     <li>
       <span class='name'>func</span>
@@ -424,7 +442,7 @@
   </div>
   <div class='method_details'>
     <p class='signature' id='unbind-instance'>
-      - (self) <strong>unbind</strong>(event, func)
+      - (self) <strong>unbind</strong>(event, context, func)
     </p>
     <div class='docstring'>
   <p>Unbinds an event</p>
@@ -447,6 +465,14 @@
       </span>
       &mdash;
       <span class='desc'>the event</span>
+    </li>
+    <li>
+      <span class='name'>context</span>
+      <span class='type'>
+        (<tt>Context</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>will serve as this</span>
     </li>
   </ul>
   <h3>Returns:</h3>
@@ -490,11 +516,30 @@
   </ul>
 </div>
   </div>
+  <div class='method_details'>
+    <p class='signature' id='clear-instance'>
+      - (self) <strong>clear</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Purges all events</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>self</tt>)
+      &mdash;
+      <span class='desc'>chaining self</span>
+    </li>
+  </ul>
+</div>
+  </div>
 </div>
     </div>
     <div id='footer'>
   Generated on
-  Sun May 12 2013 04:54:49 GMT+0200 (W. Europe Daylight Time)
+  Sun May 19 2013 15:38:42 GMT+0200 (W. Europe Daylight Time)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

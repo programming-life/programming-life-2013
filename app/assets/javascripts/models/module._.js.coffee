@@ -15,45 +15,43 @@ class Model.Module extends Helper.Mixable
 	# @param params [Object] parameters for this module
 	# @param step [Function] the step function
 	#
-	constructor: ( params = {}, step, metadata ) -> 
+	constructor: ( params = {}, step, metadata = {} ) -> 
 		
 		@_allowTimeMachine()
 		@_allowEventBindings()
 		
 		@_defineProperties( params, step, metadata )
+
+		action = @_createAction( "Created #{this.constructor.name}:#{this.name}")
+		@_tree.setRoot( new Model.Node(action, null) )
 					
-		@_bind( 'module.set.property', @, @onPropertySet )
+		@_bind( 'module.set.property', @, @onActionDo )
+		@_bind( 'module.set.compound', @, @onActionDo )
 		@_trigger( 'module.creation', @, [ @creation, @id ] )	
 		
 	# Defines All the properties
-	#
-	# @see {DynamicProperties} for function calls
 	#
 	# @return [self] chainable self
 	#
 	_defineProperties: ( params, step, metadata ) ->
 				
-		@_defineGetters( step, metadata )
-		@_defineAccessors()
+		properties = metadata.properties ? { }
+		properties.parameters = (properties.parameters ? [])
+		properties.parameters.push 'amount'
+		metadata.properties = properties
 		
-		@_propertiesFromParams(  
-			_( params ).defaults( {
-				id: _.uniqueId "client:#{this.constructor.name}:"
-				creation: Date.now()
-				starts: {}
-			} ),
-			'module.set.property'
-		)
+		@_defineGetters( params, step, metadata )
+		@_defineAccessors()
+		@_defineDynamicProperties( params )
 
 		Object.seal @ 
 		return this
 		
 	# Defines the getters
 	#
-	# @see {DynamicProperties} for function calls
 	# @return [self] chainable self
 	#
-	_defineGetters: ( step, metadata ) ->
+	_defineGetters: ( params, step, metadata ) ->
 		
 		@_nonEnumerableGetter( '_step', () -> return step )
 		@_nonEnumerableGetter( 'metadata', () -> return metadata )
@@ -83,13 +81,23 @@ class Model.Module extends Helper.Mixable
 			configurable: false
 			enumerable: false
 		)
+	_defineDynamicProperties: ( params ) ->
+		@_propertiesFromParams(  
+			_( params ).defaults( {
+				id: _.uniqueId "client:#{this.constructor.name}:"
+				creation: Date.now()
+				starts: {}
+			} ),
+			'module.set.property'
+		)
+		return this
 		
-	# Triggered when a property is set
+	# Triggered when an action is done
 	#
 	# @param caller [any] the originating property
 	# @param action [Model.Action] the action invoked
 	#
-	onPropertySet: ( caller, action ) =>
+	onActionDo: ( caller, action ) =>
 		if caller is @
 			@addUndoableEvent( action )
 		
@@ -152,9 +160,18 @@ class Model.Module extends Helper.Mixable
 	# @return [self] for chaining
 	#
 	setCompound: ( compound, value ) ->
-		@_trigger( 'module.set.compound', @, [ compound, @starts[ compound ] ? 0, value ] )	
 		
-		@starts[ compound ] = value
+		todo = _( ( compound, value ) -> @starts[ compound ] = value ).bind( @, compound, value )
+		undo = _( ( compound, value ) -> @starts[ compound ] = value ).bind( @, compound, @starts[ compound ] )
+		
+		action = new Model.Action( 
+			@, todo, undo, 
+			"Change #{compound} from #{ @starts[ compound ] } to #{value}" 
+		)
+		action.do()
+		
+		@_trigger( 'module.set.compound', @, [ action ] )	
+		
 		return this
 		
 	# Sets the metabolite to the start values (alias for setCompound)
@@ -196,11 +213,35 @@ class Model.Module extends Helper.Mixable
 		@_trigger( 'module.after.step', @, [ t, substrates, mu, results ] )
 		return results
 		
-	# Test function to override by submodules
+	# Listify a list
+	#
+	# @todo make this a helper function
+	#
+	_listify: ( items, bind = 'and', nothing = 'nothing' ) ->
+		return nothing if items.length is 0
+		return items[0] if items.length is 1
+		return ( _( items ).without ( last = _( items ).last() ) ).join(', ') + " #{bind} #{last}"
+		
+	# Test if compounds are available. Automatically maps keys to actual properties.
 	#
 	# @param compounds [Object] the available subs
+	# @param keys... [String] comma delimited list of keys that should be mapped to tests
+	# @return [Boolean] true if all are available
 	#
-	test: ( compounds ) ->
+	test: ( compounds, keys... ) ->
+		
+		tests = _( _( keys ).flatten() ).map( ( t ) => @[ t ] )
+		unless @_test( compounds, tests )
+			missing = _( _( tests ).flatten()  ).difference( _( compounds ).keys() )
+			@_notificate( 
+				@, @, 
+				"module.test.#{ @name }",
+				"I need #{ @_listify missing } #{ message ? '' }",
+				[ missing ],
+				Model.Module.Notification.Error
+			)
+			return false
+	
 		return true
 		
 	# Tests if substrates are available
@@ -215,16 +256,6 @@ class Model.Module extends Helper.Mixable
 			( test ) -> return not ( compounds[ test ]? ) 
 		)
 		
-		unless result
-			@_trigger( 'notification', @, 
-				[ 
-					# section, method, message-id
-					'module', 'test', "#{ @constructor.name }:#{ @name }:#{ id ? 1 }",
-					"I need compounds in #{ @constructor.name }:#{ @name } but they are not available. #{ message ? '' }",
-					[ compounds, tests ] 
-				] 
-			)	
-		
 		return result
 		
 	# Ensures test to be true or notifies with message
@@ -236,12 +267,11 @@ class Model.Module extends Helper.Mixable
 	_ensure : ( test, message ) ->
 		
 		unless test
-			@_trigger( 'notification', @, 
-				[ 
-					'module', 'ensure', "#{ @constructor.name }:#{ @name }:#{ id ? 1 }",
-					"In #{ @constructor.name }:#{ @name } an ensure failed: #{ message ? '' }",
-					[] 
-				] 
+			@_notificate( @, @, 
+				"module.ensure.#{ @name }",
+				"In #{ @constructor.name }:#{ @name } an ensure failed: #{ message ? 'No additional message.' }",
+				[],
+				Model.Module.Notification.Error
 			)		
 		
 		return test
@@ -258,12 +288,12 @@ class Model.Module extends Helper.Mixable
 			parameters[ parameter ] = @[ parameter ]
 
 		type = @constructor.name
-		
+	
 		result = { 
 			name: @name
 			parameters: parameters
 			type: type 
-			amount: @amount? 0
+			amount: @amount ? 0
 			step: @_step.toString() if type is "Module" and @_step?
 		}
 		
@@ -290,15 +320,15 @@ class Model.Module extends Helper.Mixable
 	# @return [Object] combined instance data
 	#
 	_getModuleInstanceData: ( instance, template, cell ) ->
-		return {
+		result = {
 			module_instance:
-				id: instance.id unless @isLocal()
 				module_template_id: template.id
 				cell_id: cell
 				name: instance.name
 				amount: instance.amount
 		}
-		
+		result.id = instance.id unless @isLocal()
+		return result
 		
 	# Updates the parameters givin
 	#
@@ -306,6 +336,14 @@ class Model.Module extends Helper.Mixable
 	# @return [jQuery.Promise] the update promise
 	#
 	_updateParameters: ( parameters ) ->
+		
+		@_notificate( @,  @, 
+			"module.save.#{ @name }",
+			"Saving #{ @name }...",
+			[ 'update parameters' ],
+			Model.Module.Notification.Info
+		)		
+	
 		params = []
 		for key, value of parameters
 			params.push
@@ -316,17 +354,26 @@ class Model.Module extends Helper.Mixable
 			module_parameters: params
 			
 		promise = $.ajax( @url, { data: module_parameters_data, type: 'PUT' } )
+		
+		promise.done( ( data ) =>
+			@_notificate( @, @, 
+				"module.save.#{ @name }",
+				"Succesfully saved #{ @name }",
+				[ 'update parameters' ],
+				Model.Module.Notification.Success
+			)		
+		)
+			
 		promise.fail( ( data ) => 		
-			@_trigger( 'notification', @, 
+			@_notificate( @, @, 
+				"module.save.#{ @name }",
+				"While saving parameters for #{ @name } an error occured: #{ JSON.stringify( data ? { message: 'none' } ) }",
 				[ 
-					'module', 'save', "#{ @constructor.name }:#{ @name }",
-					"While saving parameters for #{ @name } an error occured: #{ data ? '' }",
-					[ 
-						'update parameters',
-						data,
-						module_parameters_data, 
-					] 
-				] 
+					'update parameters',
+					data,
+					module_parameters_data, 
+				],
+				Model.Module.Notification.Error
 			)		
 		)
 		
@@ -340,6 +387,15 @@ class Model.Module extends Helper.Mixable
 	#
 	_create: ( instance, template, cell ) ->
 		
+		@_notificate( @,  @, 
+			"module.save.#{ @name }",
+			"Creating #{ @name }...",
+			[ 'create instance' ],
+			Model.Module.Notification.Info
+		)		
+		
+		console.log Model.Module.Notification
+		
 		module_instance_data = @_getModuleInstanceData( 
 			instance, template, cell 
 		)
@@ -351,18 +407,24 @@ class Model.Module extends Helper.Mixable
 			( data ) => 	
 				@id = data.id
 				
+				@_notificate( @,  @, 
+					"module.save.#{ @name }",
+					"Succesfully created #{ @name }",
+					[ 'create instance' ],
+					Model.Module.Notification.Success
+				)		
+				
 			# Fail
 			, ( data ) => 		
-				@_trigger( 'notification', @, 
+				@_notificate( @, @ 
+					"module.save.#{ @name }",
+					"While creating module instance #{ instance.name } an error occured: #{ JSON.stringify( data ? { message: 'none' } ) }",
 					[ 
-						'module', 'save', "#{ @constructor.name }:#{ @name }:#{ module_instance_data.name }",
-						"While creating module instance #{ instance.name } an error occured: #{ data ? '' }",
-						[ 
-							'create instance',
-							data,
-							module_instance_data
-						] 
-					] 
+						'create instance',
+						data,
+						module_instance_data
+					],
+					Model.Module.Notification.Error
 				)		
 			)
 		
@@ -398,16 +460,15 @@ class Model.Module extends Helper.Mixable
 				
 			# Fail
 			, ( data ) => 
-				@_trigger( 'notification', @, 
+				@_notificate( @,  @, 
+					"module.save.#{ @name }",
+					"While retrieving module template #{ serialized_data.type } an error occured: #{ JSON.stringify( data ? { message: 'none' } ) }",
 					[ 
-						'module', 'save', "#{ @constructor.name }:#{ @name }:#{ serialized_data.type }",
-						"While retrieving module template #{ serialized_data.type } an error occured: #{ data ? '' }",
-						[ 
-							'get instance',
-							data,
-							serialized_data
-						] 
-					] 
+						'get instance',
+						data,
+						serialized_data
+					],
+					Model.Module.Notification.Error
 				)		
 			)
 		
@@ -449,24 +510,29 @@ class Model.Module extends Helper.Mixable
 				cell.add result
 				callback.apply( @, result ) if callback?
 				
+				module._notificate(
+					cell, module, 
+					"module.load.:#{module_id}",
+					"Succesfully loaded #{module.name}",
+					[ 'load' ],
+					Model.Module.Notification.Success
+				)	
+				
 			# Fail
 			( data ) =>
 			
-				module._trigger( 
-					'notification', module, 
+				module._notificate(
+					cell, module, 
+					"module.load.:#{module_id}",
+					"I am trying to load module #{ module_id } for the cell #{ cell } but an error occured: #{ JSON.stringify( data ? { message: 'none' } ) }",
 					[ 
-						'module', 'load', 'module.load:#{module_id}',
-						"I am trying to load module #{ module_id } for the cell #{ cell } but an error occured: #{ data }",
-						[ 
-							'load', 
-							data, 
-							module_id,
-							cell
-						] 
-					] 
+						'load', 
+						data, 
+						module_id,
+						cell
+					],
+					Model.Module.Notification.Error
 				)	
 			)
 			
 		return promise
-	
-(exports ? this).Model.Module = Model.Module

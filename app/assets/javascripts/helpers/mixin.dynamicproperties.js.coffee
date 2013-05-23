@@ -1,6 +1,8 @@
 # Mixin for classes that allow dynamic properties
 #
-DynamicProperties =
+# @mixin
+#
+Mixin.DynamicProperties =
 
 	ClassMethods: {}
 	
@@ -40,12 +42,13 @@ DynamicProperties =
 							
 							action = new Model.Action( 
 								@, todo, undo, 
-								"Change #{key} from #{value} to #{param}" 
+								"Change #{key} from #{ @[ "#{key}" ] } to #{param}" 
 							)
 							action.do()
 							
-							if ( event? )
-								Model.EventManager.trigger( event, @, [ action ] )
+							if event?
+								func = @_trigger ? Model.EventManager.trigger
+								func( event, @, [ action ] )
 							
 						get: ->
 							return @["_#{key}"]
@@ -86,6 +89,4 @@ DynamicProperties =
 				configurable: false
 				enumerable: false
 			)
-			return this	
-
-( exports ? this ).Mixin.DynamicProperties = DynamicProperties
+			return this

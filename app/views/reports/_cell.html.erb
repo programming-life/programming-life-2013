@@ -1,0 +1,7 @@
+<% if @isPDF %>
+<img src= "<%= "data:image/svg+xml;base64,#{Base64.encode64(@report_params[:data])}" %>"></img>
+<% else %>
+<script>$( document ).ready( function() { document.mvc = new <%= @controller %>(<%= @report.cell.id %>); } );</script>
+<div id="paper"></div>
+<div id="graphs"></div>
+<% end %>

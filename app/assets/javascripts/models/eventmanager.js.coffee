@@ -99,6 +99,12 @@ class Model.EventManager
 		if ( event? )
 			return @_events[ event ] ? []
 		return @_events
-	
+		
+	# Purges all events
+	# @return [self] chaining self
+	#
+	clear: () ->
+		@_events = {}
+		return this
 
 (exports ? this).Model.EventManager = Model.EventManager.getSingleton()

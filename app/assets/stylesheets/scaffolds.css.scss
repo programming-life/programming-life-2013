@@ -1,13 +1,11 @@
 body {
   background-color: #fff;
   color: #333;
-  font-family: verdana, arial, helvetica, sans-serif;
   font-size: 13px;
   line-height: 18px;
 }
 
 p, ol, ul, td {
-  font-family: verdana, arial, helvetica, sans-serif;
   font-size: 13px;
   line-height: 18px;
 }
@@ -30,9 +28,10 @@ div {
 
 .field_with_errors {
   padding: 2px;
-  background-color: red;
-  display: table;
-  float: left;
+  border: 1px dashed darken( #eed3d7, 30%);
+  background-color: darken( #f2dede, 10% );
+  border-radius: 5px;
+  display: inline-block;
 }
 
 #error_explanation {

@@ -3,7 +3,9 @@
 # @see {Model.UndoTree} for the storage datastructure
 # @see {Model.Action} for the action datastructure
 #
-TimeMachine = 
+# @mixin
+#
+Mixin.TimeMachine = 
 	
 	ClassMethods: {}
 	
@@ -31,7 +33,7 @@ TimeMachine =
 		#	
 		addUndoableEventToSub: ( action, sub ) ->
 			tree_node = @addUndoableEvent action
-			sub?._tree?.setRoot tree_node
+			#sub?._tree?.setRoot tree_node
 			return tree_node
 			
 		# Undoes the last action
@@ -56,5 +58,3 @@ TimeMachine =
 		#
 		_createAction: ( description, context = @ ) ->
 			return new Model.Action( context, undefined, undefined, description )
-			
-( exports ? this ).Mixin.TimeMachine = TimeMachine
