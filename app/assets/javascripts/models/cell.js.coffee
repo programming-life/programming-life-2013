@@ -65,7 +65,7 @@ class Model.Cell extends Helper.Mixable
 	_defineValues: () ->
 	
 		@_nonEnumerableValue( '_modules', [] )
-		@_nonEnumerableValue( '_metabolites', {} )
+		@_nonEnumerableValue( '_metabolites', [] )
 		
 		return this
 		
@@ -149,17 +149,6 @@ class Model.Cell extends Helper.Mixable
 		@_trigger( 'cell.add.module', @, [ module ] )
 		return this
 		
-	# Ensures that metabolite can be accessed
-	#
-	# @param name [String] metabolite name
-	# @return [self] chainable instance
-	#
-	_ensureMetaboliteAllocation: ( name ) ->
-		if !@_metabolites[ name ]? 
-			@_metabolites[ name ] = { }
-			@_metabolites[ name ][ Model.Metabolite.Inside ] = undefined
-			@_metabolites[ name ][ Model.Metabolite.Ouside ] = undefined
-		return this
 		
 	# Actually adds the metabolite to the cell
 	# 
@@ -169,13 +158,11 @@ class Model.Cell extends Helper.Mixable
 	addMetaboliteModule: ( metabolite ) ->
 	
 		name = _( metabolite.name.split( '#' ) ).first()
-		@_ensureMetaboliteAllocation( name )
-		
 		action = 
-			@_createAction( "Added a #{metabolite.constructor.name}:#{metabolite.name} with amount #{metabolite.amount}" )
+			@_createAction( "Added #{metabolite.constructor.name}: #{name} init=#{metabolite.amount} dt=#{metabolite.supply}" )
 				.set( 
-					_( @_addMetabolite ).bind( @, name, metabolite.placement, metabolite ),
-					_( @_removeMetabolite ).bind( @, name, metabolite.placement )
+					_( @_addMetabolite ).bind( @, metabolite ),
+					_( @_removeMetabolite ).bind( @, metabolite )
 				)
 				.do()
 		
@@ -186,17 +173,15 @@ class Model.Cell extends Helper.Mixable
 
 	# Actually adds the metabolite to the cell
 	#
-	# @param name [String] the name of the metabolite
-	# @param placement [Integer] the placement of the metabolite
 	# @param metabolite [Model.Metabolie] Metabolie to add to the cell
 	# @return [self] chainable instance
 	#
-	_addMetabolite: ( name, placement, metabolite ) -> 
-		@_metabolites[ name ][ placement ] = metabolite 
+	_addMetabolite: ( metabolite ) -> 
+		@_metabolites.push metabolite 
 		@_trigger( 'cell.add.metabolite', @, 
 			[ 
 				metabolite, 
-				name, 
+				metabolite.name, 
 				metabolite.amount, 
 				metabolite.placement is Model.Metabolite.Inside, 
 				metabolite.type is Model.Metabolite.Product 
@@ -217,12 +202,13 @@ class Model.Cell extends Helper.Mixable
 		
 		placement = if inside_cell then Model.Metabolite.Inside else Model.Metabolite.Outside
 		type = if is_product then Model.Metabolite.Product else Model.Metabolite.Substrate
+		metabolite = new Model.Metabolite( { supply: supply }, amount, name, placement, type )
 		
-		if @_metabolites[ name ]? and @_metabolites[ name ][ placement ]? 
-			@_metabolites[ name ][ placement ].amount = amount
+		if @hasMetabolite metabolite.name
+			@getMetabolite( metabolite.name ).amount = amount
 			return this
 			
-		@addMetaboliteModule( new Model.Metabolite( { supply: supply }, amount, name, placement, type ) )
+		@addMetaboliteModule metabolite
 
 		return this
 		
@@ -256,8 +242,7 @@ class Model.Cell extends Helper.Mixable
 	
 		# Transparent adding of metabolites
 		if module instanceof Model.Metabolite
-			name = _( module.name.split( '#' ) ).first()
-			@removeMetabolite name, module.placement
+			@removeMetabolite _( module.name.split( '#' ) ).first()
 			return this
 			
 		action = 
@@ -268,7 +253,7 @@ class Model.Cell extends Helper.Mixable
 				)
 				.do()
 	
-		@addUndoableEvent( action )
+		@addUndoableEvent action
 		
 		return this
 	
@@ -285,36 +270,34 @@ class Model.Cell extends Helper.Mixable
 	# Removes this metabolite from cell
 	#
 	# @param name [String] metabolites to remove from this cell
-	# @param placement [Integer] metabolite placement to remove from this cell
 	# @return [self] chainable instance
 	#
-	removeMetabolite: ( name, placement ) ->
+	removeMetabolite: ( name ) ->
 		
-		return this unless @hasMetabolite( name, placement )
-		
-		module = @getMetabolite( name, placement )
+		return this unless @hasMetabolite name
+		module = @getMetabolite name 
 		
 		action = 
 			@_createAction( "Removed metabolite #{module.name}" )
 				.set( 
-					_( @_removeMetabolite ).bind( @, name, placement ),
-					_( @_addMetabolite ).bind( @, name, placement, module )
+					_( @_removeMetabolite ).bind( @, module ),
+					_( @_addMetabolite ).bind( @, module )
 				)
 				.do()
 		
-		@addUndoableEvent( action )
+		@addUndoableEvent action
 		return this
 	
 	# Actually removes the metabolite from the cell
 	#
 	# @param name [String] the name of the metabolite
 	# @param placement [Integer] the placement of the metabolite
-	# @param metabolite [Model.Metabolie] Metabolie to remove from the cell
 	# @return [self] chainable instance
 	#
-	_removeMetabolite: ( name, placement ) -> 
-		module = @_metabolites[ name ][ placement ]
-		delete @_metabolites[ name ][ placement ]
+	_removeMetabolite: ( name ) -> 
+		module = @getMetabolite name 
+		return this unless module?
+		@_metabolites = _( @_metabolites ).without module
 		@_trigger( 'cell.remove.metabolite', @, [ module ] )
 		return this
 		
@@ -324,8 +307,8 @@ class Model.Cell extends Helper.Mixable
 	# @param placement [Integer] substrate placement to remove from this cell
 	# @return [self] chainable instance
 	#
-	removeSubstrate: ( name, placement ) ->
-		return @removeMetabolite( name, placement )
+	removeSubstrate: ( name ) ->
+		return @removeMetabolite name
 		
 	# Removes this product from cell (alias for removeProduct)
 	#
@@ -333,8 +316,8 @@ class Model.Cell extends Helper.Mixable
 	# @param placement [Integer] product placement to remove from this cell
 	# @return [self] chainable instance
 	#
-	removeProduct: ( name, placement ) ->
-		return @removeMetabolite( name, placement )
+	removeProduct: ( name ) ->
+		return @removeMetabolite name
 		
 	# Checks if this cell has a module
 	#
@@ -347,64 +330,58 @@ class Model.Cell extends Helper.Mixable
 	# Checks if this cell has this metabolite
 	# 
 	# @param name [String] the name of the metabolite
-	# @param placement [Integer] metabolite placement
 	# @return [Boolean] true if contains
 	#
-	hasMetabolite: ( name, placement ) ->
-		return @_metabolites[ name ][ placement ]?
+	hasMetabolite: ( name ) ->
+		return _( @_metabolites ).some( ( metabolite ) -> metabolite.name is name )
 		
 	# Checks if this cell has this substrate (alias for hasMetabolite)
 	# 
 	# @param name [String] the name of the substrate
-	# @param placement [Integer] substrate placement
 	# @return [Boolean] true if contains
 	#
-	hasSubstrate: ( name, placement ) ->
-		return @hasMetabolite( name, placement )
+	hasSubstrate: ( name ) ->
+		return @hasMetabolite name
 		
 	# Checks if this cell has this product (alias for hasMetabolite)
 	# 
 	# @param name [String] the name of the product
-	# @param placement [Integer] product placement
 	# @return [Boolean] true if contains
 	#
-	hasProduct: ( name, placement ) ->
-		return @hasMetabolite( name, placement )
+	hasProduct: ( name ) ->
+		return @hasMetabolite name 
 		
 	# Gets a metabolite
 	# 
 	# @param name [String] the name of the metabolite
-	# @param placement [Integer] metabolite placement
 	# @return [Model.Metabolite] the metabolite
 	#
-	getMetabolite: ( name, placement ) ->
-		return @_metabolites[ name ]?[ placement ] ? null
+	getMetabolite: ( name ) ->
+		return _( @_metabolites ).find( ( metabolite ) -> metabolite.name is name ) ? undefined
 		
 	# Gets a substrate (alias for getMetabolite)
 	# 
 	# @param name [String] the name of the substrate
-	# @param placement [Integer] substrate placement
 	# @return [Model.Metabolite] the substrate
 	#
-	getSubstrate: ( name, placement ) ->
-		return @getMetabolite( name, placement )
+	getSubstrate: ( name ) ->
+		return @getMetabolite name
 		
 	# Gets a product (alias for getMetabolite)
 	# 
 	# @param name [String] the name of the product
-	# @param placement [Integer] product placement
 	# @return [Model.Metabolite] the product
 	#
-	getProduct: ( name, placement ) ->
-		return @getMetabolite( name, placement )
+	getProduct: ( name ) ->
+		return @getMetabolite name
 	
 	# Returns the amount of metabolite in this cell
 	#
 	# @param name [String] metabolite to check
 	# @return [Integer] amount of metabolite
 	#
-	amountOf: ( name, placement ) ->
-		return @_metabolites[ name ][ placement ]?.amount
+	amountOf: ( name ) ->
+		return @getMetabolite( name )?.amount
 		
 	# Returns the number of modules of this type
 	#
@@ -416,12 +393,7 @@ class Model.Cell extends Helper.Mixable
 	# @return [Array<Model.Module>] modules
 	#
 	_getModules: () ->
-		return _( @_metabolites ).chain()
-			.map( ( ms ) -> _( ms ).values() )
-			.flatten()
-			.filter( ( ms ) -> ms instanceof Model.Metabolite )
-			.concat( @_modules )
-			.value()
+		return _( @_metabolites ).concat @_modules
 			
 	# Gets all the modules that are steppable, and their compounds
 	# 
@@ -569,19 +541,13 @@ class Model.Cell extends Helper.Mixable
 		type = @constructor.name
 		
 		modules = []
-		for module in @_modules
+		for module in @_getModules()
 			modules.push module.serialize( false )
-			
-		metabolites = {}
-		for name, packet of @_metabolites
-			for placement, object of packet
-				if object? and object isnt null
-					metabolites[ object.name ] = object.serialize( false )
 		
 		result = { 
 			parameters: parameters
 			type: type
-			modules: _( modules ).concat( _( metabolites ).values() )
+			modules: modules
 		}
 		
 		return JSON.stringify( result ) if to_string
@@ -594,13 +560,8 @@ class Model.Cell extends Helper.Mixable
 	_save_modules: () =>
 		
 		promiseses = []
-		for module in @_modules
+		for module in @_getModules
 			promiseses.push module.save @id
-			
-		for name, packet of @_metabolites
-			for placement, object of packet
-				if object? and object isnt null
-					promiseses.push object.save @id
 		
 		return $.when( promiseses... )
 		
