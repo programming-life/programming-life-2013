@@ -288,12 +288,12 @@ class Model.Module extends Helper.Mixable
 			parameters[ parameter ] = @[ parameter ]
 
 		type = @constructor.name
-		
+	
 		result = { 
 			name: @name
 			parameters: parameters
 			type: type 
-			amount: @amount? 0
+			amount: @amount ? 0
 			step: @_step.toString() if type is "Module" and @_step?
 		}
 		
