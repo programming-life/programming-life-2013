@@ -12,9 +12,9 @@ class View.DummyModule extends View.RaphaelBase
 	# @param _number [Integer] the number of instances allowed [ -1 is unlimted, 0 is none ]
 	# @param _params [Object] the params
 	#
-	constructor: ( paper, @_parent, @_cell, @_modulector, @_number, @_params = {} ) ->
+	constructor: ( paper, parent, @_cell, @_modulector, @_number, @_params = {} ) ->
 		
-		super paper
+		super paper, parent
 		
 		@activated = off
 		@_type = @_modulector.name
@@ -103,6 +103,35 @@ class View.DummyModule extends View.RaphaelBase
 			if @_number > @_count
 				@show() unless @_visible
 					# Redraws this view iff it has been drawn before
+
+	# Returns the bounding box of this view
+	#
+	# @return [Object] a bounding box object with coordinates
+	#
+	getBBox: ( ) -> 
+		return @_box?.getBBox() ? { x:0, y:0, x2:0, y2:0, width:0, height:0 }
+
+	# Returns the coordinates of either the entrance or exit of this view
+	#
+	# @param location [View.Module.Location] the location (entrance or exit)
+	# @return [[float, float]] a tuple of the x and y coordinates
+	#
+	getPoint: ( location ) ->
+		box = @getBBox()
+
+		switch location
+			when View.Module.Location.Left
+				return [box.x ,@y]
+			when View.Module.Location.Right
+				return [box.x2 ,@y]
+			when View.Module.Location.Top
+				return [@x, box.y]
+			when View.Module.Location.Bottom
+				return [@x, box.y2]
+
+	getAbsolutePoint: ( location ) ->
+		[x, y] = @getPoint(location)
+		return @getAbsoluteCoords(x, y)
 
 	# Draws this view
 	#

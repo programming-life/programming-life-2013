@@ -20,7 +20,6 @@ class View.ModuleProperties extends View.HTMLPopOver
 
 		super parent, module.constructor.name, ' module-properties', 'bottom'
 		
-		@_bind('module.drawn', @, @onModuleDrawn)
 		@_bind('module.set.hovered', @, @onModuleHovered)
 		@_bind('module.set.selected', @, @onModuleSelected)
 		@_bind('module.set.property', @, @onModuleInvalidated)

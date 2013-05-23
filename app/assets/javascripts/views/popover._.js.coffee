@@ -15,8 +15,13 @@ class View.HTMLPopOver extends Helper.Mixable
 	#
 	constructor: ( @_parent , @title = '', classname = '', @placement = 'bottom' ) ->
 		@_elem = @_create classname
-		
+
+		locationName = @placement[0].toUpperCase() + @placement.slice(1);
+		@_location = View.Module.Location[locationName]
+
 		@_allowEventBindings()
+		@_bind('paper.resize', @, @setPosition)
+		@_bind('module.drawn', @, @setPosition)
 		@draw()
 		
 	# Creates the popover element
@@ -54,8 +59,6 @@ class View.HTMLPopOver extends Helper.Mixable
 		@_elem.append header if header?
 		@_elem.append @_createBody()
 		@_elem.append footer if footer?	
-
-		@setPosition()
 		
 	# Nullifies the header
 	#
@@ -78,27 +81,30 @@ class View.HTMLPopOver extends Helper.Mixable
 	# Sets the position of the popover so the arrow points straight at the model view
 	#
 	setPosition: ( ) ->
-	
-		rect = @_parent.getBBox()
-		cx = rect.x + rect.width / 2
-		cy = rect.y + rect.height / 2
+
+		left = 0
+		top = 0
+
+		[x, y] = @_parent.getAbsolutePoint(@_location)
 		
 		width = @_elem.width()
 		height = @_elem.height()
+
+		console.log width, height
 		
 		switch @placement
 			when 'top'
-				left = cx - width / 2 - 1
-				top = rect.y - height - 6
+				left = x - width / 2 - 1
+				top = y - height - 4
 			when 'bottom'
-				left = cx - width / 2 
-				top =  rect.y + rect.height + 2
+				left = x - width / 2 - 1
+				top =  y
 			when 'left'
-				left = rect.x - width - 4
-				top = cy - height / 2
+				left = x - width - 4
+				top = y - height / 2 - 1
 			when 'right'
-				left = rect.x + rect.width + 2
-				top = cy - height / 2
+				left = x
+				top = y - height / 2 - 1
 				
 		@_elem.css( { left: left, top: top } )
 		return this

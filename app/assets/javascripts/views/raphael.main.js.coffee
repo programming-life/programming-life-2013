@@ -12,12 +12,32 @@ class View.Main extends View.RaphaelBase
 		container = $( container )[0]
 		super Raphael(container, 0,0) 
 
-		cell = new Model.Cell()
+		width = $( window ).width()
+		height = $( window ).height()
+		x = -width / 2
+		y = -height / 2
+
+		@_viewbox = @_paper.setViewBox(-750, -500, 1500, 1000)
+
+		@_cell = new Model.Cell()
+		@_cellView = new View.Cell( @_paper, @, @_cell)
 
 		@_leftPane = new View.Pane(View.Pane.LEFT_SIDE, false) 
+		undo = new View.Undo( @_leftPane._container, @_cell._tree )
+		@_leftPane.addView( undo )
+
 		@_rightPane = new View.Pane(View.Pane.RIGHT_SIDE)
 
-		undo = new View.Undo( @_leftPane._container, cell._tree )
+		@_views.push @_cellView
+		@_views.push @_leftPane
+		@_views.push @_rightPane
+	
+		@resize()
+		
+		$( window ).on( 'resize', =>
+			_( @resize() ).debounce( 300 )
+		)
+		
 		@_bind( 'view.cell.set', @, (cell) => 
 			undo.setTree(cell.cell._tree)
 		)
@@ -25,61 +45,56 @@ class View.Main extends View.RaphaelBase
 			if hovered
 				undo.setTree(module._tree)
 			else unless @_moduleSelected
-				undo.setTree(cell._tree)
+				undo.setTree(@_cell._tree)
 		)
 		@_bind( 'module.set.selected', @, (module, selected) => 
 			if selected
 				@_moduleSelected = on
 			else
 				@_moduleSelected = off
-				undo.setTree(cell._tree)
+				undo.setTree(@_cell._tree)
 		)
-
-		@_leftPane.addView( undo )
-		@_views.push  new View.Cell( @_paper, cell)
-		@_views.push @_leftPane
-		@_views.push @_rightPane
-
-		@resize()
-		$( window ).on( 'resize', @resize )
-
 
 		@draw()
 
 	# Resizes the cell to the window size
 	#
-	resize: ( ) =>
-		old = @_width
+	resize: ( ) =>	
+		width = $( window ).width()
+		height = $( window ).height()
 
-		@_width = $( window ).width() - 20
-		@_height = $( window ).height() - 5 
-		@_paper.setSize( @_width, @_height )
-
-		scale = (@_width - old) / old
-
-		super( scale )
-		@draw()
+		edge = Math.min(width / 1.5, height)
+		@_paper.setSize( edge * 1.5, edge )
 
 		Model.EventManager.trigger( 'paper.resize', @_paper )
 
 	# Draws the main view
 	#
 	draw: ( ) ->
-		centerX = @_width / 2
-		centerY = @_height / 2
-		radius = Math.min( @_width, @_height ) / 2 * .7
-
-		radius = 400 if radius > 400
-		radius = 200 if radius < 200
-		
-		scale = radius / 400
-
 		for view in @_views
-			switch view.constructor.name
-				when "Cell"
-					view.draw(centerX, centerY, scale)
-				else
-					view.draw()
+			view.draw()
+
+	# Returns the absolute (document) coordinates of a point within the paper
+	#
+	# @param x [float] the x position of the paper point
+	# @param y [float] the y position of the paper point
+	# @return [[float, float]] a tuple of the document x and y coordinates, respectively
+	#
+	getAbsoluteCoords: ( x, y ) ->
+		width = @_viewbox.width
+		height = @_viewbox.height
+		offset = $(@_paper.canvas).offset()
+
+		vX = @_viewbox._viewBox[0]
+		vY = @_viewbox._viewBox[1]
+
+		vWidth = @_viewbox._viewBox[2]
+		vHeight = @_viewbox._viewBox[3]
+
+		absX = offset.left + ((x - vX) / vWidth) * width
+		absY = offset.top + ((y - vY) / vHeight) * height
+
+		return [absX, absY]
 	
 	# Kills the main view
 	#

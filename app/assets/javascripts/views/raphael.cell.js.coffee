@@ -11,8 +11,8 @@ class View.Cell extends View.RaphaelBase
 	# @param paper [Raphael] paper parent
 	# @param cell [Model.Cell] cell to view
 	# 	
-	constructor: ( paper, cell, container = "#graphs", @_interaction = on ) ->
-		super paper
+	constructor: ( paper, parent, cell, container = "#graphs", @_interaction = on ) ->
+		super paper, parent
 
 		@_container =  if $( container )[0] then $( container ) else $("<div></div>")
 		
@@ -100,16 +100,39 @@ class View.Cell extends View.RaphaelBase
 			
 		@_views.push new View.Play( @_paper, @ )
 
-	# Resize cell
+	# Returns the bounding box of this view
 	#
-	resize: ( scale ) ->
-		super scale
-		@_notificationsView?.draw()
+	# @return [Object] a bounding box object with coordinates
+	#
+	getBBox: ( ) -> 
+		return @_shape?.getBBox() ? { x:0, y:0, x2:0, y2:0, width:0, height:0 }
+
+	# Returns the coordinates of either the entrance or exit of this view
+	#
+	# @param location [View.Module.Location] the location (entrance or exit)
+	# @return [[float, float]] a tuple of the x and y coordinates
+	#
+	getPoint: ( location ) ->
+		box = @getBBox()
+
+		switch location
+			when View.Module.Location.Left
+				return [box.x ,@y]
+			when View.Module.Location.Right
+				return [box.x2 ,@y]
+			when View.Module.Location.Top
+				return [@x, box.y]
+			when View.Module.Location.Bottom
+				return [@x, box.y2]
+
+	getAbsolutePoint: ( location ) ->
+		[x, y] = @getPoint(location)
+		return @getAbsoluteCoords(x, y)
 		
 	# Redraws the cell
 	# 		
 	redraw: () ->
-		@draw( @_x, @_y, @_scale )
+		@draw()
 
 	# Draws the cell
 	# 
@@ -117,14 +140,14 @@ class View.Cell extends View.RaphaelBase
 	# @param y [Integer] y location
 	# @param scale [Integer] scale
 	#
-	draw: ( x, y, scale ) ->
+	draw: ( ) ->
 		@clear()
-	
-		@_x = x
-		@_y = y
-		@_scale = scale
 
-		radius = @_scale * 400
+		x = 0
+		y = 0
+		scale = 1
+
+		radius = 400
 
 		@_shape = @_paper.circle( x, y, radius )
 		@_shape.node.setAttribute( 'class', 'cell' )
@@ -359,10 +382,9 @@ class View.Cell extends View.RaphaelBase
 	# @param datasets [Object] An object of datasets
 	# @param x [Integer] x location to draw
 	# @param y [Integer] y location to draw
-	# @param scale [Integer] scale
 	# @return [Object] graphs
 	#
-	_drawGraphs: ( datasets, x, y, scale, append = off ) ->
+	_drawGraphs: ( datasets, x, y, append = off ) ->
 	
 		graph_num = 0
 		
@@ -437,7 +459,7 @@ class View.Cell extends View.RaphaelBase
 		cell_data = @_getCellData( duration, base_values, dt, @_iteration )
 		@_iteration = cell_data.iteration
 		
-		@_drawGraphs( cell_data.datasets, 0, 0, @_scale, @_iteration > 1  )
+		@_drawGraphs( cell_data.datasets, 0, 0, @_iteration > 1  )
 
 		if cell_data.to >= View.Cell.MAX_RUNTIME
 			@stopSimulation()

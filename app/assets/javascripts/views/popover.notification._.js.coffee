@@ -42,6 +42,7 @@ class View.Notification extends View.HTMLPopOver
 				
 		if _( @_messages ).some( (message) -> message.visible )
 			@draw()
+			@setPosition()
 			elem = $ @_elem 
 			unless @_visible is on
 				elem.hide() 

@@ -14,7 +14,7 @@ class View.Pane extends View.RaphaelBase
 		@_id = new Date().getMilliseconds()
 
 		paper = @_addPaper()
-		super(paper, withPaper)
+		super(paper, @_parent, withPaper)
 
 		@_extended = off
 		@_buttonWidth = 40

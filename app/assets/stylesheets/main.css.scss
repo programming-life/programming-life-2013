@@ -16,6 +16,11 @@ body {
 	right: 0px;
 }
 
+div#paper svg {
+	display:block;
+	margin:0 auto;
+}
+
 .graph {
 	padding: 0px;
 }
@@ -30,6 +35,11 @@ body {
 .cell {
 	stroke: #cacaca;
 	stroke-width: 40px;
+}
+
+rect, circle:not(.cell) {
+	vector-effect:non-scaling-stroke;
+
 }
 
 .module-box {

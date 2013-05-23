@@ -2,11 +2,16 @@
 #
 class View.Module extends View.RaphaelBase
 
-	Location:
-		Entrance: -1
+	@Location:
+		Entrance: 0
 		Exit: 1
+		Top: 2
+		Bottom: 3
+		Left: 0
+		Right: 1
 
-	Direction:
+
+	@Direction:
 		Inward: -1
 		Outward: 1
 
@@ -15,15 +20,14 @@ class View.Module extends View.RaphaelBase
 	# @param paper [Raphael.Paper] the raphael paper
 	# @param module [Model.Module] the module to show
 	#
-	constructor: ( paper, @_parent, @_cell, @module, @_interaction = on ) ->
-		super paper
+	constructor: ( paper, parent, @_cell, @module, @_interaction = on ) ->
+		super paper, parent
 	
 		@_type = module.constructor.name
 		@_name = module.name
 		
 		@x = 0
 		@y = 0
-		@_scale = 0
 
 		@_selected = off	
 		@_visible = on
@@ -159,6 +163,14 @@ class View.Module extends View.RaphaelBase
 		@redraw() if @_selected
 		@_notificationsView?.draw() 
 
+	moveTo: ( x, y ) =>
+		dx = x - @x
+		dy = y - @y
+
+		#@_view.translate(dx, dy)
+		@_view.toMatrix()
+		@x = x
+		@y = y
 
 	# Clears the module view
 	#
@@ -199,10 +211,18 @@ class View.Module extends View.RaphaelBase
 		box = @getBBox()
 
 		switch location
-			when @Location.Entrance
+			when View.Module.Location.Left
 				return [box.x ,@y]
-			when @Location.Exit
+			when View.Module.Location.Right
 				return [box.x2 ,@y]
+			when View.Module.Location.Top
+				return [@x, box.y]
+			when View.Module.Location.Bottom
+				return [@x, box.y2]
+
+	getAbsolutePoint: ( location ) ->
+		[x, y] = @getPoint(location)
+		return @getAbsoluteCoords(x, y)
 
 	# Returns the direction in which a spline should be drawn wrt a metabolite
 	#
@@ -215,21 +235,21 @@ class View.Module extends View.RaphaelBase
 				when Model.Transporter.Inward
 					switch metabolitePlacement
 						when Model.Metabolite.Inside
-							return @Direction.Outward
+							return View.Module.Direction.Outward
 						when Model.Metabolite.Outside
-							return @Direction.Inward
+							return View.Module.Direction.Inward
 				when Model.Transporter.Outward
 					switch metabolitePlacement
 						when Model.Metabolite.Inside
-							return @Direction.Inward
+							return View.Module.Direction.Inward
 						when Model.Metabolite.Outside
-							return @Direction.Outward
+							return View.Module.Direction.Outward
 
 	# Redraws this view iff it has been drawn before
 	#
 	redraw: ( ) ->
-		if @x and @y and @_scale
-			_( @draw( @x, @y, @_scale ) ).debounce( 50 )
+		if @x and @y
+			_( @draw( @x, @y ) ).debounce( 50 )
 		return this
 			
 	# Draws this view and thus the model
@@ -238,14 +258,13 @@ class View.Module extends View.RaphaelBase
 	# @param y [Integer] the y position
 	# @param scale [Integer] the scale
 	#
-	draw: ( x, y, scale ) ->
+	draw: ( x, y ) ->
 		
 		@clear()
 
 		# Store x, y, and scale values for further redraws
 		@x = x
 		@y = y
-		@_scale = scale
 		@color = @hashColor(_.escape _( @module.name ).first())
 
 		unless @_visible
@@ -253,16 +272,16 @@ class View.Module extends View.RaphaelBase
 		
 		# If we're either hovered or selected, we will display a bigger version of the view
 		big = @_selected || @_hovered
-		padding = 15 * scale
+		padding = 15
 
 		# Start a set for contents
-		contents = @drawContents( x, y, scale, padding, big )
+		contents = @drawContents( x, y, padding, big )
 
 		# Start a new set for the entire view
 		@_paper.setStart()
 
 		# Draw box
-		@_box = @drawBox(contents, scale)
+		@_box = @drawBox(contents)
 		@_box.insertBefore(contents)
 
 		# Draw splines
@@ -282,13 +301,13 @@ class View.Module extends View.RaphaelBase
 					) direction, metaboliteView
 
 		else if @_type is 'Metabolism'
-			inwards = ([metabolite, @Direction.Inward] for metabolite in @module.orig.map( 
+			inwards = ([metabolite, View.Module.Direction.Inward] for metabolite in @module.orig.map( 
 				( name ) => 
 					@_cell.getMetabolite name
 				)
 			)
 
-			outwards = ([metabolite, @Direction.Outward] for metabolite in @module.dest.map( 
+			outwards = ([metabolite, View.Module.Direction.Outward] for metabolite in @module.dest.map( 
 				( name ) => 
 					@_cell.getMetabolite name
 				)
@@ -305,7 +324,7 @@ class View.Module extends View.RaphaelBase
 					) direction, metaboliteView
 
 		# Draw hitbox
-		hitbox = @drawHitbox(@_box, scale)
+		hitbox = @drawHitbox(@_box)
 
 		hitbox.click =>
 			_( @_trigger( 'module.set.selected', @module, [ on ]) ).debounce( 100 )
@@ -317,7 +336,7 @@ class View.Module extends View.RaphaelBase
 			_( @_trigger( 'module.set.hovered', @module, [ on, @_selected ]) ).debounce( 100 )
 
 		@_view = @_paper.setFinish()
-		@_view.push( contents )		
+		@_view.push( contents )
 
 		Model.EventManager.trigger( 'module.drawn', @module )
 
@@ -325,24 +344,22 @@ class View.Module extends View.RaphaelBase
 	#
 	# @param x [Integer] x position
 	# @param y [Integer] y position
-	# @param scale [Integer] box scale
-	# @param big [Boolean] box is selected or hovered
 	# @return [Raphael] the contents
 	#
-	drawContents: ( x, y, scale, padding, big ) ->
+	drawContents: ( x, y ) ->
 	
 		@_paper.setStart()		
 		switch @_type
 		
 			when 'Transporter'
 			
-				[ arrow ] = @drawComponent( 'transporter', 'ProcessArrow', x, y, scale, { } )
+				[ arrow ] = @drawComponent( 'transporter', 'ProcessArrow', x, y, { } )
 				
 				params =
 					substrate: @module.orig ? "..."
 					showText: off
 				
-				[ substrateCircle ] = @drawComponent( 'transporter', 'SubstrateCircle', x, y, scale, params )
+				[ substrateCircle ] = @drawComponent( 'transporter', 'SubstrateCircle', x, y, params )
 
 			when "Metabolite"		
 			
@@ -353,18 +370,18 @@ class View.Module extends View.RaphaelBase
 				[ substrateCircle, substrateText ] = @drawComponent( 
 					'substrate', 
 					'SubstrateCircle', 
-					x, y, scale, params )
+					x, y, params )
 				
 			when "Metabolism"
 			
-				[ arrow ] = @drawComponent( 'transporter', 'ProcessArrow', x, y, scale, { } )
+				[ arrow ] = @drawComponent( 'transporter', 'ProcessArrow', x, y, { } )
 				
 				params =
 					orig: @module.orig ? [ "..." ]
 					dest: @module.dest ? [ "..." ]
 					showText: off
 				
-				[ enzymCirclesOrig, enzymCircleDests ] = @drawComponent( 'enzym', 'EnzymCircle', x, y, scale, params )
+				[ enzymCirclesOrig, enzymCircleDests ] = @drawComponent( 'enzym', 'EnzymCircle', x, y, params )
 									
 			when "Protein"	
 			
@@ -377,30 +394,30 @@ class View.Module extends View.RaphaelBase
 				[ substrateCircle, substrateText ] = @drawComponent( 
 					'protein', 
 					'SubstrateCircle', 
-					x, y, scale, params )
+					x, y, params )
 										
 			when "DNA"
 						
 				text = @_paper.text(x, y, _.escape @_type)
 				text.attr
-					'font-size': 20 * scale
+					'font-size': 20
 					
 			when "Lipid"
 						
 				text = @_paper.text(x, y, _.escape @_type)
 				text.attr
-					'font-size': 20 * scale
+					'font-size': 20
 									
 			when "CellGrowth"
 						
 				text = @_paper.text(x, y, _.escape @_type)
 				text.attr
-					'font-size': 20 * scale
+					'font-size': 20
 					
 			else
 				text = @_paper.text(x, y, _.escape @_type)
 				text.attr
-					'font-size': 20 * scale
+					'font-size': 20
 
 		return @_paper.setFinish()
 
@@ -408,9 +425,9 @@ class View.Module extends View.RaphaelBase
 	#
 	# @return [Raphael] the contents
 	#
-	drawBox : ( elem, scale ) ->
+	drawBox : ( elem ) ->
 		rect = elem.getBBox()
-		padding = 15 * scale
+		padding = 15
 		box = @_paper.rect(rect.x - padding, rect.y - padding, rect.width + 2 * padding, rect.height + 2 * padding)
 
 		$(box.node).addClass('module-box')
@@ -428,29 +445,29 @@ class View.Module extends View.RaphaelBase
 	#
 	drawSpline : ( direction, target ) ->
 		switch direction
-			when @Direction.Inward
-				[origX, origY] = @getPoint(@Location.Entrance)
-				[destX, destY] = target.getPoint(@Location.Exit)
+			when View.Module.Direction.Inward
+				[origX, origY] = @getPoint(View.Module.Location.Entrance)
+				[destX, destY] = target.getPoint(View.Module.Location.Exit)
 
-				dX = -Math.abs(destX - origX)
-				dY = destY - origY
+				dx = -Math.abs(destX - origX)
+				dy = destY - origY
 
-				x1 = origX + 2/3 * dX - 20 * @_scale
-				y1 = origY + 1/4 * dY
-				x2 = destX - 2/3 * dX + 20 * @_scale
-				y2 = destY - 1/4 * dY
+				x1 = origX + 2/3 * dx - 20
+				y1 = origY + 1/4 * dy
+				x2 = destX - 2/3 * dx + 20
+				y2 = destY - 1/4 * dy
 
-			when @Direction.Outward
-				[origX, origY] = @getPoint(@Location.Exit)
-				[destX, destY] = target.getPoint(@Location.Entrance)
+			when View.Module.Direction.Outward
+				[origX, origY] = @getPoint(View.Module.Location.Exit)
+				[destX, destY] = target.getPoint(View.Module.Location.Entrance)
 
-				dX = Math.abs(destX - origX)
-				dY = destY - origY
+				dx = Math.abs(destX - origX)
+				dy = destY - origY
 
-				x1 = origX + 2/3 * dX + 20 * @_scale
-				y1 = origY + 1/4 * dY
-				x2 = destX - 2/3 * dX - 20 * @_scale
-				y2 = destY - 1/4 * dY
+				x1 = origX + 2/3 * dx + 20
+				y1 = origY + 1/4 * dy
+				x2 = destX - 2/3 * dx - 20 
+				y2 = destY - 1/4 * dy
 
 		
 
@@ -464,24 +481,21 @@ class View.Module extends View.RaphaelBase
 	# Draws this view shadow
 	#
 	# @param elem [Raphael] element to draw for
-	# @param scale [Integer] the scale
 	# @return [Raphael] the contents
 	#
-	drawShadow : ( elem, scale ) ->
+	drawShadow : ( elem ) ->
 		shadow = elem.glow
 			width: 35
 			opacity: .125
-		shadow.scale(.8, .8)
 
 		return shadow
 
 	# Draws this view hitbox
 	#
 	# @param elem [Raphael] element to draw for
-	# @param scale [Integer] the scale
 	# @return [Raphael] the contents
 	#
-	drawHitbox : ( elem, scale ) ->
+	drawHitbox : ( elem ) ->
 		rect = elem.getBBox()
 		hitbox = @_paper.rect(rect.x, rect.y, rect.width, rect.height)
 		hitbox.node.setAttribute('class', 'module-hitbox')	
@@ -494,11 +508,10 @@ class View.Module extends View.RaphaelBase
 	# @param component [String] component string
 	# @param x [Integer] x position
 	# @param y [Integer] y position
-	# @param scale [Integer] scale
 	# @param params [Object] options
 	# @return [Array<Object>] The drawn components
 	#
-	drawComponent : ( module, component, x, y, scale, params = {} ) ->
+	drawComponent : ( module, component, x, y, params = {} ) ->
 		switch component
 			when 'ProcessArrow'
 				arrow = @_paper.path("m #{x},#{y} 0,4.06536 85.154735,0 -4.01409,12.19606 27.12222,-16.26142 -27.12222,-16.26141 4.01409,12.19606 -85.154735,0 z")
@@ -508,7 +521,6 @@ class View.Module extends View.RaphaelBase
 				dx = rect.x - x
 				dy = rect.y - y
 				arrow.translate(-dx - rect.width / 2, 0)
-				arrow.scale( scale, scale )
 				
 				return [ arrow ]
 				
@@ -519,7 +531,7 @@ class View.Module extends View.RaphaelBase
 				substrateText = _.escape _( substrate ).first()
 				if ( params.useFullName? and params.useFullName )
 					substrateText = substrate
-				substrateCircle = @_paper.circle( x, y, (params.r ? 20 ) * scale)
+				substrateCircle = @_paper.circle( x, y, params.r ? 20 )
 				substrateCircle.node.setAttribute('class', "#{module}-substrate-circle" )
 				substrateCircle.attr
 					'fill': @hashColor substrateText
@@ -528,12 +540,12 @@ class View.Module extends View.RaphaelBase
 					substrateTextShadow = @_paper.text( x, y - 1, substrateText )
 					substrateTextShadow.node.setAttribute('class', "#{module}-substrate-text-shadow" )
 					substrateTextShadow.attr
-						'font-size': 18 * scale
+						'font-size': 18 
 
 					substrateTextActual = @_paper.text( x, y, substrateText )
 					substrateTextActual.node.setAttribute('class', "#{module}-substrate-text" )
 					substrateTextActual.attr
-						'font-size': 18 * scale
+						'font-size': 18
 
 					substrateText = @_paper.set()
 					substrateText.push(substrateTextShadow, substrateTextActual)
@@ -541,7 +553,7 @@ class View.Module extends View.RaphaelBase
 				return [ substrateCircle, substrateText ]
 				
 			when 'Sector'
-				r = params.r * scale
+				r = params.r
 				startAngle = params.from
 				endAngle = params.to
 				rad = Math.PI / 180;
@@ -571,7 +583,7 @@ class View.Module extends View.RaphaelBase
 					
 					origTexts.push _.escape _( orig ).first()
 					
-					[ enzymOrigCircle ] = @drawComponent( 'enzym', 'Sector', x - 2, y, scale, { r: 20, from: from, to: to } )
+					[ enzymOrigCircle ] = @drawComponent( 'enzym', 'Sector', x - 2, y, { r: 20, from: from, to: to } )
 					enzymOrigCircle.attr
 						'fill': @hashColor origTexts[ origTexts.length - 1 ]
 					enzymOrigCircles.push enzymOrigCircle
@@ -590,7 +602,7 @@ class View.Module extends View.RaphaelBase
 					
 					destTexts.push _.escape _( dest ).first()
 					
-					[ enzymDestCircle ] = @drawComponent( 'enzym', 'Sector', x + 2, y, scale, { r: 20, from: from, to: to } )
+					[ enzymDestCircle ] = @drawComponent( 'enzym', 'Sector', x + 2, y, { r: 20, from: from, to: to } )
 					enzymDestCircle.attr
 						'fill': @hashColor destTexts[ destTexts.length - 1 ]
 					enzymDestCircles.push enzymDestCircle
@@ -602,7 +614,7 @@ class View.Module extends View.RaphaelBase
 					substrateText = @_paper.text( x, y, "#{origTexts}>#{destTexts}" )
 					substrateText.node.setAttribute('class', "#{module}-substrate-text" )
 					substrateText.attr
-						'font-size': 18 * scale
+						'font-size': 18
 				
 				return [ enzymOrigCircles, enzymDestCircles, substrateText ]
 				
@@ -610,9 +622,9 @@ class View.Module extends View.RaphaelBase
 				
 			when 'ModuleTitle'
 				# Add title text
-				text = @_paper.text( x, y - 60 * scale, params.title )
+				text = @_paper.text( x, y - 60, params.title )
 				text.attr
-					'font-size': 20 * scale
+					'font-size': 20
 
 				objRect = params.objRect
 				textRect = text.getBBox()
@@ -623,22 +635,4 @@ class View.Module extends View.RaphaelBase
 				
 				return [ text, line ]
 				
-			when 'Information'
-				
-				objRect = params.objRect
-				
-				# Add params text
-				text = @_paper.text( objRect.x, y + params.padding * 3, params.text )
-				text.attr
-					'font-size': 18 * scale
-					'text-anchor': 'start'
-
-				textRect = text.getBBox()
-				
-				#line = @_paper.path("M #{Math.min(objRect.x, textRect.x) - params.padding },#{ y + params.padding * 2 } L #{Math.max(objRect.x + objRect.width, textRect.x + textRect.width) + params.padding},#{ y + params.padding * 2 } z")
-				
-				#line.node.setAttribute('class', "#{module}-seperator" )
-				
-				return [ text, line ]
-		
 		return []
