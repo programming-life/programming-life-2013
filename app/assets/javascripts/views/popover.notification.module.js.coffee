@@ -24,7 +24,7 @@ class View.ModuleNotification extends View.Notification
 	# Filters incoming messages
 	#
 	_filter: ( message ) ->
-
+		message.message = message.message.replace(/#([^\., ]*)/g, "<sub>$1</sub>")
 		if message.identifier.indexOf('save') isnt -1 or message.identifier.indexOf('load') isnt -1
 			message.closable = off
 			
