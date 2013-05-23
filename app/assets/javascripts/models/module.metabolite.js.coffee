@@ -57,12 +57,10 @@ class Model.Metabolite extends Model.Module
 		defaults = @_getParameterDefaults( params.amount ? start, placement, type )
 		
 		params.name = params.name ? name ? undefined
-		console.log(params.name, name)
 		params = _( _( params ).defaults( defaults ) ).omit( 'amount' ) 
 		metadata = @_getParameterMetaData()
 		
 		super params, step, metadata
-		@_dynamicProperties.push 'name'
 		
 	# Define the dynamic properties of the module
 	#
@@ -95,6 +93,8 @@ class Model.Metabolite extends Model.Module
 		)
 		params = _( params ).omit("name")
 		super params
+		
+		@_dynamicProperties.push 'name'
 		
 	# Get parameter defaults array
 	#
