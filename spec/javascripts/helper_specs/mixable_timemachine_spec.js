@@ -86,10 +86,6 @@ describe("Mixin: TimeMachine", function() {
 				expect( mixed._tree.add ).toHaveBeenCalledWith( action );
 			});
 			
-			it( "should called setRoot on sub with return node", function() {
-				expect( setRoot ).toHaveBeenCalledWith( node );
-			});
-			
 		});
 	});
 	
