@@ -17,5 +17,9 @@ describe("Main", function() {
 		});
 	});
 
+	afterEach( function() {
+		$("#paper").remove()
+		$(".popover").remove()
+	});
 
 });
