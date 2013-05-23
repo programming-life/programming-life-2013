@@ -21,16 +21,23 @@
 	</div>
 	
 	<div class="control-group">
-		<%= f.label 'Based on', :class => "control-label" %>
+		<%= f.label :module_template_id, 'Based on', :class => "control-label" %>
 		<div class="controls">
 			<%= f.select :module_template_id, ModuleTemplate.all.collect {|x| [ x.name, x.id ] }, {}, :multiple => false, :disabled => !@module_instance.new_record?  %>
 		</div>
 	</div>
 	
 	<div class="control-group">
-		<%= f.label 'Part of', :class => "control-label" %>
+		<%= f.label :cell_id, 'Part of', :class => "control-label" %>
 		<div class="controls">
 			<%= f.select :cell_id, Cell.all.collect {|x| [ x.name, x.id ] }, {}, :multiple => false, :disabled => !@module_instance.new_record?  %>
+		</div>
+	</div>
+	
+	<div class="control-group">
+		<%= f.label :name, 'Compound name', :class => "control-label" %>
+		<div class="controls">
+			<%= f.text_field :name %>
 		</div>
 	</div>
 	

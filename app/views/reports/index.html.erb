@@ -1,0 +1,48 @@
+<header class="row">
+	<h1 class="span12">Listing reports</h1>
+	<section id="filters" class="span12">
+	<% @filters.each { |filter, value| 
+		remove = { }
+		remove["#{filter}"] = nil
+	%>
+		<div class="alert alert-info">
+			<%= link_to_self raw('&times;'), remove , { class: 'close' } %>
+			<i class="icon-filter"></i> <%= filter %>
+		</div>
+	<% } if !@filters.nil? %>
+	</section>
+</header>
+
+<table class="table table-hover">
+	<thead>
+		<th class="span1">Id</th>
+		<th class="span1">Show</th>
+		<th>Cell</th>
+		<th>Created</th>
+		<th class="span1">Destroy</th>
+	</thead>
+	<tbody>
+		<% @reports.each do |report| %>
+			<tr>
+				<td><%= report.id %></td>
+				<td class="span1">
+					<%= link_to raw('<i class="icon-search"></i>'), report, :class => 'btn btn-small', :title => 'Show' %> 
+				</td>
+				<td>#<%= report.cell_id %> <%= link_to report.cell.name, report.cell %></td>
+				<td><%= report.created_at.strftime("%a %d %B %Y at %H:%M") %></td>
+				<td class="span1">
+					<%= link_to raw('<i class="icon-trash"></i>'), report, method: :delete, data: { confirm: 'Are you sure?' }, :class => 'btn btn-small btn-danger', :title => 'Destroy' %>
+				</td>
+			</tr>
+		<% end %>
+	</tbody>
+</table>
+ 
+<footer class="row">
+	<div class="span12">
+		<%= will_paginate %>
+	</div>
+	<div class="form-actions span12">
+		<%= link_to raw('<i class=" icon-plus-sign icon-white"></i> New Report'), new_report_path, :class => 'btn btn-small btn-primary' %>
+	</div>
+</footer>

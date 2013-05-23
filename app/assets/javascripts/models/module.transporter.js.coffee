@@ -1,39 +1,46 @@
 # Simulates transporters in the cell.
 #
 # Parameters
-# ------------------ ------------------ ------------------
-# k
-#	Synthesize rate
-# k_m
-#	For active transporters
-# k_tr
-#	The transport rate
-# consume
-#	All the metabolites required for Transporter creation
-# type
-#	Model.Transporter.Active or Model.Transporter.Passive
+# --------------------------------------------------------
+#
+# - k
+#    - Synthesize rate
+# - k_m
+#    - For active transporters, MM kinetics constant
+# - k_tr
+#    - The transport rate
+# - consume
+#    - All the metabolites required for Transporter creation
+# - type
+#    - Model.Transporter.Active or Model.Transporter.Passive
+# - transported
+#    - The transported compound, a metabolite
 # 
 # Properties
-# ------------------ ------------------ ------------------
-# vTransporterProd
-#	k * this * consume
-# dilution
-#	mu * this
-# vTransport [active transporter]
-#	k_tr * this * ( transported_compound / ( transported_compound + k_m ) ) * cell
-# vTransport [passive transporter]
-#	k_tr * this * transported_compound * cell
+# --------------------------------------------------------
+#
+# - vTransporterProd
+#    - k * this * consume
+# - dilution
+#    - mu * this
+# - vTransport 
+#    - [active transporter]
+#        - k_tr * this * ( transported_compound / ( transported_compound + k_m ) ) * cell
+# - vTransport
+#    - [passive transporter]
+#	     - k_tr * this * transported_compound * cell
 #
 # Equations
-# ------------------ ------------------ ------------------
-# this / dt
-#	vTransporterProd - dilution
-# consume / dt
-#	- vTransporterProd
-# orig / dt
-#	- vTransport
-# dest / dt
-#	vTransport
+# --------------------------------------------------------
+#
+# - this / dt
+#    - vTransporterProd - dilution
+# - consume / dt
+#    - vTransporterProd
+# - orig / dt
+#    - -vTransport
+# - dest / dt
+#    - vTransport
 #
 class Model.Transporter extends Model.Module
 
@@ -106,6 +113,7 @@ class Model.Transporter extends Model.Module
 					# - The Mihaelis-Mentin kinetics with constant k_m
 					#
 					vtransport = @k_tr * compounds[ @name ] * ( compounds[ orig ] / ( compounds[ orig ] + @k_m ) )
+					vtransport = 0 if ( isNaN vtransport )
 					
 				else if @type is Model.Transporter.Passive
 				
@@ -150,7 +158,28 @@ class Model.Transporter extends Model.Module
 			return results
 		
 		# Default parameters set here
-		defaults = { 
+		defaults = @_getParameterDefaults( start, name, consume, type, direction, params.transported ? transported )
+		params = _( params ).defaults( defaults )			
+		metadata = @_getParameterMetaData()
+
+		super params, step, metadata
+		
+	# Add the getters for this module
+	#
+	# @param step [Function] the step function
+	#
+	_defineGetters: ( step, metadata ) ->
+		@_nonEnumerableGetter( 'orig', () -> return @getTransportedNames( @transported )[0] )
+		@_nonEnumerableGetter( 'dest', () -> return @getTransportedNames( @transported )[1] )
+		super step, metadata
+		
+	# Get parameter defaults array
+	#
+	# @param start [Integer] the start value
+	# @return [Object] default values
+	#
+	_getParameterDefaults: ( start, name, consume, type, direction, transported ) ->
+		return { 
 		
 			# Parameters
 			k: 1
@@ -171,34 +200,53 @@ class Model.Transporter extends Model.Module
 			# The name
 			name : name ? "transporter_#{transported}"
 		}
-				
-		Object.defineProperty( @ , "orig",
-			get: ->	return @getTransportedNames( @transported )[0]
-			configurable: false
-			enumerable: false
-		)
 		
-		Object.defineProperty( @ , "dest",
-			get: ->	return @getTransportedNames( @transported )[1]
-			configurable: false
-			enumerable: false
-		)
-				
-		params = _( params ).defaults( defaults )
-		super params, step
-		
-	
+	# Get parameter metadata
 	#
+	# @return [Object] metadata values
+	#
+	_getParameterMetaData: () ->
+		return {
+		
+			properties:
+				parameters: [ 'k', 'k_tr', 'k_m' ]
+				metabolites: [ 'consume' ]
+				metabolite: [ 'transported' ]
+				enumerations: [ {
+						name: 'direction'
+						values:
+							Inward: Model.Transporter.Inward
+							Outward: Model.Transporter.Outward
+					}, {
+						name: 'type'
+						values:
+							Active: Model.Transporter.Active
+							Passive: Model.Transporter.Passive
+					}
+				]
+				
+			tests:
+				compounds: [ 'name', 'dna', 'consume', 'cell', 'orig', 'dest' ]
+		}
+	
+	# Validates that the type is set
+	# 
+	# @return [Boolean] true if validation passes
 	#
 	validate_type: () -> 
 		return ( @type is Model.Transporter.Active or @type is Model.Transporter.Passive )
 	
-	#
+	# Validates that the direction is set
+	# 
+	# @return [Boolean] true if validation passes
 	#
 	validate_direction: () ->
 		return ( @direction is Model.Transporter.Inward or @direction is Model.Transporter.Outward )
 	
+	# Gets the names of the transported metabolites
 	#
+	# @param transported [String] base name of the metabolite
+	# @return [Array<String>] an array with [ origin name, destination name ]
 	#
 	getTransportedNames: ( transported ) ->
 		result = [ "#{transported}#int", "#{transported}#ext" ]
@@ -245,5 +293,3 @@ class Model.Transporter extends Model.Module
 	#
 	@ext : ( params = { k_m: 0 }, start = 0, transported = "p", type = Model.Transporter.Passive, consume = "s#int" ) ->
 		return new Model.Transporter( params, start, "#{transported}", "transporter_#{transported}_out", Model.Transporter.Outward, type, consume )
-		
-(exports ? this).Model.Transporter = Model.Transporter

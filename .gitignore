@@ -191,4 +191,4 @@ docs\deliverables\~$*
 *.synctex.gz
 
 /coverage
-/coverage/*
+/.jhw-cache

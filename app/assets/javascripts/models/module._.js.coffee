@@ -1,109 +1,106 @@
-# Baseclass of all modules. Defines basic behaviour like undo and redo 
-# mechanisms and solving of differential equations. 
+# Baseclass of all modules. 
 #
-class Model.Module
+# @concern Mixin.DynamicProperties
+# @concern Mixin.EventBindings
+# @concern Mixin.TimeMachine
+#
+class Model.Module extends Helper.Mixable
+
+	@concern Mixin.DynamicProperties
+	@concern Mixin.EventBindings
+	@concern Mixin.TimeMachine
 
 	# Constructor for module
 	#
 	# @param params [Object] parameters for this module
 	# @param step [Function] the step function
 	#
-	constructor: ( params = {}, step ) -> 
+	constructor: ( params = {}, step, metadata = {} ) -> 
 		
-		Object.defineProperty( @ , "_tree",
-			value: new UndoTree()
-			configurable: false
-			enumerable: false
-			writable: true
+		@_allowTimeMachine()
+		@_allowEventBindings()
+		
+		@_defineProperties( params, step, metadata )
+					
+		@_bind( 'module.set.property', @, @onActionDo )
+		@_bind( 'module.set.compound', @, @onActionDo )
+		@_trigger( 'module.creation', @, [ @creation, @id ] )	
+		
+	# Defines All the properties
+	#
+	# @return [self] chainable self
+	#
+	_defineProperties: ( params, step, metadata ) ->
+				
+		properties = metadata.properties ? { }
+		properties.parameters = (properties.parameters ? [])
+		properties.parameters.push 'amount'
+		metadata.properties = properties
+		
+		@_defineGetters( step, metadata )
+		@_defineAccessors()
+		
+		@_propertiesFromParams(  
+			_( params ).defaults( {
+				id: _.uniqueId "client:#{this.constructor.name}:"
+				creation: Date.now()
+				starts: {}
+			} ),
+			'module.set.property'
 		)
+
+		Object.seal @ 
+		return this
+		
+	# Defines the getters
+	#
+	# @return [self] chainable self
+	#
+	_defineGetters: ( step, metadata ) ->
+		
+		@_nonEnumerableGetter( '_step', () -> return step )
+		@_nonEnumerableGetter( 'metadata', () -> return metadata )
+		@_nonEnumerableGetter( 'url', () ->
+				data = Model.Module.extractId( @id )
+				return "/module_instances/#{ data.id }.json" if data.origin is "server"
+				return '/module_instances.json'
+		)
+
+		return this
+		
+	# Defines the accessors
+	#
+	# @return [self] chainable self
+	#
+	_defineAccessors: () ->
 	
-		params = _( params ).defaults( {
-			id: _.uniqueId "client:#{this.constructor.name}:"
-			creation: Date.now()
-		} )
-
-		for key, value of params
-		
-			value = parseFloat( value ) if _( value ).isString() and !isNaN( value )
-			# The function to create a property out of param
-			#
-			# @param key [String] the property name
-			#
-			( ( key ) => 
-			
-				# This defines the private value.
-				Object.defineProperty( @ , "_#{key}",
-					value: value
-					configurable: false
-					enumerable: false
-					writable: true
-				)
-
-				# This defines the public functions to change
-				# those values.
-				Object.defineProperty( @ , key,
-					set: ( param ) ->
-						console.log "I am setting #{key}", @["_#{key}"], param
-						Model.EventManager.trigger( 'module.set.property', @, [ "_#{key}", @["_#{key}"], param ] )
-						@_do( "_#{key}", param )
-					get: ->
-						return @["_#{key}"]
-					enumerable: true
-					configurable: false
-				)
-				
-			) key
-
-		Object.defineProperty( @, '_step',
-			
-			# @property [Function] the step function
-			get: ->
-				return step
-				
-			configurable: false
-			enumerable: false
-		)
-		
 		Object.defineProperty( @, 'amount',
 			
 			# @property [Integer] the amount of this substrate at start
 			get: ->
-				return @getSubstrate 'name'
+				return @getCompound 'name'
 				
 			set: ( value ) ->
-				@setSubstrate 'name', value
+				@setCompound 'name', value
 				
 			configurable: false
 			enumerable: false
 		)
 		
-		Object.defineProperty( @, 'url',
-			
-			# @property [String] the url for this model
-			get : -> 
-				data = Model.Module.extractId( @id )
-				return "/module_instances/#{ data.id }.json" if data.origin is "server"
-				return '/module_instances.json'
-			
-			configurable: false
-			enumerable: false
-		)
-
-		Object.seal @
-					
-		# Bind the events
-		context = @
-		addmove = ( caller, key, value, param ) ->
-			unless caller isnt context
-				@_addMove key, value, param
-						
-		Model.EventManager.on( 'module.set.property', @, addmove )
-		Model.EventManager.trigger( 'module.creation', @, [ @creation, @id ] )	
+	# Triggered when an action is done
+	#
+	# @param caller [any] the originating property
+	# @param action [Model.Action] the action invoked
+	#
+	onActionDo: ( caller, action ) =>
+		if caller is @
+			@addUndoableEvent( action )
 		
 	# Extracts id data from id
 	#
 	# @param id [Object,Number,String] id containing id data
 	# @return [Object] extracted id data
+	#
 	@extractId: ( id ) ->
 		return id if _( id ).isObject()
 		return { id: id, origin: "server" } if _( id ).isNumber()
@@ -112,34 +109,92 @@ class Model.Module
 		return { id: parseInt( data[0] ), origin: "server" } if data.length is 1
 		return { id: parseInt( data[2] ), origin: data[0] }
 		
+	# Returns true if this is a local instance
 	# 
+	# @return [Boolean] true if local, false if synced instance
 	#
 	isLocal : () ->
 		return Model.Module.extractId( @id ).origin isnt "server"
 		
-	# Gets the substrate start value
+	# Gets the compounds start value
+	#
+	# @param compound [String] the compound name
+	# @return [Integer] the value
+	#
+	getCompound: ( compound ) ->
+		return @starts[ compound ] ? 0	
+		
+	# Gets the metabolite start value (alias for getCompound)
+	#
+	# @param metabolite [String] the metabolite name
+	# @return [Integer] the value
+	#
+	getMetabolite: ( metabolite ) ->
+		return @getCompound( metabolite )
+		
+	# Gets the substrate start value (alias for getCompound)
 	#
 	# @param substrate [String] the substrate name
 	# @return [Integer] the value
 	#
 	getSubstrate: ( substrate ) ->
-		return @starts[ substrate ] ? false	
+		return @getCompound( substrate )
 		
-	# Sets the substrate to the start values
+	# Gets the product start value (alias for getCompound)
+	#
+	# @param product [String] the product name
+	# @return [Integer] the value
+	#
+	getProduct: ( product ) ->
+		return @getCompound( product )
+		
+	# Sets the compound to the start values
+	#
+	# @param compound [String] the compound name
+	# @param value [Integer] the value
+	# @return [self] for chaining
+	#
+	setCompound: ( compound, value ) ->
+		
+		todo = _( ( compound, value ) -> @starts[ compound ] = value ).bind( @, compound, value )
+		undo = _( ( compound, value ) -> @starts[ compound ] = value ).bind( @, compound, @starts[ compound ] )
+		
+		action = new Model.Action( 
+			@, todo, undo, 
+			"Change #{compound} from #{ @starts[ compound ] } to #{value}" 
+		)
+		action.do()
+		
+		@_trigger( 'module.set.compound', @, [ action ] )	
+		
+		return this
+		
+	# Sets the metabolite to the start values (alias for setCompound)
+	#
+	# @param metabolite [String] the metabolite name
+	# @param value [Integer] the value
+	# @return [self] for chaining
+	#
+	setMetabolite: ( metabolite, value ) ->
+		return @setCompound( metabolite, value )
+		
+	# Sets the substrate to the start values (alias for setCompound)
 	#
 	# @param substrate [String] the substrate name
 	# @param value [Integer] the value
-	# @returns [self] for chaining
+	# @return [self] for chaining
 	#
 	setSubstrate: ( substrate, value ) ->
-		Model.EventManager.trigger( 'module.set.substrate', @, [ substrate, @starts[ substrate ] ? undefined, value ] )	
+		return @setCompound( substrate, value )
 		
-		changes = { }
-		changes[ substrate ] = value
-		changed = _( { } ).extend @starts, changes
-		
-		@starts = changed
-		return this
+	# Sets the product to the start values (alias for setCompound)
+	#
+	# @param product [String] the product name
+	# @param value [Integer] the value
+	# @return [self] for chaining
+	#
+	setProduct: ( product, value ) ->
+		return @setCompound( product, value )
 		
 	# Runs the step function in the correct context
 	# 
@@ -147,88 +202,74 @@ class Model.Module
 	# @param substrates [Array] the substrate values
 	# @return [any] returns the value step function is returning
 	#
-	step : ( t, substrates, mu ) ->
-		Model.EventManager.trigger( 'module.before.step', @, [ t, substrates, mu ] )
+	step: ( t, substrates, mu ) ->
+		@_trigger( 'module.before.step', @, [ t, substrates, mu ] )
 		results = @_step.call( @, t, substrates, mu )
-		Model.EventManager.trigger( 'module.after.step', @, [ t, substrates, mu, results ] )
+		@_trigger( 'module.after.step', @, [ t, substrates, mu, results ] )
 		return results
+		
+	# Listify a list
+	#
+	# @todo make this a helper function
+	#
+	_listify: ( items, bind = 'and', nothing = 'nothing' ) ->
+		return nothing if items.length is 0
+		return items[0] if items.length is 1
+		return ( _( items ).without ( last = _( items ).last() ) ).join(', ') + " #{bind} #{last}"
+		
+	# Test if compounds are available. Automatically maps keys to actual properties.
+	#
+	# @param compounds [Object] the available subs
+	# @param keys... [String] comma delimited list of keys that should be mapped to tests
+	# @return [Boolean] true if all are available
+	#
+	test: ( compounds, keys... ) ->
+		
+		tests = _( _( keys ).flatten() ).map( ( t ) => @[ t ] )
+		unless @_test( compounds, tests )
+			missing = _( _( tests ).flatten()  ).difference( _( compounds ).keys() )
+			@_notificate( 
+				@, @, 
+				"module.test.#{ @name }",
+				"I need #{ @_listify missing } #{ message ? '' }",
+				[ missing ],
+				Model.Module.Notification.Error
+			)
+			return false
+	
+		return true
 		
 	# Tests if substrates are available
 	#
-	# @todo What to do when value is below 0?
-	# @param substrates [Object] the available subs
+	# @param compounds [Object] the available subs
 	# @param tests... [String] comma delimited list of strings to test
 	# @return [Boolean] true if all are available
 	#
-	_test : ( compounds, tests... ) ->
+	_test: ( compounds, tests... ) ->
 		
 		result = not _( _( tests ).flatten() ).some( 
 			( test ) -> return not ( compounds[ test ]? ) 
 		)
 		
-		unless result
-			Model.EventManager.trigger( 'notification', @, [ 'module', 'test', [ compounds, tests ] ] )	
-		
 		return result
 		
 	# Ensures test to be true or notifies with message
 	#
-	# @param test [Function] function in a module to run
+	# @param test [Boolean] boolean in a module to run
 	# @param message [String] string to display when it fails
 	# @return [Boolean] true if test succeeded
 	#
-	_ensure : ( test, message = '' ) ->
+	_ensure : ( test, message ) ->
 		
 		unless test
-			Model.EventManager.trigger( 'notification', @, [ 'module', 'ensure', [ message ] ] )	
+			@_notificate( @, @, 
+				"module.ensure.#{ @name }",
+				"In #{ @constructor.name }:#{ @name } an ensure failed: #{ message ? 'No additional message.' }",
+				[],
+				Model.Module.Notification.Error
+			)		
 		
 		return test
-		
-	# Applies a change to the parameters of the module
-	#
-	# @param [String] key The changed property
-	# @param [val] value The value of the changed property
-	# @returns [self] for chaining
-	#
-	_do : ( key, value ) ->
-		console.log "Doing: #{key}", @[ key ], value
-		@[ key ] = value
-		console.log "Done: #{key}", @[ key ], value
-		return this
-
-	# Adds a move to the undotree
-	#
-	# @param [String] key, the changed property
-	# @param [val] value, the value of the changed property 
-	# @returns [self] for chaining
-	#
-	_addMove: ( key, value, param ) ->
-		@_tree.add [ key, value, param ]
-		return this
-
-	# Undoes the most recent move
-	#
-	# @returns [self] for chaining
-	#
-	undo: ( ) ->
-		result = @_tree.undo()
-		console.log "I would like to undo: ", result
-		if result isnt null
-			[ key, value, param ] = result
-			@_do( key, value )
-		return this
-
-	# Redoes the most recently undone move
-	#
-	# @returns [self] for chaining
-	#
-	redo : ( ) ->
-		result = @_tree.redo()
-		console.log "I would like to redo: ", result
-		if result isnt null
-			[ key, value, param ] = result
-			@_do( key, param )
-		return this
 		
 	# Serializes a module
 	# 
@@ -238,95 +279,195 @@ class Model.Module
 	serialize : ( to_string = on ) ->
 	
 		parameters = {}
-		for parameter in Object.keys( @ )
-			parameters[parameter] = @[parameter]
-			
+		for parameter in @_dynamicProperties 
+			parameters[ parameter ] = @[ parameter ]
+
 		type = @constructor.name
 		
 		result = { 
+			name: @name
 			parameters: parameters
 			type: type 
+			amount: @amount? 0
 			step: @_step.toString() if type is "Module" and @_step?
 		}
 		
 		return JSON.stringify( result )  if to_string
 		return result
 		
+	# Gets the module template for a type
+	#
+	# @param type [String] type to get for
+	# @return [jQuery.Promise] promise request
+	#
+	_getModuleTemplate: ( type ) ->
+		data =
+			redirect: 'template'
+			type: type
+			
+		return $.get( @url, data )
+		
+	# Gets the module instance data for instance, template and cell
+	#
+	# @param instance [Object] instance data to get for
+	# @param template [Object] template data to get for
+	# @param cell [Integer] cell id to get for
+	# @return [Object] combined instance data
+	#
+	_getModuleInstanceData: ( instance, template, cell ) ->
+		result = {
+			module_instance:
+				module_template_id: template.id
+				cell_id: cell
+				name: instance.name
+				amount: instance.amount
+		}
+		result.id = instance.id unless @isLocal()
+		return result
+		
+	# Updates the parameters givin
+	#
+	# @param prameters [Object] parameters to update
+	# @return [jQuery.Promise] the update promise
+	#
+	_updateParameters: ( parameters ) ->
+		
+		@_notificate( @,  @, 
+			"module.save.#{ @name }",
+			"Saving #{ @name }...",
+			[ 'update parameters' ],
+			Model.Module.Notification.Info
+		)		
+	
+		params = []
+		for key, value of parameters
+			params.push
+				key: key
+				value: value
+				
+		module_parameters_data =
+			module_parameters: params
+			
+		promise = $.ajax( @url, { data: module_parameters_data, type: 'PUT' } )
+		
+		promise.done( ( data ) =>
+			@_notificate( @, @, 
+				"module.save.#{ @name }",
+				"Succesfully saved #{ @name }",
+				[ 'update parameters' ],
+				Model.Module.Notification.Success
+			)		
+		)
+			
+		promise.fail( ( data ) => 		
+			@_notificate( @, @, 
+				"module.save.#{ @name }",
+				"While saving parameters for #{ @name } an error occured: #{ JSON.stringify( data ? { message: 'none' } ) }",
+				[ 
+					'update parameters',
+					data,
+					module_parameters_data, 
+				],
+				Model.Module.Notification.Error
+			)		
+		)
+		
+		return promise
+		
+	# Creates a new module from serialized data, template and cell
+	#
+	# @param instance [Object] instance data to get for
+	# @param template [Object] template data to get for
+	# @param cell [Integer] cell id to get for
+	#
+	_create: ( instance, template, cell ) ->
+		
+		@_notificate( @,  @, 
+			"module.save.#{ @name }",
+			"Creating #{ @name }...",
+			[ 'create instance' ],
+			Model.Module.Notification.Info
+		)		
+		
+		console.log Model.Module.Notification
+		
+		module_instance_data = @_getModuleInstanceData( 
+			instance, template, cell 
+		)
+		
+		promise = $.post( @url, module_instance_data )
+		promise = promise.then( 
+		
+			# Done
+			( data ) => 	
+				@id = data.id
+				
+				@_notificate( @,  @, 
+					"module.save.#{ @name }",
+					"Succesfully created #{ @name }",
+					[ 'create instance' ],
+					Model.Module.Notification.Success
+				)		
+				
+			# Fail
+			, ( data ) => 		
+				@_notificate( @, @ 
+					"module.save.#{ @name }",
+					"While creating module instance #{ instance.name } an error occured: #{ JSON.stringify( data ? { message: 'none' } ) }",
+					[ 
+						'create instance',
+						data,
+						module_instance_data
+					],
+					Model.Module.Notification.Error
+				)		
+			)
+		
+		return promise
+		
 	# Tries to save a module
 	#
-	save : ( cell = 1 ) ->
+	# @todo if dynamic, also needs to save the template
+	# @todo error handling
+	#
+	save: ( cell ) ->
 		
 		serialized_data = @serialize( false )
 		
 		# if dynamic, also needs to save the template
 		# if ( serialized_data.step? )
 		# 	build template blabla
-			
-		# First get the template for this instance
-		data =
-			redirect: 'template'
-			type: serialized_data.type
-			
-		$.get( @url, data )
-			.done( ( module_template ) =>
 		
-				# Next map data for this object
-				module_instance_data =
-					module_instance:
-						id: serialized_data.id unless @isLocal()
-						module_template_id: module_template.id
-						cell_id: cell
+		promise = @_getModuleTemplate serialized_data.type
+		promise = promise.then( 
+		
+			# Done
+			( module_template ) =>
 				
-				# Define the parameters set function, so we can resuse it
-				update_parameters = () =>
+				if not @isLocal()
+					return @_updateParameters( serialized_data.parameters ) 
+					
+				promise = @_create( serialized_data, module_template, cell )
+				promise = promise.then( ( data ) =>
+					return @_updateParameters serialized_data.parameters
+				)
+				return promise
 				
-					params = []
-					for key, value of serialized_data.parameters
-						params.push
-							key: key
-							value: value
-							
-					module_parameters_data =
-						module_parameters: params
-						
-					console.log module_parameters_data
-					$.ajax( @url, { data: module_parameters_data, type: 'PUT' } )
-						.done( ( data ) =>  
-							# Updated 
-						)
-						
-						.fail( ( data ) => 
-							Model.EventManager.trigger( 
-								'notification', @, [ 'module', 'save', [ 'update parameters', data, module_parameters_data ] ] )	
-						)
-				
-				# This is the create
-				if @isLocal()
-					$.post( @url, module_instance_data )
-						.done( ( data ) => 
-							
-							# Lets save those results first
-							@id = data.id
-							
-							# And now we need to store those parameters
-							update_parameters()
-						)
-						
-						.fail( ( data ) => 
-							Model.EventManager.trigger( 
-								'notification', @, [ 'module', 'save', [ 'create instance', data, module_instance_data ] ] )	
-						)
-				
-				# This is the update
-				else
-					# For module instances only parameters can chane
-					update_parameters() 
+			# Fail
+			, ( data ) => 
+				@_notificate( @,  @, 
+					"module.save.#{ @name }",
+					"While retrieving module template #{ serialized_data.type } an error occured: #{ JSON.stringify( data ? { message: 'none' } ) }",
+					[ 
+						'get instance',
+						data,
+						serialized_data
+					],
+					Model.Module.Notification.Error
+				)		
 			)
-			
-			.fail( ( data ) => 
-				Model.EventManager.trigger( 
-					'notification', @, [ 'module', 'save', [ 'get template', data, module_template_data ] ] )	
-			)
+		
+		return promise
 		
 	# Deserializes a module
 	# 
@@ -337,6 +478,7 @@ class Model.Module
 	@deserialize : ( serialized ) ->
 		
 		serialized = JSON.parse( serialized ) if _( serialized ).isString()
+		serialized.parameters.name = serialized.parameters.name ? serialized.name
 		fn = ( window || @ )["Model"]
 		return new fn[ serialized.type ]( serialized.parameters ) unless serialized.type is "Module"
 		
@@ -345,17 +487,47 @@ class Model.Module
 		eval( "step = #{serialized.step}" ) if serialized.step?
 		return new fn[ serialized.type ]( serialized.parameters, step )
 		
+	# Loads a module
+	# 
+	# @param module_id [Integer] the id of the module
+	# @param cell [Model.Cell] the cell to load to
+	# @param callback [Function] function to call on completion
+	#
 	@load : ( module_id, cell, callback ) ->
 		module = new Model.Module( { id: module_id } )
-		$.get( module.url, { all: true } )
-			.done( ( data ) =>
+		promise = $.get( module.url, { all: true } )
+		
+		promise = promise.then( 
+			
+			# Done
+			( data ) =>
 				result = Model.Module.deserialize( data )
-				
-				console.log result
 				cell.add result
 				callback.apply( @, result ) if callback?
+				
+				module._notificate(
+					cell, module, 
+					"module.load.:#{module_id}",
+					"Succesfully loaded #{module.name}",
+					[ 'load' ],
+					Model.Module.Notification.Success
+				)	
+				
+			# Fail
+			( data ) =>
+			
+				module._notificate(
+					cell, module, 
+					"module.load.:#{module_id}",
+					"I am trying to load module #{ module_id } for the cell #{ cell } but an error occured: #{ JSON.stringify( data ? { message: 'none' } ) }",
+					[ 
+						'load', 
+						data, 
+						module_id,
+						cell
+					],
+					Model.Module.Notification.Error
+				)	
 			)
-	
-		
-
-(exports ? this).Model.Module = Model.Module
+			
+		return promise

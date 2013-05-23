@@ -7,6 +7,8 @@
 #  updated_at         :datetime         not null
 #  module_template_id :integer
 #  cell_id            :integer
+#  amount             :float
+#  name               :string(255)
 #
 
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
@@ -16,8 +18,10 @@ one:
   id: 1
   cell_id: 1
   module_template_id: 1
+  name: 'foo'
 
 two: 
   id: 2
   cell_id: 1
   module_template_id: 2
+  name: 'bar'

@@ -1,27 +1,46 @@
 # Simulates cell metabolism. Converts substrate into product.
 #
 # Parameters
-# ------------------ ------------------ ------------------
-# k
-#	Synthesize rate
-# k_d
-#	Protein degradation
+# --------------------------------------------------------
+#
+# - k
+#    - Synthesize rate
+# - k_d
+#    - Protein degradation
+# - k_m
+#    - MM kinetics constante
+# - v
+#    - v max for metabolism
+# - consume
+#    - All the metabolites required for Enzyme creation
+# - orig
+#	 - The metabolite before metabolism
+# - dest
+#    - The metabolite after metabolism
 # 
 # Properties
-# ------------------ ------------------ ------------------
-# vEnzymeSynth
-#	k * this 
-# degradation
-#	k_d * this
-# dilution
-# 	mu * this
+# --------------------------------------------------------
+# 
+# - vEnzymeSynth
+#    - k * this 
+# - degradation
+#    - k_d * this
+# - dilution
+#    - mu * this
+# - vMetabolism
+#    - v * this * ( orig / ( orig + k_m ) )
 #
 # Equations
-# ------------------ ------------------ ------------------
-# this / dt
-#	vEnzymeSynth - dilution - degradation
-# consume / dt
-#	- vEnzymeSynth
+# --------------------------------------------------------
+# 
+# - this / dt
+#    - vEnzymeSynth - dilution - degradation
+# - consume / dt
+#    - vEnzymeSynth
+# - orig / dt
+#    - -vMetabolism
+# - dest / dt
+#    - vMetabolism
 #
 class Model.Metabolism extends Model.Module
 
@@ -72,7 +91,10 @@ class Model.Metabolism extends Model.Module
 				# - The Compound to convert
 				# - The Mihaelis-Mentin kinetics with constant k_m
 				#
-				vmetabolism = @v * compounds[ @name ] * ( compounds[ @orig ] / ( compounds[ @orig ] + @k_m ) )
+				vmetabolism = @v * compounds[ @name ]
+				for orig in @orig
+					vmetabolism *= ( compounds[ orig ] / ( compounds[ orig ] + @k_m ) )
+				vmetabolism = 0 if ( isNaN vmetabolism )
 				
 			# If all components are available
 			if venzymesynth?
@@ -84,21 +106,35 @@ class Model.Metabolism extends Model.Module
 			# If all components are available
 			if vmetabolism?
 				
-				results[ @orig ] = -vmetabolism
-				results[ @dest ] = vmetabolism
+				for orig in @orig
+					results[ orig ] = -vmetabolism
+					
+				for dest in @dest
+					results[ dest ] = vmetabolism
 			
 			return results
 		
-		# Default parameters set here
-		defaults = { 
+		defaults = @_getParameterDefaults( start, orig, dest, name )
+		params = _( params ).defaults( defaults )
+		metadata = @_getParameterMetaData()
+		
+		super params, step, metadata
+		
+	# Get parameter defaults array
+	#
+	# @param start [Integer] the start value
+	# @return [Object] default values
+	#
+	_getParameterDefaults: ( start, orig, dest, name ) ->
+		return { 
 		
 			# Parameters
 			k: 1
 			k_m: 1 
 			v: 1
 			k_d : 1
-			orig: orig
-			dest: dest
+			orig: if _( orig ).isArray() then orig else [ orig ] 
+			dest: if _( dest ).isArray() then dest else [ dest ] 
 			
 			# Meta-Parameters
 			dna: "dna"
@@ -110,7 +146,18 @@ class Model.Metabolism extends Model.Module
 			starts: { name : start, dest: 0 }
 		}
 		
-		params = _( params  ).defaults( defaults )
-		super params, step
-
-(exports ? this).Model.Metabolism = Model.Metabolism
+	# Get parameter metadata
+	#
+	# @return [Object] metadata values
+	#
+	_getParameterMetaData: () ->
+		return {
+		
+			properties:
+				metabolites: [ 'orig', 'dest' ]
+				parameters: [ 'k', 'k_m', 'v', 'k_d' ]
+				
+			tests:
+				compounds: [ 'name', 'dna', 'orig', 'dest' ]
+				
+		}

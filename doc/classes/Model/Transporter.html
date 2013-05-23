@@ -27,7 +27,7 @@
     </nav>
     <div id='search'>
       <a id='class_list_link' href='../../class_list.html'>Classes</a>
-      <a id='file_list_link' href='../../file_list.html'>Files</a>
+      <a id='mixin_list_link' href='../../mixin_list.html'>Mixins</a>
       <a id='method_list_link' href='../../method_list.html'>Methods</a>
       <a id='extra_list_link' href='../../extra_list.html'>Extras</a>
     </div>
@@ -121,36 +121,89 @@
             <a href='../../classes/Model/Module.html'>Model.Module</a>
           </td>
         </tr>
+        <tr>
+          <td>Concerns:</td>
+          <td>
+                        <a href='../../mixins/Mixin/DynamicProperties.html'>Mixin.DynamicProperties</a>,
+                        <a href='../../mixins/Mixin/EventBindings.html'>Mixin.EventBindings</a>,
+            <a href='../../mixins/Mixin/TimeMachine.html'>Mixin.TimeMachine</a>
+          </td>
+        </tr>
       </table>
       <h2>Overview</h2>
       <div class='docstring'>
   <p>Simulates transporters in the cell.</p><h2>Parameters</h2>
-<hr><p>k
-Synthesize rate
-k_m
-For active transporters
-k_tr
-The transport rate
-consume
-All the metabolites required for Transporter creation
-type
-Model.Transporter.Active or Model.Transporter.Passive</p><h2>Properties</h2>
-<hr><p>vTransporterProd
-k <em> this </em> consume
-dillution
-mu <em> this
-vTransport [active transporter]
-k_tr </em> this <em> ( transported_compound / ( transported_compound + k_m ) ) </em> cell
-vTransport [passive transporter]
-k_tr <em> this </em> transported_compound * cell</p><h2>Equations</h2>
-<hr><p>this / dt
-vTransporterProd - dillution
-consume / dt
-- vTransporterProd
-orig / dt
-- vTransport
-dest / dt
-vTransport</p>
+<ul>
+<li>k<ul>
+<li>Synthesize rate</li>
+</ul>
+</li>
+<li>k_m<ul>
+<li>For active transporters, MM kinetics constant</li>
+</ul>
+</li>
+<li>k_tr<ul>
+<li>The transport rate</li>
+</ul>
+</li>
+<li>consume<ul>
+<li>All the metabolites required for Transporter creation</li>
+</ul>
+</li>
+<li>type<ul>
+<li>Model.Transporter.Active or Model.Transporter.Passive</li>
+</ul>
+</li>
+<li>transported<ul>
+<li>The transported compound, a metabolite</li>
+</ul>
+</li>
+</ul>
+<h2>Properties</h2>
+<ul>
+<li>vTransporterProd<ul>
+<li>k <em> this </em> consume</li>
+</ul>
+</li>
+<li>dilution<ul>
+<li>mu * this</li>
+</ul>
+</li>
+<li>vTransport <ul>
+<li>[active transporter]<ul>
+<li>k_tr <em> this </em> ( transported_compound / ( transported_compound + k_m ) ) * cell</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>vTransport<ul>
+<li>[passive transporter]<ul>
+<li>k_tr <em> this </em> transported_compound * cell</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2>Equations</h2>
+<ul>
+<li>this / dt<ul>
+<li>vTransporterProd - dilution</li>
+</ul>
+</li>
+<li>consume / dt<ul>
+<li>vTransporterProd</li>
+</ul>
+</li>
+<li>orig / dt<ul>
+<li>-vTransport</li>
+</ul>
+</li>
+<li>dest / dt<ul>
+<li>vTransport</li>
+</ul>
+</li>
+</ul>
+
 </div>
 <div class='tags'>
 </div>
@@ -192,32 +245,62 @@ vTransport</p>
   </li>
   <li>
     <span class='signature'>
-      <a href='#validate_type-instance'>
-        - (void) <strong>validate_type</strong>()
+      <a href='#_defineGetters-instance'>
+        - (void) <strong>_defineGetters</strong>(step, metadata)
       </a>
     </span>
     <span class='desc'>
-      
+      Add the getters for this module
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_getParameterDefaults-instance'>
+        - (Object) <strong>_getParameterDefaults</strong>(start, name, consume, type, direction, transported)
+      </a>
+    </span>
+    <span class='desc'>
+      Get parameter defaults array
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_getParameterMetaData-instance'>
+        - (Object) <strong>_getParameterMetaData</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Get parameter metadata
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#validate_type-instance'>
+        - (Boolean) <strong>validate_type</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Validates that the type is set
     </span>
   </li>
   <li>
     <span class='signature'>
       <a href='#validate_direction-instance'>
-        - (void) <strong>validate_direction</strong>()
+        - (Boolean) <strong>validate_direction</strong>()
       </a>
     </span>
     <span class='desc'>
-      
+      Validates that the direction is set
     </span>
   </li>
   <li>
     <span class='signature'>
       <a href='#getTransportedNames-instance'>
-        - (void) <strong>getTransportedNames</strong>(transported)
+        - (Array&lt;String&gt;) <strong>getTransportedNames</strong>(transported)
       </a>
     </span>
     <span class='desc'>
-      
+      Gets the names of the transported metabolites
     </span>
   </li>
 </ul>
@@ -230,21 +313,78 @@ vTransport</p>
       </h3>
       <p class='inherited'>
                 <a href='../../classes/Model/Module.html#constructor-instance'>#constructor</a>,
+                <a href='../../classes/Model/Module.html#_defineProperties-instance'>#_defineProperties</a>,
+                <a href='../../classes/Model/Module.html#_defineGetters-instance'>#_defineGetters</a>,
+                <a href='../../classes/Model/Module.html#_defineAccessors-instance'>#_defineAccessors</a>,
+                <a href='../../classes/Model/Module.html#onPropertySet-instance'>#onPropertySet</a>,
                 <a href='../../classes/Model/Module.html#extractId-class'>.extractId</a>,
                 <a href='../../classes/Model/Module.html#isLocal-instance'>#isLocal</a>,
+                <a href='../../classes/Model/Module.html#getCompound-instance'>#getCompound</a>,
+                <a href='../../classes/Model/Module.html#getMetabolite-instance'>#getMetabolite</a>,
                 <a href='../../classes/Model/Module.html#getSubstrate-instance'>#getSubstrate</a>,
+                <a href='../../classes/Model/Module.html#getProduct-instance'>#getProduct</a>,
+                <a href='../../classes/Model/Module.html#setCompound-instance'>#setCompound</a>,
+                <a href='../../classes/Model/Module.html#setMetabolite-instance'>#setMetabolite</a>,
                 <a href='../../classes/Model/Module.html#setSubstrate-instance'>#setSubstrate</a>,
+                <a href='../../classes/Model/Module.html#setProduct-instance'>#setProduct</a>,
                 <a href='../../classes/Model/Module.html#step-instance'>#step</a>,
+                <a href='../../classes/Model/Module.html#test-instance'>#test</a>,
                 <a href='../../classes/Model/Module.html#_test-instance'>#_test</a>,
                 <a href='../../classes/Model/Module.html#_ensure-instance'>#_ensure</a>,
-                <a href='../../classes/Model/Module.html#_do-instance'>#_do</a>,
-                <a href='../../classes/Model/Module.html#_addMove-instance'>#_addMove</a>,
-                <a href='../../classes/Model/Module.html#undo-instance'>#undo</a>,
-                <a href='../../classes/Model/Module.html#redo-instance'>#redo</a>,
                 <a href='../../classes/Model/Module.html#serialize-instance'>#serialize</a>,
+                <a href='../../classes/Model/Module.html#_getModuleTemplate-instance'>#_getModuleTemplate</a>,
+                <a href='../../classes/Model/Module.html#_getModuleInstanceData-instance'>#_getModuleInstanceData</a>,
+                <a href='../../classes/Model/Module.html#_updateParameters-instance'>#_updateParameters</a>,
+                <a href='../../classes/Model/Module.html#_create-instance'>#_create</a>,
                 <a href='../../classes/Model/Module.html#save-instance'>#save</a>,
                 <a href='../../classes/Model/Module.html#deserialize-class'>.deserialize</a>,
         <a href='../../classes/Model/Module.html#load-class'>.load</a>
+      </p>
+      <h3 class='inherited'>
+        Methods inherited from
+        <a href='../../classes/Helper/Mixable.html'>Helper.Mixable</a>
+      </h3>
+      <p class='inherited'>
+                <a href='../../classes/Helper/Mixable.html#extend-class'>.extend</a>,
+                <a href='../../classes/Helper/Mixable.html#include-class'>.include</a>,
+        <a href='../../classes/Helper/Mixable.html#concern-class'>.concern</a>
+      </p>
+      <h2>
+        <small>Concern Method Summary</small>
+      </h2>
+      <h3 class='included'>
+        Methods mixed in from
+        <a href='../../mixins/Mixin/DynamicProperties.html'>Mixin.DynamicProperties</a>
+      </h3>
+      <p class='included'>
+                <a href='../../mixins/Mixin/DynamicProperties.html#_propertiesFromParams-instance'>#_propertiesFromParams</a>,
+                <a href='../../mixins/Mixin/DynamicProperties.html#_nonEnumerableValue-instance'>#_nonEnumerableValue</a>,
+        <a href='../../mixins/Mixin/DynamicProperties.html#_nonEnumerableGetter-instance'>#_nonEnumerableGetter</a>
+      </p>
+      <h3 class='included'>
+        Methods mixed in from
+        <a href='../../mixins/Mixin/EventBindings.html'>Mixin.EventBindings</a>
+      </h3>
+      <p class='included'>
+                <a href='../../mixins/Mixin/EventBindings.html#_allowEventBindings-instance'>#_allowEventBindings</a>,
+                <a href='../../mixins/Mixin/EventBindings.html#_unbindAll-instance'>#_unbindAll</a>,
+                <a href='../../mixins/Mixin/EventBindings.html#_bind-instance'>#_bind</a>,
+                <a href='../../mixins/Mixin/EventBindings.html#_unbind-instance'>#_unbind</a>,
+                <a href='../../mixins/Mixin/EventBindings.html#_trigger-instance'>#_trigger</a>,
+                <a href='../../mixins/Mixin/EventBindings.html#_onNotificate-instance'>#_onNotificate</a>,
+        <a href='../../mixins/Mixin/EventBindings.html#_notificate-instance'>#_notificate</a>
+      </p>
+      <h3 class='included'>
+        Methods mixed in from
+        <a href='../../mixins/Mixin/TimeMachine.html'>Mixin.TimeMachine</a>
+      </h3>
+      <p class='included'>
+                <a href='../../mixins/Mixin/TimeMachine.html#_allowTimeMachine-instance'>#_allowTimeMachine</a>,
+                <a href='../../mixins/Mixin/TimeMachine.html#addUndoableEvent-instance'>#addUndoableEvent</a>,
+                <a href='../../mixins/Mixin/TimeMachine.html#addUndoableEventToSub-instance'>#addUndoableEventToSub</a>,
+                <a href='../../mixins/Mixin/TimeMachine.html#undo-instance'>#undo</a>,
+                <a href='../../mixins/Mixin/TimeMachine.html#redo-instance'>#redo</a>,
+        <a href='../../mixins/Mixin/TimeMachine.html#_createAction-instance'>#_createAction</a>
       </p>
       <h2>Class Method Details</h2>
       <div class='methods'>
@@ -664,31 +804,148 @@ vTransport</p>
       <h2>Instance Method Details</h2>
       <div class='methods'>
   <div class='method_details'>
-    <p class='signature' id='validate_type-instance'>
-      - (void) <strong>validate_type</strong>()
+    <p class='signature' id='_defineGetters-instance'>
+      - (void) <strong>_defineGetters</strong>(step, metadata)
     </p>
-    <div class='tags'>
+    <div class='docstring'>
+  <p>Add the getters for this module</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>step</span>
+      <span class='type'>
+        (<tt>Function</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the step function</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_getParameterDefaults-instance'>
+      - (Object) <strong>_getParameterDefaults</strong>(start, name, consume, type, direction, transported)
+    </p>
+    <div class='docstring'>
+  <p>Get parameter defaults array</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>start</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the start value</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Object</tt>)
+      &mdash;
+      <span class='desc'>default values</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_getParameterMetaData-instance'>
+      - (Object) <strong>_getParameterMetaData</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Get parameter metadata</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Object</tt>)
+      &mdash;
+      <span class='desc'>metadata values</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='validate_type-instance'>
+      - (Boolean) <strong>validate_type</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Validates that the type is set</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Boolean</tt>)
+      &mdash;
+      <span class='desc'>true if validation passes</span>
+    </li>
+  </ul>
 </div>
   </div>
   <div class='method_details'>
     <p class='signature' id='validate_direction-instance'>
-      - (void) <strong>validate_direction</strong>()
+      - (Boolean) <strong>validate_direction</strong>()
     </p>
-    <div class='tags'>
+    <div class='docstring'>
+  <p>Validates that the direction is set</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Boolean</tt>)
+      &mdash;
+      <span class='desc'>true if validation passes</span>
+    </li>
+  </ul>
 </div>
   </div>
   <div class='method_details'>
     <p class='signature' id='getTransportedNames-instance'>
-      - (void) <strong>getTransportedNames</strong>(transported)
+      - (Array&lt;String&gt;) <strong>getTransportedNames</strong>(transported)
     </p>
-    <div class='tags'>
+    <div class='docstring'>
+  <p>Gets the names of the transported metabolites</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>transported</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>base name of the metabolite</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Array&lt;String&gt;</tt>)
+      &mdash;
+      <span class='desc'>an array with [ origin name, destination name ]</span>
+    </li>
+  </ul>
 </div>
   </div>
 </div>
     </div>
     <div id='footer'>
   Generated on
-  Fri May 10 2013 08:40:59 GMT+0200 (W. Europe Daylight Time)
+  Sun May 19 2013 15:38:42 GMT+0200 (W. Europe Daylight Time)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

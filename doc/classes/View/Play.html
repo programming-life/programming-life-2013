@@ -27,7 +27,7 @@
     </nav>
     <div id='search'>
       <a id='class_list_link' href='../../class_list.html'>Classes</a>
-      <a id='file_list_link' href='../../file_list.html'>Files</a>
+      <a id='mixin_list_link' href='../../mixin_list.html'>Mixins</a>
       <a id='method_list_link' href='../../method_list.html'>Methods</a>
       <a id='extra_list_link' href='../../extra_list.html'>Extras</a>
     </div>
@@ -113,9 +113,21 @@
       <table class='box'>
         <tr>
           <td>Defined in:</td>
-          <td>app&#47;assets&#47;javascripts&#47;views&#47;play.js.coffee</td>
+          <td>app&#47;assets&#47;javascripts&#47;views&#47;raphael.play.js.coffee</td>
+        </tr>
+        <tr>
+          <td>Inherits:</td>
+          <td>
+            <a href='../../classes/View/RaphaelBase.html'>View.RaphaelBase</a>
+          </td>
         </tr>
       </table>
+      <h2>Overview</h2>
+      <div class='docstring'>
+  <p>The play view adds controlls to a cell&#39;s simulation.</p>
+</div>
+<div class='tags'>
+</div>
       <h2>Instance Method Summary</h2>
       <ul class='summary'>
   <li>
@@ -141,6 +153,16 @@
   </li>
   <li>
     <span class='signature'>
+      <a href='#redraw-instance'>
+        - (void) <strong>redraw</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Redraws this view
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
       <a href='#draw-instance'>
         - (void) <strong>draw</strong>(x, y, scale)
       </a>
@@ -152,24 +174,60 @@
   <li>
     <span class='signature'>
       <a href='#_drawPlay-instance'>
-        - (void) <strong>_drawPlay</strong>()
+        - (Raphael) <strong>_drawPlay</strong>(x, y, scale, size)
       </a>
     </span>
     <span class='desc'>
-      
+      Draws a play button
     </span>
   </li>
   <li>
     <span class='signature'>
       <a href='#_drawPause-instance'>
-        - (void) <strong>_drawPause</strong>()
+        - (Raphael) <strong>_drawPause</strong>(x, y, scale, size)
       </a>
     </span>
     <span class='desc'>
-      
+      Draws a pause button
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_onSimulationStop-instance'>
+        - (void) <strong>_onSimulationStop</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Runs when simulation is stopped
     </span>
   </li>
 </ul>
+      <h2>
+        <small>Inherited Method Summary</small>
+      </h2>
+      <h3 class='inherited'>
+        Methods inherited from
+        <a href='../../classes/View/RaphaelBase.html'>View.RaphaelBase</a>
+      </h3>
+      <p class='inherited'>
+                <a href='../../classes/View/RaphaelBase.html#constructor-instance'>#constructor</a>,
+                <a href='../../classes/View/RaphaelBase.html#clear-instance'>#clear</a>,
+                <a href='../../classes/View/RaphaelBase.html#draw-instance'>#draw</a>,
+                <a href='../../classes/View/RaphaelBase.html#redraw-instance'>#redraw</a>,
+                <a href='../../classes/View/RaphaelBase.html#addView-instance'>#addView</a>,
+                <a href='../../classes/View/RaphaelBase.html#removeView-instance'>#removeView</a>,
+                <a href='../../classes/View/RaphaelBase.html#resize-instance'>#resize</a>,
+        <a href='../../classes/View/RaphaelBase.html#kill-instance'>#kill</a>
+      </p>
+      <h3 class='inherited'>
+        Methods inherited from
+        <a href='../../classes/Helper/Mixable.html'>Helper.Mixable</a>
+      </h3>
+      <p class='inherited'>
+                <a href='../../classes/Helper/Mixable.html#extend-class'>.extend</a>,
+                <a href='../../classes/Helper/Mixable.html#include-class'>.include</a>,
+        <a href='../../classes/Helper/Mixable.html#concern-class'>.concern</a>
+      </p>
       <h2>Constructor Details</h2>
       <div class='methods'>
   <div class='method_details'>
@@ -215,6 +273,16 @@
 </div>
   </div>
   <div class='method_details'>
+    <p class='signature' id='redraw-instance'>
+      - (void) <strong>redraw</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Redraws this view</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
     <p class='signature' id='draw-instance'>
       - (void) <strong>draw</strong>(x, y, scale)
     </p>
@@ -253,23 +321,127 @@
   </div>
   <div class='method_details'>
     <p class='signature' id='_drawPlay-instance'>
-      - (void) <strong>_drawPlay</strong>()
+      - (Raphael) <strong>_drawPlay</strong>(x, y, scale, size)
     </p>
-    <div class='tags'>
+    <div class='docstring'>
+  <p>Draws a play button</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>x</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the x position</span>
+    </li>
+    <li>
+      <span class='name'>y</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the y position</span>
+    </li>
+    <li>
+      <span class='name'>scale</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the scale</span>
+    </li>
+    <li>
+      <span class='name'>size</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the size</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Raphael</tt>)
+      &mdash;
+      <span class='desc'>contents</span>
+    </li>
+  </ul>
 </div>
   </div>
   <div class='method_details'>
     <p class='signature' id='_drawPause-instance'>
-      - (void) <strong>_drawPause</strong>()
+      - (Raphael) <strong>_drawPause</strong>(x, y, scale, size)
     </p>
-    <div class='tags'>
+    <div class='docstring'>
+  <p>Draws a pause button</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>x</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the x position</span>
+    </li>
+    <li>
+      <span class='name'>y</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the y position</span>
+    </li>
+    <li>
+      <span class='name'>scale</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the scale</span>
+    </li>
+    <li>
+      <span class='name'>size</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the size</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Raphael</tt>)
+      &mdash;
+      <span class='desc'>contents</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_onSimulationStop-instance'>
+      - (void) <strong>_onSimulationStop</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Runs when simulation is stopped</p>
+</div>
+<div class='tags'>
 </div>
   </div>
 </div>
     </div>
     <div id='footer'>
   Generated on
-  Fri May 10 2013 08:40:59 GMT+0200 (W. Europe Daylight Time)
+  Sun May 19 2013 15:38:42 GMT+0200 (W. Europe Daylight Time)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

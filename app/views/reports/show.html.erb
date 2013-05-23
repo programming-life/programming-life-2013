@@ -1,0 +1,98 @@
+<header class="row">
+	<h1 class="span12">Report #<%= @report.id %> on cell #<%= @report.cell_id %> </h1>
+</header>
+<table class="table row">
+	<thead class="span12">
+		<tr>
+			<td class="span2"><strong>Key</strong></td>
+			<td class="span10"><strong>Value</strong></td>
+		</tr>
+	</thead>
+	<tbody class="span12">
+		<tr>
+			<td class="span2">Id</td>
+			<td class="span10"><%= @report.id %></td>
+		</tr>
+
+		<tr>
+			<td class="span2">Cell</td>
+			<td class="span10">#<%= @report.cell.id %> <%= link_to @report.cell.name, @report.cell %></td>
+		</tr>
+		<tr>
+			<td class="span2"></td>
+			<td class="span10">
+				<%= render 'cell' %>
+			</td>
+		</tr>
+		<tr>
+			<td> Modules </td>
+			<td> 
+				<% 
+					modules = []
+					@module_instances.map { |module_instance| 
+						modules.push link_to ModuleTemplate.find( module_instance.
+							module_template.id ).name, module_instance, :class => 'btn btn-mini'
+					}				
+				%>
+
+				<%= (listify modules).html_safe %>
+		</tr>
+		
+		<% 
+			@module_instances.each do |module_instance| 
+				@module_template = ModuleTemplate.find(module_instance.module_template.id)
+
+				module_parameters = module_instance.module_parameters
+				@module_hash = Hash[ ( module_parameters.map { |p| p.key } ).zip( 
+					module_parameters.map { |p| 
+						( found = ( module_instance.module_values.select{ |v| v.module_parameter == p } ).first ).blank? ? nil : found.value
+						}
+					)
+				]
+		%>
+		<tr>
+			<td><%= @module_template.name %></td>
+			<td>
+				<span class="compound"><%= module_instance.name %></span>
+				<table class="table-condensed table-striped table">
+					<thead>
+						<tr>
+							<td class="span3"><strong> Key </strong></td>
+							<td class="span9"><strong> Value </strong></td>
+						</tr>
+					</thead>
+					<tbody>
+						<% @module_hash.each { |key, value| %>
+							<tr>
+								<td class="span3"> <%= key %> </td>
+								<td class="span9"><%= value.nil? ? '<span class="label label-important">missing</span>'.html_safe : value  %>
+								</td>
+							</tr>
+						<% } %>
+					</tbody>
+				</table>
+			</td>
+		</tr>
+		<% end %>
+
+		<tr>
+			<td>Creation</td>
+			<td><%= @report.created_at.strftime("%a %d %B %Y at %H:%M") %></td>
+		</tr>
+	</tbody>
+</table>
+
+<% if @isPDF %>
+
+<% else %>
+	<footer class="row">
+		<div class="form-actions span12">
+			<%= form_for(@report, :html => {:class => "no-form"} ) do |f| %>
+				<%= f.hidden_field :data, :value => nil %>
+				<%= f.hidden_field :format, :value => :pdf %>
+				<%= f.submit :id => 'create-pdf', :class => "btn btn-primary", :disabled => :disabled, :value => 'Create PDF' %>
+			<% end %>
+			<%= link_to 'Back', reports_path %>
+		</div>
+	</footer>
+<% end -%>

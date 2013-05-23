@@ -27,7 +27,7 @@
     </nav>
     <div id='search'>
       <a id='class_list_link' href='../../class_list.html'>Classes</a>
-      <a id='file_list_link' href='../../file_list.html'>Files</a>
+      <a id='mixin_list_link' href='../../mixin_list.html'>Mixins</a>
       <a id='method_list_link' href='../../method_list.html'>Methods</a>
       <a id='extra_list_link' href='../../extra_list.html'>Extras</a>
     </div>
@@ -113,7 +113,7 @@
       <table class='box'>
         <tr>
           <td>Defined in:</td>
-          <td>app&#47;assets&#47;javascripts&#47;views&#47;module.dummy.js.coffee</td>
+          <td>app&#47;assets&#47;javascripts&#47;views&#47;raphael.module.dummy.coffee</td>
         </tr>
         <tr>
           <td>Inherits:</td>
@@ -121,13 +121,26 @@
             <a href='../../classes/View/Module.html'>View.Module</a>
           </td>
         </tr>
+        <tr>
+          <td>Concerns:</td>
+          <td>
+            <a href='../../mixins/Mixin/EventBindings.html'>Mixin.EventBindings</a>
+          </td>
+        </tr>
       </table>
+      <h2>Overview</h2>
+      <div class='docstring'>
+  <p>The module dummy view shows a potential module.
+It also allows for interaction adding this potential module to a cell.</p>
+</div>
+<div class='tags'>
+</div>
       <h2>Instance Method Summary</h2>
       <ul class='summary'>
   <li>
     <span class='signature'>
       <a href='#constructor-instance'>
-        - (void) <strong>constructor</strong>(paper, cell, module, params)
+        - (void) <strong>constructor</strong>(paper, parent, cell, module, params = {})
       </a>
     </span>
     <span class='constructor note title'>Constructor</span>
@@ -192,21 +205,65 @@
                 <a href='../../classes/View/Module.html#onModuleInvalidated-instance'>#onModuleInvalidated</a>,
                 <a href='../../classes/View/Module.html#onModuleSelected-instance'>#onModuleSelected</a>,
                 <a href='../../classes/View/Module.html#onModuleHovered-instance'>#onModuleHovered</a>,
+                <a href='../../classes/View/Module.html#onPaperResize-instance'>#onPaperResize</a>,
                 <a href='../../classes/View/Module.html#clear-instance'>#clear</a>,
+                <a href='../../classes/View/Module.html#kill-instance'>#kill</a>,
+                <a href='../../classes/View/Module.html#getBBox-instance'>#getBBox</a>,
+                <a href='../../classes/View/Module.html#getPoint-instance'>#getPoint</a>,
+                <a href='../../classes/View/Module.html#_getSplineDirection-instance'>#_getSplineDirection</a>,
                 <a href='../../classes/View/Module.html#redraw-instance'>#redraw</a>,
                 <a href='../../classes/View/Module.html#draw-instance'>#draw</a>,
                 <a href='../../classes/View/Module.html#drawContents-instance'>#drawContents</a>,
                 <a href='../../classes/View/Module.html#drawBox-instance'>#drawBox</a>,
-                <a href='../../classes/View/Module.html#drawCloseButton-instance'>#drawCloseButton</a>,
+                <a href='../../classes/View/Module.html#drawSpline-instance'>#drawSpline</a>,
                 <a href='../../classes/View/Module.html#drawShadow-instance'>#drawShadow</a>,
                 <a href='../../classes/View/Module.html#drawHitbox-instance'>#drawHitbox</a>,
         <a href='../../classes/View/Module.html#drawComponent-instance'>#drawComponent</a>
+      </p>
+      <h3 class='inherited'>
+        Methods inherited from
+        <a href='../../classes/View/RaphaelBase.html'>View.RaphaelBase</a>
+      </h3>
+      <p class='inherited'>
+                <a href='../../classes/View/RaphaelBase.html#constructor-instance'>#constructor</a>,
+                <a href='../../classes/View/RaphaelBase.html#clear-instance'>#clear</a>,
+                <a href='../../classes/View/RaphaelBase.html#draw-instance'>#draw</a>,
+                <a href='../../classes/View/RaphaelBase.html#redraw-instance'>#redraw</a>,
+                <a href='../../classes/View/RaphaelBase.html#addView-instance'>#addView</a>,
+                <a href='../../classes/View/RaphaelBase.html#removeView-instance'>#removeView</a>,
+                <a href='../../classes/View/RaphaelBase.html#resize-instance'>#resize</a>,
+        <a href='../../classes/View/RaphaelBase.html#kill-instance'>#kill</a>
+      </p>
+      <h3 class='inherited'>
+        Methods inherited from
+        <a href='../../classes/Helper/Mixable.html'>Helper.Mixable</a>
+      </h3>
+      <p class='inherited'>
+                <a href='../../classes/Helper/Mixable.html#extend-class'>.extend</a>,
+                <a href='../../classes/Helper/Mixable.html#include-class'>.include</a>,
+        <a href='../../classes/Helper/Mixable.html#concern-class'>.concern</a>
+      </p>
+      <h2>
+        <small>Concern Method Summary</small>
+      </h2>
+      <h3 class='included'>
+        Methods mixed in from
+        <a href='../../mixins/Mixin/EventBindings.html'>Mixin.EventBindings</a>
+      </h3>
+      <p class='included'>
+                <a href='../../mixins/Mixin/EventBindings.html#_allowEventBindings-instance'>#_allowEventBindings</a>,
+                <a href='../../mixins/Mixin/EventBindings.html#_unbindAll-instance'>#_unbindAll</a>,
+                <a href='../../mixins/Mixin/EventBindings.html#_bind-instance'>#_bind</a>,
+                <a href='../../mixins/Mixin/EventBindings.html#_unbind-instance'>#_unbind</a>,
+                <a href='../../mixins/Mixin/EventBindings.html#_trigger-instance'>#_trigger</a>,
+                <a href='../../mixins/Mixin/EventBindings.html#_onNotificate-instance'>#_onNotificate</a>,
+        <a href='../../mixins/Mixin/EventBindings.html#_notificate-instance'>#_notificate</a>
       </p>
       <h2>Constructor Details</h2>
       <div class='methods'>
   <div class='method_details'>
     <p class='signature' id='constructor-instance'>
-      - (void) <strong>constructor</strong>(paper, cell, module, params)
+      - (void) <strong>constructor</strong>(paper, parent, cell, module, params = {})
     </p>
     <div class='docstring'>
   <p>Creates a new module view</p>
@@ -388,7 +445,7 @@
     </div>
     <div id='footer'>
   Generated on
-  Fri May 10 2013 08:40:59 GMT+0200 (W. Europe Daylight Time)
+  Sun May 19 2013 15:38:42 GMT+0200 (W. Europe Daylight Time)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

@@ -1,29 +1,32 @@
 # Simulates protein synthesization.
 #
 # Parameters
-# ------------------ ------------------ ------------------
-# k
-#	Synthesize rate
-# k_d
-#	Protein degradation
-# consume
-#	All the metabolites required for Protein creation
+# --------------------------------------------------------
+# 
+# - k
+#    - Synthesize rate
+# - k_d
+#    - Protein degradation
+# - consume
+#    - All the metabolites required for Protein creation
 # 
 # Properties
-# ------------------ ------------------ ------------------
-# vProteinSynth
-#	k * this * consume
-# degradation
-#	k_d * this
-# dilution
-# 	mu * this
+# --------------------------------------------------------
+# 
+# - vProteinSynth
+#    - k * this * consume
+# - degradation
+#    - k_d * this
+# - dilution
+#    - mu * this
 #
 # Equations
-# ------------------ ------------------ ------------------
-# this / dt
-#	vProteinSynth - dilution - degradation
-# consume / dt
-#	- vProteinSynth
+# --------------------------------------------------------
+# 
+# - this / dt
+#    - vProteinSynth - dilution - degradation
+# - consume / dt
+#    - vProteinSynth
 #
 class Model.Protein extends Model.Module
 
@@ -83,8 +86,20 @@ class Model.Protein extends Model.Module
 			return results
 		
 		# Default parameters set here
-		defaults = {
-
+		defaults = @_getParameterDefaults( start, name, consume )
+		params = _( defaults ).extend( params )
+		metadata = @_getParameterMetaData()
+		
+		super params, step, metadata
+		
+	# Get parameter defaults array
+	#
+	# @param start [Integer] the start value
+	# @return [Object] default values
+	#
+	_getParameterDefaults: ( start, name, consume ) ->
+		return { 
+		
 			# Parameters
 			k : 1
 			k_d : 1
@@ -100,7 +115,17 @@ class Model.Protein extends Model.Module
 			starts: { name : start }
 		}
 		
-		params = _( defaults ).extend( params )
-		super params, step
-
-(exports ? this).Model.Protein = Model.Protein
+	# Get parameter metadata
+	#
+	# @return [Object] metadata values
+	#
+	_getParameterMetaData: () ->
+		return {
+		
+			properties:
+				parameters: [ 'k', 'k_d' ]
+				metabolites: [ 'consume' ]
+				
+			tests:
+				compounds: [ 'dna', 'consume', 'name' ]
+		}
