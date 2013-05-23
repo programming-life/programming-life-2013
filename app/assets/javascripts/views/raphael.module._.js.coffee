@@ -267,9 +267,10 @@ class View.Module extends View.RaphaelBase
 
 		# Draw splines
 		if @_type is 'Transporter'
-			for placement in [Model.Metabolite.Inside, Model.Metabolite.Outside]
-				metabolite = @_cell.getMetabolite(@module.transported, placement)
+			for property in [ 'orig', 'dest' ]
+				metabolite = @_cell.getMetabolite @module[ property ]
 				if metabolite
+					placement = metabolite.placement
 					metaboliteView = @_parent.getView(metabolite)
 					direction = @_getSplineDirection(placement)
 
@@ -283,13 +284,13 @@ class View.Module extends View.RaphaelBase
 		else if @_type is 'Metabolism'
 			inwards = ([metabolite, @Direction.Inward] for metabolite in @module.orig.map( 
 				( name ) => 
-					@_cell.getMetabolite(name.split('#')[0], Model.Metabolite.Inside)
+					@_cell.getMetabolite name
 				)
 			)
 
 			outwards = ([metabolite, @Direction.Outward] for metabolite in @module.dest.map( 
 				( name ) => 
-					@_cell.getMetabolite(name.split('#')[0], Model.Metabolite.Inside)
+					@_cell.getMetabolite name
 				)
 			)
 			
