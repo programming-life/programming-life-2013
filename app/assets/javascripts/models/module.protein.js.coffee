@@ -125,6 +125,7 @@ class Model.Protein extends Model.Module
 			properties:
 				parameters: [ 'k', 'k_d' ]
 				metabolites: [ 'consume' ]
+				dna: [ 'dna' ]
 				
 			tests:
 				compounds: [ 'dna', 'consume', 'name' ]

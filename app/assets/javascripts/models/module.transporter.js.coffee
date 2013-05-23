@@ -224,6 +224,7 @@ class Model.Transporter extends Model.Module
 							Passive: Model.Transporter.Passive
 					}
 				]
+				dna: [ 'dna' ]
 				
 			tests:
 				compounds: [ 'name', 'dna', 'consume', 'cell', 'orig', 'dest' ]
