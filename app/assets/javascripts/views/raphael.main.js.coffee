@@ -25,6 +25,8 @@ class View.Main extends View.RaphaelBase
 		@resize()
 		$( window ).on( 'resize', @resize )
 
+		@_bind( 'view.cell.set', @, (cell) => @setTree(cell._tree) )
+
 		@draw()
 
 	# Resizes the cell to the window size
@@ -68,3 +70,11 @@ class View.Main extends View.RaphaelBase
 		super()
 		@_paper.remove()
 		$( window ).unbind()
+	
+	# Sets the tree of the view
+	#
+	# @param tree [Model.UndoTree] The tree
+	#
+	setTree:( tree ) ->
+		@_tree = tree
+		@draw()
