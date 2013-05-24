@@ -98,9 +98,8 @@ class View.Cell extends View.RaphaelBase
 		@_graphs = {}
 		@_numGraphs = 0
 		
-	#
-	# @todo hide buttons if module present etc.
-	#
+	# Creates the interaction buttons
+	# 
 	_createButtons: () ->
 		
 		@_views.push new View.DummyModule( @_paper, @, @_cell, Model.CellGrowth, 1 )
@@ -111,8 +110,6 @@ class View.Cell extends View.RaphaelBase
 		@_views.push new View.DummyModule( @_paper, @, @_cell, Model.Metabolism, -1 )
 		@_views.push new View.DummyModule( @_paper, @, @_cell, Model.Protein, -1 )
 		@_views.push new View.DummyModule( @_paper, @, @_cell, Model.Transporter, -1, { direction: Model.Transporter.Outward, transported: 'p' } )
-			
-		@_views.push new View.Play( @_paper, @ )
 
 	# Returns the bounding box of this view
 	#
@@ -150,9 +147,17 @@ class View.Cell extends View.RaphaelBase
 	redraw: () ->
 		@draw( @_x, @_y )
 	
+	# Gets modules placement for a module view
+	# 
+	# @param view [View.Module, View.DummyModule] the view to get the placement for
+	# @param x [Integer] base x
+	# @param y [Integer] base y
+	# @param radius [Integer] radius of the cell
+	# @param scale [Integer] the scale
+	# @param counters [Object] counter object to keep track what is drawn
+	# @return [Object] the placement object
 	#
-	#
-	_getModulePlacement: ( view, x, y, radius, scale, counters ) ->
+	_getModulePlacement: ( view, x, y, radius, scale, counters = {} ) ->
 	
 		type = view.type
 		direction = if view.module.direction? then view.module.direction else 0
@@ -182,6 +187,8 @@ class View.Cell extends View.RaphaelBase
 	# 
 	# @param x [Integer] the center x position
 	# @param y [Integer] the center y position
+	# @param radius [Integer] radius of the cell
+	# @return [Raphael] the cell shape
 	#
 	_drawCell: ( x, y, radius ) ->
 		@_shape = @_paper.circle( x, y, radius )
@@ -193,21 +200,22 @@ class View.Cell extends View.RaphaelBase
 		@_contents.push @_shape
 		return @_shape
 		
-	#
-	#
+	# Draws the child views
+	# 
+	# @param x [Integer] the center x position
+	# @param y [Integer] the center y position
+	# @param scale [Integer] the scale
+	# @param radius [Integer] the radius of the cell
 	#
 	_drawViews: ( x, y, radius, scale ) ->
 	
 		counters = {}
 		
 		for view in @_views when view.visible
-			
 			if ( view instanceof View.Module or view instanceof View.DummyModule)
 				placement = @_getModulePlacement( view, x, y, radius, scale, counters )
-				
 			if ( view instanceof View.Play )
 				placement = { x: x, y: y }
-
 			if ( view instanceof View.Tree )
 				placement = { x: 300, y: 100 }
 
@@ -217,12 +225,10 @@ class View.Cell extends View.RaphaelBase
 	# 
 	# @param x [Integer] x location
 	# @param y [Integer] y location
-	# @param scale [Integer] scale
 	#
-	draw: (  @_x = 0, @_y = 0 ) ->
+	draw: (  @_x = 0, @_y = 0, radius = 400 ) ->
 		@clear()
 
-		radius = 400
 		@_drawCell( @_x, @_y, radius )
 		@_drawViews( @_x, @_y, radius, 1 )
 		
@@ -358,7 +364,6 @@ class View.Cell extends View.RaphaelBase
 			yValues = []
 
 			if @_interpolation
-				# Push all the values
 				for time in [ 0 .. duration ] by dt
 					yValues.push( interpolation[ time ][ value ] ) 
 			else
@@ -520,8 +525,6 @@ class View.Cell extends View.RaphaelBase
 		
 		@_running = off
 		@_redrawGraphs()
-		#if @cell.isLocal
-			#$('#generate')[0].disabled = false;
 
 		@_trigger("simulation.stop",@, [ @_cell ])
 		return this
