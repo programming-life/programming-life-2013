@@ -54,7 +54,7 @@ class View.Graph extends View.RaphaelBase
 	#
 	appendData: ( data ) ->
 		if @_datasets.length is 0
-			addData data
+			@addData data
 			return @
 
 		_( @_datasets ).last().push [data[0],data[1]]
