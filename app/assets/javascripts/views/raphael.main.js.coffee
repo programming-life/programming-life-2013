@@ -22,21 +22,21 @@ class View.Main extends View.RaphaelBase
 		@_createBindings()
 		@draw()
 	
-	#
+	# Creates a new cell view
 	#
 	_createCellView: () ->
 		@cell = new View.Cell( @_paper, @, new Model.Cell() )
 		@_views.push @cell
 	
-	#
-	#
+	# Creates an undo view
+	# 
 	_createUndoView: () ->
 		@_leftPane = new View.Pane(View.Pane.LEFT_SIDE, false) 
 		@undo = new View.Undo( @_leftPane._container, @cell.model.timemachine )
 		@_leftPane.addView( @undo )
 		@_views.push @_leftPane
 	
-	#
+	# Creates event bindings for the view
 	#
 	_createBindings: () ->
 		$( window ).on( 'resize', => _( @resize() ).debounce( 300 ) )
@@ -94,3 +94,19 @@ class View.Main extends View.RaphaelBase
 		super()
 		@_paper.remove()
 		$( window ).unbind()
+		
+	# Loads a new cell into the cell view
+	#
+	# @param cell_id [Integer] the cell to load
+	# @param callback [Function] the callback function
+	# @return [jQuery.Promise] the promise
+	#
+	load: ( cell_id, callback ) ->
+		return @cell.load cell_id, callback
+		
+	# Saves the cell view model
+	#
+	# @return [jQuery.Promise] the promise
+	#
+	save: () ->
+		return @cell.save()
