@@ -529,6 +529,26 @@ class View.Cell extends View.RaphaelBase
 		@_trigger("simulation.stop",@, [ @_model ])
 		return this
 
+	# Loads a new cell into this view
+	#
+	# @param cell_id [Integer] the cell to load
+	# @param callback [Function] the callback function
+	# @return [jQuery.Promise] the promise
+	#
+	load: ( cell_id, callback ) ->
+		
+		setcallback = ( cell ) => 
+			@model = cell 
+			callback?.call( @, cell )
+			
+		return Model.Cell.load cell_id, setcallback
+		
+	# Saves the cell view model
+	#
+	# @return [jQuery.Promise] the promise
+	#
+	save: () ->
+		return @model.save()
 
 	# Draws red lines
 	#
