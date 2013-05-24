@@ -9,5 +9,6 @@ class Controller.Main
 	# Creates a new instance of Main
 	#
 	# @param container [String, Object] A string with an id or a DOM node to serve as a container for the view
+	#
 	constructor: ( container ) ->
-		@_view = new View.Main(container)
+		@view = new View.Main container
