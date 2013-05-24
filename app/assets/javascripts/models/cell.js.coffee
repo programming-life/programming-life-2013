@@ -36,7 +36,7 @@ class Model.Cell extends Helper.Mixable
 		
 		@_trigger( 'cell.creation', @, [ @creation, @id ] )
 		@_bind( 'cell.set.property', @, @onPropertySet )
-		@add new Model.CellGrowth( params, start )
+		@add new Model.CellGrowth( params, start ), false
 		
 	# Defines All the properties
 	#
@@ -121,11 +121,11 @@ class Model.Cell extends Helper.Mixable
 	# @param module [Model.Module] module to add to this cell
 	# @return [self] chainable instance
 	#
-	add: ( module ) ->
+	add: ( module, undoable = true ) ->
 	
 		# Transparent adding of metabolites
 		if module instanceof Model.Metabolite
-			@addMetaboliteModule module
+			@addMetaboliteModule( module, undoable )
 			return this
 		
 		action = 
@@ -136,7 +136,7 @@ class Model.Cell extends Helper.Mixable
 				)
 				.do()
 		
-		@addUndoableEventToSub( action, module )
+		@addUndoableEventToSub( action, module ) if undoable
 		return this
 		
 	# Actually adds the module to the cell
@@ -155,7 +155,7 @@ class Model.Cell extends Helper.Mixable
 	# @param metabolite [Model.Metabolite] metabolite to add
 	# @return [self] chainable self
 	#
-	addMetaboliteModule: ( metabolite ) ->
+	addMetaboliteModule: ( metabolite, undoable = true ) ->
 	
 		name = _( metabolite.name.split( '#' ) ).first()
 		action = 
@@ -166,7 +166,7 @@ class Model.Cell extends Helper.Mixable
 				)
 				.do()
 		
-		@addUndoableEventToSub( action, metabolite )
+		@addUndoableEventToSub( action, metabolite ) if undoable
 		
 		return this
 		
@@ -238,11 +238,11 @@ class Model.Cell extends Helper.Mixable
 	# @param module [Model.Module] module to remove from this cell
 	# @return [self] chainable instance
 	#
-	remove: ( module ) ->
+	remove: ( module, undoable = true ) ->
 	
 		# Transparent adding of metabolites
 		if module instanceof Model.Metabolite
-			@removeMetabolite _( module.name.split( '#' ) ).first()
+			@removeMetabolite _( module.name.split( '#' ) ).first(), undoable
 			return this
 			
 		action = 
@@ -253,7 +253,7 @@ class Model.Cell extends Helper.Mixable
 				)
 				.do()
 	
-		@addUndoableEvent action
+		@addUndoableEvent action if undoable
 		
 		return this
 	
@@ -272,7 +272,7 @@ class Model.Cell extends Helper.Mixable
 	# @param name [String] metabolites to remove from this cell
 	# @return [self] chainable instance
 	#
-	removeMetabolite: ( name ) ->
+	removeMetabolite: ( name, undoable = true ) ->
 		
 		return this unless @hasMetabolite name
 		module = @getMetabolite name 
@@ -285,7 +285,7 @@ class Model.Cell extends Helper.Mixable
 				)
 				.do()
 		
-		@addUndoableEvent action
+		@addUndoableEvent action if undoable
 		return this
 	
 	# Actually removes the metabolite from the cell
@@ -712,7 +712,7 @@ class Model.Cell extends Helper.Mixable
 					}
 				)
 				for module in result._modules
-					result.remove module
+					result.remove module, false
 				
 				callback.apply( @, [ result ] ) if callback?
 				result._notificate( @, result,
@@ -724,7 +724,11 @@ class Model.Cell extends Helper.Mixable
 				
 				promiseses = []
 				for module_id in data.modules
-					promiseses.push Model.Module.load( module_id, result )
+					promiseses.push Model.Module.load( 
+						module_id, 
+						result, 
+						( module ) => result.add module, false 
+					)
 				
 				return $.when( promiseses... )
 				
@@ -733,9 +737,8 @@ class Model.Cell extends Helper.Mixable
 			
 				if !result?
 					result = cell
-					
-				for module in result._modules
-					result.remove module
+					for module in result._modules
+						result.remove module, false
 					
 				callback.apply( @, [ result ] ) if callback?
 				result._notificate( @, result, 
