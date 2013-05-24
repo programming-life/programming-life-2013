@@ -403,25 +403,21 @@ class View.Module extends View.RaphaelBase
 			when "DNA"
 						
 				text = @_paper.text(x, y, _.escape @_type)
-				text.attr
-					'font-size': 20
+				$(text.node).addClass('module-text')
 					
 			when "Lipid"
 						
 				text = @_paper.text(x, y, _.escape @_type)
-				text.attr
-					'font-size': 20
+				$(text.node).addClass('module-text')
 									
 			when "CellGrowth"
 						
 				text = @_paper.text(x, y, _.escape @_type)
-				text.attr
-					'font-size': 20
+				$(text.node).addClass('module-text')
 					
 			else
 				text = @_paper.text(x, y, _.escape @_type)
-				text.attr
-					'font-size': 20
+				$(text.node).addClass('module-text')
 
 		return @_paper.setFinish()
 
@@ -441,7 +437,7 @@ class View.Module extends View.RaphaelBase
 				box = @_paper.circle(@x, @y, radius)
 			else
 				box = @_paper.rect(rect.x - padding, rect.y - padding, rect.width + 2 * padding, rect.height + 2 * padding)
-				box.attr('r', 5)
+				box.attr('r', 9)
 
 		$(box.node).addClass('module-box')
 		
@@ -556,13 +552,9 @@ class View.Module extends View.RaphaelBase
 				if ( params.showText )
 					substrateTextShadow = @_paper.text( x, y - 1, substrateText )
 					substrateTextShadow.node.setAttribute('class', "#{module}-substrate-text-shadow" )
-					substrateTextShadow.attr
-						'font-size': 18 
 
 					substrateTextActual = @_paper.text( x, y, substrateText )
 					substrateTextActual.node.setAttribute('class', "#{module}-substrate-text" )
-					substrateTextActual.attr
-						'font-size': 18
 
 					substrateText = @_paper.set()
 					substrateText.push(substrateTextShadow, substrateTextActual)
@@ -642,22 +634,5 @@ class View.Module extends View.RaphaelBase
 					substrateText.push(substrateTextShadow, substrateTextActual)
 				
 				return [ enzymOrigCircles, enzymDestCircles, substrateText ]
-				
-				
-				
-			when 'ModuleTitle'
-				# Add title text
-				text = @_paper.text( x, y - 60, params.title )
-				text.attr
-					'font-size': 20
-
-				objRect = params.objRect
-				textRect = text.getBBox()
-
-				# Add seperation line
-				line = @_paper.path("M #{Math.min(objRect.x, textRect.x) - params.padding },#{objRect.y - params.padding } L #{Math.max(objRect.x + objRect.width, textRect.x + textRect.width) + params.padding},#{objRect.y - params.padding} z")
-				line.node.setAttribute('class', "#{module}-seperator" )
-				
-				return [ text, line ]
-				
+								
 		return []

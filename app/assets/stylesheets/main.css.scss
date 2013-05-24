@@ -3,7 +3,7 @@
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
 body {
-	
+	overflow-y:scroll;
 }
 
 .left {
@@ -63,10 +63,8 @@ rect, circle:not(.cell) {
 	}
 }
 
-.module-close {
-	fill: #fff;
-	stroke: #333333;
-	stroke-width: 2px;
+.module-text {
+	font-size:18px !important;
 }
 
 .module-hitbox {
@@ -103,6 +101,7 @@ rect, circle:not(.cell) {
 [class$='-substrate-text'], [class$='-substrate-text-shadow'] {
 	font-weight: bolder !important;
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+	font-size:18px !important
 }
 
 text, tspan {
@@ -194,6 +193,11 @@ text, tspan {
 		height: 100%;
 		background-color: white;
 		overflow: auto;
+
+		.navbar-inner {
+			border-width:1px 0;
+			border-radius:0;
+		}
 	}
 
 	.pane-button{

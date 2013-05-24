@@ -135,20 +135,20 @@ class View.DummyModule extends View.RaphaelBase
 
 	# Draws this view
 	#
-	draw: ( x, y, scale ) ->
+	draw: ( x, y ) ->
 		
 		super x, y
-		padding = 15 * scale
+		padding = 15
 		
 		# Start a set for contents
-		contents = @drawContents( x, y, scale, padding )
+		contents = @drawContents( x, y, padding )
 		
 		# Draw box
-		@_box = @drawBox( contents, scale )
+		@_box = @drawBox( contents )
 		@_box.insertBefore contents
 		
 		# Draw hitbox
-		hitbox = @drawHitbox(@_box, scale)
+		hitbox = @drawHitbox(@_box)
 
 		hitbox.click =>
 			# Here normally this dummy would be 'selected' so the properties box comes on. Instead we directly 
@@ -175,19 +175,18 @@ class View.DummyModule extends View.RaphaelBase
 	# Draws the box
 	#
 	# @param elem [Raphael] element to draw for
-	# @param scale [Integer] the scale
 	# @return [Raphael] the contents
 	#
-	drawBox : ( elem, scale ) ->
+	drawBox : ( elem ) ->
 		rect = elem.getBBox()
-		padding = 15 * scale
+		padding = 15
 		box = @_paper.rect(rect.x - padding, rect.y - padding, rect.width + 2 * padding, rect.height + 2 * padding)
 
 		classname = 'module-box inactive'
 		classname += ' hovered' if @_hovered
 		classname += ' selected' if @_selected
 		$(box.node).addClass classname
-		box.attr('r', 5)
+		box.attr('r', 9)
 		
 		return box
 		
@@ -195,24 +194,22 @@ class View.DummyModule extends View.RaphaelBase
 	#
 	# @param x [Integer] x position
 	# @param y [Integer] y position
-	# @param scale [Integer] box scale
 	# @return [Raphael] the contents
 	#
-	drawContents: ( x, y, scale, padding ) ->
+	drawContents: ( x, y, padding ) ->
 		
 		@_paper.setStart()
 		text = @_paper.text( x, y, _.escape "Add #{@_type}" )
-		text.attr
-			'font-size': 20 * scale
+		$(text.node).addClass('module-text')
+
 		return @_paper.setFinish()
 		
 	# Draws this view hitbox
 	#
 	# @param elem [Raphael] element to draw for
-	# @param scale [Integer] the scale
 	# @return [Raphael] the contents
 	#
-	drawHitbox : ( elem, scale ) ->
+	drawHitbox : ( elem ) ->
 		rect = elem.getBBox()
 		hitbox = @_paper.rect(rect.x, rect.y, rect.width, rect.height)
 		hitbox.node.setAttribute('class', 'module-hitbox')	
