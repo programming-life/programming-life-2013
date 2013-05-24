@@ -29,25 +29,25 @@ class View.Cell extends View.RaphaelBase
 		@_height = @_paper.height
 		
 		@_allowEventBindings()
+		@_defineAccessors()
+		@model = cell		
+		@_interpolation = off
 		
-		Object.defineProperty( @ , "_cell",
+	# Defines the accessors for this view
+	#
+	_defineAccessors: () ->
+		
+		Object.defineProperty( @ , "_model",
 			value: undefined
 			configurable: false
 			enumerable: false
 			writable: true
 		)
 		
-		Object.defineProperty( @, 'cell',
-			
-			get: -> @_cell
+		Object.defineProperty( @, 'model',
+			get: -> @_model
 			set: @setCell
-
-			configurable: false
-			enumerable: true
 		)
-				
-		@cell = cell		
-		@_interpolation = off
 		
 	# Sets the displayed cell to value
 	#
@@ -57,9 +57,9 @@ class View.Cell extends View.RaphaelBase
 			
 		@kill()
 		
-		@_cell = value
-		for module in @_cell._getModules()
-			view = new View.Module( @_paper, @, @_cell, module, @_interaction )
+		@_model = value
+		for module in @_model._getModules()
+			view = new View.Module( @_paper, @, @_model, module, @_interaction )
 			@_views.push view
 			@_drawn.push [ { model: module, view: view } ]
 		
@@ -69,7 +69,7 @@ class View.Cell extends View.RaphaelBase
 		@_bind( 'cell.remove.module', @, @onModuleRemove )
 		@_bind( 'cell.remove.metabolite', @, @onModuleRemove )
 		
-		@_trigger( 'view.cell.set', @, [ @cell ] )
+		@_trigger( 'view.cell.set', @, [ @model ] )
 
 		@redraw() if @_x? and @_y?
 		return this
@@ -78,7 +78,7 @@ class View.Cell extends View.RaphaelBase
 	#
 	_addInteraction: () ->
 		@_createButtons()
-		@_notificationsView = new View.CellNotification( @, @_cell )
+		@_notificationsView = new View.CellNotification( @, @_model )
 	
 	# Kills the cell view by resetting itself and its children
 	#
@@ -102,14 +102,14 @@ class View.Cell extends View.RaphaelBase
 	# 
 	_createButtons: () ->
 		
-		@_views.push new View.DummyModule( @_paper, @, @_cell, Model.CellGrowth, 1 )
-		@_views.push new View.DummyModule( @_paper, @, @_cell, Model.DNA, 1 )
-		@_views.push new View.DummyModule( @_paper, @, @_cell, Model.Lipid, 1 )
-		@_views.push new View.DummyModule( @_paper, @, @_cell, Model.Metabolite, -1, { name: 's', placement: Model.Metabolite.Outside, type: Model.Metabolite.Substrate, amount: 1, supply: 1 } )
-		@_views.push new View.DummyModule( @_paper, @, @_cell, Model.Transporter, -1, { direction: Model.Transporter.Inward, transported: 's' } )
-		@_views.push new View.DummyModule( @_paper, @, @_cell, Model.Metabolism, -1 )
-		@_views.push new View.DummyModule( @_paper, @, @_cell, Model.Protein, -1 )
-		@_views.push new View.DummyModule( @_paper, @, @_cell, Model.Transporter, -1, { direction: Model.Transporter.Outward, transported: 'p' } )
+		@_views.push new View.DummyModule( @_paper, @, @_model, Model.CellGrowth, 1 )
+		@_views.push new View.DummyModule( @_paper, @, @_model, Model.DNA, 1 )
+		@_views.push new View.DummyModule( @_paper, @, @_model, Model.Lipid, 1 )
+		@_views.push new View.DummyModule( @_paper, @, @_model, Model.Metabolite, -1, { name: 's', placement: Model.Metabolite.Outside, type: Model.Metabolite.Substrate, amount: 1, supply: 1 } )
+		@_views.push new View.DummyModule( @_paper, @, @_model, Model.Transporter, -1, { direction: Model.Transporter.Inward, transported: 's' } )
+		@_views.push new View.DummyModule( @_paper, @, @_model, Model.Metabolism, -1 )
+		@_views.push new View.DummyModule( @_paper, @, @_model, Model.Protein, -1 )
+		@_views.push new View.DummyModule( @_paper, @, @_model, Model.Transporter, -1, { direction: Model.Transporter.Outward, transported: 'p' } )
 
 	# Returns the bounding box of this view
 	#
@@ -238,9 +238,9 @@ class View.Cell extends View.RaphaelBase
 	# @param module [Model.Module] module added
 	#
 	onModuleAdd: ( cell, module ) =>
-		unless cell isnt @_cell
+		unless cell isnt @_model
 			unless ( _( @_drawn ).find( ( d ) -> d.model is module ) )?
-				view = new View.Module( @_paper, @, @_cell, module, @_interaction )
+				view = new View.Module( @_paper, @, @_model, module, @_interaction )
 				@_drawn.unshift { model: module, view: view }
 				@_views.unshift view
 				@redraw()
@@ -336,7 +336,7 @@ class View.Cell extends View.RaphaelBase
 	#
 	_getCellData: ( duration, base_values = [], dt = 1, iteration = 0 ) ->
 	
-		cell_run = @_cell.run( duration, base_values, iteration )
+		cell_run = @_model.run( duration, base_values, iteration )
 		
 		results = cell_run.results
 		mapping = cell_run.map
@@ -467,7 +467,7 @@ class View.Cell extends View.RaphaelBase
 		# Actually simulate
 		@_simulate( step )
 	
-		@_trigger("simulation.start",@, [ @_cell ])
+		@_trigger("simulation.start",@, [ @_model ])
 		
 		return this
 		
@@ -526,7 +526,7 @@ class View.Cell extends View.RaphaelBase
 		@_running = off
 		@_redrawGraphs()
 
-		@_trigger("simulation.stop",@, [ @_cell ])
+		@_trigger("simulation.stop",@, [ @_model ])
 		return this
 
 
