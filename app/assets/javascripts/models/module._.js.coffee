@@ -507,8 +507,7 @@ class Model.Module extends Helper.Mixable
 			# Done
 			( data ) =>
 				result = Model.Module.deserialize( data )
-				cell.add result
-				callback.apply( @, result ) if callback?
+				callback.call( @, result ) if callback?
 				
 				module._notificate(
 					cell, module, 
