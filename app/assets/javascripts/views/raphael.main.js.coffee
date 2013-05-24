@@ -9,54 +9,46 @@ class View.Main extends View.RaphaelBase
 	# @param container [String, Object] A string with an id or a DOM node to serve as a container for the view
 	#
 	constructor: ( container = "#paper" ) ->
+	
 		container = $( container )[0]
 		super Raphael(container, 0,0) 
 
-		width = $( window ).width()
-		height = $( window ).height()
-		x = -width / 2
-		y = -height / 2
-
 		@_viewbox = @_paper.setViewBox(-750, -500, 1500, 1000)
-
-		@_cell = new Model.Cell()
-		@_cellView = new View.Cell( @_paper, @, @_cell)
-
-		@_leftPane = new View.Pane(View.Pane.LEFT_SIDE, false) 
-		undo = new View.Undo( @_leftPane._container, @_cell._tree )
-		@_leftPane.addView( undo )
-
-		@_rightPane = new View.Pane(View.Pane.RIGHT_SIDE)
-
-		@_views.push @_cellView
-		@_views.push @_leftPane
-		@_views.push @_rightPane
-	
+		
+		@_createCellView()
+		@_createUndoView()
+		
 		@resize()
-		
-		$( window ).on( 'resize', =>
-			_( @resize() ).debounce( 300 )
-		)
-		
-		@_bind( 'view.cell.set', @, (cell) => 
-			undo.setTree(cell.cell._tree)
-		)
-		@_bind( 'module.set.hovered', @, (module, hovered, selected) => 
-			if hovered
-				undo.setTree(module._tree)
-			else unless @_moduleSelected
-				undo.setTree(@_cell._tree)
-		)
-		@_bind( 'module.set.selected', @, (module, selected) => 
-			if selected
-				@_moduleSelected = on
-			else
-				@_moduleSelected = off
-				undo.setTree(@_cell._tree)
-		)
-
+		@_createBindings()
 		@draw()
-
+	
+	#
+	#
+	_createCellView: () ->
+		@cell = new View.Cell( @_paper, @, new Model.Cell() )
+		@_views.push @cell
+	
+	#
+	#
+	_createUndoView: () ->
+		@_leftPane = new View.Pane(View.Pane.LEFT_SIDE, false) 
+		@undo = new View.Undo( @_leftPane._container, @cell.model.timemachine )
+		@_leftPane.addView( @undo )
+		@_views.push @_leftPane
+	
+	#
+	#
+	_createBindings: () ->
+		$( window ).on( 'resize', => _( @resize() ).debounce( 300 ) )
+		
+		@_bind( 'view.cell.set', @, 
+			(cell) => @undo.setTree( cell.model.timemachine ) 
+		)
+		@_bind( 'module.set.selected', @, 
+			(module, selected) => 
+				@undo.setTree if selected then module.timemachine else @cell.model.timemachine 
+		)
+		
 	# Resizes the cell to the window size
 	#
 	resize: ( ) =>	
@@ -66,7 +58,7 @@ class View.Main extends View.RaphaelBase
 		edge = Math.min(width / 1.5, height)
 		@_paper.setSize( edge * 1.5, edge )
 
-		Model.EventManager.trigger( 'paper.resize', @_paper )
+		@_trigger( 'paper.resize', @_paper )
 
 	# Draws the main view
 	#
