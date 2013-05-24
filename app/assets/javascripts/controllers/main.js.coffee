@@ -12,3 +12,19 @@ class Controller.Main
 	#
 	constructor: ( container ) ->
 		@view = new View.Main container
+		
+	# Loads a new cell into the main view
+	#
+	# @param cell_id [Integer] the cell to load
+	# @param callback [Function] the callback function
+	# @return [jQuery.Promise] the promise
+	#
+	load: ( cell_id, callback ) ->
+		return @view.load cell_id, callback
+		
+	# Saves the main view cell
+	#
+	# @return [jQuery.Promise] the promise
+	#
+	save: () ->
+		return @view.save()
