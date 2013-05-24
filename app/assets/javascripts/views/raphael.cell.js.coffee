@@ -1,4 +1,6 @@
-#  Class to generate a view for a cell model
+# Class to generate a view for a cell model
+#
+# @concern Mixin.EventBindings
 #
 class View.Cell extends View.RaphaelBase
 
@@ -9,14 +11,16 @@ class View.Cell extends View.RaphaelBase
 	# Constructor for this view
 	# 
 	# @param paper [Raphael] paper parent
+	# @param parent [View.RaphaelBase] base view
 	# @param cell [Model.Cell] cell to view
+	# @param container [String] container element for the strings 
 	# 	
 	constructor: ( paper, parent, cell, container = "#graphs", @_interaction = on ) ->
 		super paper, parent
 
-		@_container =  if $( container )[0] then $( container ) else $("<div></div>")
+		@_container =  if $( container )[0] then $( container ) else $("<div id='graphs-#{_.uniqueId()}'></div>")
+		@_container.data( 'cell', Model.Cell.extractId( cell ).id )
 		
-		@_views = []
 		@_drawn = []
 		@_graphs = {}
 		@_numGraphs = 0
@@ -36,24 +40,7 @@ class View.Cell extends View.RaphaelBase
 		Object.defineProperty( @, 'cell',
 			
 			get: -> @_cell
-			
-			set: ( value ) ->
-			
-				@kill()
-				
-				@_cell = value
-				for module in @_cell._getModules()
-					@_views.push new View.Module( @_paper, @, @_cell, module, @_interaction )
-					@_drawn.push module.id
-				
-				@_addInteraction() if @_interaction
-				@_bind( 'cell.add.module', @, @onModuleAdd )
-				@_bind( 'cell.add.metabolite', @, @onModuleAdd )
-				@_bind( 'cell.remove.module', @, @onModuleRemove )
-				@_bind( 'cell.remove.metabolite', @, @onModuleRemove )
-				@_trigger( 'view.cell.set', @, [ @cell ] )
-
-				@redraw() if @_x? and @_y? and @_scale?
+			set: @setCell
 
 			configurable: false
 			enumerable: true
@@ -61,6 +48,31 @@ class View.Cell extends View.RaphaelBase
 				
 		@cell = cell		
 		@_interpolation = off
+		
+	# Sets the displayed cell to value
+	#
+	# @param value [Model.Cell] the cell to display
+	#
+	setCell: ( value ) ->
+			
+		@kill()
+		
+		@_cell = value
+		for module in @_cell._getModules()
+			view = new View.Module( @_paper, @, @_cell, module, @_interaction )
+			@_views.push view
+			@_drawn.push [ { model: module, view: view } ]
+		
+		@_addInteraction() if @_interaction
+		@_bind( 'cell.add.module', @, @onModuleAdd )
+		@_bind( 'cell.add.metabolite', @, @onModuleAdd )
+		@_bind( 'cell.remove.module', @, @onModuleRemove )
+		@_bind( 'cell.remove.metabolite', @, @onModuleRemove )
+		
+		@_trigger( 'view.cell.set', @, [ @cell ] )
+
+		@redraw() if @_x? and @_y?
+		return this
 		
 	# Adds interaction to the cell
 	#
@@ -78,6 +90,8 @@ class View.Cell extends View.RaphaelBase
 		if @_graphs?
 			for name, graph of @_graphs
 				graph.clear()
+		
+		@_container.empty()
 		
 		@_drawn = []
 		@_views = []
@@ -125,6 +139,8 @@ class View.Cell extends View.RaphaelBase
 			when View.Module.Location.Bottom
 				return [@x, box.y2]
 
+	#
+	#
 	getAbsolutePoint: ( location ) ->
 		[x, y] = @getPoint(location)
 		return @getAbsoluteCoords(x, y)
@@ -132,23 +148,42 @@ class View.Cell extends View.RaphaelBase
 	# Redraws the cell
 	# 		
 	redraw: () ->
-		@draw()
-
-	# Draws the cell
-	# 
-	# @param x [Integer] x location
-	# @param y [Integer] y location
-	# @param scale [Integer] scale
+		@draw( @_x, @_y )
+	
 	#
-	draw: ( ) ->
-		@clear()
+	#
+	_getModulePlacement: ( view, x, y, radius, scale, counters ) ->
+	
+		type = view.type
+		direction = if view.module.direction? then view.module.direction else 0
+		placement = if view.module.placement? then view.module.placement else 0
+		placement_type = if view.module.type? and type is "Metabolite" then view.module.type else 0
+		counter_name = "#{type}_#{direction}_#{placement}_#{placement_type}"
+		counter = counters[ counter_name ] ? 0
 
-		x = 0
-		y = 0
-		scale = 1
-
-		radius = 400
-
+		params = { 
+			count: counter
+			view: view
+			type: type 
+			direction: direction
+			placement: placement
+			placement_type: placement_type
+			cx: x
+			cy: y
+			r: radius
+			scale: scale
+		}
+				
+		counters[ counter_name ] = ++counter
+		
+		return @getLocationForModule( params )
+		
+	# Draws the cell on coordinates
+	# 
+	# @param x [Integer] the center x position
+	# @param y [Integer] the center y position
+	#
+	_drawCell: ( x, y, radius ) ->
 		@_shape = @_paper.circle( x, y, radius )
 		@_shape.node.setAttribute( 'class', 'cell' )
 		@_shape.attr
@@ -156,49 +191,40 @@ class View.Cell extends View.RaphaelBase
 			cy: y
 			r: radius
 		@_contents.push @_shape
-				
+		return @_shape
+		
+	#
+	#
+	#
+	_drawViews: ( x, y, radius, scale ) ->
+	
 		counters = {}
 		
-		# Draw each module
 		for view in @_views when view.visible
 			
 			if ( view instanceof View.Module or view instanceof View.DummyModule)
-				
-				type = view.type
-				direction = if view.module.direction? then view.module.direction else 0
-				placement = if view.module.placement? then view.module.placement else 0
-				placement_type = if view.module.type? and type is "Metabolite" then view.module.type else 0
-				counter_name = "#{type}_#{direction}_#{placement}_#{placement_type}"
-				counter = counters[ counter_name ] ? 0
-
-				# Send all the parameters through so the location
-				# method becomes functional. Easier to test and debug.
-				params = { 
-					count: counter
-					view: view
-					type: type 
-					direction: direction
-					placement: placement
-					placement_type: placement_type
-					cx: x
-					cy: y
-					r: radius
-					scale: scale
-				}
-				
-				placement = @getLocationForModule( params )
-				
-				counters[ counter_name ] = ++counter
+				placement = @_getModulePlacement( view, x, y, radius, scale, counters )
 				
 			if ( view instanceof View.Play )
-				placement = 
-					x: x
-					y: y
+				placement = { x: x, y: y }
 
-			if (view instanceof View.Tree )
-				placement = {x: 300, y: 100}
+			if ( view instanceof View.Tree )
+				placement = { x: 300, y: 100 }
 
-			view.draw( placement.x, placement.y, scale )
+			view.draw( placement?.x, placement?.y, scale )
+
+	# Draws the cell
+	# 
+	# @param x [Integer] x location
+	# @param y [Integer] y location
+	# @param scale [Integer] scale
+	#
+	draw: (  @_x = 0, @_y = 0 ) ->
+		@clear()
+
+		radius = 400
+		@_drawCell( @_x, @_y, radius )
+		@_drawViews( @_x, @_y, radius, 1 )
 		
 	# On module added, add it from the cell
 	# 
@@ -207,9 +233,10 @@ class View.Cell extends View.RaphaelBase
 	#
 	onModuleAdd: ( cell, module ) =>
 		unless cell isnt @_cell
-			if _( @_drawn ).indexOf( module.id ) is -1
-				@_drawn.unshift module.id
-				@_views.unshift new View.Module( @_paper, @, @_cell, module, @_interaction )
+			unless ( _( @_drawn ).find( ( d ) -> d.model is module ) )?
+				view = new View.Module( @_paper, @, @_cell, module, @_interaction )
+				@_drawn.unshift { model: module, view: view }
+				@_views.unshift view
 				@redraw()
 			
 	# On module removed, removed it from the cell
@@ -218,11 +245,10 @@ class View.Cell extends View.RaphaelBase
 	# @param module [Model.Module] module removed
 	#
 	onModuleRemove: ( cell, module ) =>
-		index = _( @_drawn ).indexOf( module.id )
-		if index isnt -1
-			view = @_views[ index ].kill()
+		if ( drawn = _( @_drawn ).find( ( d ) -> d.model is module ) )?
+			view = drawn.view.kill()
 			@_views = _( @_views ).without view
-			@_drawn = _( @_drawn ).without module.id
+			@_drawn = _( @_drawn ).without drawn
 			@redraw()
 
 	# Returns the location for a module
@@ -293,10 +319,7 @@ class View.Cell extends View.RaphaelBase
 	# @return [Module.View] the view which represents the given module
 	#
 	getView: ( module ) ->
-		for view in @_views
-			return view if view.module is module
-
-		return false
+		return _( @_drawn ).find( ( d ) -> d.model is module )?.view
 	
 	# Get the simulation data from the cell
 	# 
