@@ -6,7 +6,7 @@ class View.Cell extends View.RaphaelBase
 
 	@concern Mixin.EventBindings
 
-	@MAX_RUNTIME: 100
+	@MAX_RUNTIME: 50
 
 	# Constructor for this view
 	# 
@@ -445,9 +445,10 @@ class View.Cell extends View.RaphaelBase
 	# 
 	# @param step_duration [Integer] duration of each step call
 	# @param step_update [Integer] time between steps
+	# @param max [Integer] max t
 	# @param dt [Integer] graph dt
 	#
-	startSimulation: ( step_duration = 20, step_update = 2000, dt = 1 ) ->
+	startSimulation: ( step_duration = 20, step_update = 2000, max = View.Cell.MAX_RUNTIME, dt = 1 ) ->
 		
 		@_running = on
 		@_iteration = 0
@@ -460,7 +461,7 @@ class View.Cell extends View.RaphaelBase
 		# only be executed after step_update passes.
 		step = _( @_step )
 			.chain()
-			.bind( @, step_duration, dt )
+			.bind( @, step_duration, dt, max )
 			.throttle( step_update )
 			.value()
 		
@@ -476,11 +477,12 @@ class View.Cell extends View.RaphaelBase
 	# @param duration [Integer] the duration of this step
 	# @param dt [Integer] the dt of the graphs
 	# @param base_values [Array<Float>] the previous values
+	# @param max [Integer] max t
 	# @return [Array<Float>] the new values
 	#
 	# @todo stopSimulation should throw event that is captured by play button
 	#
-	_step : ( duration, dt, base_values ) ->
+	_step : ( duration, dt, max, base_values ) ->
 	
 		return base_values unless @_running
 		
@@ -489,7 +491,7 @@ class View.Cell extends View.RaphaelBase
 		
 		@_drawGraphs( cell_data.datasets, 0, 0, @_iteration > 1  )
 
-		if cell_data.to >= View.Cell.MAX_RUNTIME
+		if cell_data.to >= max
 			@stopSimulation()
 			
 		return _( cell_data.results.y ).last()
@@ -524,7 +526,6 @@ class View.Cell extends View.RaphaelBase
 		console.log 'stop'
 		
 		@_running = off
-		@_redrawGraphs()
 
 		@_trigger("simulation.stop",@, [ @_model ])
 		return this
