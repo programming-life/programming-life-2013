@@ -295,6 +295,7 @@ class Model.Module extends Helper.Mixable
 			type: type 
 			amount: @amount ? 0
 			step: @_step.toString() if type is "Module" and @_step?
+			id: @id
 		}
 		
 		return JSON.stringify( result )  if to_string
