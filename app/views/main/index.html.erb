@@ -11,8 +11,8 @@
 		<div class="form-actions">
 			<%= f.button '<i class="icon-download"></i> Load'.html_safe, :class => "btn", :autocomplete => 'off', :value => 'load', :type => 'button', :data => { :action => 'load', 'loading-text' => 'Loading...' } %>
 			<%= f.button '<i class="icon-upload"></i> Save'.html_safe, :class => "btn", :autocomplete => 'off', :value => 'save', :type => 'button', :data => { :action => 'save', 'loading-text' => 'Saving...' } %>
-			<%= f.button '<i class="icon-remove-circle icon-white"></i> Reset'.html_safe, :class => "btn btn-warning", :value => 'reset', :type => 'button', :data => { :action => 'reset' } %>
 			<%= f.button '<i class="icon-list-alt"></i> Generate report'.html_safe, :class => "btn btn", :autocomplete => 'off', :value => 'report', :type => 'button', :data => { :action => 'report', 'loading-text' => 'Generating...' } %>
+			<%= f.button '<i class="icon-remove-circle icon-white"></i> Reset'.html_safe, :class => "btn btn-warning pull-right", :value => 'reset', :type => 'button', :data => { :action => 'reset' } %>
 		</div>
 	<% end %>
 </div>

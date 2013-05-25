@@ -53,7 +53,7 @@ class View.Main extends View.RaphaelBase
 	#
 	resize: ( ) =>	
 		width = $( window ).width()
-		height = $( window ).height()
+		height = $( window ).height() - 110
 
 		edge = Math.min(width / 1.5, height)
 		@_paper.setSize( edge * 1.5, edge )
