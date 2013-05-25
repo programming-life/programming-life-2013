@@ -486,7 +486,7 @@ class Model.Cell extends Helper.Mixable
 
 		# Run the ODE from 0...timespan with starting values and step function
 		[ values, continuation ] = @_tryUsingBaseValues( base_values, values )
-		sol = numeric.dopri( 0, timespan, values, @_step( modules, mapping, map ) )
+		sol = numeric.dopri( 0, timespan, values, @_step( modules, mapping, map ), 1e-16, 2500 )
 		
 		@_trigger( 'cell.after.run', @, [ timespan, sol, mapping ] )
 		
