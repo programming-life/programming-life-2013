@@ -32,6 +32,15 @@ class View.Cell extends View.RaphaelBase
 		@_defineAccessors()
 		@model = cell		
 		@_interpolation = off
+
+		@_bind( 'paper.lock', @, =>
+			@_locked = on
+		)
+		@_bind( 'paper.unlock', @, =>
+			@_locked = off
+			if @_queuedRedraw
+				@redraw()
+		)
 		
 	# Defines the accessors for this view
 	#
@@ -145,7 +154,10 @@ class View.Cell extends View.RaphaelBase
 	# Redraws the cell
 	# 		
 	redraw: () ->
-		@draw( @_x, @_y )
+		if @_locked
+			@_queuedRedraw = true
+		else
+			@draw( @_x, @_y )
 	
 	# Gets modules placement for a module view
 	# 
