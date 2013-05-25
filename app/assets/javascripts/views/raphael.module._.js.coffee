@@ -342,7 +342,7 @@ class View.Module extends View.RaphaelBase
 		@_view = @_paper.setFinish()
 		@_view.push( contents )
 
-		Model.EventManager.trigger( 'module.drawn', @module )
+		@_trigger( 'module.drawn', @module )
 
 	# Draws contents
 	#
@@ -439,8 +439,8 @@ class View.Module extends View.RaphaelBase
 				box = @_paper.rect(rect.x - padding, rect.y - padding, rect.width + 2 * padding, rect.height + 2 * padding)
 				box.attr('r', 9)
 
-		$(box.node).addClass('module-box')
-		
+		$( box.node ).addClass 'module-box'
+		$( box.node ).addClass  @type.toLowerCase() + '-box'
 		
 		return box
 
@@ -478,8 +478,6 @@ class View.Module extends View.RaphaelBase
 				x2 = destX - 2/3 * dx - 20 
 				y2 = destY - 1/4 * dy
 
-		
-
 		spline = @_paper.path("M#{origX},#{origY}C#{x1},#{y1} #{x2},#{y2} #{destX},#{destY}")
 		spline.attr('stroke', target.color)
 		spline.node.setAttribute('class', 'metabolite-spline')
@@ -511,8 +509,7 @@ class View.Module extends View.RaphaelBase
 	drawHitbox : ( elem ) ->
 		rect = elem.getBBox()
 		hitbox = @_paper.rect(rect.x, rect.y, rect.width, rect.height)
-		hitbox.node.setAttribute('class', 'module-hitbox')	
-
+		hitbox.node.setAttribute( 'class', 'module-hitbox ' + @type.toLowerCase() + '-hitbox' )	
 		return hitbox
 
 	# Draw a component

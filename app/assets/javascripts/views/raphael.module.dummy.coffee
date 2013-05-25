@@ -182,7 +182,7 @@ class View.DummyModule extends View.RaphaelBase
 		padding = 15
 		box = @_paper.rect(rect.x - padding, rect.y - padding, rect.width + 2 * padding, rect.height + 2 * padding)
 
-		classname = 'module-box inactive'
+		classname = 'module-box inactive dummy dummy-' + @_type.toLowerCase()
 		classname += ' hovered' if @_hovered
 		classname += ' selected' if @_selected
 		$(box.node).addClass classname
@@ -212,6 +212,6 @@ class View.DummyModule extends View.RaphaelBase
 	drawHitbox : ( elem ) ->
 		rect = elem.getBBox()
 		hitbox = @_paper.rect(rect.x, rect.y, rect.width, rect.height)
-		hitbox.node.setAttribute('class', 'module-hitbox')	
+		hitbox.node.setAttribute('class', 'module-hitbox hitdummy-' + @_type.toLowerCase() )	
 
 		return hitbox
