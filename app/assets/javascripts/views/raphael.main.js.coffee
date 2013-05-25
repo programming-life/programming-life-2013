@@ -49,6 +49,15 @@ class View.Main extends View.RaphaelBase
 				@undo.setTree if selected then module.timemachine else @cell.model.timemachine 
 		)
 		
+	# Toggles the simulation
+	#
+	# @param action [Boolean] start simulation
+	#
+	toggleSimulation: ( action ) ->
+		@cell.startSimulation( 20, 100 ) if action
+		@cell.stopSimulation() unless action
+		return this
+		
 	# Resizes the cell to the window size
 	#
 	resize: ( ) =>	
