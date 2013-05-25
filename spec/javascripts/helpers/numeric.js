@@ -34,9 +34,22 @@ beforeEach(function() {
                 rangeFloor = rangeCeiling;  
                 rangeCeiling = temp;  
             }  
-			
-            return ( this.actual > rangeFloor && this.actual < rangeCeiling ) || ( inclusive && this.actual == rangeFloor ) 
-        }  
+			return ( this.actual > rangeFloor && this.actual < rangeCeiling ) || ( inclusive && this.actual == rangeFloor ) 
+        }, 
 		
+		toBeCloseTo: function( value, diff ) {
+			if ( diff === undefined )
+				diff = 1e-6;
+				
+			var actual = this.actual;
+			var notText = this.isNot ? " not" : "";	
+			var result = ( this.actual > value - diff && this.actual <= value + diff );
+			
+			this.message = function () {
+				return "Expected " + actual + notText + " to be close to " + value + " +- " + diff;
+			};
+
+			return result;
+		}
 	});
 });

@@ -578,7 +578,7 @@ describe("Cell", function() {
 			});
 			
 			it("should have created transporters", function() {
-				expect( result.y[ result.y.length - 1 ][ mapping.transp ] ).toBe( create_transport.rate * 2 );
+				expect( result.y[ result.y.length - 1 ][ mapping.transp ] ).toBeCloseTo( create_transport.rate * 2 );
 			});
 			
 			it("should have transported food", function() {
@@ -614,7 +614,7 @@ describe("Cell", function() {
 				mapping = results.map;
 
 				expect( result.y[ result.y.length - 1 ][ mapping.transp ] ).
-					toBe( (create_transport.rate + create_transport_2.rate) * 2);
+					toBeCloseTo( (create_transport.rate + create_transport_2.rate) * 2);
 			});
 			
 		});
