@@ -41,21 +41,26 @@ class Controller.Main
 	#
 	action: ( event ) =>
 		
-		@_findActionButtons().prop( 'disabled', true ).removeClass( 'btn-success', 'btn-danger' )
+		@_findActionButtons()
+			.prop( 'disabled', true )
+			.removeClass( 'btn-success' )
+			.removeClass( 'btn-danger' )
+			.removeClass( 'btn-primary' )
+			.button( 'reset' )
 		
-		enable = () => @_findActionButtons().prop( 'disabled', false )
-		succes = () => target.button( 'success' ).addClass( 'btn-success' ) 
+		enable = () => @_findActionButtons().prop( 'disabled', false ).removeClass( 'btn-primary' )
+		success = () => target.button( 'success' ).addClass( 'btn-success' ) 
 		error = () => target.button( 'error' ).addClass( 'btn-danger' ) 
 		
-		target = $( event.target )
+		target = $( event.target ).addClass( 'btn-primary' )
 		
 		switch target.data( 'action' )
 			when 'save'
 				target.button('loading')
-				@save().always( enable ).done( succes ).fail( error )
+				@save().always( enable ).done( success ).fail( error )
 			when 'load'
 				target.button('loading')
-				@load( 1 ).always( enable ).done( succes ).fail( error )
+				@load( 1 ).always( enable ).done( success ).fail( error )
 			when 'reset'
 				@view.kill()
 				@view = new View.Main @container
