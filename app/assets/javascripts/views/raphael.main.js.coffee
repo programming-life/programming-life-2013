@@ -31,8 +31,8 @@ class View.Main extends View.RaphaelBase
 	# Creates an undo view
 	# 
 	_createUndoView: () ->
-		@_leftPane = new View.Pane(View.Pane.LEFT_SIDE, false) 
-		@undo = new View.Undo( @_leftPane._container, @cell.model.timemachine )
+		@_leftPane = new View.Pane(View.Pane.Position.Left, false) 
+		@undo = new View.Undo( @cell.model.timemachine )
 		@_leftPane.addView( @undo )
 		@_views.push @_leftPane
 	
@@ -72,6 +72,10 @@ class View.Main extends View.RaphaelBase
 	# Draws the main view
 	#
 	draw: ( ) ->
+		if @_locked
+			@_drawWhenUnlocked = true
+			return
+
 		for view in @_views
 			view.draw()
 
