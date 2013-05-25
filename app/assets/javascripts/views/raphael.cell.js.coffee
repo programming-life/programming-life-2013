@@ -83,7 +83,7 @@ class View.Cell extends View.RaphaelBase
 	# Kills the cell view by resetting itself and its children
 	#
 	kill: () ->
-		super
+		super()
 		
 		@_notificationsView?.kill()
 

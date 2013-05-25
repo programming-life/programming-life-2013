@@ -93,7 +93,7 @@ class View.Main extends View.RaphaelBase
 	kill: ( ) ->
 		super()
 		@_paper.remove()
-		$( window ).unbind()
+		$( window ).off( 'resize' )
 		
 	# Loads a new cell into the cell view
 	#

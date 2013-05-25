@@ -10,8 +10,10 @@ class Controller.Main
 	#
 	# @param container [String, Object] A string with an id or a DOM node to serve as a container for the view
 	#
-	constructor: ( container ) ->
-		@view = new View.Main container
+	constructor: ( @container ) ->
+		@view = new View.Main @container
+		
+		$( '#actions' ).on( 'click', '[data-action]', @action )
 		
 	# Loads a new cell into the main view
 	#
@@ -28,3 +30,39 @@ class Controller.Main
 	#
 	save: () ->
 		return @view.save()
+		
+	
+	#
+	#
+	_findActionButtons: () ->
+		return $( '#actions' ).find( '[data-action]' )
+		
+	#
+	#
+	action: ( event ) =>
+		
+		@_findActionButtons().prop( 'disabled', true ).removeClass( 'btn-success', 'btn-danger' )
+		
+		enable = () => @_findActionButtons().prop( 'disabled', false )
+		succes = () => target.button( 'success' ).addClass( 'btn-success' ) 
+		error = () => target.button( 'error' ).addClass( 'btn-danger' ) 
+		
+		target = $( event.target )
+		
+		switch target.data( 'action' )
+			when 'save'
+				target.button('loading')
+				@save().always( enable ).done( succes ).fail( error )
+			when 'load'
+				target.button('loading')
+				@load( 1 ).always( enable ).done( succes ).fail( error )
+			when 'reset'
+				@view.kill()
+				@view = new View.Main @container
+				enable()
+			else
+				enable()
+				
+	kill: () ->
+		$( '#actions' ).find( '[data-action]' ).removeProp( 'disabled' )
+	
