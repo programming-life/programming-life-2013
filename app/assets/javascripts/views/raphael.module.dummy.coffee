@@ -172,6 +172,10 @@ class View.DummyModule extends View.RaphaelBase
 		@_visible = on
 		return this
 		
+	kill: () ->
+		super()
+		@_notificationsView?.kill()
+		
 	# Draws the box
 	#
 	# @param elem [Raphael] element to draw for

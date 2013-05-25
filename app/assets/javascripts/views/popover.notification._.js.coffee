@@ -70,7 +70,7 @@ class View.Notification extends View.HTMLPopOver
 	# @return [jQuery.Elem] the body element
 	#
 	_createBody: () ->
-		body = super
+		body = super()
 		
 		if _( @_messages ).all( (message) -> !message.visible or message.closable )
 			@_closeButton = $('<button class="close">&times;</button>')

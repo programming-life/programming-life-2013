@@ -1,4 +1,5 @@
 class CellsController < ApplicationController
+	
 	# GET /cells
 	# GET /cells.json
 	def index
@@ -80,11 +81,23 @@ class CellsController < ApplicationController
 	# PUT /cells/1.json
 	def update
 		@cell = Cell.find(params[:id])
+		
+		if params[:modules]
+			ModuleInstance
+				.where( :cell_id => params[:id] )
+				.where( 'id NOT IN ( ? )', params[:modules] )
+				.each do | instance | instance.destroy() end
+		end
 
 		respond_to do |format|
 			if @cell.update_attributes(params[:cell])
 				format.html { redirect_to @cell, notice: 'Cell was successfully updated.' }
-				format.json { head :no_content }
+				format.json { 
+					render json: { 
+						cell: @cell,
+						modules: @cell.module_instance_ids
+					} 
+				}
 			else
 				format.html { render action: "edit" }
 				format.json { render json: @cell.errors, status: :unprocessable_entity }

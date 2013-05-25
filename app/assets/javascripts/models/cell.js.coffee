@@ -486,7 +486,7 @@ class Model.Cell extends Helper.Mixable
 
 		# Run the ODE from 0...timespan with starting values and step function
 		[ values, continuation ] = @_tryUsingBaseValues( base_values, values )
-		sol = numeric.dopri( 0, timespan, values, @_step( modules, mapping, map ) )
+		sol = numeric.dopri( 0, timespan, values, @_step( modules, mapping, map ), 1e-16, 2500 )
 		
 		@_trigger( 'cell.after.run', @, [ timespan, sol, mapping ] )
 		
@@ -600,10 +600,18 @@ class Model.Cell extends Helper.Mixable
 	_getData: () ->
 	
 		save_data = @serialize( false )
+		modules = []
+		for module in save_data.modules
+			extracted_id = Model.Module.extractId( module.id )
+			modules.push extracted_id.id if extracted_id.origin is 'server'
+		
 		result = {
 			cell:
 				name: 'My Test Cell'
+			modules: modules
+				
 		}
+		
 		result.cell.id = save_data.id unless @isLocal()
 		return result
 		
