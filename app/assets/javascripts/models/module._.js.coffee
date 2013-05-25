@@ -395,8 +395,6 @@ class Model.Module extends Helper.Mixable
 			Model.Module.Notification.Info
 		)		
 		
-		console.log Model.Module.Notification
-		
 		module_instance_data = @_getModuleInstanceData( 
 			instance, template, cell 
 		)

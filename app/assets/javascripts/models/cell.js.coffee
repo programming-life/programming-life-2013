@@ -602,7 +602,6 @@ class Model.Cell extends Helper.Mixable
 		save_data = @serialize( false )
 		modules = []
 		for module in save_data.modules
-			console.log module
 			extracted_id = Model.Module.extractId( module.id )
 			modules.push extracted_id.id if extracted_id.origin is 'server'
 		
@@ -613,7 +612,6 @@ class Model.Cell extends Helper.Mixable
 				
 		}
 		
-		console.log result
 		result.cell.id = save_data.id unless @isLocal()
 		return result
 		
