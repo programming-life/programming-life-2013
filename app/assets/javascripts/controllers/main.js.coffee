@@ -55,16 +55,34 @@ class Controller.Main
 		target = $( event.target ).addClass( 'btn-primary' )
 		
 		switch target.data( 'action' )
+
 			when 'save'
 				target.button('loading')
-				@save().always( enable ).done( success ).fail( error )
+				@save().always( enable )
+					.done( success )
+					.fail( error )
+					
 			when 'load'
 				target.button('loading')
-				@load( 1 ).always( enable ).done( success ).fail( error )
+				@load( 1 ).always( enable )
+					.done( success )
+					.fail( error )
+					
+			when 'report'
+				target.button('loading')
+				@save().then( () => 
+						console.log( 'actually create report for ' + @view.cell.model.id ) 
+						# first call the code to generate it ( e.g. create or update )
+						# then when the response comes in, redirect the browser ( ex: window.location / .href )
+					)
+					.done( success )
+					.fail( error )
+				
 			when 'reset'
 				@view.kill()
 				@view = new View.Main @container
 				enable()
+				
 			else
 				enable()
 				
