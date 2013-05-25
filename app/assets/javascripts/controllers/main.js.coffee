@@ -32,7 +32,7 @@ class Controller.Main
 		return @view.save()
 		
 	
-	#
+	# Finds the action buttons
 	#
 	_findActionButtons: () ->
 		return $( '#actions' ).find( '[data-action]' )
@@ -42,13 +42,21 @@ class Controller.Main
 	action: ( event ) =>
 		
 		@_findActionButtons()
-			.prop( 'disabled', true )
 			.removeClass( 'btn-success' )
 			.removeClass( 'btn-danger' )
-			.removeClass( 'btn-primary' )
-			.button( 'reset' )
-		
-		enable = () => @_findActionButtons().prop( 'disabled', false ).removeClass( 'btn-primary' )
+			.prop( { disabled :  true } )
+			.filter( ':not([data-toggle])' )
+				.removeClass( 'btn-primary' )
+				.filter( ':not([class*="btn-warning"])' )
+				.find( 'i' )
+					.removeClass( 'icon-white' )
+
+		enable = () => 
+			@_findActionButtons()
+				.prop( 'disabled', false )
+				.filter( ':not([data-toggle])' )
+					.removeClass( 'btn-primary' )
+			
 		success = () => target.button( 'success' ).addClass( 'btn-success' ) 
 		error = () => target.button( 'error' ).addClass( 'btn-danger' ) 
 		
@@ -77,12 +85,17 @@ class Controller.Main
 					)
 					.done( success )
 					.fail( error )
+					.always( enable )
 				
 			when 'reset'
 				@view.kill()
 				@view = new View.Main @container
 				enable()
 				
+			when 'simulate'
+				target.attr( 'disabled', false )
+				@view.toggleSimulation not target.hasClass( 'active' )
+				enable() if target.hasClass( 'active' )
 			else
 				enable()
 				
