@@ -230,7 +230,7 @@ describe("Cell", function() {
 		});
 		
 		it("should have added that module as metabolite", function() {
-			expect( Model.Cell.prototype.addMetaboliteModule ).toHaveBeenCalledWith( module );
+			expect( Model.Cell.prototype.addMetaboliteModule ).toHaveBeenCalledWith( module, true );
 		});
 		
 	});
