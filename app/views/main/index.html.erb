@@ -9,12 +9,21 @@
 <div id="actions" class="container">
 	<%= nested_form_for(@cell, :html => {:class => "form-horizontal"} ) do |f| %>
 		<div class="form-actions">
+			<%= f.button '<i class="icon-play icon-white"></i> Simulate'.html_safe, 
+				:class => "btn btn-primary", :autocomplete => 'off', :value => 'simulate', :type => 'button', 
+				:data => { 
+					:action => 'simulate',
+					:toggle => 'button',
+					'toggle-text' => '<i class="icon-stop icon-white"></i> Simulating...',
+				} 
+			%>
+			
 			<%= f.button '<i class="icon-download"></i> Load'.html_safe, 
 				:class => "btn", :autocomplete => 'off', :value => 'load', :type => 'button', 
 				:data => { 
 					:action => 'load', 
-					'loading-text' => '<i class="icon-download"></i> Loading...',
-					'success-text' => '<i class="icon-download icon-white"></i> Loaded!',
+					'loading-text' => '<i class="icon-download icon-white"></i> Loading...',
+					'success-text' => '<i class="icon-download icon-white"></i> Load',
 					'error-text' => '<i class="icon-download icon-white"></i> Error while loading!' 
 				} 
 			%>
@@ -22,8 +31,8 @@
 				:class => "btn", :autocomplete => 'off', :value => 'save', :type => 'button', 
 				:data => { 
 					:action => 'save', 
-					'loading-text' => 'Saving...',
-					'success-text' => '<i class="icon-upload icon-white"></i> Saved!',
+					'loading-text' => '<i class="icon-upload icon-white"></i> Saving...',
+					'success-text' => '<i class="icon-upload icon-white"></i> Save',
 					'error-text' => '<i class="icon-upload icon-white"></i> Error while saving!' 
 				} 
 			%>
@@ -31,8 +40,8 @@
 				:class => "btn btn", :autocomplete => 'off', :value => 'report', :type => 'button', 
 				:data => { 
 					:action => 'report', 
-					'loading-text' => 'Generating...',
-					'success-text' => '<i class="icon-list-alt icon-white"></i> Generated!',
+					'loading-text' => '<i class="icon-list-alt icon-white"></i> Generating...',
+					'success-text' => '<i class="icon-list-alt icon-white"></i> Generate report',
 					'error-text' => '<i class="icon-list-alt icon-white"></i> Error while generating!' 
 				} 
 			%>
