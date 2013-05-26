@@ -3,7 +3,10 @@ require 'test_helper'
 require 'selenium-webdriver'
 
 
+
 class MainViewTest < ActionDispatch::IntegrationTest
+
+
 
 	setup do
 		@driver = Selenium::WebDriver.for :firefox
