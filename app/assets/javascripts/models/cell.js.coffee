@@ -51,6 +51,7 @@ class Model.Cell extends Helper.Mixable
 			_( params ).defaults( {
 				id: _.uniqueId "client:#{this.constructor.name}:"
 				creation: Date.now()
+				name: null
 			} ),
 			'cell.set.property'
 		)
@@ -607,7 +608,7 @@ class Model.Cell extends Helper.Mixable
 		
 		result = {
 			cell:
-				name: 'My Test Cell'
+				name: @name ? 'Cell [' + @creation + ']'
 			modules: modules
 				
 		}

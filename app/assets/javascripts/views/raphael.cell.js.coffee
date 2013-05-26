@@ -560,7 +560,8 @@ class View.Cell extends View.RaphaelBase
 	#
 	# @return [jQuery.Promise] the promise
 	#
-	save: () ->
+	save: ( name ) ->
+		@model.name = name ? @model.name
 		return @model.save()
 
 	# Draws red lines

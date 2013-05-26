@@ -121,5 +121,5 @@ class View.Main extends View.RaphaelBase
 	#
 	# @return [jQuery.Promise] the promise
 	#
-	save: () ->
-		return @cell.save()
+	save: ( name ) ->
+		return @cell.save( name )
