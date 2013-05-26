@@ -12,34 +12,34 @@ class CellsViewTests < ActionDispatch::IntegrationTest
 	end
 
 	def teardwown
-		driver.quit
+		@driver.quit
 	end
 
 	test "navigate to show-view" do
-		button = driver.find_element(:class, "icon-search")
+		button = @driver.find_element(:class, "icon-search")
 		button.click
-		url = driver.current_url
+		url = @driver.current_url
 		assert_equal url, "http://life.jstfy.com/cells/1"
 	end
 
 	test "navigate to edit view" do 
-		button = driver.find_element(:class, "icon-pencil")
+		button = @driver.find_element(:class, "icon-pencil")
 		button.click
-		url = driver.current_url
+		url = @driver.current_url
 		assert_equal url, "http://life.jstfy.com/cells/1/edit"
 	end
 
 	test "navigate to generate-report view" do 
-		button = driver.find_element(:class, "icon-list-alt")
+		button = @driver.find_element(:class, "icon-list-alt")
 		button.click
-		url = driver.current_url
+		url = @driver.current_url
 		assert_equal url, "http://life.jstfy.com/reports/new"
 	end
 
-	test "navigate to generate-report view" do 
-		button = driver.find_element(:class, "icon-plus-sign")
+	test "navigate to new-cell view" do 
+		button = @driver.find_element(:class, "icon-plus-sign")
 		button.click
-		url = driver.current_url
+		url = @driver.current_url
 		assert_equal url, "http://life.jstfy.com/cells/new"
 	end
 
