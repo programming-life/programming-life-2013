@@ -22,15 +22,32 @@ class Controller.Main
 	# @return [jQuery.Promise] the promise
 	#
 	load: ( cell_id, callback ) ->
-		return @view.load cell_id, callback
+		promise = @view.load cell_id, callback
+		promise.done( () => @_setCellNameActionField( @view.cell.model.name ) )
+		return promise
 		
 	# Saves the main view cell
 	#
 	# @return [jQuery.Promise] the promise
 	#
 	save: () ->
-		return @view.save()
+		name = @_getCellNameActionField()
+		console.log name
+		return @view.save( name )
 		
+	#
+	#
+	_getCellNameActionField: () ->
+		value = $( '#cell_name' ).val()
+		console.log $( '#cell_name' ).val(), $( '#cell_name' ).value
+		return value ? null
+		
+	#
+	#
+	_setCellNameActionField: ( name ) ->
+		value = $( '#cell_name' ).val name
+		console.log name, $( '#cell_name' )
+		return this
 	
 	# Finds the action buttons
 	#
