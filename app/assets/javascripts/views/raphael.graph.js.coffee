@@ -18,7 +18,7 @@ class View.Graph extends View.RaphaelBase
 		@_container = $('<div id="' + @_id + '" class="graph"></div>')
 		@_parent._container.append( @_container )
 
-		@_width = 300
+		@_width = 240
 		@_height = 175
 		@clear()
 
