@@ -158,6 +158,10 @@ class Model.Cell extends Helper.Mixable
 	#
 	addMetaboliteModule: ( metabolite, undoable = true ) ->
 	
+		if @hasMetabolite metabolite.name
+			@getMetabolite( metabolite.name ).amount = metabolite.amount
+			return this
+		
 		name = _( metabolite.name.split( '#' ) ).first()
 		action = 
 			@_createAction( "Added #{metabolite.constructor.name}: #{name} init=#{metabolite.amount} dt=#{metabolite.supply}" )
