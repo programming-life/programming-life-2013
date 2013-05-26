@@ -13,7 +13,7 @@ class Controller.Main
 	constructor: ( @container ) ->
 		@view = new View.Main @container
 		
-		$( '#actions' ).on( 'click', '[data-action]', @action )
+		$( '#actions' ).on( 'click', '[data-action]', @onAction )
 		
 	# Loads a new cell into the main view
 	#
@@ -32,31 +32,37 @@ class Controller.Main
 	#
 	save: () ->
 		name = @_getCellNameActionField()
-		console.log name
 		return @view.save( name )
 		
+	# Gets the cell name from the action field
 	#
+	# @return [String] the cell name
 	#
 	_getCellNameActionField: () ->
 		value = $( '#cell_name' ).val()
-		console.log $( '#cell_name' ).val(), $( '#cell_name' ).value
 		return value ? null
 		
-	#
+	# Sets the cell name to the action field
+	# 
+	# @param name [String] the name
+	# @return [self] chainable self
 	#
 	_setCellNameActionField: ( name ) ->
 		value = $( '#cell_name' ).val name
-		console.log name, $( '#cell_name' )
 		return this
 	
 	# Finds the action buttons
 	#
+	# @return [jQuery.Collection] the action buttons
+	#
 	_findActionButtons: () ->
 		return $( '#actions' ).find( '[data-action]' )
 		
+	# Runs on an action (click)
 	#
+	# @param event [jQuery.Event] the event
 	#
-	action: ( event ) =>
+	onAction: ( event ) =>
 		
 		@_findActionButtons()
 			.removeClass( 'btn-success' )
