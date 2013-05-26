@@ -15,6 +15,7 @@ class MainViewTest < ActionDispatch::IntegrationTest
 	end
 
 	def teardwown
+		@driver.browser.close
 		@driver.quit
 	end
 

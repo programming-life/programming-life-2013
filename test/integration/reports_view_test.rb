@@ -11,6 +11,11 @@ class ReportsViewTests < ActionDispatch::IntegrationTest
 		@driver.navigate.to "http://life.jstfy.com/reports"
 	end
 
+	def teardwown
+		@driver.browser.close
+		@driver.quit
+	end
+
 	test "navigate to show-reports view" do
 		button = @driver.find_element(:class, "icon-search")
 		button.click
@@ -19,7 +24,7 @@ class ReportsViewTests < ActionDispatch::IntegrationTest
 	end
 
 	test "navigate to cell view" do
-		link = @driver.find_element(:tag_name, "a")
+		link = @driver.find_element(:link, "My Test Cell")
 		link.click
 		url = @driver.current_url
 		assert_equal url, "http://life.jstfy.com/cells/1"
@@ -32,7 +37,4 @@ class ReportsViewTests < ActionDispatch::IntegrationTest
 		assert_equal url, "http://life.jstfy.com/reports/new"
 	end
 
-	def teardwown
-		driver.quit
-	end
 end

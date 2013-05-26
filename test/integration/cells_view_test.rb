@@ -12,6 +12,7 @@ class CellsViewTests < ActionDispatch::IntegrationTest
 	end
 
 	def teardwown
+		@driver.browser.close
 		@driver.quit
 	end
 
