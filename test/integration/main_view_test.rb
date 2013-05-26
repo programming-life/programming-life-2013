@@ -5,7 +5,7 @@ require 'selenium-webdriver'
 
 class MainViewTest < ActionDispatch::IntegrationTest
 
-	def setup
+	setup do
 		@driver = Selenium::WebDriver.for :firefox
 		@wait = Selenium::WebDriver::Wait.new :timeout => 10
 
@@ -14,8 +14,7 @@ class MainViewTest < ActionDispatch::IntegrationTest
 		@driver.navigate.to "http://life.jstfy.com"
 	end
 
-	def teardwown
-		@driver.browser.close
+	teardown do
 		@driver.quit
 	end
 
@@ -53,7 +52,6 @@ class MainViewTest < ActionDispatch::IntegrationTest
 		el.click
 		pane = @driver.find_element(:class, "pane-left")
 		@wait.until { pane.attribute("style") == "left: 0px;" }
-		
 	end
 
 end

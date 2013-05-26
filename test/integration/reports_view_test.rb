@@ -5,14 +5,13 @@ require 'selenium-webdriver'
 
 class ReportsViewTests < ActionDispatch::IntegrationTest
 
-	def setup
+	setup do
 		@driver = Selenium::WebDriver.for :firefox
 		@wait = Selenium::WebDriver::Wait.new :timeout => 10
 		@driver.navigate.to "http://life.jstfy.com/reports"
 	end
 
-	def teardwown
-		@driver.browser.close
+	teardown do
 		@driver.quit
 	end
 

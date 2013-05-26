@@ -5,14 +5,13 @@ require 'selenium-webdriver'
 
 class CellsViewTests < ActionDispatch::IntegrationTest
 
-	def setup
+	setup do
 		@driver = Selenium::WebDriver.for :firefox
 		@wait = Selenium::WebDriver::Wait.new :timeout => 10
 		@driver.navigate.to "http://life.jstfy.com/cells"
 	end
 
-	def teardwown
-		@driver.browser.close
+	teardown do
 		@driver.quit
 	end
 
