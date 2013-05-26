@@ -9,61 +9,117 @@ class View.Main extends View.RaphaelBase
 	# @param container [String, Object] A string with an id or a DOM node to serve as a container for the view
 	#
 	constructor: ( container = "#paper" ) ->
+	
 		container = $( container )[0]
 		super Raphael(container, 0,0) 
 
-		cell = new Model.Cell()
-		@_views.push  new View.Cell( @_paper, cell)
-		@_leftPane = new View.Pane(View.Pane.LEFT_SIDE, false) 
-		@_leftPane.addView( new View.Undo( @_leftPane._container , cell._tree ) )
-		@_views.push @_leftPane
-		@_rightPane = new View.Pane(View.Pane.RIGHT_SIDE)
-		#@_rightPane.addView( new View.Tree( @_rightPane._paper, cell._tree ) )
-		@_views.push @_rightPane
-
+		@_viewbox = @_paper.setViewBox(-750, -500, 1500, 1000)
+		
+		@_createCellView()
+		@_createUndoView()
+		
 		@resize()
-		$( window ).on( 'resize', @resize )
-
+		@_createBindings()
 		@draw()
-
+	
+	# Creates a new cell view
+	#
+	_createCellView: () ->
+		@cell = new View.Cell( @_paper, @, new Model.Cell() )
+		@_views.push @cell
+	
+	# Creates an undo view
+	# 
+	_createUndoView: () ->
+		@_leftPane = new View.Pane(View.Pane.Position.Left, false) 
+		@undo = new View.Undo( @cell.model.timemachine )
+		@_leftPane.addView( @undo )
+		@_views.push @_leftPane
+	
+	# Creates event bindings for the view
+	#
+	_createBindings: () ->
+		$( window ).on( 'resize', => _( @resize() ).debounce( 300 ) )
+		
+		@_bind( 'view.cell.set', @, 
+			(cell) => @undo.setTree( cell.model.timemachine ) 
+		)
+		@_bind( 'module.set.selected', @, 
+			(module, selected) => 
+				@undo.setTree if selected then module.timemachine else @cell.model.timemachine 
+		)
+		
+	# Toggles the simulation
+	#
+	# @param action [Boolean] start simulation
+	#
+	toggleSimulation: ( action ) ->
+		@cell.startSimulation( 20, 100 ) if action
+		@cell.stopSimulation() unless action
+		return this
+		
 	# Resizes the cell to the window size
 	#
-	resize: ( ) =>
-		old = @_width
+	resize: ( ) =>	
+		width = $( window ).width()
+		height = $( window ).height() - 110
 
-		@_width = $( window ).width() - 20
-		@_height = $( window ).height() - 5 
-		@_paper.setSize( @_width, @_height )
+		edge = Math.min(width / 1.5, height)
+		@_paper.setSize( edge * 1.5, edge )
 
-		scale = (@_width - old) / old
-
-		super( scale )
-		@draw()
-
-		Model.EventManager.trigger( 'paper.resize', @_paper )
+		@_trigger( 'paper.resize', @_paper )
 
 	# Draws the main view
 	#
 	draw: ( ) ->
-		centerX = @_width / 2
-		centerY = @_height / 2
-		radius = Math.min( @_width, @_height ) / 2 * .7
-
-		radius = 400 if radius > 400
-		radius = 200 if radius < 200
-		
-		scale = radius / 400
+		if @_locked
+			@_drawWhenUnlocked = true
+			return
 
 		for view in @_views
-			switch view.constructor.name
-				when "Cell"
-					view.draw(centerX, centerY, scale)
-				else
-					view.draw()
+			view.draw()
+
+	# Returns the absolute (document) coordinates of a point within the paper
+	#
+	# @param x [float] the x position of the paper point
+	# @param y [float] the y position of the paper point
+	# @return [[float, float]] a tuple of the document x and y coordinates, respectively
+	#
+	getAbsoluteCoords: ( x, y ) ->
+		width = @_viewbox.width
+		height = @_viewbox.height
+		offset = $(@_paper.canvas).offset()
+
+		vX = @_viewbox._viewBox[0]
+		vY = @_viewbox._viewBox[1]
+
+		vWidth = @_viewbox._viewBox[2]
+		vHeight = @_viewbox._viewBox[3]
+
+		absX = offset.left + ((x - vX) / vWidth) * width
+		absY = offset.top + ((y - vY) / vHeight) * height
+
+		return [absX, absY]
 	
 	# Kills the main view
 	#
 	kill: ( ) ->
 		super()
 		@_paper.remove()
-		$( window ).unbind()
+		$( window ).off( 'resize' )
+		
+	# Loads a new cell into the cell view
+	#
+	# @param cell_id [Integer] the cell to load
+	# @param callback [Function] the callback function
+	# @return [jQuery.Promise] the promise
+	#
+	load: ( cell_id, callback ) ->
+		return @cell.load cell_id, callback
+		
+	# Saves the cell view model
+	#
+	# @return [jQuery.Promise] the promise
+	#
+	save: () ->
+		return @cell.save()

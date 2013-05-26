@@ -85,7 +85,7 @@ class Model.UndoTree extends Model.Tree
 		
 		back = @_current
 		until back is node or back is @_root
-			undo.push back
+			undo.unshift back
 			back = back._parent
 		
 		return undo

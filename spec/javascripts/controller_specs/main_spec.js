@@ -1,21 +1,23 @@
 describe("Main", function() {
-	var main;
+	var controller, view_name
 
 	beforeEach( function() {
 		div = $("<div id='paper'></div>")[0]
-		console.log(div)
-		main = new Controller.Main(div)
-		view_name = main._view.constructor.name;
-		main._view.kill()
-		console.log(main);
+		controller = new Controller.Main( div )
+		view_name = controller.view.constructor.name;
 	});
 	
 	describe("when initialized", function() {
 		it("should contain the main view", function() {
-			console.log(view_name);
 			expect( view_name ).toBe( "Main" );
 		});
 	});
 
+	afterEach( function() {
+				
+		controller.view.kill()
+		$("#paper").remove()
+		$(".popover").remove()
+	});
 
 });
