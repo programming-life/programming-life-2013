@@ -19,7 +19,7 @@ describe("Module Cell Growth", function() {
 
 		it( "should have an infrastructure", function() {
 			expect( module.infrastructure ).toBeDefined();
-			expect( module.infrastructure ).toMatch( [ "lipid", "protein" ] );
+			expect( module.infrastructure ).toMatch( [ "lipid", "Protein" ] );
 		});
 
 		it( "should have 1 substrate: name", function() {
@@ -128,7 +128,7 @@ describe("Module Cell Growth", function() {
 
 				it( "should have an infrastructure", function() {
 					expect( deserialized.infrastructure ).toBeDefined();
-					expect( deserialized.infrastructure ).toMatch( [ "lipid", "protein" ] );
+					expect( deserialized.infrastructure ).toMatch( [ "lipid", "Protein" ] );
 				});
 
 				it( "should have 1 substrate: name", function() {

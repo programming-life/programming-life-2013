@@ -20,6 +20,12 @@ which is modeled by one or more diﬀerential equations. The proposed model desc
 an av- erage cell in a growing population of cells. Ordinary Diﬀerential Equations (ODEs) 
 in this model describe the change of molecule concentrations in time.
 
+## Installation
+Gigabase runs on Rails. You can load this repository onto your hard drive and directly use
+it as a rails app. Just run `bundle install` and `rake db: setup` and you are good to go. 
+For windows users, some gems might not install and display a message such as not native build.
+Download the Ruby Devkit and run the `bundle install` command in `mysys` terminal. All the
+gems will then perfectly build. Don't forget you might need administrator rights.
 
 ## Build Status
 
@@ -28,3 +34,13 @@ in this model describe the change of molecule concentrations in time.
 
 ### master
 [![master](https://travis-ci.org/Derkje-J/programming-life.png?branch=master)](https://travis-ci.org/Derkje-J/programming-life)
+
+## Pull Requests
+We are always open to pull requests. After June 2013 the project will no longer be
+fixed in direction, so more freedom on where to go. We do not allow pull requests on master
+or release branches. Fork the repository, create a patch/feature/issue branch and 
+merge to develop.
+
+Your code should be `rdoc` or `codo/coffeedoc` commented, assets should be `/spec/` tested 
+and when applied should have `/test/functional` integration tests. Server side code should
+also be `/test/` unit tested.

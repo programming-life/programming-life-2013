@@ -3,7 +3,7 @@
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
 body {
-	
+	overflow-y:scroll;
 }
 
 .left {
@@ -14,6 +14,11 @@ body {
 .right {
 	position: absolute;
 	right: 0px;
+}
+
+div#paper svg {
+	display:block;
+	margin:0 auto;
 }
 
 .graph {
@@ -32,10 +37,17 @@ body {
 	stroke-width: 40px;
 }
 
+rect, circle:not(.cell) {
+	vector-effect:non-scaling-stroke;
+}
+
 .module-box {
-	stroke: rgba(0, 0, 0, .2);
+	stroke: rgba(0, 0, 0, .2);	
 	stroke-width: 1px;
 	fill: rgba( 255, 255, 255, 1 );
+	opacity:1;
+
+	transition:stroke 0.5s;
 	
 	&.inactive {
 		stroke-dasharray: 5,5;
@@ -47,20 +59,31 @@ body {
 	}
 	
 	&.selected {
-		stroke: rgb( 100, 100, 200 );
+		stroke: rgba(82, 168, 236, 0.8);
 	}
 }
 
-.module-close {
-	fill: #fff;
-	stroke: #333333;
-	stroke-width: 2px;
+text, tspan {
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+}
+
+.module-text {
+	font-size: 16px !important;
+	fill: #333;
+}
+
+[class$='-substrate-text'], [class$='-substrate-text-shadow'] {
+	font-weight: bolder !important;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+	font-size:18px !important
 }
 
 .module-hitbox {
 	fill: rgba(255, 0, 0, 0);
 	stroke: rgba(255, 0, 0, 0);
 	stroke-width: 1px;
+
+	cursor:pointer;
 }
 
 .node-hitbox {
@@ -68,6 +91,15 @@ body {
 	stroke: rgba(255, 0, 0, 0);
 	stroke-width: 1px;
 	opacity: 0;
+}
+
+.module-shadow {
+	opacity:0 !important;
+	transition: opacity .5s;
+}
+
+.module-shadow.selected {
+	opacity:.182 !important;
 }
 
 [class$='-substrate-circle'] {
@@ -78,21 +110,11 @@ body {
 	stroke-width: 2px;
 }
 
-
-.substrate-substrate-text, .substrate-substrate-text-shadow {
-	font-weight: bolder !important;
-	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
-}
-
-text, tspan {
-	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
-}
-
-.substrate-substrate-text {
+[class$='-substrate-text'] {
 	fill: #fff;
 }
 
-.substrate-substrate-text-shadow {
+[class$='-substrate-text-shadow'] {
 	fill: rgba(0, 0, 0, .25);
 }
 
@@ -164,89 +186,246 @@ text, tspan {
 }
 
 .pane {
+	width: 300px;
 	height: 100%;
+
 	position: fixed;
-	backgrond-color: white;
+	top:0;
+
+	background: white;
+	border:1px solid #ddd;
+	border-width:0;
+
+	box-shadow:0 0 5px rgba(0, 1px, 5px, .1);
 	
-	.pane-container {
-		width: 400px;
-		height: 100%;
-		background-color: white;
-		overflow: auto;
+	transition: left .5s, right .5s;
+
+	.pane-button {
+		width:18px;
+		padding:10px 3px;
+
+		position:absolute;
+		top:150px;
+
+		background:white;
+
+		border:1px solid #ddd;
+		border-width:0;
+
+		font-size:24px;
+		font-weight:900;
+		color:#ccc;
+
+		box-shadow:0 1px 5px rgba(0, 0, 5px, .1);
+		cursor:pointer;
 	}
 
-	.pane-button{
-		width: 40px;
-		height: 100%
-	}
 	&.pane-left {
-		top: 0;
-		left: 0;
-		padding-right: 40px;
-	
+		left: -300px;
+		border-right-width:1px;
+
 		.pane-button {
-			position: absolute;
-			right: 0;
+			left:300px;
+
+			border-width:1px;
+
+			border-top-right-radius: 9px;
+			border-bottom-right-radius: 9px;
+
+			&:after {
+				content:url('/assets/icon-chevron-right.png');
+				opacity:.3;
+			}
 		}
-	}
-	&.pane-right {
-		top: 0;
-		right: 0;
-		padding-left: 40px;
-	
-		.pane-button {
-			position: absolute;
+
+		.pane-content {
+			float:right;
+		}
+
+
+		&.extended {
 			left: 0;
+
+			.pane-button {
+				&:after {
+					content:url('/assets/icon-chevron-left.png');
+					opacity:.3;
+				}
+			}
+		}		
+	}
+
+	&.pane-right {
+		right: -300px;
+		border-left-width:1px;
+
+		.pane-button {
+			right:300px;
+
+			border-width:1px;
+
+			border-top-left-radius: 9px;
+			border-bottom-left-radius: 9px;
+
+			&:after {
+				content:url('/assets/icon-chevron-left.png');
+				opacity:.3;
+			}
 		}
+
+		.pane-content {
+			float:left;
+		}
+
+		&.extended {
+			right: 0;
+
+			.pane-button {
+				&:after {
+					content:url('/assets/icon-chevron-right.png');
+					opacity:.3;
+				}
+			}
+		}		
+	}	
+	
+	.pane-content {
+		width: 100%;
+		height: 100%;
+		overflow: auto;
+
+		.pane-header.navbar {
+			position:relative;
+			z-index:10;
+			margin-bottom:0;
+
+			.navbar-inner {
+				border-width:0 0 1px 0;
+				border-radius:0;
+			}
+		}
+
+		.pane-footer.navbar {			
+			position:absolute;
+			bottom:0;
+
+			width:100%;
+			margin-bottom:0px;
+
+			.navbar-inner {
+				border-width:1px 0 0 0;
+				border-radius:0;
+			}
+
+			z-index:10;
+		}	
 	}
 }
 
 @media (max-width: 980px) and (min-width: 770px) {
-	.pane .pane-container {
+	.pane {
 		width: 200px;
 	}
 }
 
 @media (max-width: 769px) and (min-width: 481px) {
-	.pane .pane-container {
+	.pane {
 		width: 100px;
 	}
 }
 
 
-.undo {
-	padding: 10px;
-	h2 {
-		position: relative;
-		text-align: center;
-	}
-	.btn-left{
-		position: absolute;
-		top: 0;
-		left: 0;
-	}
-	.btn-right {
-		position: absolute;
-		top: 0;
-		right: 0;
-	}
-	dl dl{
-		width: 100%;
-	}
-	dl .undo-node:hover {
-		background-color: #cacaca;
-	}
-	dl dl.undo-current {
-		border: 2px solid #009ACD
+.undo-view {	
+
+	.undo-contents {
+		width:100%;
+
+		.undo-body {
+			position:absolute;
+			top:41px;
+			bottom:41px;
+			width:100%;			
+
+			.undo-list {
+				position:relative;
+				height:100%;
+				width:100%;
+				overflow-y:auto;				
+
+				.undo-row {
+					padding:8px 8px 8px 20px;
+					line-height:20px;
+
+					border-bottom:1px solid #ddd;
+
+					cursor:pointer;
+
+					dl {
+						margin:0;
+
+						dt {
+							font-weight:normal;
+							font-size:14px;
+						}
+
+						dd {
+							text-align: right;
+							color:#aaa;
+						}
+					}
+
+					&:nth-child(odd):not(.selected) {
+						background-color:#f9f9f9;
+					}
+
+					&:nth-child(even):not(.selected) {
+						background-color:#fff;
+					}
+
+					&:hover:not(.selected) {
+						background-color:#f5f5f5;
+					}
+
+					&.selected {
+						background-color:#f0f0f0;
+					}
+				}
+			}
+		}
+
+		.pane-footer {
+
+			.navbar-inner {
+				padding:0;
+
+				.branch-button {
+					padding: 10px 15px 10px;
+					opacity: .2;
+
+					border:0px solid #ccc;
+
+					&.pull-left {
+						border-right-width:1px;
+					}
+
+					&.pull-right {
+						border-left-width:1px;
+					}
+				}
+			}
+
+			&.active-buttons {
+
+				.branch-button {
+					opacity: .7;
+					cursor: pointer;
+				}
+			}		
+		}	
 	}
 }
+
+
 #graphs {
 	height: 100%;
-}
-.graph-container {
-	width: 300px;
-	height: 200px;
-	margin: 20px;
-	display: inline;
-	float: left;
 }

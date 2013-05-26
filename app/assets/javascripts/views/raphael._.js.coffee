@@ -9,7 +9,7 @@ class View.RaphaelBase extends Helper.Mixable
 	# @param _paper [Object] The paper to draw on
 	# @param _withPaper [Boolean] if true, adds a paper set on contents
 	#
-	constructor: ( @_paper = null, @_withPaper = on ) ->
+	constructor: ( @_paper = null, @_parent = null, @_withPaper = on ) ->
 		@_contents = @_paper?.set() if @_withPaper
 		@_views = []
 	
@@ -86,17 +86,16 @@ class View.RaphaelBase extends Helper.Mixable
 		@_views = _( @_views ).without view
 		@redraw()
 
-	# Resize this view and it's children
-	# 
-	# @param scale [Float] The scale of the view
-	#
-	resize: ( scale = @_scale ) ->
-		@_contents?.transform("S"+scale)
-
-		for view in @_views
-			view.resize( scale )
-			
 	#
 	#
 	@_getViewPlacement: ( view ) ->
 		return { x: 0, y:0, scale: 1 }
+
+	# Returns the absolute (document) coordinates of a point within the paper
+	#
+	# @param x [float] the x position of the paper point
+	# @param y [float] the y position of the paper point
+	# @return [[float, float]] a tuple of the document x and y coordinates, respectively
+	#
+	getAbsoluteCoords: ( x, y ) ->
+		return @_parent.getAbsoluteCoords(x, y)

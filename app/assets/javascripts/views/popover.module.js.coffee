@@ -20,7 +20,6 @@ class View.ModuleProperties extends View.HTMLPopOver
 
 		super parent, module.constructor.name, ' module-properties', 'bottom'
 		
-		@_bind('module.drawn', @, @onModuleDrawn)
 		@_bind('module.set.hovered', @, @onModuleHovered)
 		@_bind('module.set.selected', @, @onModuleSelected)
 		@_bind('module.set.property', @, @onModuleInvalidated)
@@ -62,67 +61,55 @@ class View.ModuleProperties extends View.HTMLPopOver
 
 		@_footer.append @_saveButton
 		return [ @_footer, @_saveButton ]
+		
+	#
+	#
+	#
+	_drawProperty: ( key, type, params = {} ) ->
+		value = @module[ key ]
+		return @_drawInput( type, key, value, params )			
+		
 
 	# Populates the popover body with the required forms to reflect the module.
 	#
 	_drawForm: ( ) ->
 		@_body.empty()
-		form = $('<div class="form-horizontal"></div>')
-		paramSection = $('<div></div>')
-		metaboliteSection = $('<div></div>')
-		metabolitesSection = $('<div></div>')
-		enumSection = $('<div></div>')		
+		form = $('<div class="form-horizontal properties-form-' + Model.Module.extractId( @module.id ).id + '"></div>')
+		sections = []
 
 		properties = @module.metadata.properties
-		properties.parameters.sort()
+		properties.parameters?.sort()
 
-		for key in properties.parameters ? []
-			value = @module[key]
+		iteration = 
+			parameter: 'parameters'
+			metabolite: 'metabolite'
+			metabolites: 'metabolites' 
+			compound: 'compound'
+			compounds: 'compounds'
+			dna: 'dna'
+			
+		for type, prop of iteration
+			continue unless properties[ prop ]?
+			sections.push ( section = $( '<div class="' + type + '"></div>' ) )
+			section.prepend( '<hr />' ) if sections.length > 1
+			for key in properties[ prop ]
+				section.append @_drawProperty( key, type )
+	
+		if properties.enumerations
+			sections.push ( section = $( '<div class="enumeration"></div>' ) )
+			section.prepend( '<hr />' ) if sections.length > 1
+			for enumeration in properties.enumerations ? []
+				section.append @_drawProperty( enumeration.name, 'enumeration', {values: enumeration.values} )
 
-			input = @_drawInput('parameter', key, value)			
-			paramSection.append(input)
+		for section in sections
+			form.append section
 
-		form.append(paramSection)
+		@_body.append form
 
-		for key in properties.metabolite ? []
-			value = @module[key]
-
-			input = @_drawInput('metabolite', key, value)
-			metaboliteSection.append(input)
-
-		if metaboliteSection.children().length > 0
-			metaboliteSection.prepend('<hr />')
-
-		form.append(metaboliteSection)
-
-		for key in properties.metabolites ? []
-			value = @module[key]
-
-			input = @_drawInput('metabolites', key, value)
-			metabolitesSection.append(input)
-
-		if metabolitesSection.children().length > 0
-			metabolitesSection.prepend('<hr />')
-
-		form.append(metabolitesSection)
-
-		for enumeration in properties.enumerations ? []
-			key = enumeration.name
-			value = @module[key]
-			params = {values: enumeration.values}
-
-			input = @_drawInput('enumeration', key, value, params)
-			enumSection.append(input)
-
-		if enumSection.children().length > 0
-			enumSection.prepend('<hr />')
-
-		form.append(enumSection)
-
-		@_body.append(form)
-
+	# Draws input 
+	#
 	_drawInput: ( type, key, value, params = {} ) ->
-		id = @module.id + ':' + key
+		id = 'property-' + Model.Module.extractId( @module.id ).id + '-' + key
 		keyLabel = key.replace(/_(.*)/g, "<sub>$1</sub>")
 
 		controlGroup = $('<div class="control-group"></div>')
@@ -130,7 +117,12 @@ class View.ModuleProperties extends View.HTMLPopOver
 
 		controls = $('<div class="controls"></div>')
 		
-		switch type
+		drawtype = type
+		if drawtype is 'metabolite' or drawtype is 'compound'
+			value = [ value ]
+			drawtype += 's'
+			
+		switch drawtype
 			when 'parameter'
 				input = $('<input type="text" id="' + id + '" class="input-small" value="' + value + '" />')
 				controls.append(input)
@@ -141,19 +133,21 @@ class View.ModuleProperties extends View.HTMLPopOver
 					)
 				) key
 
-			when 'metabolite'
-				text = value.split('#')[0]
-				color = @_parent.hashColor(text)
-				label = $('<span class="badge badge-metabolite">' + text + '</span>')
-				label.css('background-color', color)
-				controls.append(label)
-
 			when 'metabolites'
 				for v in value
 					text = v.split('#')[0]
 					color = @_parent.hashColor(text)					
 					label = $('<span class="badge badge-metabolite">' + text + '</span> ')
 					label.css('background-color', color)
+					controls.append(label)
+					
+			when 'dna'
+				label = $('<span>' + value + '</span> ')
+				controls.append(label)
+			
+			when 'compounds'
+				for v in value
+					label = $('<span>' + v + ' </span>')
 					controls.append(label)
 
 			when 'enumeration'
@@ -174,6 +168,11 @@ class View.ModuleProperties extends View.HTMLPopOver
 		controlGroup.append controls
 		return controlGroup
 
+	#
+	#
+	_setSelected: ( selected ) ->
+		super selected
+		$( '.properties-form-' + Model.Module.extractId( @module.id ).id ).find( 'input, select' ).attr( 'disabled', !selected )
 
 	# Saves all changed properties to the module.
 	#
