@@ -3,8 +3,7 @@ require 'test_helper'
 require 'selenium-webdriver'
 
 
-class ReportsViewTests < Test::Unit::TestCase
-		attr_reader :browser
+class ReportsViewTests < ActionDispatch::IntegrationTest
 
 	def setup
 		driver = Selenium::WebDriver.for :firefox
