@@ -146,7 +146,6 @@ class View.ModuleProperties extends View.HTMLPopOver
 			value = [ value ]
 			drawtype += 's'
 			
-		console.log 'input:', key, value	
 		switch drawtype
 			when 'parameter'
 				controls.append @_drawParameter( id, key, value )
@@ -251,11 +250,15 @@ class View.ModuleProperties extends View.HTMLPopOver
 		((key) => 
 			selectable.on('change', (event) => 
 				value = event.target.value
-				@_changes[ key ] = _( @module[ key ] ).clone( true ) unless @_changes[ key ]
-				if event.target.checked
-					@_changes[ key ].push value
+				
+				if ( selectable.data( 'multiple' ) is 'true' )
+					@_changes[ key ] = _( @module[ key ] ).clone( true ) unless @_changes[ key ]
+					if event.target.checked
+						@_changes[ key ].push value
+					else
+						@_changes[ key ] = _( @_changes[ key ] ).without value
 				else
-					@_changes[ key ] = _( @_changes[ key ] ).without value
+					@_changes[ key ] = value
 			)
 		) key
 		
@@ -301,10 +304,11 @@ class View.ModuleProperties extends View.HTMLPopOver
 		values = _( selectable.value() )
 		options = _( options )
 		options = _( options.map( ( v ) -> v.split('#')[0] ) ) if selectable.key is 'transported'
-			
+		options = _( options.filter( ( v ) -> not /#ext$/.test v ) )
+		
 		for option in _( options.concat values.value() ).uniq()
 			
-			label = $( "<label class='option-selectable #{selectable.type} inline' for='#{selectable.id}-#{option}'></label>" )
+			label = $( "<label class='option-selectable #{selectable.type}' for='#{selectable.id}-#{option}'></label>" )
 			elem = $( "<input type='#{selectable.type}' name='#{selectable.name}' id='#{selectable.id}-#{option}' value='#{option}'>" )
 			elem.prop( 'checked', values.contains(option) )
 			@_bindOnSelectableChange( selectable.key, elem )
@@ -361,8 +365,8 @@ class View.ModuleProperties extends View.HTMLPopOver
 	# Saves all changed properties to the module.
 	#
 	_save: ( ) ->
+	
 		for key, value of @_changes
-			console.log 'save', key, value
 			@module[ key ] = value
 			
 		@_changes = {}
@@ -426,7 +430,6 @@ class View.ModuleProperties extends View.HTMLPopOver
 	#
 	onModuleInvalidated: ( module, action ) ->
 		if module is @module
-			console.log 'invalidated', module.name
 			@_body?.empty()
 			@_selectables = []
 			@_drawForm()
