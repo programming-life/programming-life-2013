@@ -111,9 +111,16 @@ class Controller.Main
 					.always( enable )
 				
 			when 'reset'
-				@view.kill()
-				@view = new View.Main @container
-				enable()
+				@_findActionButtons()
+					.button( 'reset' )
+					.filter( ':not([data-toggle])' )
+						.removeClass( 'btn-primary' )
+				
+				confirm = () =>
+					@view.kill()
+					@view = new View.Main @container
+					
+				@view.confirmReset( confirm )
 				
 			when 'simulate'
 				target.attr( 'disabled', false )
