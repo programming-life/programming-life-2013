@@ -40,6 +40,7 @@ class Controller.Main
 	#
 	_getCellNameActionField: () ->
 		value = $( '#cell_name' ).val()
+		return null if value.length is 0
 		return value ? null
 		
 	# Sets the cell name to the action field
