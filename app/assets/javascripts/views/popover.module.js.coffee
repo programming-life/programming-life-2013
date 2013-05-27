@@ -250,8 +250,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 		((key) => 
 			selectable.on('change', (event) => 
 				value = event.target.value
-				
-				if ( selectable.data( 'multiple' ) is 'true' )
+				if ( selectable.closest('[data-multiple]').data( 'multiple' ) is on )
 					@_changes[ key ] = _( @module[ key ] ).clone( true ) unless @_changes[ key ]
 					if event.target.checked
 						@_changes[ key ].push value
