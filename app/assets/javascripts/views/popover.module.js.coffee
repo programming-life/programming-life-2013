@@ -16,13 +16,28 @@ class View.ModuleProperties extends View.HTMLPopOver
 		@module = module
 
 		@_changes = {}
-		@_inputs = {}
+
+		@_compounds = @_cell.getCompoundNames()
+		@_metabolites = @_cell.getMetaboliteNames()
+		@_selectables = []
 
 		super parent, module.constructor.name, ' module-properties', 'bottom'
 		
 		@_bind('module.set.hovered', @, @onModuleHovered)
 		@_bind('module.set.selected', @, @onModuleSelected)
 		@_bind('module.set.property', @, @onModuleInvalidated)
+		
+		@_bind('cell.add.module', @, @onCompoundsChanged)
+		@_bind('cell.remove.module', @, @onCompoundsChanged)
+		@_bind('cell.add.metabolite', @, @onMetabolitesChanged)
+		@_bind('cell.remove.metabolite', @, @onMetabolitesChanged)
+		
+		@_setSelected off
+		
+	# Gets the id for this popover
+	#
+	getFormId: () ->
+		return 'properties-form-' + Model.Module.extractId( @module.id ).id	
 		
 	# Create the popover header
 	#
@@ -62,19 +77,22 @@ class View.ModuleProperties extends View.HTMLPopOver
 		@_footer.append @_saveButton
 		return [ @_footer, @_saveButton ]
 		
+	# Draws a certain property
 	#
-	#
+	# @param key [String] property
+	# @param type [String] property type
+	# @param params [Object] additional parameters
+	# @return [jQuery.elem] elements
 	#
 	_drawProperty: ( key, type, params = {} ) ->
 		value = @module[ key ]
 		return @_drawInput( type, key, value, params )			
-		
 
 	# Populates the popover body with the required forms to reflect the module.
 	#
 	_drawForm: ( ) ->
-		@_body.empty()
-		form = $('<div class="form-horizontal properties-form-' + Model.Module.extractId( @module.id ).id + '"></div>')
+		
+		form = $('<div class="form-horizontal" id="' + @getFormId() + '"></div>')
 		sections = []
 
 		properties = @module.metadata.properties
@@ -108,6 +126,12 @@ class View.ModuleProperties extends View.HTMLPopOver
 
 	# Draws input 
 	#
+	# @param key [String] property
+	# @param type [String] property type
+	# @param value [any] the property value
+	# @param params [Object] additional parameters
+	# @return [jQuery.elem] elements
+	#
 	_drawInput: ( type, key, value, params = {} ) ->
 		id = 'property-' + Model.Module.extractId( @module.id ).id + '-' + key
 		keyLabel = key.replace(/_(.*)/g, "<sub>$1</sub>")
@@ -122,75 +146,255 @@ class View.ModuleProperties extends View.HTMLPopOver
 			value = [ value ]
 			drawtype += 's'
 			
+		console.log 'input:', key, value	
 		switch drawtype
 			when 'parameter'
-				input = $('<input type="text" id="' + id + '" class="input-small" value="' + value + '" />')
-				controls.append(input)
-
-				((key) => 
-					input.on('change', (event) => 
-						@_changes[key] = parseFloat(event.target.value)
-					)
-				) key
+				controls.append @_drawParameter( id, key, value )
 
 			when 'metabolites'
-				for v in value
-					text = v.split('#')[0]
-					color = @_parent.hashColor(text)					
-					label = $('<span class="badge badge-metabolite">' + text + '</span> ')
-					label.css('background-color', color)
-					controls.append(label)
+				controls.append @_drawMetabolite( id, key, v ) for v in value
+				controls.append @_drawSelectionFor( type, drawtype, id, key, value )
 					
 			when 'dna'
-				label = $('<span>' + value + '</span> ')
-				controls.append(label)
+				controls.append @_drawDNA( id, key, value )
 			
 			when 'compounds'
-				for v in value
-					label = $('<span>' + v + ' </span>')
-					controls.append(label)
+				controls.append @_drawCompound( id, key, v ) for v in value
+				controls.append @_drawSelectionFor( type, drawtype, id, key, value )
 
 			when 'enumeration'
-				select = $('<select id = "' + id + '" class="input-small"></select>')
-				for k, v of params.values
-					option = $('<option value="' + v + '">' + k + '</option>')
-					if v is value
-						option.attr('selected', true)
-					select.append(option)
-				controls.append(select)
-
-				((key) => 
-					select.on('change', (event) => 
-						@_changes[key] = parseInt event.target.value
-					)
-				) key			
+				controls.append @_drawEnumeration( id, key, value, params )
 
 		controlGroup.append controls
 		return controlGroup
-
+	
+	# Draws the input for a parameter
 	#
+	# @param id [String] the form id
+	# @param key [String] property to set
+	# @param value [any] the current value
+	#
+	_drawParameter: ( id, key, value ) ->
+		input = $('<input type="text" id="' + id + '" class="input-small" value="' + value + '" />')
+		@_bindOnChange( key, input )
+		return input
+				
+	# Draws the input for a metabolite
+	#
+	# @param id [String] the form id
+	# @param key [String] property to set
+	# @param value [any] the current value
+	#
+	_drawMetabolite: ( id, key, value ) ->
+		text = value.split( '#' )[0]
+		color = @_parent.hashColor text				
+		label = $('<span class="badge badge-metabolite" data-selectable-value="' + key + '">' + text + '</span> ')
+		label.css( 'background-color', color )
+		return label
+	
+	# Draws the input for DNA
+	#
+	# @param id [String] the form id
+	# @param key [String] property to set
+	# @param value [any] the current value
+	#
+	_drawDNA: ( id, key, value ) ->
+		return $('<span class="badge badge-important">' + value + '</span> ')
+		
+	# Draws the input for a compound
+	#
+	# @param id [String] the form id
+	# @param key [String] property to set
+	# @param value [any] the current value
+	#
+	_drawCompound: ( id, key, value ) ->
+		return $('<span class="badge" style="margin-right: 3px;" data-selectable-value="' + key + '">' + value + '</span>')
+		
+	# Draws the input for an enumeration
+	#
+	# @param id [String] the form id
+	# @param key [String] property to set
+	# @param value [any] the current value
+	#
+	# @todo on clear/kill remove property from option
+	#
+	_drawEnumeration: ( id, key, value, params ) ->
+		select = $('<select id = "' + id + '" class="input-small"></select>')
+		for k, v of params.values
+			option = $('<option value="' + v + '">' + k + '</option>')
+			option.prop( 'selected', true ) if v is value
+			select.append option
+			
+		@_bindOnChange( key, select )
+		return select
+		
+	# Binds an on change event to the given input that sets the key
+	#
+	# @param key [String] property to set
+	# @param input [jQuery.Elem] the element to set it on
+	# 
+	_bindOnChange: ( key, input ) ->
+		((key) => 
+			input.on('change', (event) => 
+				value = event.target.value
+				value = parseFloat value unless isNaN value
+				@_changes[ key ] = value
+			)
+		) key
+		
+	# Binds an on change event to a selectable input that sets the key
+	#
+	# @param key [String] property to set
+	# @param selectable [jQuery.Elem] the selectable to set it on
+	# 
+	_bindOnSelectableChange: ( key, selectable ) ->
+		((key) => 
+			selectable.on('change', (event) => 
+				value = event.target.value
+				@_changes[ key ] = _( @module[ key ] ).clone( true ) unless @_changes[ key ]
+				if event.target.checked
+					@_changes[ key ].push value
+				else
+					@_changes[ key ] = _( @_changes[ key ] ).without value
+			)
+		) key
+		
+	# Draws the selectable selection for
+	#
+	# @param type [String] the paramater type
+	# @param drawtype [String] the drawing paramter type
+	# @param value [String, Array<String> current value
+	# @return [jQuery.Elem] element
+	#
+	_drawSelectionFor: ( type, drawtype, id, key, value ) ->
+		multiple = /s$/.test type
+		container = $( "<div data-selectable='#{key}' data-multiple='#{multiple}'></div>" )
+		
+		inputname = if multiple then id + '[]' else id
+		inputtype = if multiple then 'checkbox' else 'radio'
+
+		selectable =
+			container: container
+			name: inputname
+			type: inputtype
+			drawtype: drawtype
+			key: key
+			id: id
+			value: () => @module[ key ]
+			
+		@_selectables.push selectable
+		@_drawSelectable selectable
+
+		return container
+		
+	# Draws a selectable
+	#
+	# @param selectable [Object] the selectable object
+	#
+	_drawSelectable: ( selectable ) -> 
+		options = switch selectable.drawtype
+			when 'metabolites'
+				@_metabolites
+			when 'compounds'
+				@_compounds
+				
+		values = _( selectable.value() )
+		options = _( options )
+		options = _( options.map( ( v ) -> v.split('#')[0] ) ) if selectable.key is 'transported'
+			
+		for option in _( options.concat values.value() ).uniq()
+			
+			label = $( "<label class='option-selectable #{selectable.type} inline' for='#{selectable.id}-#{option}'></label>" )
+			elem = $( "<input type='#{selectable.type}' name='#{selectable.name}' id='#{selectable.id}-#{option}' value='#{option}'>" )
+			elem.prop( 'checked', values.contains(option) )
+			@_bindOnSelectableChange( selectable.key, elem )
+			
+			display_name = option.replace( /#(.*)/, '<sub>$1</sub>' )
+			labeltext = $("<span class='#{if !options.contains(option) then 'unknown' else ''}'>#{display_name}</span>")
+			label.append elem
+			label.append labeltext 
+			selectable.container.append label
+			
+		return selectable
+			
+	# Redraws a selectable
+	# 
+	# @param selectable [Object] selectable object
+	#
+	_redrawSelectable: ( selectable ) ->
+		selectable.container.empty()
+		@_drawSelectable( selectable )
+		
+	# Sets all visibilities of all selectables
+	#
+	# @param selected [Boolean] is selected flag
+	#
+	_setSelectablesVisibility: ( selected ) ->
+		@_getThisForm()
+			.find( '[data-selectable-value]' )
+			.css( 'display', if selected then 'none' else 'inline-block' )
+			
+		@_getThisForm()
+			.find( '[data-selectable]' )
+			.css( 'display', if selected then 'inline-block' else 'none' )
+		
+	# Gets this form element
+	#
+	# @return [jQuery.Elem]
+	#
+	_getThisForm: () ->
+		return $( "##{@getFormId()}" )
+		
+	# Sets the selection state of this popover
+	# 
+	# @param selected [Boolean] the selection state
 	#
 	_setSelected: ( selected ) ->
 		super selected
-		$( '.properties-form-' + Model.Module.extractId( @module.id ).id ).find( 'input, select' ).attr( 'disabled', !selected )
+		
+		@_getThisForm()
+			.find( 'input, select' )
+			.prop( 'disabled', !selected )
+			
+		@_setSelectablesVisibility( selected )
 
 	# Saves all changed properties to the module.
 	#
 	_save: ( ) ->
 		for key, value of @_changes
-			console.log key, value
+			console.log 'save', key, value
 			@module[ key ] = value
-		
+			
+		@_changes = {}
 		@_trigger( 'module.set.selected', @module, [ off ] )
 		@_trigger( 'module.set.hovered', @module, [ off ] )
+			
+	# Runs when a compound is changed (added/removed)
+	#
+	# @param cell [Model.Cell] changed on
+	# @param module [Model.Module] the changed compound
+	#
+	onCompoundsChanged: ( cell, module ) ->
+		return if cell isnt @_cell
+		@_compounds = @_cell.getCompoundNames()
+		@_redrawSelectable( selectable ) for selectable in @_selectables
+	
+	# Runs when a metabolite is changed (added/removed)
+	#
+	# @param cell [Model.Cell] changed on
+	# @param module [Model.Metabolite] the changed metabolite
+	#
+	onMetabolitesChanged: ( cell, module ) ->
+		return if cell isnt @_cell
+		@_metabolites = @_cell.getMetaboliteNames()
+		@_redrawSelectable( selectable ) for selectable in @_selectables
 			
 	# Gets called when a module view is drawn.
 	#
 	# @param module [Module] the module that is being drawn
 	#
 	onModuleDrawn: ( module ) ->
-		if module is @module
-			@setPosition()
+		@setPosition() if module is @module
 
 	# Gets called when a module view selected.
 	#
@@ -220,6 +424,10 @@ class View.ModuleProperties extends View.HTMLPopOver
 	#
 	# @param module [Module] the module that has changed
 	#
-	onModuleInvalidated: ( module, prop ) ->
+	onModuleInvalidated: ( module, action ) ->
 		if module is @module
+			console.log 'invalidated', module.name
+			@_body?.empty()
+			@_selectables = []
 			@_drawForm()
+			

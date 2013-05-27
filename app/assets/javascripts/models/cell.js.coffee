@@ -391,6 +391,20 @@ class Model.Cell extends Helper.Mixable
 	#
 	numberOf: ( module_type ) ->
 		return _( @_getModules() ).where( ( module ) -> module instanceof module_type ).length
+	
+	# Get compound names
+	# 
+	# @return [Array<String>] all the compound names
+	#
+	getCompoundNames: () ->
+		return _( @_modules ).map( ( m ) -> m.name )
+	
+	# Get Metabolite Names
+	#
+	# @return [Array<String>] all the metabolite names
+	#
+	getMetaboliteNames: () ->
+		return _( @_metabolites ).map( ( m ) -> m.name )
 
 	# Gets all the modules that are steppable
 	# 
