@@ -67,15 +67,21 @@ class View.ModuleProperties extends View.HTMLPopOver
 	# @param saveText [String] the text on the save button
 	# @return [Array<jQuery.Elem>] the footer and the button element
 	#
-	_createFooter: ( saveText = 'Save' ) ->
+	_createFooter: ( removeText = 'Remove', saveText = 'Save' ) ->
 		@_footer = $('<div class="modal-footer"></div>')
 
-		onclick = () => @_save()
-		@_saveButton = $('<button class="btn btn-primary">' + saveText + '</button>')
-		@_saveButton.on('click', onclick ) if onclick?
+		remove = () => @_remove()
+		@_removeButton = $('<button class="btn btn-danger">' + removeText + '</button>')
+		@_removeButton.on('click', remove ) if remove?
 
+		save = () => @_save()
+		@_saveButton = $('<button class="btn btn-primary">' + saveText + '</button>')
+		@_saveButton.on('click', save ) if save?
+
+	
+		@_footer.append @_removeButton
 		@_footer.append @_saveButton
-		return [ @_footer, @_saveButton ]
+		return [ @_footer, @_removeButton, @_saveButton ]
 		
 	# Draws a certain property
 	#
@@ -371,6 +377,13 @@ class View.ModuleProperties extends View.HTMLPopOver
 		@_changes = {}
 		@_trigger( 'module.selected.changed', @module, [ off ] )
 		@_trigger( 'module.hovered.changed', @module, [ off ] )
+	
+
+	_remove: ( ) ->
+	
+		@_cell.remove(@module)
+
+
 			
 	# Runs when a compound is changed (added/removed)
 	#

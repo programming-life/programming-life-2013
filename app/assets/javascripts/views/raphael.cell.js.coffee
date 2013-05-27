@@ -70,7 +70,7 @@ class View.Cell extends View.RaphaelBase
 		for module in @_model._getModules()
 			view = new View.Module( @_paper, @, @_model, module, @_interaction )
 			@_views.push view
-			@_drawn.push [ { model: module, view: view } ]
+			@_drawn.push { model: module, view: view } 
 		
 		@_addInteraction() if @_interaction
 		@_bind( 'cell.module.added', @, @onModuleAdd )		

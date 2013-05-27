@@ -244,10 +244,10 @@ class Model.Cell extends Helper.Mixable
 	# @return [self] chainable instance
 	#
 	remove: ( module, undoable = true ) ->
-	
+
 		# Transparent adding of metabolites
 		if module instanceof Model.Metabolite
-			@removeMetabolite _( module.name.split( '#' ) ).first(), undoable
+			@removeMetabolite module.name, undoable
 			return this
 			
 		action = 

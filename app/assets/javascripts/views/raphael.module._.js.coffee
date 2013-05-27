@@ -562,7 +562,7 @@ class View.Module extends View.RaphaelBase
 				y2 = y + r * Math.sin( -endAngle * rad )
 				path = @_paper.path( ["M", x, y, "L", x1, y1, "A", r, r, 0, +(endAngle - startAngle > 180), 0, x2, y2, "z"] )
 				path.node.setAttribute('class', "#{module}-substrate-sector")
-				return [ @_paper.path( ["M", x, y, "L", x1, y1, "A", r, r, 0, +(endAngle - startAngle > 180), 0, x2, y2, "z"] ) ]
+				return [ path ]
 				
 			when 'EnzymCircle'
 			
