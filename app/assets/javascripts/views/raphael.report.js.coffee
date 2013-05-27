@@ -22,7 +22,7 @@ class View.Report extends View.RaphaelBase
 		for view in @_views
 			switch view.constructor.name
 				when "Cell"
-					view.draw(375, 250, 100)
+					view.draw(375, 250)
 				else
 					view.draw()
 
@@ -32,7 +32,7 @@ class View.Report extends View.RaphaelBase
 	#
 	load: ( cell_id ) ->
 		@_views[0].load( cell_id )
-			.done ( () -> 
+			.done ( () => 
 				# Enable the pdf generation button
 				$('#create-pdf')[0].removeAttribute('disabled')
 
@@ -42,4 +42,12 @@ class View.Report extends View.RaphaelBase
 
 				# Start the simulation
 				document.mvc._views[0].startSimulation(25, 10, 1)
+
+				@_bind('simulation.stop', @, () ->
+					graphs = $('#graphs').find('.graph').each( (i, graph) -> 
+						$("##{i+1}").append $ graph		
+					)
+					
+				)
+
 			)
