@@ -312,8 +312,8 @@ class View.ModuleProperties extends View.HTMLPopOver
 			elem.prop( 'checked', values.contains(option) )
 			@_bindOnSelectableChange( selectable.key, elem )
 			
-			display_name = option.replace( /#(.*)/, '<sub>$1</sub>' )
-			labeltext = $("<span class='#{if !options.contains(option) then 'unknown' else ''}'>#{display_name}</span>")
+			display_name = option.replace( /#(.*)/, '' )
+			labeltext = $("<span class='badge #{if !options.contains(option) then 'unknown' else ''}'>#{display_name}</span>")
 			label.append elem
 			label.append labeltext 
 			selectable.container.append label
