@@ -119,7 +119,8 @@ text, tspan {
 }
 
 .metabolite-spline {
-	stroke-width: 4px;
+	stroke-width: 1px;
+	vector-effect:non-scaling-stroke;
 }
 
 .module-properties {
