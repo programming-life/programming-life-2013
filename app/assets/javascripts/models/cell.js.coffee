@@ -468,7 +468,7 @@ class Model.Cell extends Helper.Mixable
 	# @param base_values [Array] the base values to try
 	# @return [self] chainable instance
 	#
-	run : ( timespan, base_values = [] ) ->
+	run : ( timespan, base_values = [], callback ) ->
 		
 		@_trigger( 'cell.before.run', @, [ timespan ] )
 								
@@ -505,12 +505,22 @@ class Model.Cell extends Helper.Mixable
 
 		# Run the ODE from 0...timespan with starting values and step function
 		[ values, continuation ] = @_tryUsingBaseValues( base_values, values )
-		sol = numeric.dopri( 0, timespan, values, @_step( modules, mapping, map ), 1e-16, 2500 )
+		promise = numeric.asyncdopri( 0, timespan, values, @_step( modules, mapping, map ), 1e-8, 2500 )
+		promise = promise.then( ( ret ) =>
 		
-		@_trigger( 'cell.after.run', @, [ timespan, sol, mapping ] )
+			@_trigger( 'cell.after.run', @, [ timespan, ret, mapping ] )
+			
+			result =
+				results: ret
+				map: mapping
+				append: continuation
+				
+			callback?( result )
+			return result
+		)
 		
 		# Return the system results
-		return { results: sol, map: mapping, append: continuation }
+		return promise
 		
 	# The step function for the cell
 	#
