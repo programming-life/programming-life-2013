@@ -137,13 +137,13 @@ class View.Cell extends View.RaphaelBase
 
 		switch location
 			when View.Module.Location.Left
-				return [box.x ,@y]
+				return [box.x ,@_y]
 			when View.Module.Location.Right
-				return [box.x2 ,@y]
+				return [box.x2 ,@_y]
 			when View.Module.Location.Top
-				return [@x, box.y]
+				return [@_x, box.y]
 			when View.Module.Location.Bottom
-				return [@x, box.y2]
+				return [@_x, box.y2]
 
 	#
 	#
@@ -560,7 +560,8 @@ class View.Cell extends View.RaphaelBase
 	#
 	# @return [jQuery.Promise] the promise
 	#
-	save: () ->
+	save: ( name ) ->
+		@model.name = name ? @model.name
 		return @model.save()
 
 	# Draws red lines

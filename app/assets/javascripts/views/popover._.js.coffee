@@ -6,7 +6,7 @@ class View.HTMLPopOver extends Helper.Mixable
 
 	@concern Mixin.EventBindings
 	
-	# Constructs a new ModuleProperties view.
+	# Constructs a new HTML Popover view.
 	#
 	# @param parent [Raphael] parent to hook on
 	# @param title [String] the title
@@ -82,11 +82,13 @@ class View.HTMLPopOver extends Helper.Mixable
 	#
 	setPosition: ( ) ->
 
-		left = 0
-		top = 0
-
+		if not @_parent.getAbsolutePoint?
+			throw new TypeError( "Expected parent [#{@_parent?.constructor.name ? @_parent}] to have the getAbsolutePoint function." )
+		
 		[x, y] = @_parent.getAbsolutePoint(@_location)
 		
+		left = 0
+		top = 0
 		width = @_elem.width()
 		height = @_elem.height()
 		

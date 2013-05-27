@@ -161,12 +161,14 @@ class Model.Module extends Helper.Mixable
 	#
 	setCompound: ( compound, value ) ->
 		
+		return this if  @starts[ compound ] is value
+		
 		todo = _( ( compound, value ) -> @starts[ compound ] = value ).bind( @, compound, value )
 		undo = _( ( compound, value ) -> @starts[ compound ] = value ).bind( @, compound, @starts[ compound ] )
 		
 		action = new Model.Action( 
 			@, todo, undo, 
-			"Change #{compound} from #{ @starts[ compound ] } to #{value}" 
+			"Change initial value for #{@[compound] ? compound} from #{ @starts[ compound ] } to #{value}" 
 		)
 		action.do()
 		

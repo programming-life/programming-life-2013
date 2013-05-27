@@ -13,7 +13,7 @@ class Controller.Main
 	constructor: ( @container ) ->
 		@view = new View.Main @container
 		
-		$( '#actions' ).on( 'click', '[data-action]', @action )
+		$( '#actions' ).on( 'click', '[data-action]', @onAction )
 		
 	# Loads a new cell into the main view
 	#
@@ -22,24 +22,48 @@ class Controller.Main
 	# @return [jQuery.Promise] the promise
 	#
 	load: ( cell_id, callback ) ->
-		return @view.load cell_id, callback
+		promise = @view.load cell_id, callback
+		promise.done( () => @_setCellNameActionField( @view.cell.model.name ) )
+		return promise
 		
 	# Saves the main view cell
 	#
 	# @return [jQuery.Promise] the promise
 	#
 	save: () ->
-		return @view.save()
+		name = @_getCellNameActionField()
+		return @view.save( name )
 		
+	# Gets the cell name from the action field
+	#
+	# @return [String] the cell name
+	#
+	_getCellNameActionField: () ->
+		value = $( '#cell_name' ).val()
+		return null if value.length is 0
+		return value ? null
+		
+	# Sets the cell name to the action field
+	# 
+	# @param name [String] the name
+	# @return [self] chainable self
+	#
+	_setCellNameActionField: ( name ) ->
+		value = $( '#cell_name' ).val name
+		return this
 	
 	# Finds the action buttons
+	#
+	# @return [jQuery.Collection] the action buttons
 	#
 	_findActionButtons: () ->
 		return $( '#actions' ).find( '[data-action]' )
 		
+	# Runs on an action (click)
 	#
+	# @param event [jQuery.Event] the event
 	#
-	action: ( event ) =>
+	onAction: ( event ) =>
 		
 		@_findActionButtons()
 			.removeClass( 'btn-success' )
@@ -88,9 +112,16 @@ class Controller.Main
 					.always( enable )
 				
 			when 'reset'
-				@view.kill()
-				@view = new View.Main @container
-				enable()
+				@_findActionButtons()
+					.button( 'reset' )
+					.filter( ':not([data-toggle])' )
+						.removeClass( 'btn-primary' )
+				
+				confirm = () =>
+					@view.kill()
+					@view = new View.Main @container
+					
+				@view.confirmReset( confirm )
 				
 			when 'simulate'
 				target.attr( 'disabled', false )

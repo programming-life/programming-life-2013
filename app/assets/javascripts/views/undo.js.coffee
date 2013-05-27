@@ -217,7 +217,9 @@ class View.Undo extends Helper.Mixable
 	# @param direction [int] the direction (-1 or 1) in which to move
 	#
 	_branch: ( direction ) ->
-		length = @_tree._current._parent._children.length
+		length = @_tree._current._parent?._children?.length
+		return unless length?
+		
 		switch length
 			when 1
 				index = 0

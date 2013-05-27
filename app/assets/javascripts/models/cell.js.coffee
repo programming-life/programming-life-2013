@@ -51,6 +51,7 @@ class Model.Cell extends Helper.Mixable
 			_( params ).defaults( {
 				id: _.uniqueId "client:#{this.constructor.name}:"
 				creation: Date.now()
+				name: null
 			} ),
 			'cell.set.property'
 		)
@@ -157,6 +158,10 @@ class Model.Cell extends Helper.Mixable
 	#
 	addMetaboliteModule: ( metabolite, undoable = true ) ->
 	
+		if @hasMetabolite metabolite.name
+			@getMetabolite( metabolite.name ).amount = metabolite.amount
+			return this
+		
 		name = _( metabolite.name.split( '#' ) ).first()
 		action = 
 			@_createAction( "Added #{metabolite.constructor.name}: #{name} init=#{metabolite.amount} dt=#{metabolite.supply}" )
@@ -386,6 +391,20 @@ class Model.Cell extends Helper.Mixable
 	#
 	numberOf: ( module_type ) ->
 		return _( @_getModules() ).where( ( module ) -> module instanceof module_type ).length
+	
+	# Get compound names
+	# 
+	# @return [Array<String>] all the compound names
+	#
+	getCompoundNames: () ->
+		return _( @_modules ).map( ( m ) -> m.name )
+	
+	# Get Metabolite Names
+	#
+	# @return [Array<String>] all the metabolite names
+	#
+	getMetaboliteNames: () ->
+		return _( @_metabolites ).map( ( m ) -> m.name )
 
 	# Gets all the modules that are steppable
 	# 
@@ -607,7 +626,7 @@ class Model.Cell extends Helper.Mixable
 		
 		result = {
 			cell:
-				name: 'My Test Cell'
+				name: @name ? 'Cell [' + @creation + ']'
 			modules: modules
 				
 		}

@@ -17,6 +17,7 @@ class View.Main extends View.RaphaelBase
 		
 		@_createCellView()
 		@_createUndoView()
+		@_createConfirmReset()
 		
 		@resize()
 		@_createBindings()
@@ -35,6 +36,16 @@ class View.Main extends View.RaphaelBase
 		@undo = new View.Undo( @cell.model.timemachine )
 		@_leftPane.addView( @undo )
 		@_views.push @_leftPane
+		
+	# Creats the confirmation for reset modal
+	#
+	_createConfirmReset: () ->
+		@_resetModal = new View.ConfirmModal( 
+			'Reset Confirmation',
+			'Are you sure you want to reset the virtual cell?
+			You will lose all unsaved changes and this action
+			can not be undone.'
+		)
 	
 	# Creates event bindings for the view
 	#
@@ -100,12 +111,19 @@ class View.Main extends View.RaphaelBase
 		absY = offset.top + ((y - vY) / vHeight) * height
 
 		return [absX, absY]
+		
+	#
+	#
+	clear: () ->
+		super()
+		@_resetModal.clear()
 	
 	# Kills the main view
 	#
 	kill: ( ) ->
 		super()
 		@_paper.remove()
+		@_resetModal.kill()
 		$( window ).off( 'resize' )
 		
 	# Loads a new cell into the cell view
@@ -121,5 +139,22 @@ class View.Main extends View.RaphaelBase
 	#
 	# @return [jQuery.Promise] the promise
 	#
-	save: () ->
-		return @cell.save()
+	save: ( name ) ->
+		return @cell.save( name )
+		
+	# Call confirmation for reset
+	#
+	# @param confirm [Function] action on confirmed
+	# @param close [Function] action on closed
+	# @param always [Function] action always
+	#
+	confirmReset: ( confirm, close, always ) ->
+	
+		func = ( caller, action ) =>
+			confirm?() if action is 'confirm'
+			close?() if action is 'close'
+			always?()
+			@_resetModal.offClosed( @, close ) 
+			
+		@_resetModal.onClosed( @, func )
+		@_resetModal.show()
