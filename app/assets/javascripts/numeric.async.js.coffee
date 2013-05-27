@@ -44,11 +44,11 @@ numeric.asyncdopri =
 		pow = Math.pow
 		
 		# Result object
+		k1 = [ f( x0, y0 ) ]
 		ret = new numeric.Dopri( xs, ys, k1, ymid, -1, "" )
 			
 		i = 0
 		it = 0
-		k1 = [ f( x0, y0 ) ]
 
 		# The expensive step
 		dopristep = () =>
@@ -99,7 +99,7 @@ numeric.asyncdopri =
 			
 		# The asyncloop
 		dopriloop = ( ) =>
-			console.log "loop enter #{x0} < #{x1} and #{it} < #{maxit}"
+			#console.log "loop enter #{x0} < #{x1} and #{it} < #{maxit}"
 			
 			# While looping
 			if x0 < x1 and it < maxit
@@ -117,7 +117,7 @@ numeric.asyncdopri =
 			# When done
 			done = () =>
 				promise.notify( Math.max( x0 / x1, it / maxit ) )
-				console.log "loop end #{it}"
+				#console.log "loop end #{it}"
 				ret.iterations = it
 				promise.resolve ret
 				
