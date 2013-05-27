@@ -35,7 +35,7 @@ class Model.Cell extends Helper.Mixable
 		@_defineProperties( paramscell )
 		
 		@_trigger( 'cell.creation', @, [ @creation, @id ] )
-		@_bind( 'cell.set.property', @, @onPropertySet )
+		@_bind( 'cell.property.changed', @, @onPropertySet )
 		@add new Model.CellGrowth( params, start ), false
 		
 	# Defines All the properties
@@ -53,7 +53,7 @@ class Model.Cell extends Helper.Mixable
 				creation: Date.now()
 				name: null
 			} ),
-			'cell.set.property'
+			'cell.property.changed'
 		)
 		
 		Object.seal @ 
@@ -147,7 +147,7 @@ class Model.Cell extends Helper.Mixable
 	#
 	_addModule: ( module ) ->
 		@_modules.push module
-		@_trigger( 'cell.add.module', @, [ module ] )
+		@_trigger( 'cell.module.added', @, [ module ] )
 		return this
 		
 		
@@ -183,7 +183,7 @@ class Model.Cell extends Helper.Mixable
 	#
 	_addMetabolite: ( metabolite ) -> 
 		@_metabolites.push metabolite 
-		@_trigger( 'cell.add.metabolite', @, 
+		@_trigger( 'cell.metabolite.added', @, 
 			[ 
 				metabolite, 
 				metabolite.name, 
@@ -269,7 +269,7 @@ class Model.Cell extends Helper.Mixable
 	#
 	_removeModule: ( module ) ->
 		@_modules = _( @_modules ).without module
-		@_trigger( 'cell.remove.module', @, [ module ] )
+		@_trigger( 'cell.module.removed', @, [ module ] )
 		return this
 		
 	# Removes this metabolite from cell
@@ -302,7 +302,7 @@ class Model.Cell extends Helper.Mixable
 	_removeMetabolite: ( module ) -> 
 		return this unless module?
 		@_metabolites = _( @_metabolites ).without module
-		@_trigger( 'cell.remove.metabolite', @, [ module ] )
+		@_trigger( 'cell.metabolite.removed', @, [ module ] )
 		return this
 		
 	# Removes this substrate from cell (alias for removeMetabolite)

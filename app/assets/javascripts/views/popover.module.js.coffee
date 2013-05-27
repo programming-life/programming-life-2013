@@ -23,14 +23,14 @@ class View.ModuleProperties extends View.HTMLPopOver
 
 		super parent, module.constructor.name, ' module-properties', 'bottom'
 		
-		@_bind('module.set.hovered', @, @onModuleHovered)
-		@_bind('module.set.selected', @, @onModuleSelected)
-		@_bind('module.set.property', @, @onModuleInvalidated)
-		
-		@_bind('cell.add.module', @, @onCompoundsChanged)
-		@_bind('cell.remove.module', @, @onCompoundsChanged)
-		@_bind('cell.add.metabolite', @, @onMetabolitesChanged)
-		@_bind('cell.remove.metabolite', @, @onMetabolitesChanged)
+		@_bind('module.hovered.changed', @, @onModuleHovered)
+		@_bind('module.selected.changed', @, @onModuleSelected)
+		@_bind('module.property.changed', @, @onModuleInvalidated)
+
+		@_bind('cell.module.added', @, @onCompoundsChanged)
+		@_bind('cell.module.removed', @, @onCompoundsChanged)
+		@_bind('cell.metabolite.added', @, @onMetabolitesChanged)
+		@_bind('cell.metabolite.removed', @, @onMetabolitesChanged)
 		
 		@_setSelected off
 		
@@ -46,7 +46,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 	_createHeader: ( ) ->
 		@_header = $('<div class="popover-title"></div>')
 
-		onclick = () => Model.EventManager.trigger( 'module.set.selected', @module, [ off ] )
+		onclick = () => Model.EventManager.trigger( 'module.selected.changed', @module, [ off ] )
 		@_closeButton = $('<button class="close">&times;</button>')
 		@_closeButton.on('click', onclick ) if onclick?
 		
@@ -369,8 +369,8 @@ class View.ModuleProperties extends View.HTMLPopOver
 			@module[ key ] = value
 			
 		@_changes = {}
-		@_trigger( 'module.set.selected', @module, [ off ] )
-		@_trigger( 'module.set.hovered', @module, [ off ] )
+		@_trigger( 'module.selected.changed', @module, [ off ] )
+		@_trigger( 'module.hovered.changed', @module, [ off ] )
 			
 	# Runs when a compound is changed (added/removed)
 	#

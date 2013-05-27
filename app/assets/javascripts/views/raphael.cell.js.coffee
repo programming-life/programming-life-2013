@@ -73,10 +73,10 @@ class View.Cell extends View.RaphaelBase
 			@_drawn.push [ { model: module, view: view } ]
 		
 		@_addInteraction() if @_interaction
-		@_bind( 'cell.add.module', @, @onModuleAdd )
-		@_bind( 'cell.add.metabolite', @, @onModuleAdd )
-		@_bind( 'cell.remove.module', @, @onModuleRemove )
-		@_bind( 'cell.remove.metabolite', @, @onModuleRemove )
+		@_bind( 'cell.module.added', @, @onModuleAdd )		
+		@_bind( 'cell.module.removed', @, @onModuleRemove )
+		@_bind( 'cell.metabolite.added', @, @onModuleAdd )
+		@_bind( 'cell.metabolite.removed', @, @onModuleRemove )
 		
 		@_trigger( 'view.cell.set', @, [ @model ] )
 

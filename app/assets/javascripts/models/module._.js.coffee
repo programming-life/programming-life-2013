@@ -25,7 +25,7 @@ class Model.Module extends Helper.Mixable
 		action = @_createAction( "Created #{this.constructor.name}:#{this.name}")
 		@_tree.setRoot( new Model.Node(action, null) )
 					
-		@_bind( 'module.set.property', @, @onActionDo )
+		@_bind( 'module.property.changed', @, @onActionDo )
 		@_bind( 'module.set.compound', @, @onActionDo )
 		@_trigger( 'module.creation', @, [ @creation, @id ] )	
 		
@@ -88,7 +88,7 @@ class Model.Module extends Helper.Mixable
 				creation: Date.now()
 				starts: {}
 			} ),
-			'module.set.property'
+			'module.property.changed'
 		)
 		return this
 		

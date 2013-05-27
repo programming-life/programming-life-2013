@@ -21,10 +21,10 @@ class View.DummyModule extends View.RaphaelBase
 		@_count = @_cell.numberOf @_modulector
 		@_visible = @_number is -1 or @_count < @_number
 
-		@_bind( 'cell.add.module', @, @onModuleAdd )
-		@_bind( 'cell.add.metabolite', @, @onModuleAdd )
-		@_bind( 'cell.remove.module', @, @onModuleRemove )
-		@_bind( 'cell.remove.metabolite', @, @onModuleRemove )
+		@_bind( 'cell.module.added', @, @onModuleAdd )
+		@_bind( 'cell.module.removed', @, @onModuleRemove )
+		@_bind( 'cell.metabolite.added', @, @onModuleAdd )		
+		@_bind( 'cell.metabolite.removed', @, @onModuleRemove )
 		@_bind( 'paper.resize', @, @onPaperResize)
 		
 		@_bind( 'dummy.add.activate', @, @onAddActivated )

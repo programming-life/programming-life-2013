@@ -55,7 +55,7 @@ class View.Main extends View.RaphaelBase
 		@_bind( 'view.cell.set', @, 
 			(cell) => @undo.setTree( cell.model.timemachine ) 
 		)
-		@_bind( 'module.set.selected', @, 
+		@_bind( 'module.selected.changed', @, 
 			(module, selected) => 
 				@undo.setTree if selected then module.timemachine else @cell.model.timemachine 
 		)
