@@ -60,37 +60,40 @@
 			To broaden their knowledge and expand their experience, the developers agreed to use programming languages and frameworks previously unknown to them.
 	\clearpage
 	\section{Architecture}
+	
+			\subsection{Overview}
+				
 			
 			\subsection{Server}
 				The server subsystems consist of two key parts: the server back end and the database, this can be seen in figure 1. The server keeps an up-to-date copy of the database and sychronises with the client side when possible. In the future it could be used to do calculations that are too complicated for the client-side of the application (calculations are deemed too complicated when they take a notable amount of time to complete).
-				The database is used for storage of user data, modules for cell design, as well as cell models created using the application. It provides a centralised storage, so users can share their modelled cells and can access their data anywhere. However the client-side application can function on any platform without a persistent internet connection.	\\
+				The database is used for storage of user data, modules for cell design, as well as cell models created using the application. It provides a centralised storage, so users can share their modelled cells and can access their data anywhere. However the client-side application can function on any platform without a persistent internet connection.
+				\clearpage
 				\begin{figure}[htb]
 				\begin{center}
-				\includegraphics[scale=0.50]{EAD.png}
+				\includegraphics[scale=0.95]{EAD.png}
 				\caption{Deployment Diagram}
 				\label{fig: EAD}
 				\end{center}
 				\end{figure}
-				\newpage
+				\clearpage
 									
 				\subsubsection{Rails}
 					The server runs on Ruby on Rails \footnote{http://api.rubyonrails.org/} . This is a fairly new but very stable platform that is not only free but also open source. This means active development by a lot of people. Problems are easily fixed and this should ease the use of the application that is being designed. The language itself is written from a standpoint where you should just be able to write code and not worry about breaking the interpreter \footnote{www.artima.com/intv/rubyP.html} . This makes it easy to write comprehensible code that executes complex tasks.				
 				\subsubsection{MVC}
-					The pages served are HTML5 for markup with CSS3 for styling and Javascript for interaction. Pages are built by a comprehensive and solid Model-Viewer-Controller system. This keeps data separated from the representation, further increasing maintainability. Interaction is illustrated in figure 2. Because interaction and data are separated, change of the data through interaction can easily be stored and reversed providing the undo-functionality as per the design goals.\\
-				\begin{figure}[htb]
+					The pages served are HTML5 for markup with CSS3 for styling and Javascript for interaction. Pages are built by a comprehensive and solid Model-Viewer-Controller system. This keeps data separated from the representation, further increasing maintainability. Interaction is illustrated in figure 2. Because interaction and data are separated, change of the data through interaction can easily be stored and reversed providing the undo-functionality as per the design goals.			
+				\subsubsection{Models and Database}
+					Ruby models are mapped to any Relational Database Management System (RDMS \footnote{http://en.wikipedia.org/wiki/Relational\_database\_management\_system} ) such as SQLite, MySQL and PostgreSQL. By not restricting the server database technology, switching systems, servers or extending  their capacity should be fairly simple and easy.
+				\subsubsection{Views and ERB} 
+					The views are in ERB \footnote{http://ruby-doc.org/stdlib-2.0/libdoc/erb/rdoc/ERB.html} which is an HTML template system. It comes with the Rails framework, so it does not require any extra software. Rails controllers written in Ruby can expose data to these views. New views are easily added this way, so new ways of data representation are quickly devised.
+			\clearpage
+			\begin{figure}[htb]
 				\begin{center}
-				\includegraphics[scale=0.50]{SequenceDiagramLife.png}
+				\includegraphics[scale=0.4]{SequenceDiagramLife.png}
 				\caption{Sequence Diagram}
 				\label{fig: SequenceDiagram}
 				\end{center}
 				\end{figure}	
-					 				 
-				\subsubsection{Models and Database}
-					Ruby models are mapped to any Relational Database Management System (RDMS \footnote{http://en.wikipedia.org/wiki/Relational\_database\_management\_system} ) such as SQLite, MySQL and PostgreSQL. By not restricting the server database technology, switching systems, servers or extending  their capacity should be fairly simple and easy.
-					\newpage
-				\subsubsection{Views and ERB} 
-					The views are in ERB \footnote{http://ruby-doc.org/stdlib-2.0/libdoc/erb/rdoc/ERB.html} which is an HTML template system. It comes with the Rails framework, so it does not require any extra software. Rails controllers written in Ruby can expose data to these views. New views are easily added this way, so new ways of data representation are quickly devised.
-			\newpage
+			\clearpage
 
 			\subsection{Client}
 				The client-side subsystems contain most of the applications functionality. These subsystems are responsible for displaying the graphical environment with all its modules, as well as solving the basic equations.  The client-side subsystems functions independently of the server. Local storage is used as temporary storage when there is no connection to the server. Only the sharing of data and generating reports of cells and their simulation is then not available.
