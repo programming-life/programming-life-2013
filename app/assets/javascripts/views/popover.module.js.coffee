@@ -193,7 +193,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 	_drawMetabolite: ( id, key, value ) ->
 		text = value.split( '#' )[0]
 		color = @_parent.hashColor text				
-		label = $('<span class="badge badge-metabolite" data-selectable-value="' + key + '">' + text + '</span> ')
+		label = $('<div class="badge badge-metabolite" data-selectable-value="' + key + '">' + text + '</div> ')
 		label.css( 'background-color', color )
 		return label
 	
@@ -213,7 +213,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 	# @param value [any] the current value
 	#
 	_drawCompound: ( id, key, value ) ->
-		return $('<span class="badge" style="margin-right: 3px;" data-selectable-value="' + key + '">' + value + '</span>')
+		return $('<div class="checkbox"  data-selectable-value="' + key + '"><span class="badge" style="margin-right: 3px;">' + value + '</span></div>')
 		
 	# Draws the input for an enumeration
 	#
