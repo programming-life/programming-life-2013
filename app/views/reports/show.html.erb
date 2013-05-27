@@ -44,6 +44,7 @@
 		</tr>
 		
 		<% 
+			@graph_id = 0
 			@module_instances.each do |module_instance| 
 				@module_template = ModuleTemplate.find(module_instance.module_template.id)
 
@@ -89,8 +90,7 @@
 								</table>
 								<!-- End parameter table -->
 							</td>
-							<td>
-								<img src="http://placehold.it/300x175.png&text=graph" alt="graph">
+							<td id="<%= @graph_id += 1 %>">
 							</td>
 						</tr>
 					</tbody>
