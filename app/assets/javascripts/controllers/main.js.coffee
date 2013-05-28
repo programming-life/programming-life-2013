@@ -157,9 +157,8 @@ class Controller.Main
 	
 		target.button('loading')
 		@save().then( () => 
-				console.log( 'actually create report for ' + @view.cell.model.id ) 
-				# first call the code to generate it ( e.g. create or update )
-				# then when the response comes in, redirect the browser ( ex: window.location / .href )
+				return $.post '/reports.json', { report: { cell_id: cell_id } }, 
+					(data) -> window.location.href = "/reports/#{data.id}"
 			)
 			.done( success )
 			.fail( error )
