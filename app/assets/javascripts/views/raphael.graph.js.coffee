@@ -44,7 +44,7 @@ class View.Graph extends View.RaphaelBase
 	# @return [self] chainable self
 	#
 	addData: ( data ) ->
-		@_datasets.push [[data[0],data[1]]]
+		@_datasets.unshift data
 		return @
 	
 	# Append a dataset to the most recently added dataset
@@ -57,7 +57,10 @@ class View.Graph extends View.RaphaelBase
 			@addData data
 			return @
 
-		_( @_datasets ).last().push [data[0],data[1]]
+		last = _( @_datasets ).first()
+
+		last.xValues.push data.xValues.splice(1)...
+		last.yValues.push data.yValues.splice(1)...
 		
 		return @
 		
@@ -87,19 +90,15 @@ class View.Graph extends View.RaphaelBase
 	# @retun [Raphael] The chart object
 	#
 	_drawChart:() ->
-		datasets = _( @_datasets ).last()
-		@_framesize = datasets[0].length
-
 		xValues = []
 		yValues = []
 
-		for i in [0...datasets.length]
-			xValues.push datasets[i][0]
-			yValues.push datasets[i][1]
+		for i, dataset of @_datasets
+			xValues.push dataset.xValues
+			yValues.push dataset.yValues
 
-			@_chart?.remove()
-			@_drawn = off
-			@_chart = @_paper.linechart(20,0, (i + 1) * @_width, @_height ,xValues, yValues, @_options )
+		@_chart = @_paper.linechart(20,0, @_width, @_height ,_( xValues ).clone( true ), _( yValues ).clone( true ), @_options )
+
 
 	#	unless @_drawn
 	#		@_chart.hoverColumn ( event ) =>
@@ -118,7 +117,7 @@ class View.Graph extends View.RaphaelBase
 	#
 	# @param x [Integer] The x to move to
 	# @param time [Integer] The timespan to animate over
-	play: ( x = ( _(@_datasets).last().length - 1) * @_width, time = 500 ) ->
+	play: ( x = @_width, time = 500 ) ->
 		@_paper.animateViewBox(x, 0, @_width, @_height, time)
 
 	# Draws the title

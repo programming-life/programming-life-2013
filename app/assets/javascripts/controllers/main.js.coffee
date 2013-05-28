@@ -211,4 +211,3 @@ class Controller.Main
 	#
 	kill: () ->
 		$( '#actions' ).find( '[data-action]' ).removeProp( 'disabled' )
-	
