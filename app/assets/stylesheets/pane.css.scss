@@ -12,7 +12,7 @@
 	border-width:0;
 
 	box-shadow:0 0 5px rgba(0, 1px, 5px, .1);
-	transition: left .5s ease-in-out, right .5s ease-in-out;
+	transition: left .5s ease-in-out, right .5s ease-in-out, width .5s ease-in-out;
 
 	.pane-button {
 		width:18px;
@@ -32,6 +32,8 @@
 
 		box-shadow:0 1px 5px rgba(0, 0, 5px, .1);
 		cursor:pointer;
+		
+		transition: left .5s ease-in-out, right .5s ease-in-out;
 	}
 
 	&.pane-left {
