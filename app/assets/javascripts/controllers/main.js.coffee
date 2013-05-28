@@ -151,7 +151,8 @@ class Controller.Main
 					@_getProgressBar().css( 'visibility', 'visible' )
 					@_getProgressBar().css( 'opacity', 1 )
 					ppromise.progress @_setProgressBar
-					ppromise.done enable
+					ppromise.always enable
+					ppromise.always () -> target.button( 'toggle' ) if target.hasClass( 'active' )
 				else
 					@_getProgressBar().css( 'opacity', 0 )
 					enable()
