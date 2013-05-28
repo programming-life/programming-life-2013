@@ -18,6 +18,7 @@ class View.Main extends View.RaphaelBase
 		@_createCellView()
 		@_createUndoView()
 		@_createConfirmReset()
+		@_createLoadModal()
 		
 		@resize()
 		@_createBindings()
@@ -37,7 +38,7 @@ class View.Main extends View.RaphaelBase
 		@_leftPane.addView( @undo )
 		@_views.push @_leftPane
 		
-	# Creats the confirmation for reset modal
+	# Creates the confirmation for reset modal
 	#
 	_createConfirmReset: () ->
 		@_resetModal = new View.ConfirmModal( 
@@ -46,6 +47,11 @@ class View.Main extends View.RaphaelBase
 			You will lose all unsaved changes and this action
 			can not be undone.'
 		)
+		
+	# Creates the load modal
+	#
+	_createLoadModal: () ->
+		@_loadModal = new View.LoadModal()
 	
 	# Creates event bindings for the view
 	#
@@ -115,11 +121,12 @@ class View.Main extends View.RaphaelBase
 
 		return [absX, absY]
 		
-	#
+	# Clears this view
 	#
 	clear: () ->
 		super()
 		@_resetModal.clear()
+		@_loadModal.clear()
 	
 	# Kills the main view
 	#
@@ -127,6 +134,7 @@ class View.Main extends View.RaphaelBase
 		super()
 		@_paper.remove()
 		@_resetModal.kill()
+		@_loadModal.kill()
 		$( window ).off( 'resize' )
 		
 	# Loads a new cell into the cell view
@@ -155,9 +163,28 @@ class View.Main extends View.RaphaelBase
 	
 		func = ( caller, action ) =>
 			confirm?() if action is 'confirm'
-			close?() if action is 'close'
+			close?() if action is 'close' or action is undefined
 			always?()
 			@_resetModal.offClosed( @, close ) 
 			
 		@_resetModal.onClosed( @, func )
 		@_resetModal.show()
+		
+	# Call modal for load
+	#
+	# @param confirm [Function] action on confirmed
+	# @param close [Function] action on closed
+	# @param always [Function] action always
+	#
+	showLoad: ( load, close, always ) ->
+	
+		func = ( caller, action ) =>
+			console.log action
+			load?( @_loadModal.cell ) if action is 'load'
+			close?() if action is 'cancel' or action is undefined
+			always?()
+			
+			@_loadModal.offClosed( @, func ) 
+			
+		@_loadModal.onClosed( @, func )
+		@_loadModal.show()
