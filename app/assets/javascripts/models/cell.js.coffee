@@ -772,7 +772,7 @@ class Model.Cell extends Helper.Mixable
 			# Fail
 			, ( data ) => 
 			
-				if !result?
+				if not result?
 					result = cell
 					for module in result._modules
 						result.remove module, false
@@ -801,3 +801,11 @@ class Model.Cell extends Helper.Mixable
 		)
 
 		return promise
+		
+	@loadList: ( callback ) ->
+	
+		cell = new Model.Cell()
+		promise = $.get( cell.url, {} )
+		
+		return promise
+		
