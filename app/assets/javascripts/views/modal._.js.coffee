@@ -16,7 +16,6 @@ class View.HTMLModal extends Helper.Mixable
 	constructor: ( @_header, @_contents, id, classname ) ->
 		@_id = id ? _.uniqueId 'modal-'
 		@_elem = @_create classname
-		@_action = undefined
 
 		Object.defineProperty( @, 'id',
 			get: -> @_id
@@ -28,6 +27,7 @@ class View.HTMLModal extends Helper.Mixable
 	# Shows the modal
 	#
 	show: () ->
+		@_action = undefined
 		@_elem.modal 'show'
 		return this
 	
