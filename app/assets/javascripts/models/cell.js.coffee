@@ -505,7 +505,7 @@ class Model.Cell extends Helper.Mixable
 
 		# Run the ODE from 0...timespan with starting values and step function
 		[ values, continuation ] = @_tryUsingBaseValues( base_values, values )
-		promise = numeric.asyncdopri( 0, timespan, values, @_step( modules, mapping, map ), 1e-8, 2500 )
+		promise = numeric.asyncdopri( 0, timespan, values, @_step( modules, mapping, map ), 1e-9, 4000 )
 		promise = promise.then( ( ret ) =>
 		
 			@_trigger( 'cell.after.run', @, [ timespan, ret, mapping ] )

@@ -51,6 +51,21 @@ class Controller.Main
 	_setCellNameActionField: ( name ) ->
 		value = $( '#cell_name' ).val name
 		return this
+		
+	#
+	#
+	_getProgressBar: () ->
+		return $( '#progress' )
+	
+	#
+	#
+	_setProgressBar: ( value ) =>
+		@_getProgressBar().find( '.bar' ).css( 'width', "#{value * 100 / @_num + 100 / @_num * @_curr }%" )
+		if ( value is 1 )
+			if ++@_curr is @_num
+				@_getProgressBar().css( 'opacity', 0 )
+			
+		return this
 	
 	# Finds the action buttons
 	#
@@ -125,8 +140,21 @@ class Controller.Main
 				
 			when 'simulate'
 				target.attr( 'disabled', false )
-				@view.toggleSimulation not target.hasClass( 'active' )
-				enable() if target.hasClass( 'active' )
+				action = not target.hasClass( 'active' )
+				
+				# hack
+				@_num = 2
+				@_curr = 0
+				
+				ppromise = @view.toggleSimulation action
+				if action
+					@_getProgressBar().css( 'visibility', 'visible' )
+					@_getProgressBar().css( 'opacity', 1 )
+					ppromise.progress @_setProgressBar
+					ppromise.done enable
+				else
+					@_getProgressBar().css( 'opacity', 0 )
+					enable()
 			else
 				enable()
 				
