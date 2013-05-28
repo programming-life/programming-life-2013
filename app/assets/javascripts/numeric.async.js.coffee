@@ -110,6 +110,7 @@ numeric.asyncdopri =
 					if dopristep() 
 						dopriloop() 
 					else
+						ret.iterations = it
 						promise.reject ret
 						
 				return
