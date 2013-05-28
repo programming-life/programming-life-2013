@@ -50,7 +50,7 @@ class View.Main extends View.RaphaelBase
 	# Creates event bindings for the view
 	#
 	_createBindings: () ->
-		$( window ).on( 'resize', => _( @resize() ).debounce( 300 ) )
+		$( window ).on( 'resize', => _( @resize() ).debounce( 100 ) )
 		
 		@_bind( 'view.cell.set', @, 
 			(cell) => @undo.setTree( cell.model.timemachine ) 

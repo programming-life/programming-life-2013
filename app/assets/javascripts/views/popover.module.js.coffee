@@ -67,11 +67,11 @@ class View.ModuleProperties extends View.HTMLPopOver
 	# @param saveText [String] the text on the save button
 	# @return [Array<jQuery.Elem>] the footer and the button element
 	#
-	_createFooter: ( removeText = 'Remove', saveText = 'Save' ) ->
+	_createFooter: ( removeText = '<i class="icon-trash icon-white"></i>', saveText = '<i class=" icon-ok icon-white"></i> Save' ) ->
 		@_footer = $('<div class="modal-footer"></div>')
 
 		remove = () => @_remove()
-		@_removeButton = $('<button class="btn btn-danger">' + removeText + '</button>')
+		@_removeButton = $('<button class="btn btn-danger pull-left">' + removeText + '</button>')
 		@_removeButton.on('click', remove ) if remove?
 
 		save = () => @_save()

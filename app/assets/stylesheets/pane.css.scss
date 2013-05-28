@@ -1,0 +1,181 @@
+
+
+.pane {
+	width: 300px;
+	height: 100%;
+
+	position: fixed;
+	top:0;
+
+	background: white;
+	border:1px solid #ddd;
+	border-width:0;
+
+	box-shadow:0 0 5px rgba(0, 1px, 5px, .1);
+	transition: left .5s ease-in-out, right .5s ease-in-out;
+
+	.pane-button {
+		width:18px;
+		padding:10px 3px;
+
+		position:absolute;
+		top:150px;
+
+		background:white;
+
+		border:1px solid #ddd;
+		border-width:0;
+
+		font-size:24px;
+		font-weight:900;
+		color:#ccc;
+
+		box-shadow:0 1px 5px rgba(0, 0, 5px, .1);
+		cursor:pointer;
+	}
+
+	&.pane-left {
+		left: -300px;
+		border-right-width:1px;
+
+		.pane-button {
+			left:300px;
+
+			border-width:1px;
+
+			border-top-right-radius: 9px;
+			border-bottom-right-radius: 9px;
+
+			&:after {
+				content:url('/assets/icon-chevron-right.png');
+				opacity:.3;
+			}
+		}
+
+		.pane-content {
+			float:right;
+		}
+
+
+		&.extended {
+			left: 0;
+
+			.pane-button {
+				&:after {
+					content:url('/assets/icon-chevron-left.png');
+					opacity:.3;
+				}
+			}
+		}		
+	}
+
+	&.pane-right {
+		right: -300px;
+		border-left-width:1px;
+		
+		.pane-button {
+			right:300px;
+
+			border-width:1px;
+
+			border-top-left-radius: 9px;
+			border-bottom-left-radius: 9px;
+
+			&:after {
+				content:url('/assets/icon-chevron-left.png');
+				opacity:.3;
+			}
+		}
+
+		.pane-content {
+			float:left;
+		}
+
+		&.extended {
+			right: 0;
+
+			.pane-button {
+				&:after {
+					content:url('/assets/icon-chevron-right.png');
+					opacity:.3;
+				}
+			}
+		}		
+	}	
+	
+	.pane-content {
+		width: 100%;
+		height: 100%;
+		overflow: auto;
+
+		.pane-header.navbar {
+			position:relative;
+			z-index:10;
+			margin-bottom:0;
+
+			.navbar-inner {
+				border-width:0 0 1px 0;
+				border-radius:0;
+			}
+		}
+
+		.pane-footer.navbar {			
+			position:absolute;
+			bottom:0;
+
+			width:100%;
+			margin-bottom:0px;
+
+			.navbar-inner {
+				border-width:1px 0 0 0;
+				border-radius:0;
+			}
+
+			z-index:10;
+		}	
+	}
+}
+
+@media (max-width: 980px) and (min-width: 770px) {
+	.pane {
+		width: 200px;
+		
+		&.pane-left {
+			left: -200px;
+
+			.pane-button {
+				left:200px;
+			}
+		}
+		
+		&.pane-right {
+			right: -200px;
+		
+			.pane-button {
+				right:200px;
+			}
+		}
+	}
+}
+
+@media (max-width: 769px) and (min-width: 481px) {
+	.pane {
+		width: 100px;
+		
+		&.pane-left {
+			left: -100px;
+
+			.pane-button {
+				left:100px;
+			}
+		}
+		
+		&.pane-right {
+			right: -100px;
+		
+			.pane-button {
+				right:100px;
+			}
+		}
+	}
+}
