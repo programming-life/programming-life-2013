@@ -102,36 +102,10 @@ class Controller.Main
 		action = target.data( 'action' )
 		action = action.charAt(0).toUpperCase() + action.slice(1)
 		
-		switch target.data( 'action' )
-
-			when 'save'
-				target.button('loading')
-				@save().always( enable )
-					.done( success )
-					.fail( error )
-					
-			when 'load'
-				target.button('loading')
-				@load( 2 ).always( enable )
-					.done( success )
-					.fail( error )
-					
-			when 'report'
-				target.button('loading')
-				@save().then( () => 
-						cell_id = Model.Cell.extractId(@view.cell.model.id).id
-						console.log( 'actually create report for ' + cell_id) 
-						# first call the code to generate it ( e.g. create or update )
-						# then when the response comes in, redirect the browser ( ex: window.location / .href )
-						$.post '/reports.json',
-								report: 
-									cell_id: cell_id
-								(data) -> window.location.href = "/reports/#{data.id}"
-
-					)
-					.done( success )
-					.fail( error )
-					.always( enable )
+		if @[ 'on' + action ]?
+			@[ 'on' + action ]( target, enable, success, error )
+		else
+			enable()
 				
 	# On Save Button clicked
 	#
@@ -183,9 +157,8 @@ class Controller.Main
 	
 		target.button('loading')
 		@save().then( () => 
-				console.log( 'actually create report for ' + @view.cell.model.id ) 
-				# first call the code to generate it ( e.g. create or update )
-				# then when the response comes in, redirect the browser ( ex: window.location / .href )
+				return $.post '/reports.json', { report: { cell_id: cell_id } }, 
+					(data) -> window.location.href = "/reports/#{data.id}"
 			)
 			.done( success )
 			.fail( error )
