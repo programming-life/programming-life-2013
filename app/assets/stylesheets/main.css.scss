@@ -24,3 +24,14 @@ div#paper svg {
 #graphs {
 	height: 100%;
 }
+
+#actions form, #actions .form-actions {
+	margin-bottom: 0;
+}
+
+#progress.progress .bar {
+	-webkit-transition: none;
+	-moz-transition: none;
+	-o-transition: none;
+	transition: none;
+}

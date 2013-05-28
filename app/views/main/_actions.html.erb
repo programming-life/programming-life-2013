@@ -1,3 +1,6 @@
+<div id="progress" class="progress progress-striped active fade" style="visibility: hidden">
+  <div class="bar" style="100%;"></div>
+</div>
 <%= nested_form_for(@cell, :html => {:class => "form-horizontal"} ) do |f| %>
 	<div class="form-actions">
 		<%= f.button '<i class="icon-play icon-white"></i> Simulate'.html_safe, 
