@@ -103,9 +103,8 @@ class View.HTMLModal extends Helper.Mixable
 		@_elem.append @_createBody()
 		@_elem.append footer if footer?	
 		
-		@_elem.find( '[data-dismiss="modal"]' )
-			.on( 'click', ( event ) =>
-				@_action = $( event.target ).data( 'action' )
+		@_elem.on( 'click', '[data-dismiss="modal"]', ( event ) =>
+				@_action = $( event.currentTarget ).data( 'action' )
 			)
 			
 		@_elem.on( 'hide', () => @_trigger( 'modal.confirm.close', @, [ @_action ] ) )
