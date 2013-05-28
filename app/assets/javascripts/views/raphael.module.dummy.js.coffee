@@ -81,8 +81,10 @@ class View.DummyModule extends View.RaphaelBase
 				if params.direction is Model.Transporter.Inward
 					@_cell.addSubstrate( params.transported , 0, 0, true )
 			when "Metabolism"
-				@_cell.addSubstrate( params.orig , 0, 0, true )
-				@_cell.addProduct( params.dest , 0, true )
+				for o in params.orig ? []
+					@_cell.addSubstrate( o , 0, 0, true )
+				for d in params.dest ? []
+					@_cell.addProduct( d , 0, true )
 				
 	# On Module Added to the Cell
 	#
