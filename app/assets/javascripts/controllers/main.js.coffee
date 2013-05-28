@@ -85,7 +85,6 @@ class Controller.Main
 			.removeClass( 'btn-danger' )
 			.prop( { disabled :  true } )
 			.filter( ':not([data-toggle])' )
-				.removeClass( 'btn-primary' )
 				.filter( ':not([class*="btn-warning"])' )
 				.find( 'i' )
 					.removeClass( 'icon-white' )
@@ -93,13 +92,11 @@ class Controller.Main
 		enable = () => 
 			@_findActionButtons()
 				.prop( 'disabled', false )
-				.filter( ':not([data-toggle])' )
-					.removeClass( 'btn-primary' )
 			
 		success = () => target.button( 'success' ).addClass( 'btn-success' ) 
 		error = () => target.button( 'error' ).addClass( 'btn-danger' ) 
 		
-		target = $( event.target ).addClass( 'btn-primary' )
+		target = $( event.target )
 		
 		switch target.data( 'action' )
 
@@ -111,9 +108,23 @@ class Controller.Main
 					
 			when 'load'
 				target.button('loading')
-				@load( 1 ).always( enable )
-					.done( success )
-					.fail( error )
+				
+				confirm = ( id ) =>
+					console.log id, id?
+					if id?
+						@load( id )
+							.always( enable )
+							.done( success )
+							.fail( error )
+					else
+						enable()
+						error()
+				
+				cancel = () =>
+					target.button( 'reset' )
+					enable()
+				
+				@view.showLoad( confirm, cancel )
 					
 			when 'report'
 				target.button('loading')
@@ -129,8 +140,6 @@ class Controller.Main
 			when 'reset'
 				@_findActionButtons()
 					.button( 'reset' )
-					.filter( ':not([data-toggle])' )
-						.removeClass( 'btn-primary' )
 				
 				confirm = () =>
 					@view.kill()
