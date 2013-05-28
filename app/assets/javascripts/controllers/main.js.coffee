@@ -52,12 +52,14 @@ class Controller.Main
 		value = $( '#cell_name' ).val name
 		return this
 		
-	#
+	# Gets the progress bar
 	#
 	_getProgressBar: () ->
 		return $( '#progress' )
 	
+	# Sets the progress bar
 	#
+	# @param value [Integer] the current value
 	#
 	_setProgressBar: ( value ) =>
 		@_getProgressBar().find( '.bar' ).css( 'width', "#{value * 100 / @_num + 100 / @_num * @_curr }%" )
@@ -96,78 +98,118 @@ class Controller.Main
 		success = () => target.button( 'success' ).addClass( 'btn-success' ) 
 		error = () => target.button( 'error' ).addClass( 'btn-danger' ) 
 		
-		target = $( event.target )
+		target = $( event.currentTarget )
+		action = target.data( 'action' )
+		action = action.charAt(0).toUpperCase() + action.slice(1)
 		
-		switch target.data( 'action' )
-
-			when 'save'
-				target.button('loading')
-				@save().always( enable )
-					.done( success )
-					.fail( error )
-					
-			when 'load'
-				target.button('loading')
+		if @[ 'on' + action ]?
+			@[ 'on' + action ]( target, enable, success, error )
+		else
+			enable()
 				
-				confirm = ( id ) =>
-					console.log id, id?
-					if id?
-						@load( id )
-							.always( enable )
-							.done( success )
-							.fail( error )
-					else
-						enable()
-						error()
+	# On Save Button clicked
+	#
+	# @param target [jQuery.Elem] target element
+	# @param enable [Function] function to re-enable buttons
+	# @param succes [Function] function to run on success
+	# @param error [Function] function to run on error
+	#
+	onSave: ( target, enable, success, error ) ->
+		target.button('loading')
+		@save().always( enable )
+			.done( success )
+			.fail( error )
+			
+	# On Load Button clicked
+	#
+	# @param target [jQuery.Elem] target element
+	# @param enable [Function] function to re-enable buttons
+	# @param succes [Function] function to run on success
+	# @param error [Function] function to run on error
+	#
+	onLoad: ( target, enable, success, error ) ->
+		target.button('loading')
 				
-				cancel = () =>
-					target.button( 'reset' )
-					enable()
-				
-				@view.showLoad( confirm, cancel )
-					
-			when 'report'
-				target.button('loading')
-				@save().then( () => 
-						console.log( 'actually create report for ' + @view.cell.model.id ) 
-						# first call the code to generate it ( e.g. create or update )
-						# then when the response comes in, redirect the browser ( ex: window.location / .href )
-					)
-					.done( success )
-					.fail( error )
+		confirm = ( id ) =>
+			if id?
+				@load( id )
 					.always( enable )
-				
-			when 'reset'
-				@_findActionButtons()
-					.button( 'reset' )
-				
-				confirm = () =>
-					@view.kill()
-					@view = new View.Main @container
-					
-				@view.confirmReset( confirm )
-				
-			when 'simulate'
-				target.attr( 'disabled', false )
-				action = not target.hasClass( 'active' )
-				
-				# hack
-				@_num = 2
-				@_curr = 0
-				
-				ppromise = @view.toggleSimulation action
-				if action
-					@_getProgressBar().css( 'visibility', 'visible' )
-					@_getProgressBar().css( 'opacity', 1 )
-					ppromise.progress @_setProgressBar
-					ppromise.always enable
-					ppromise.always () -> target.button( 'toggle' ) if target.hasClass( 'active' )
-				else
-					@_getProgressBar().css( 'opacity', 0 )
-					enable()
+					.done( success )
+					.fail( error )
 			else
 				enable()
+				error()
+		
+		cancel = () =>
+			target.button( 'reset' )
+			enable()
+		
+		@view.showLoad( confirm, cancel )
+		
+	# On Report Button clicked
+	#
+	# @param target [jQuery.Elem] target element
+	# @param enable [Function] function to re-enable buttons
+	# @param succes [Function] function to run on success
+	# @param error [Function] function to run on error
+	#
+	onReport: ( target, enable, success, error ) ->
+	
+		target.button('loading')
+		@save().then( () => 
+				console.log( 'actually create report for ' + @view.cell.model.id ) 
+				# first call the code to generate it ( e.g. create or update )
+				# then when the response comes in, redirect the browser ( ex: window.location / .href )
+			)
+			.done( success )
+			.fail( error )
+			.always( enable )
+	
+	# On Reset Button clicked
+	#
+	# @param target [jQuery.Elem] target element
+	# @param enable [Function] function to re-enable buttons
+	# @param succes [Function] function to run on success
+	# @param error [Function] function to run on error
+	#
+	onReset: ( target, enable, success, error ) ->
+		@_findActionButtons()
+			.button( 'reset' )
+		
+		confirm = () =>
+			@view.kill()
+			@view = new View.Main @container
+			
+		@view.confirmReset( confirm )
+		
+	# On Simulate Button clicked
+	#
+	# @param target [jQuery.Elem] target element
+	# @param enable [Function] function to re-enable buttons
+	# @param succes [Function] function to run on success
+	# @param error [Function] function to run on error
+	#
+	onSimulate: ( target, enable, success, error ) ->
+		target.attr( 'disabled', false )
+		action = not target.hasClass( 'active' )
+		
+		# hack
+		@_num = 2
+		@_curr = 0
+		
+		ppromise = @view.toggleSimulation action
+		if action
+			@_getProgressBar().css( 'visibility', 'visible' )
+			@_getProgressBar().css( 'opacity', 1 )
+			ppromise.progress @_setProgressBar
+			ppromise.always enable
+			ppromise.always () -> target.button( 'toggle' ) if target.hasClass( 'active' )
+		else
+			@_getProgressBar().css( 'opacity', 0 )
+			enable()
 				
+	# Kills this controller
+	#
 	kill: () ->
 		$( '#actions' ).find( '[data-action]' ).removeProp( 'disabled' )
 	
