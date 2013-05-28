@@ -134,6 +134,8 @@ class View.DummyModule extends View.RaphaelBase
 			when View.Module.Location.Bottom
 				return [@x, box.y2]
 
+	#
+	#
 	getAbsolutePoint: ( location ) ->
 		[x, y] = @getPoint(location)
 		return @getAbsoluteCoords(x, y)
@@ -174,8 +176,11 @@ class View.DummyModule extends View.RaphaelBase
 		@_visible = on
 		return this
 		
+	# Kills this view
+	#
 	kill: () ->
 		super()
+		@_propertiesView?.kill()
 		@_notificationsView?.kill()
 		
 	# Draws the box

@@ -177,6 +177,7 @@ class Controller.Main
 		
 		confirm = () =>
 			@view.kill()
+			Model.EventManager.clear()
 			@view = new View.Main @container
 			
 		@view.confirmReset( confirm )
