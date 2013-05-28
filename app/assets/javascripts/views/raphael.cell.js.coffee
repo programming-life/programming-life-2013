@@ -483,11 +483,11 @@ class View.Cell extends View.RaphaelBase
 			.value()
 		
 		# Actually simulate
-		@_simulate( step )
+		promise = @_simulate( step )
 	
 		@_trigger("simulation.start",@, [ @_model ])
 		
-		return this
+		return promise
 		
 	# Steps the simulation
 	#
@@ -533,13 +533,15 @@ class View.Cell extends View.RaphaelBase
 		# @param results [any*] arguments to pass
 		simulation = ( step, args ) => 
 		
-			promise = step( args ) if @_running
-			promise.done( ( results ) =>
-				_.defer( simulation, step, results ) if @_running
-			)
+			if @_running
+				promise = step( args ) 
+				promise = promise.then( ( results ) =>
+					return simulation( step, results ) if @_running
+					return null
+				)
+			return promise
 			
-		# At the end of the call stack, start the simulation loop
-		_.defer( simulation, step, [] )
+		return simulation( step, [] )
 		
 	# Stops the simulation
 	#

@@ -65,8 +65,11 @@ class View.Main extends View.RaphaelBase
 	# @param action [Boolean] start simulation
 	#
 	toggleSimulation: ( action ) ->
-		@cell.startSimulation( 20, 100 ) if action
-		@cell.stopSimulation() unless action
+	
+		if action
+			return @cell.startSimulation( 25, 0, 50 )
+			
+		@cell.stopSimulation()
 		return this
 		
 	# Resizes the cell to the window size
