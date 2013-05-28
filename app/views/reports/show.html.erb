@@ -4,8 +4,8 @@
 <table class="table row">
 	<thead class="span12">
 		<tr>
-			<td class="span2"><strong>Key</strong></td>
-			<td class="span10"><strong>Value</strong></td>
+			<th class="span2">Key</th>
+			<th class="span10">Value</th>
 		</tr>
 	</thead>
 	<tbody class="span12">
@@ -25,6 +25,11 @@
 			</td>
 		</tr>
 		<tr>
+			<td>Creation</td>
+			<td><%= @report.created_at.strftime("%a %d %B %Y at %H:%M") %></td>
+		</tr>
+
+		<tr>
 			<td> Modules </td>
 			<td> 
 				<% 
@@ -39,6 +44,7 @@
 		</tr>
 		
 		<% 
+			@graph_id = 0
 			@module_instances.each do |module_instance| 
 				@module_template = ModuleTemplate.find(module_instance.module_template.id)
 
@@ -53,32 +59,46 @@
 		<tr>
 			<td><%= @module_template.name %></td>
 			<td>
-				<span class="compound"><%= module_instance.name %></span>
+				<!-- Start module table -->
 				<table class="table-condensed table-striped table">
 					<thead>
 						<tr>
-							<td class="span3"><strong> Key </strong></td>
-							<td class="span9"><strong> Value </strong></td>
+							<th class="span6">Name: <%= module_instance.name %></th>
+							<th class="span6">Graph</th>
 						</tr>
 					</thead>
 					<tbody>
-						<% @module_hash.each { |key, value| %>
-							<tr>
-								<td class="span3"> <%= key %> </td>
-								<td class="span9"><%= value.nil? ? '<span class="label label-important">missing</span>'.html_safe : value  %>
-								</td>
-							</tr>
-						<% } %>
+						<tr>
+							<td>
+								<!-- Start parameter table -->						
+								<table class="table-condensed table-striped table">
+									<thead>
+										<tr>
+											<th class="span3">Key</th>
+											<th class="span9">Value</th>
+										</tr>
+									</thead>
+									<tbody>
+										<% @module_hash.each { |key, value| %>
+											<tr>
+												<td class="span3"> <%= key %> </td>
+												<td class="span9"><%= value.nil? ? '<span class="label label-important">missing</span>'.html_safe : value  %>
+												</td>
+											</tr>
+										<% } %>
+									</tbody>
+								</table>
+								<!-- End parameter table -->
+							</td>
+							<td id="<%= @graph_id += 1 %>">
+							</td>
+						</tr>
 					</tbody>
 				</table>
+				<!-- End module table -->
 			</td>
 		</tr>
 		<% end %>
-
-		<tr>
-			<td>Creation</td>
-			<td><%= @report.created_at.strftime("%a %d %B %Y at %H:%M") %></td>
-		</tr>
 	</tbody>
 </table>
 

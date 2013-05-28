@@ -15,6 +15,22 @@ class ReportsControllerTest < ActionController::TestCase
     get :new
     assert_response :success
   end
+
+  test "should create report" do
+    assert_difference('Report.count') do
+      post :create, report: { cell_id: 3 }
+    end
+
+    assert_redirected_to report_path(assigns(:report)) 
+  end
+
+  test "should not create a duplicate report of a cell" do
+    assert_no_difference('Report.count') do
+      post :create, report: { cell_id: @report.cell_id }
+    end
+
+    #assert_redirected_to report_path(assigns(:report))
+  end
   
   test "should get show" do
     get :show, id: @report

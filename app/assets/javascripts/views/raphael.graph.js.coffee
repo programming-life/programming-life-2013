@@ -14,16 +14,16 @@ class View.Graph extends View.RaphaelBase
 	# @param parent [View.Cell] The cell view this graph belongs to
 	#
 	constructor: ( paper, @_title, @_parent) ->
-		@_id = new Date().getMilliseconds()
-		@_container = $('<div id="graph-'+ @_id + '" class="graph-container"></div>')
+		@_id = _( 'graph' ).uniqueId() 
+		@_container = $('<div id="' + @_id + '" class="graph"></div>')
 		@_parent._container.append( @_container )
 
-		@_width = 300
+		@_width = 240
 		@_height = 175
 		@clear()
 
-		@_paper = Raphael("graph-"+@_id, @_width + 20, @_height + 20)
-		super(@_paper)
+		@_paper = Raphael( @_id, @_width + 20, @_height + 20)
+		super @_paper 
 
 		@_text = @_drawTitle()
 
@@ -54,7 +54,7 @@ class View.Graph extends View.RaphaelBase
 	#
 	appendData: ( data ) ->
 		if @_datasets.length is 0
-			addData data
+			@addData data
 			return @
 
 		_( @_datasets ).last().push [data[0],data[1]]

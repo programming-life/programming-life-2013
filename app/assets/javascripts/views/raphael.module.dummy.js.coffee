@@ -12,19 +12,19 @@ class View.DummyModule extends View.RaphaelBase
 	# @param _number [Integer] the number of instances allowed [ -1 is unlimted, 0 is none ]
 	# @param _params [Object] the params
 	#
-	constructor: ( paper, @_parent, @_cell, @_modulector, @_number, @_params = {} ) ->
+	constructor: ( paper, parent, @_cell, @_modulector, @_number, @_params = {} ) ->
 		
-		super paper
+		super paper, parent
 		
 		@activated = off
 		@_type = @_modulector.name
 		@_count = @_cell.numberOf @_modulector
 		@_visible = @_number is -1 or @_count < @_number
 
-		@_bind( 'cell.add.module', @, @onModuleAdd )
-		@_bind( 'cell.add.metabolite', @, @onModuleAdd )
-		@_bind( 'cell.remove.module', @, @onModuleRemove )
-		@_bind( 'cell.remove.metabolite', @, @onModuleRemove )
+		@_bind( 'cell.module.added', @, @onModuleAdd )
+		@_bind( 'cell.module.removed', @, @onModuleRemove )
+		@_bind( 'cell.metabolite.added', @, @onModuleAdd )		
+		@_bind( 'cell.metabolite.removed', @, @onModuleRemove )
 		@_bind( 'paper.resize', @, @onPaperResize)
 		
 		@_bind( 'dummy.add.activate', @, @onAddActivated )
@@ -104,22 +104,51 @@ class View.DummyModule extends View.RaphaelBase
 				@show() unless @_visible
 					# Redraws this view iff it has been drawn before
 
+	# Returns the bounding box of this view
+	#
+	# @return [Object] a bounding box object with coordinates
+	#
+	getBBox: ( ) -> 
+		return @_box?.getBBox() ? { x:0, y:0, x2:0, y2:0, width:0, height:0 }
+
+	# Returns the coordinates of either the entrance or exit of this view
+	#
+	# @param location [View.Module.Location] the location (entrance or exit)
+	# @return [[float, float]] a tuple of the x and y coordinates
+	#
+	getPoint: ( location ) ->
+		box = @getBBox()
+
+		switch location
+			when View.Module.Location.Left
+				return [box.x ,@y]
+			when View.Module.Location.Right
+				return [box.x2 ,@y]
+			when View.Module.Location.Top
+				return [@x, box.y]
+			when View.Module.Location.Bottom
+				return [@x, box.y2]
+
+	getAbsolutePoint: ( location ) ->
+		[x, y] = @getPoint(location)
+		return @getAbsoluteCoords(x, y)
+
 	# Draws this view
 	#
-	draw: ( x, y, scale ) ->
+	draw: ( x, y ) ->
 		
 		super x, y
-		padding = 15 * scale
+		padding = 15
 		
 		# Start a set for contents
-		contents = @drawContents( x, y, scale, padding )
+		contents = @drawContents( x, y, padding )
 		
 		# Draw box
-		@_box = @drawBox( contents, scale )
+		@_box = @drawBox( contents )
 		@_box.insertBefore contents
 		
 		# Draw hitbox
-		hitbox = @drawHitbox(@_box, scale)
+		hitbox = @drawHitbox(@_box)
 
 		hitbox.click =>
 			# Here normally this dummy would be 'selected' so the properties box comes on. Instead we directly 
@@ -143,22 +172,25 @@ class View.DummyModule extends View.RaphaelBase
 		@_visible = on
 		return this
 		
+	kill: () ->
+		super()
+		@_notificationsView?.kill()
+		
 	# Draws the box
 	#
 	# @param elem [Raphael] element to draw for
-	# @param scale [Integer] the scale
 	# @return [Raphael] the contents
 	#
-	drawBox : ( elem, scale ) ->
+	drawBox : ( elem ) ->
 		rect = elem.getBBox()
-		padding = 15 * scale
+		padding = 15
 		box = @_paper.rect(rect.x - padding, rect.y - padding, rect.width + 2 * padding, rect.height + 2 * padding)
 
-		classname = 'module-box inactive'
+		classname = 'module-box inactive dummy dummy-' + @_type.toLowerCase()
 		classname += ' hovered' if @_hovered
 		classname += ' selected' if @_selected
 		$(box.node).addClass classname
-		box.attr('r', 5)
+		box.attr('r', 9)
 		
 		return box
 		
@@ -166,26 +198,24 @@ class View.DummyModule extends View.RaphaelBase
 	#
 	# @param x [Integer] x position
 	# @param y [Integer] y position
-	# @param scale [Integer] box scale
 	# @return [Raphael] the contents
 	#
-	drawContents: ( x, y, scale, padding ) ->
+	drawContents: ( x, y, padding ) ->
 		
 		@_paper.setStart()
 		text = @_paper.text( x, y, _.escape "Add #{@_type}" )
-		text.attr
-			'font-size': 20 * scale
+		$(text.node).addClass('module-text')
+
 		return @_paper.setFinish()
 		
 	# Draws this view hitbox
 	#
 	# @param elem [Raphael] element to draw for
-	# @param scale [Integer] the scale
 	# @return [Raphael] the contents
 	#
-	drawHitbox : ( elem, scale ) ->
+	drawHitbox : ( elem ) ->
 		rect = elem.getBBox()
 		hitbox = @_paper.rect(rect.x, rect.y, rect.width, rect.height)
-		hitbox.node.setAttribute('class', 'module-hitbox')	
+		hitbox.node.setAttribute('class', 'module-hitbox hitdummy-' + @_type.toLowerCase() )	
 
 		return hitbox

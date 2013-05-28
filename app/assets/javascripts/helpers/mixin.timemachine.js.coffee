@@ -14,7 +14,19 @@ Mixin.TimeMachine =
 		# Intializes the timemachine
 		#
 		_allowTimeMachine: () ->
-			@_tree = new Model.UndoTree() unless @_tree?
+			unless @_tree?
+			
+				Object.defineProperty( @, '_tree',
+					value: new Model.UndoTree()
+					writable: false
+					configurable: false
+					enumerable: false
+				)
+
+				Object.defineProperty( @, 'timemachine',
+					get: -> @_tree
+				)
+				
 			return this
 			
 		# Adds an undoable event to the tree

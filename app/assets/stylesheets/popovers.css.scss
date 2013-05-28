@@ -1,0 +1,54 @@
+
+.module-properties {
+	max-width: 251px;
+	position: absolute;
+	display: none;
+
+	&.selected {
+		display: block;
+		opacity: 1;
+		z-index: 999;
+	}
+
+	.control-group {
+		margin-bottom:8px;
+	}
+
+	.control-label {
+		width: 104px;
+	}
+
+	.controls {
+		margin-left: 119px;
+
+		.badge-metabolite {
+			font-size:14px;
+			line-hight:18px;
+			margin-top:5px;
+			margin-left:5px;
+		}
+	}	
+
+	hr {
+		margin:8px;
+	}
+	
+	&.hovered {
+		display: block;
+		opacity: .9;
+		z-index: 1000;
+
+		.close {
+			display: none;
+		}
+
+		.modal-footer {
+			display: none;
+		}
+
+		input, select {
+			border-color: rgba(0, 0, 0, 0);
+			box-shadow: none;
+		}
+	}
+}

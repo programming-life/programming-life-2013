@@ -5,9 +5,8 @@ class View.Node extends View.RaphaelBase
 	#
 	#
 	constructor: ( node, paper, parent ) ->
-		super(paper)
+		super paper, parent
 		@_node = node
-		@_parent = parent
 
 		for child in @_node._children
 			@_views.push new View.Node( child, @_paper, @ )

@@ -25,7 +25,7 @@ class Model.Module extends Helper.Mixable
 		action = @_createAction( "Created #{this.constructor.name}:#{this.name}")
 		@_tree.setRoot( new Model.Node(action, null) )
 					
-		@_bind( 'module.set.property', @, @onActionDo )
+		@_bind( 'module.property.changed', @, @onActionDo )
 		@_bind( 'module.set.compound', @, @onActionDo )
 		@_trigger( 'module.creation', @, [ @creation, @id ] )	
 		
@@ -88,7 +88,7 @@ class Model.Module extends Helper.Mixable
 				creation: Date.now()
 				starts: {}
 			} ),
-			'module.set.property'
+			'module.property.changed'
 		)
 		return this
 		
@@ -161,12 +161,14 @@ class Model.Module extends Helper.Mixable
 	#
 	setCompound: ( compound, value ) ->
 		
+		return this if  @starts[ compound ] is value
+		
 		todo = _( ( compound, value ) -> @starts[ compound ] = value ).bind( @, compound, value )
 		undo = _( ( compound, value ) -> @starts[ compound ] = value ).bind( @, compound, @starts[ compound ] )
 		
 		action = new Model.Action( 
 			@, todo, undo, 
-			"Change #{compound} from #{ @starts[ compound ] } to #{value}" 
+			"Change initial value for #{@[compound] ? compound} from #{ @starts[ compound ] } to #{value}" 
 		)
 		action.do()
 		
@@ -295,6 +297,7 @@ class Model.Module extends Helper.Mixable
 			type: type 
 			amount: @amount ? 0
 			step: @_step.toString() if type is "Module" and @_step?
+			id: @id
 		}
 		
 		return JSON.stringify( result )  if to_string
@@ -393,8 +396,6 @@ class Model.Module extends Helper.Mixable
 			[ 'create instance' ],
 			Model.Module.Notification.Info
 		)		
-		
-		console.log Model.Module.Notification
 		
 		module_instance_data = @_getModuleInstanceData( 
 			instance, template, cell 
@@ -507,8 +508,7 @@ class Model.Module extends Helper.Mixable
 			# Done
 			( data ) =>
 				result = Model.Module.deserialize( data )
-				cell.add result
-				callback.apply( @, result ) if callback?
+				callback.call( @, result ) if callback?
 				
 				module._notificate(
 					cell, module, 

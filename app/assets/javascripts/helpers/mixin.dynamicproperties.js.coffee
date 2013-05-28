@@ -36,7 +36,9 @@ Mixin.DynamicProperties =
 					Object.defineProperty( @ , key,
 					
 						set: ( param ) ->
-						
+							
+							return if ( @[ "#{key}" ] is param )
+							
 							todo = _( setter ).bind( @, key, param )
 							undo = _( setter ).bind( @, key, @[ "#{key}" ] )
 							

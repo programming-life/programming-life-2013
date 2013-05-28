@@ -80,7 +80,7 @@ class Model.Metabolite extends Model.Module
 				)
 				action.do()
 			
-				@_trigger( 'module.set.property', @, [ action ] )
+				@_trigger( 'module.property.changed', @, [ action ] )
 				
 			get: ->
 				

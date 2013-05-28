@@ -98,7 +98,7 @@ class Model.CellGrowth extends Model.Module
 		
 			# Parameters
 			metabolites: [ "s#int" ]
-			infrastructure : [ "lipid", "protein" ]
+			infrastructure : [ "lipid", "Protein" ]
 			
 			# Name of the population compound
 			name: "cell"
