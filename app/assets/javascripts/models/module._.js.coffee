@@ -20,8 +20,15 @@ class Model.Module extends Helper.Mixable
 		@_allowTimeMachine()
 		@_allowEventBindings()
 		
+		if params.amount?
+			amount = params.amount
+			delete params.amount
+			starts = params.starts ? { name: amount }
+			starts.name = amount
+			params.starts = starts
+		
 		@_defineProperties( params, step, metadata )
-
+		
 		action = @_createAction( "Created #{this.constructor.name}:#{this.name}")
 		@_tree.setRoot( new Model.Node(action, null) )
 					
@@ -81,6 +88,9 @@ class Model.Module extends Helper.Mixable
 			configurable: false
 			enumerable: false
 		)
+		
+	#
+	#
 	_defineDynamicProperties: ( params ) ->
 		@_propertiesFromParams(  
 			_( params ).defaults( {
