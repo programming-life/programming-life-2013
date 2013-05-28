@@ -40,19 +40,18 @@ class View.LoadModal extends View.HTMLModal
 				body.empty()
 						
 				table = $ '<table class="table table-condensed"></table>'
-				table.append( thead = $ '<thead><th>#</th><th>Name</th><th class="span2"></th></thead>' ) #<th>Created on</th>
+				table.append( thead = $ '<thead><th>#</th><th>Name</th><th>Created on</th><th class="span2"></th></thead>' ) #
 				
 				table.append( tbody = $ '<tbody><tbody>' )
 				for cell in cells.reverse()
 					row = $ '<tr></tr>'
 					row.append $ "<td>#{cell.id}</td>"
 					row.append $ "<td>#{cell.name}</td>"
-					#row.append $ "<td>#{cell.created_at}</td>"
+					row.append $ "<td>#{cell.created_at}</td>"
 					
 					load_button = $ '<button class="btn btn-primary" data-dismiss="modal" data-action="load" aria-hidden="true" data-id="' + cell.id + '"><i class="icon-download icon-white"></i> Load</button>'
 					load_button.on( 'click', ( event ) => 
-						@_action = $( event.target ).data( 'action' )
-						@cell = $( event.target ).data( 'id' ) 
+						@cell = $( event.currentTarget ).data( 'id' ) 
 					)
 					
 					row.append( action = $ "<td></td>" )
