@@ -30,7 +30,8 @@ class View.HTMLPopOver extends Helper.Mixable
 	# @return [jQuery.Elem] the popover element
 	#
 	_create: ( classname ) ->	
-		elem = $('<div class="popover ' + @placement + ' ' + classname + '"></div>')
+		elem = $('<div class="popover"></div>')
+		elem.addClass(@placement).addClass(classname)
 		$('body').append elem
 		return elem
 		
