@@ -108,8 +108,10 @@ class View.ModuleProperties extends View.HTMLPopOver
 
 		properties = @_getModuleProperties()
 		properties.parameters?.sort()
+		properties.name = ['name']
 
 		iteration = 
+			name: 'name'
 			parameter: 'parameters'
 			metabolite: 'metabolite'
 			metabolites: 'metabolites' 
@@ -152,12 +154,19 @@ class View.ModuleProperties extends View.HTMLPopOver
 
 		controls = $('<div class="controls"></div>')
 		
+
 		drawtype = type
 		if drawtype is 'metabolite' or drawtype is 'compound'
-			value = [ value ]
+			value =  if value? then [ value ] else ['']
 			drawtype += 's'
 			
+		unless value?
+			value = if key is 'dna' then ['dna'] else []
+
 		switch drawtype
+			when 'name'
+				controls.append @_drawName( id, key, value )
+
 			when 'parameter'
 				controls.append @_drawParameter( id, key, value )
 
@@ -177,6 +186,17 @@ class View.ModuleProperties extends View.HTMLPopOver
 
 		controlGroup.append controls
 		return controlGroup
+
+	# Draws the input for a parameter
+	#
+	# @param id [String] the form id
+	# @param key [String] property to set
+	# @param value [any] the current value
+	#
+	_drawName: ( id, key, value ) ->
+		input = $('<input disabled type="text" id="' + id + '" class="input-small disabled" data-multiple="false" value="' + value + '" />')
+		@_bindOnChange( key, input )
+		return input
 	
 	# Draws the input for a parameter
 	#
@@ -316,7 +336,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 		options = _( options.map( ( v ) -> v.split('#')[0] ) ) if selectable.key is 'transported'
 		options = _( options.filter( ( v ) -> not /#ext$/.test v ) )
 		
-		for option in _( options.concat values.value() ).uniq()
+		for option in _( _(options.concat values.value()).filter( ( v ) -> v? and v.length > 0) ).uniq()
 			
 			label = $( "<label class='option-selectable #{selectable.type}' for='#{selectable.id}-#{option}'></label>" )
 			elem = $( "<input type='#{selectable.type}' name='#{selectable.name}' id='#{selectable.id}-#{option}' value='#{option}'>" )
@@ -368,6 +388,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 		
 		@_getThisForm()
 			.find( 'input, select' )
+			.not( '.disabled')
 			.prop( 'disabled', !selected )
 			
 		@_setSelectablesVisibility( selected )

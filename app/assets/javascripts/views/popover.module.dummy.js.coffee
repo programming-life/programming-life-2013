@@ -28,6 +28,11 @@ class View.DummyModuleProperties extends View.ModuleProperties
 		@_bind('module.creation.finished', @, @onModuleCreationFinished)
 		@_bind('module.creation.aborted', @, @onModuleCreationAborted)
 
+		@_bind('cell.module.added', @, @onCompoundsChanged)
+		@_bind('cell.module.removed', @, @onCompoundsChanged)
+		@_bind('cell.metabolite.added', @, @onMetabolitesChanged)
+		@_bind('cell.metabolite.removed', @, @onMetabolitesChanged)
+
 		@_setSelected off
 
 	# Gets the id for this popover
@@ -73,6 +78,17 @@ class View.DummyModuleProperties extends View.ModuleProperties
 		@_footer.append @_saveButton
 		return [ @_footer, @_saveButton ]
 
+	# Draws the input for a parameter
+	#
+	# @param id [String] the form id
+	# @param key [String] property to set
+	# @param value [any] the current value
+	#
+	_drawName: ( id, key, value ) ->
+		elem = super(id, key, value)
+		elem.prop('disabled', false).removeClass('disabled')
+		return elem
+
 	# Draws a certain property
 	#
 	# @param key [String] property
@@ -81,8 +97,7 @@ class View.DummyModuleProperties extends View.ModuleProperties
 	# @return [jQuery.elem] elements
 	#
 	_drawProperty: ( key, type, params = {} ) ->
-		value = ''
-		return @_drawInput( type, key, value, params )		
+		return @_drawInput( type, key, undefined, params )		
 
 	# Returns the properties of our module to be
 	#

@@ -68,20 +68,21 @@ class View.DummyModule extends View.RaphaelBase
 		if dummy isnt this
 			return
 
+		params = _( params ).defaults( @_params )
 		module = new @_modulector( _( params ).clone( true ) )			
 		@_cell.add module
 		@_trigger('module.selected.changed', module, [ on ])
 		
+		console.log params
 		switch @_type
 			when "Transporter"
-				if @_params.direction is Model.Transporter.Outward
-					@_cell.addProduct( @_params.transported ? 'p', 0, true )
-					@_cell.addProduct( @_params.transported ? 'p', 0, false )
-				if @_params.direction is Model.Transporter.Inward
-					@_cell.addSubstrate( @_params.transported ? 's', 0, 0, true )
+				if params.direction is Model.Transporter.Outward
+					@_cell.addProduct( params.transported , 0, false )
+				if params.direction is Model.Transporter.Inward
+					@_cell.addSubstrate( params.transported , 0, 0, true )
 			when "Metabolism"
-				@_cell.addSubstrate( @_params.orig ?'s', 0, 0, true )
-				@_cell.addProduct( @_params.dest ? 'p', 0, true )
+				@_cell.addSubstrate( params.orig , 0, 0, true )
+				@_cell.addProduct( params.dest , 0, true )
 				
 	# On Module Added to the Cell
 	#

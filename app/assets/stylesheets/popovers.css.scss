@@ -21,6 +21,12 @@
 	.controls {
 		margin-left: 119px;
 
+		input[disabled], select[disabled] {
+			background: none;
+			border-color: rgba(0, 0, 0, 0);
+			box-shadow: none;
+		}
+
 		.badge-metabolite {
 			font-size:14px;
 			line-hight:18px;
@@ -44,11 +50,6 @@
 
 		.modal-footer {
 			display: none;
-		}
-
-		input, select {
-			border-color: rgba(0, 0, 0, 0);
-			box-shadow: none;
 		}
 	}
 }

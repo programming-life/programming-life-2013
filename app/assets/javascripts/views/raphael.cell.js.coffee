@@ -115,6 +115,7 @@ class View.Cell extends View.RaphaelBase
 		@_views.push new View.DummyModule( @_paper, @, @_model, Model.DNA, 1 )
 		@_views.push new View.DummyModule( @_paper, @, @_model, Model.Lipid, 1 )
 		@_views.push new View.DummyModule( @_paper, @, @_model, Model.Metabolite, -1, { name: 's', placement: Model.Metabolite.Outside, type: Model.Metabolite.Substrate, amount: 1, supply: 1 } )
+		@_views.push new View.DummyModule( @_paper, @, @_model, Model.Metabolite, -1, { name: 'p', placement: Model.Metabolite.Inside, type: Model.Metabolite.Product, amount: 1, supply: 0 } )
 		@_views.push new View.DummyModule( @_paper, @, @_model, Model.Transporter, -1, { direction: Model.Transporter.Inward, transported: 's' } )
 		@_views.push new View.DummyModule( @_paper, @, @_model, Model.Metabolism, -1 )
 		@_views.push new View.DummyModule( @_paper, @, @_model, Model.Protein, -1 )
