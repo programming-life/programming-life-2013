@@ -156,9 +156,13 @@ class Controller.Main
 	onReport: ( target, enable, success, error ) ->
 	
 		target.button('loading')
-		@save().then( () => 
-				return $.post '/reports.json', { report: { cell_id: cell_id } }, 
-					(data) -> window.location.href = "/reports/#{data.id}"
+		@save().then( ( cell ) =>
+				cell = cell[0] if _( cell ).isArray()
+				return $.post( '/reports.json', { report: { cell_id: cell.cell_id } } )
+					.then( 
+						(data) ->
+							window.location.href = "/reports/#{ data.id }"
+					)	
 			)
 			.done( success )
 			.fail( error )
