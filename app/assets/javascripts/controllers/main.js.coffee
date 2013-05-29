@@ -201,14 +201,16 @@ class Controller.Main
 		@_num = 2
 		@_curr = 0
 		
-		ppromise = @view.toggleSimulation action
+		[ ppromise, token ] = @view.toggleSimulation action
 		if action
+			@_token = token
 			@_getProgressBar().css( 'visibility', 'visible' )
 			@_getProgressBar().css( 'opacity', 1 )
 			ppromise.progress @_setProgressBar
 			ppromise.always enable
 			ppromise.always () -> target.button( 'toggle' ) if target.hasClass( 'active' )
 		else
+			@_token?.cancel()
 			@_getProgressBar().css( 'opacity', 0 )
 			enable()
 				

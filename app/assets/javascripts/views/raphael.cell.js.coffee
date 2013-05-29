@@ -348,9 +348,9 @@ class View.Cell extends View.RaphaelBase
 	# @param base_values [Array] continuation values
 	# @return [Object] Object with data such as An array of datapoints
 	#
-	_getCellData: ( duration, base_values = [], dt = 1, iteration = 0 ) ->
+	_getCellData: ( duration, base_values = [], dt = 1, iteration = 0, token = numeric.asynccancel() ) ->
 	
-		promise = @_model.run( duration, base_values, iteration )
+		promise = @_model.run( duration, base_values, iteration, token )
 		promise = promise.then( ( cell_run ) =>
 		
 			console.log cell_run
@@ -485,6 +485,7 @@ class View.Cell extends View.RaphaelBase
 		
 		@_running = on
 		@_iteration = 0
+		@_token = numeric.asynccancel()
 		
 		console.log 'starting simulation'
 
@@ -503,7 +504,7 @@ class View.Cell extends View.RaphaelBase
 	
 		@_trigger("simulation.start",@, [ @_model ])
 		
-		return promise
+		return [ promise, @_token ]
 		
 	# Steps the simulation
 	#
@@ -519,7 +520,7 @@ class View.Cell extends View.RaphaelBase
 	
 		return base_values unless @_running
 		
-		promise = @_getCellData( duration, base_values, dt, @_iteration )
+		promise = @_getCellData( duration, base_values, dt, @_iteration, @_token )
 		promise = promise.then( ( cell_data ) =>
 			@_iteration = cell_data.iteration
 			@_drawGraphs( cell_data.datasets, 0, 0, @_iteration > 1  )
@@ -568,7 +569,7 @@ class View.Cell extends View.RaphaelBase
 		@_running = off
 
 		@_trigger("simulation.stop",@, [ @_model ])
-		return this
+		return [ undefined, @_token ]
 
 	# Loads a new cell into this view
 	#
