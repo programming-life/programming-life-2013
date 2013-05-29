@@ -33,21 +33,18 @@ class View.Report extends View.RaphaelBase
 	load: ( cell_id ) ->
 		@_views[0].load( cell_id )
 			.done ( () => 
-				# Enable the pdf generation button
-				$('#create-pdf')[0].removeAttribute('disabled')
 
 				# Serialize the SVG and set it as hidden value in the form
 				cell_svg = (new XMLSerializer).serializeToString($('#paper').children('svg')[0])
 				$('#report_data').attr("value", cell_svg)
 
 				# Start the simulation
-				document.mvc._views[0].startSimulation(25, 10, 1)
-
-				@_bind('simulation.stop', @, () ->
+				document.mvc._views[0].startSimulation(25, 10, 25).done( () =>
 					graphs = $('#graphs').find('.graph').each( (i, graph) -> 
-						$("##{i+1}").append $ graph		
+						$("#graph-#{$( graph ).find( 'h2' ).text().replace('#', '_')}").append $ graph		
 					)
 					
+					# Enable the pdf generation button
+					$('#create-pdf').removeProp('disabled')
 				)
-
 			)
