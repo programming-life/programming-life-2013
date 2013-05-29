@@ -9,11 +9,18 @@ class MainViewTest < ActionDispatch::IntegrationTest
 
 
 	setup do
-		@driver = Selenium::WebDriver.for :firefox
+		# caps = Selenium::WebDriver::Remote::Capabilities.iphone
+		# caps.version = "5.0"
+		# caps.platform = "5.0"
+		# caps[:name] = "Testing Selenium with Ruby on Sauce"
+		@driver = Selenium::WebDriver.for(
+			:remote,
+			:url => "http://vincentrobbemond:d59ae46b-e2a3-49fa-9301-75528e09aa46@ondemand.saucelabs.com:80/wd/hub",
+			#:desired_capabilities => caps
+			)
 		@wait = Selenium::WebDriver::Wait.new :timeout => 10
 
 		# navigate to the main view
-		host_name = url_for(:controller => 'main', :action => 'index', :only_path => false)
 		@driver.navigate.to "http://life.jstfy.com"
 	end
 
@@ -24,9 +31,9 @@ class MainViewTest < ActionDispatch::IntegrationTest
 	#Mouseover event on class module-hitbox
 	#Check if popover showed up on mouseover
 	test "module mouseover" do
-		el = @driver.find_element(:class, "module-hitbox")
+		el = @driver.find_element(:class, "cellgrowth-hitbox")
 		@driver.mouse.move_to(el)
-		pop = @driver.find_element(:class, "popover")
+		pop = @driver.find_element(:class, "cellgrowth-box")
 		assert pop.displayed?
 	end
 
