@@ -53,9 +53,9 @@ ActiveRecord::Schema.define(:version => 20130510222748) do
   add_index "module_templates", ["id"], :name => "index_module_templates_on_id", :unique => true
 
   create_table "module_values", :force => true do |t|
-    t.text     "value",               :limit => 255
-    t.datetime "created_at",                         :null => false
-    t.datetime "updated_at",                         :null => false
+    t.text     "value"
+    t.datetime "created_at",          :null => false
+    t.datetime "updated_at",          :null => false
     t.integer  "module_parameter_id"
     t.integer  "module_instance_id"
   end
