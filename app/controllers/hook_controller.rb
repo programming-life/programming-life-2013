@@ -26,6 +26,7 @@ class HookController < ApplicationController
 			@version = `git describe --abbrev=0`
 			
 			`bundle install --deployment`
+			`rake db:migrate`
 		end
 	end
 end
