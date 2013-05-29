@@ -41,13 +41,21 @@ class ReportsController < ApplicationController
 	def create
 		@report = Report.create(params[:report])
 		
-		respond_to do |format|
-			if @report.save
-				format.html { redirect_to @report, notice: 'Report was successfully created.' }
-				format.json { render json: @report, status: :created, location: @report }
-			else
-				format.html { render action: "new" }
-				format.json { render json: @report.errors, status: :unprocessable_entity }
+		@existing = Report.where( :cell_id => params[:report][:cell_id] ).first
+		if @existing
+			respond_to do |format|
+				format.html { redirect_to @existing, notice: 'Report already existed.' }
+				format.json { render json: @existing, status: :ok }
+			end
+		else
+			respond_to do |format|
+				if @report.save
+					format.html { redirect_to @report, notice: 'Report was successfully created.' }
+					format.json { render json: @report, status: :created, location: @report }
+				else
+					format.html { render action: "new" }
+					format.json { render json: { :errors => @report.errors, :data => @report }, status: :unprocessable_entity }
+				end
 			end
 		end
 	end
