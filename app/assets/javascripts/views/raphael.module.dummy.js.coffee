@@ -6,7 +6,7 @@ class View.DummyModule extends View.RaphaelBase
 	# Creates a new module view
 	# 
 	# @param paper [Raphael.Paper] the raphael paper
-	# @param _parent [View.cell] the cell view this dummy belongs to
+	# @param _parent [View.Cell] the cell view this dummy belongs to
 	# @param _cell [Model.Cell] the cell model displayed in the parent
 	# @param _modulector [Function] the module constructor
 	# @param _number [Integer] the number of instances allowed [ -1 is unlimted, 0 is none ]
@@ -24,14 +24,8 @@ class View.DummyModule extends View.RaphaelBase
 		@_bind( 'cell.module.removed', @, @onModuleRemove )
 		@_bind( 'cell.metabolite.added', @, @onModuleAdd )		
 		@_bind( 'cell.metabolite.removed', @, @onModuleRemove )
-		@_bind( 'paper.resize', @, @onPaperResize)
-		
 		@_bind( 'module.creation.finished', @, @onModuleCreationFinished )
 		
-		# Here you would like to load a module properties view that calls the dummy.add.activate event on save
-		# The correct constructor gets auto called and no need to check it anymore :)
-		#
-		#@_propertiesView = new View.ModuleProperties( @, @_parent, @_cell, @_modulector )
 		@_propertiesView = new View.DummyModuleProperties( @, @_parent, @_cell, @_modulector )
 		@_notificationsView = new View.ModuleNotification( @, @_parent, @_cell, @_modulector )
 		
@@ -50,14 +44,6 @@ class View.DummyModule extends View.RaphaelBase
 				return @_params
 		)
 		
-
-	# Runs if paper is resized
-	#
-	onPaperResize: ( ) =>
-		if @_selected
-			@redraw()
-		@_notificationsView.draw()	
-		
 	# Clicked the add button
 	#
 	# @params caller [Context] the caller of the event
@@ -71,7 +57,6 @@ class View.DummyModule extends View.RaphaelBase
 		params = _( params ).defaults( @_params )
 		module = new @_modulector( _( params ).clone( true ) )			
 		@_cell.add module
-		#@_trigger('module.selected.changed', module, [ on ])
 		
 		switch @_type
 			when "Transporter"
@@ -111,16 +96,25 @@ class View.DummyModule extends View.RaphaelBase
 			else
 				@setPosition()
 
+	# Sets the position of this view according to its parent's instructions
+	#
+	# @param animate [Boolean] wether or not to animate the move
+	#
 	setPosition: ( animate = on ) ->
 		[x, y] = @_parent.getViewPlacement(@)
 		@moveTo(x, y, animate)
 
+	# Moves the view to a new position
+	#
+	# @param x [float] the x coordinate to which to move
+	# @param y [float] the y coordinate to which to move
+	# @param animate [Boolean] wether or not to animate the move
+	#
 	moveTo: ( x, y, animate = on ) =>
 		dx = x - @x
 		dy = y - @y
 
 		transform = "...t#{dx},#{dy}"
-
 		if animate
 			@_contents.animate
 				transform: transform

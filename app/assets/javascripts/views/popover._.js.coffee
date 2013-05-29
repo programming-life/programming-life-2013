@@ -21,7 +21,7 @@ class View.HTMLPopOver extends Helper.Mixable
 
 		@_allowEventBindings()
 		@_bind('paper.resize', @, @setPosition)
-		@_bind('module.drawn', @, @setPosition)
+		@_bind('module.view.drawn', @, @setPosition)
 		@draw()
 		
 	# Creates the popover element

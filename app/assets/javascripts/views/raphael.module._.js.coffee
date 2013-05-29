@@ -54,7 +54,9 @@ class View.Module extends View.RaphaelBase
 		@_bind( 'module.selected.changed', @, @onModuleSelected )
 		@_bind( 'module.hovered.changed', @, @onModuleHovered )
 
+		@_bind( 'cell.module.added', @, @onModuleAdded )
 		@_bind( 'cell.module.removed', @, @onModuleRemoved )
+		@_bind( 'cell.metabolite.added', @, @onMetaboliteAdded )
 		@_bind( 'cell.metabolite.removed', @, @onMetaboliteRemoved )
 		return this
 		
@@ -129,56 +131,6 @@ class View.Module extends View.RaphaelBase
 		@_hovered = hovered
 		return this
 
-	# Runs if module is invalidated
-	# 
-	# @param module [Model.Module] the module invalidated
-	#
-	onModuleInvalidated: ( module ) =>
-		if module is @module
-			@redraw()
-
-	# Gets called when a module view selected.
-	#
-	# @param module [Module] the module that is being selected
-	# @param selected [Boolean] the selection state of the module
-	#
-	onModuleSelected: ( module, selected ) ->
-		if module is @module 
-			if @_selected isnt selected
-				@_setSelected selected 
-		else if @_selected isnt off
-			@_setSelected off
-
-	# Gets called when a module view hovered.
-	#
-	# @param module [Module] the module that is being hovered
-	# @param selected [Boolean] the hover state of the module
-	#
-	onModuleHovered: ( module, hovered ) ->
-		if module is @module 
-			if @_hovered isnt hovered
-				@_setHovered hovered
-		else if @_hovered isnt off
-			@_setHovered off
-
-	# Gets called when a module is removed from a cell
-	#
-	# @param cell [Model.Cell] the cell from which the module was removed
-	# @param module [Module] the module that was removed
-	#
-	onModuleRemoved: ( cell, module ) ->
-		if @module.getFullType() is module.getFullType()
-			@setPosition()
-
-	# Gets called when a metabolite is removed from a cell
-	#
-	# @param cell [Model.Cell] the cell from which the metabolite was removed
-	# @param metabolite [Metabolite] the metabolite that was removed
-	#
-	onMetaboliteRemoved: ( cell, metabolite ) ->
-		if @module.getFullType() is metabolite.getFullType()
-			@setPosition()		
-
 	# Sets the position of this view according to its parent's instructions
 	#
 	# @param animate [Boolean] wether or not to animate the move
@@ -194,27 +146,31 @@ class View.Module extends View.RaphaelBase
 	# @param animate [Boolean] wether or not to animate the move
 	#
 	moveTo: ( x, y, animate = on ) =>
-		console.log @getBBox()
-
 		dx = x - @x
 		dy = y - @y
 
-		transform = "...t#{dx},#{dy}"
-
-		if animate
-			@_contents.animate
-				transform: transform
-			, 500, "ease-in-out", =>
-				@_propertiesView?.setPosition()
-				@_notificationsView?.setPosition()
-		else
-			@_contents.transform(transform)
+		done = ( ) =>
 			@_propertiesView?.setPosition()
 			@_notificationsView?.setPosition()
+			@_trigger( 'module.view.moved', @module )
+
+		transform = "...t#{dx},#{dy}"
+		if animate
+			dt = 500
+			ease = 'ease-in-out'
+
+			@_trigger( 'module.view.moving', @module, [dx, dy, dt, ease] )
+
+			@_contents.animate
+				transform: transform
+			, dt, ease, done
+				
+		else
+			@_contents.transform(transform)
+			done()
 
 		@x = x
 		@y = y
-
 		
 	# Returns the full type of this view's module.
 	#
@@ -341,52 +297,27 @@ class View.Module extends View.RaphaelBase
 		@_shadow = @drawShadow(@_box)
 
 		# Draw splines
-		if @_type is 'Transporter'
+		if @type is 'Transporter'
 			for property in [ 'orig', 'dest' ]
 				metabolite = @_cell.getMetabolite @module[ property ]
 				if metabolite
 					placement = metabolite.placement
-					metaboliteView = @_parent.getView(metabolite)
+					view = @_parent.getView(metabolite)
 					direction = @_getSplineDirection(placement)
 
-					((direction, metaboliteView) =>
-						_.defer ( ) =>
-							spline = @drawSpline(direction, metaboliteView)
-							@_contents.push(spline)
-							spline.insertAfter(@_paper.bottom)
-					) direction, metaboliteView
+					if direction is View.Module.Direction.Inward
+						@_createSpline view, @
+					else if direction is View.Module.Direction.Outward
+						@_createSpline @, view
 
-		else if @_type is 'Metabolism'
-			###for metabolite in @module.orig.map( ( name ) => @_cell.getMetabolite name ) when metabolite?
+		else if @type is 'Metabolism'
+			for metabolite in @module.orig.map( ( name ) => @_cell.getMetabolite name ) when metabolite?
 				view = @_parent.getView(metabolite)
-				new View.Spline(@_paper, @_parent, view, @)
+				@_createSpline view, @
 
 			for metabolite in @module.dest.map( ( name ) => @_cell.getMetabolite name ) when metabolite?
 				view = @_parent.getView(metabolite)
-				new View.Spline(@_paper, @_parent, @, view)
-
-			###
-			inwards = ([metabolite, View.Module.Direction.Inward] for metabolite in @module.orig.map( 
-				( name ) => 
-					@_cell.getMetabolite name
-				)
-			)
-
-			outwards = ([metabolite, View.Module.Direction.Outward] for metabolite in @module.dest.map( 
-				( name ) => 
-					@_cell.getMetabolite name
-				)
-			)
-			
-			for [metabolite, direction] in inwards.concat(outwards)
-				if metabolite
-					metaboliteView = @_parent.getView(metabolite)
-					((direction, metaboliteView) =>
-						_.defer ( ) =>
-							spline = @drawSpline(direction, metaboliteView)
-							@_contents.push(spline)
-							spline.insertAfter(@_paper.bottom)
-					) direction, metaboliteView
+				@_createSpline @, view
 
 		# Draw hitbox
 		hitbox = @drawHitbox(@_box)
@@ -403,7 +334,7 @@ class View.Module extends View.RaphaelBase
 		@_contents = @_paper.setFinish()
 		@_contents.push( contents )
 
-		@_trigger( 'module.drawn', @module )
+		@_trigger( 'module.view.drawn', @module )
 
 	# Draws contents
 	#
@@ -693,3 +624,87 @@ class View.Module extends View.RaphaelBase
 				return [ enzymOrigCircles, enzymDestCircles, substrateText ]
 								
 		return []
+
+	# Creates a new spline
+	#
+	# @param orig [View.Module] the origin module view
+	# @param dest [View.Module] the destination module view
+	# @return [View.Spline] the created spline
+	#
+	_createSpline: ( orig, dest ) ->
+		return new View.Spline(@_paper, @_parent, @_cell, orig, dest)
+
+	# Runs if module is invalidated
+	# 
+	# @param module [Model.Module] the module invalidated
+	#
+	onModuleInvalidated: ( module ) =>
+		if module is @module
+			@redraw()
+	
+	# Gets called when a module view selected.
+	#
+	# @param module [Module] the module that is being selected
+	# @param selected [Boolean] the selection state of the module
+	#
+	onModuleSelected: ( module, selected ) ->
+		if module is @module 
+			if @_selected isnt selected
+				@_setSelected selected 
+		else if @_selected isnt off
+			@_setSelected off
+
+	# Gets called when a module view hovered.
+	#
+	# @param module [Module] the module that is being hovered
+	# @param selected [Boolean] the hover state of the module
+	#
+	onModuleHovered: ( module, hovered ) ->
+		if module is @module 
+			if @_hovered isnt hovered
+				@_setHovered hovered
+		else if @_hovered isnt off
+			@_setHovered off
+
+	# Gets called when a module is added to a cell
+	#
+	# @param cell [Model.Cell] the cell to which the module was added
+	# @param module [Module] the module that was added
+	#
+	onModuleAdded: ( cell, module ) ->
+		
+
+	# Gets called when a module is removed from a cell
+	#
+	# @param cell [Model.Cell] the cell from which the module was removed
+	# @param module [Module] the module that was removed
+	#
+	onModuleRemoved: ( cell, module ) ->
+		if @getFullType() is module.getFullType()
+			@setPosition()
+
+	# Gets called when a metabolite is added to a cell
+	#
+	# @param cell [Model.Cell] the cell to which the metabolite was added
+	# @param metabolite [Metabolite] the metabolite that was added
+	#
+	onMetaboliteAdded: ( cell, metabolite ) ->
+		if @type is 'Transporter'
+			if metabolite.name is @module.orig
+				@_createSpline @_parent.getView(metabolite), @
+			else if metabolite.name is @module.dest
+				@_createSpline @, @_parent.getView(metabolite)
+		else if @type is 'Metabolism'
+			if metabolite.name in @module.orig
+				@_createSpline @_parent.getView(metabolite), @
+			else if metabolite.name in @module.dest
+				@_createSpline @, @_parent.getView(metabolite)
+
+	# Gets called when a metabolite is removed from a cell
+	#
+	# @param cell [Model.Cell] the cell from which the metabolite was removed
+	# @param metabolite [Metabolite] the metabolite that was removed
+	#
+	onMetaboliteRemoved: ( cell, metabolite ) ->
+		if @getFullType() is metabolite.getFullType()
+			@setPosition()		

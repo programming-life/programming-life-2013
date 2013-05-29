@@ -23,6 +23,7 @@ class View.Cell extends View.RaphaelBase
 		
 		@_drawn = []
 		@_viewsByType = {}
+		@_splines = []
 		@_graphs = {}
 		@_numGraphs = 0
 
@@ -81,8 +82,8 @@ class View.Cell extends View.RaphaelBase
 		@_bind( 'cell.module.remove', @, @onModuleRemove )
 		@_bind( 'cell.metabolite.add', @, @onModuleAdd )
 		@_bind( 'cell.metabolite.remove', @, @onModuleRemove )
-		@_bind( 'cell.spline.added', @, @onSplineAdd)
-		@_bind( 'cell.spline.removed', @, @onSplineRemove)
+		@_bind( 'cell.spline.add', @, @onSplineAdd)
+		@_bind( 'cell.spline.remove', @, @onSplineRemove)
 		
 		@_trigger( 'view.cell.set', @, [ @model ] )
 
@@ -548,7 +549,7 @@ class View.Cell extends View.RaphaelBase
 		for key, graph of @_graphs
 			graph._drawRedLine( x )
 
-	# On module added, add it from the cell
+	# On module added, add it to the cell
 	# 
 	# @param cell [Model.Cell] cell added to
 	# @param module [Model.Module] module added
@@ -572,11 +573,25 @@ class View.Cell extends View.RaphaelBase
 				@_drawn = _( @_drawn ).without drawn
 				@removeView(view)
 
+	# On spline added, add it to the cell and draw
+	# 
+	# @param cell [Model.Cell] cell added to
+	# @param spline [View.Spline] spline added
+	#
 	onSplineAdd: ( cell, spline ) =>
 		if cell is @model
+			if _(@_splines).find( ( s ) -> (s.orig is spline.orig and s.dest is spline.dest) )?
+				spline.kill()
+				return
+
 			@_splines.push( spline )
 			spline.draw()
 
+	# On spline removed, remove it from the cell and kill it
+	# 
+	# @param cell [Model.Cell] cell removed from
+	# @param spline [View.Spline] spline removed
+	#
 	onSplineRemove: ( cell, spline ) =>
 		if cell is @model
 			@_splines = _( @_splines ).without spline
