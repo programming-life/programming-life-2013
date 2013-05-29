@@ -9,6 +9,8 @@ class Model.Node
 	# @param children [Array] An array contraining the children. Default is empty.
 	#
 	constructor: ( object, parent, children = [] ) -> 
+		@id = _.uniqueId('node')
+
 		@_object = object
 		@_parent = parent
 		@_children = children

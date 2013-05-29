@@ -2,7 +2,7 @@
 #
 class View.Notification extends View.HTMLPopOver
 
-	# Constructs a new ModuleProperties view.
+	# Constructs a new Notifications view.
 	#
 	# @param parent [View.Cell,View.Module] the accompanying view
 	# @param model [Model.Cell,Model.Module] the module for which to display its properties
@@ -42,6 +42,7 @@ class View.Notification extends View.HTMLPopOver
 				
 		if _( @_messages ).some( (message) -> message.visible )
 			@draw()
+			@setPosition()
 			elem = $ @_elem 
 			unless @_visible is on
 				elem.hide() 
@@ -63,18 +64,13 @@ class View.Notification extends View.HTMLPopOver
 		elem.fadeOut('fast')
 		@_visible = off
 		@_messages = {}
-		
-	# Nullifies the header
-	#
-	_createHeader: () ->	
-		return [ undefined ]
 	
 	# Creates the body of the message
 	#
 	# @return [jQuery.Elem] the body element
 	#
 	_createBody: () ->
-		body = super
+		body = super()
 		
 		if _( @_messages ).all( (message) -> !message.visible or message.closable )
 			@_closeButton = $('<button class="close">&times;</button>')
@@ -86,12 +82,6 @@ class View.Notification extends View.HTMLPopOver
 			elem = $('<div class="' + classname + '">' + message.message + '</div>')
 			body.append( elem )
 		return body
-		
-	# Nullifies the footer
-	#
-	_createFooter: () ->
-		return [ undefined ]
-
 		
 	# Gets the alert class from a type
 	#

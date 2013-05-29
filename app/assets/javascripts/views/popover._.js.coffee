@@ -6,19 +6,22 @@ class View.HTMLPopOver extends Helper.Mixable
 
 	@concern Mixin.EventBindings
 	
-	# Constructs a new ModuleProperties view.
+	# Constructs a new HTML Popover view.
 	#
 	# @param parent [Raphael] parent to hook on
 	# @param title [String] the title
 	# @param classname [String] the classname
 	# @param placement [String] the placement
 	#
-	constructor: ( parent, @title = '', classname = '', @placement = 'bottom' ) ->
-		@_parent = parent
-		
-		@_elem = @_create( classname )
-		
+	constructor: ( @_parent , @title = '', classname = '', @placement = 'bottom' ) ->
+		@_elem = @_create classname
+
+		locationName = @placement[0].toUpperCase() + @placement.slice(1);
+		@_location = View.Module.Location[locationName]
+
 		@_allowEventBindings()
+		@_bind('paper.resize', @, @setPosition)
+		@_bind('module.drawn', @, @setPosition)
 		@draw()
 		
 	# Creates the popover element
@@ -27,7 +30,8 @@ class View.HTMLPopOver extends Helper.Mixable
 	# @return [jQuery.Elem] the popover element
 	#
 	_create: ( classname ) ->	
-		elem = $('<div class="popover ' + @placement + ' ' + classname + '"></div>')
+		elem = $('<div class="popover"></div>')
+		elem.addClass(@placement).addClass(classname)
 		$('body').append elem
 		return elem
 		
@@ -57,22 +61,10 @@ class View.HTMLPopOver extends Helper.Mixable
 		@_elem.append @_createBody()
 		@_elem.append footer if footer?	
 		
-		@setPosition()
-		
-	# Create the popover header
+	# Nullifies the header
 	#
-	# @param onclick [Function] the function to yield on click
-	# @return [Array<jQuery.Elem>] the header and the button element
-	#
-	_createHeader: ( onclick ) ->
-		@_header = $('<div class="popover-title"></div>')
-
-		@_closeButton = $('<button class="close">&times;</button>')
-		@_closeButton.on('click', onclick ) if onclick?
-		
-		@_header.append @title
-		@_header.append @_closeButton
-		return [ @_header, @_closeButton ]
+	_createHeader: () ->	
+		return [ undefined ]
 		
 	# Create the popover body
 	#
@@ -82,45 +74,38 @@ class View.HTMLPopOver extends Helper.Mixable
 		@_body = $('<div class="popover-content"></div>')
 		return @_body
 		
-	#  Create footer content and append to footer
+	# Nullifies the footer
 	#
-	# @param onclick [Function] the function to yield on click
-	# @param saveText [String] the text on the save button
-	# @return [Array<jQuery.Elem>] the footer and the button element
-	#
-	_createFooter: ( onclick, saveText = 'Save' ) ->
-		@_footer = $('<div class="modal-footer"></div>')
-
-		@_saveButton = $('<button class="btn btn-primary">' + saveText + '</button>')
-		@_saveButton.on('click', onclick ) if onclick?
-
-		@_footer.append @_saveButton
-		return [ @_footer, @_saveButton ]
+	_createFooter: () ->
+		return [ undefined ]
 		
-	# Sets the position of the popover so the arrow points straight at the module view
+	# Sets the position of the popover so the arrow points straight at the model view
 	#
 	setPosition: ( ) ->
-	
-		rect = @_parent.getBBox()
-		cx = rect.x + rect.width / 2
-		cy = rect.y + rect.height / 2
 
+		if not @_parent.getAbsolutePoint?
+			throw new TypeError( "Expected parent [#{@_parent?.constructor.name ? @_parent}] to have the getAbsolutePoint function." )
+		
+		[x, y] = @_parent.getAbsolutePoint(@_location)
+		
+		left = 0
+		top = 0
 		width = @_elem.width()
 		height = @_elem.height()
 		
 		switch @placement
 			when 'top'
-				left = cx - width / 2 - 1
-				top = rect.y - height - 6
+				left = x - width / 2 - 1
+				top = y - height - 4
 			when 'bottom'
-				left = cx - width / 2 
-				top =  rect.y + rect.height + 2
+				left = x - width / 2 - 1
+				top =  y
 			when 'left'
-				left = rect.x - width - 4
-				top = cy - height / 2
+				left = x - width - 4
+				top = y - height / 2 - 1
 			when 'right'
-				left = rect.x + rect.width + 2
-				top = cy - height / 2
+				left = x
+				top = y - height / 2 - 1
 				
 		@_elem.css( { left: left, top: top } )
 		return this

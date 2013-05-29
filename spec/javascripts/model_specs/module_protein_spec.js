@@ -7,8 +7,8 @@ describe("Module Protein", function() {
 			module = new Model.Protein();
 		});
 		
-		it( "should have 'protein' as name", function() {
-			expect( module.name ).toBe( "protein" );
+		it( "should have 'Protein' as name", function() {
+			expect( module.name ).toBe( "Protein" );
 		});
 		
 		it( "should have 'p#int' as consume", function() {
@@ -58,8 +58,8 @@ describe("Module Protein", function() {
 					deserialized = Model.Protein.deserialize( serialized )
 				});
 				
-				it( "should have 'protein' as name", function() {
-					expect( module.name ).toBe( "protein" );
+				it( "should have 'Protein' as name", function() {
+					expect( module.name ).toBe( "Protein" );
 				});
 				
 				it( "should have 'p#int' as consume", function() {

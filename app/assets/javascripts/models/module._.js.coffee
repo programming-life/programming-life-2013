@@ -20,9 +20,20 @@ class Model.Module extends Helper.Mixable
 		@_allowTimeMachine()
 		@_allowEventBindings()
 		
+		if params.amount?
+			amount = params.amount
+			delete params.amount
+			starts = params.starts ? { name: amount }
+			starts.name = amount
+			params.starts = starts
+		
 		@_defineProperties( params, step, metadata )
+		
+		action = @_createAction( "Created #{this.constructor.name}:#{this.name}")
+		@_tree.setRoot( new Model.Node(action, null) )
 					
-		@_bind( 'module.set.property', @, @onPropertySet )
+		@_bind( 'module.property.changed', @, @onActionDo )
+		@_bind( 'module.set.compound', @, @onActionDo )
 		@_trigger( 'module.creation', @, [ @creation, @id ] )	
 		
 	# Defines All the properties
@@ -36,17 +47,9 @@ class Model.Module extends Helper.Mixable
 		properties.parameters.push 'amount'
 		metadata.properties = properties
 		
-		@_defineGetters( step, metadata )
+		@_defineGetters( params, step, metadata )
 		@_defineAccessors()
-		
-		@_propertiesFromParams(  
-			_( params ).defaults( {
-				id: _.uniqueId "client:#{this.constructor.name}:"
-				creation: Date.now()
-				starts: {}
-			} ),
-			'module.set.property'
-		)
+		@_defineDynamicProperties( params )
 
 		Object.seal @ 
 		return this
@@ -55,7 +58,7 @@ class Model.Module extends Helper.Mixable
 	#
 	# @return [self] chainable self
 	#
-	_defineGetters: ( step, metadata ) ->
+	_defineGetters: ( params, step, metadata ) ->
 		
 		@_nonEnumerableGetter( '_step', () -> return step )
 		@_nonEnumerableGetter( 'metadata', () -> return metadata )
@@ -86,12 +89,25 @@ class Model.Module extends Helper.Mixable
 			enumerable: false
 		)
 		
-	# Triggered when a property is set
+	#
+	#
+	_defineDynamicProperties: ( params ) ->
+		@_propertiesFromParams(  
+			_( params ).defaults( {
+				id: _.uniqueId "client:#{this.constructor.name}:"
+				creation: Date.now()
+				starts: {}
+			} ),
+			'module.property.changed'
+		)
+		return this
+		
+	# Triggered when an action is done
 	#
 	# @param caller [any] the originating property
 	# @param action [Model.Action] the action invoked
 	#
-	onPropertySet: ( caller, action ) =>
+	onActionDo: ( caller, action ) =>
 		if caller is @
 			@addUndoableEvent( action )
 		
@@ -154,9 +170,20 @@ class Model.Module extends Helper.Mixable
 	# @return [self] for chaining
 	#
 	setCompound: ( compound, value ) ->
-		@_trigger( 'module.set.compound', @, [ compound, @starts[ compound ] ? 0, value ] )	
 		
-		@starts[ compound ] = value
+		return this if  @starts[ compound ] is value
+		
+		todo = _( ( compound, value ) -> @starts[ compound ] = value ).bind( @, compound, value )
+		undo = _( ( compound, value ) -> @starts[ compound ] = value ).bind( @, compound, @starts[ compound ] )
+		
+		action = new Model.Action( 
+			@, todo, undo, 
+			"Change initial value for #{@[compound] ? compound} from #{ @starts[ compound ] } to #{value}" 
+		)
+		action.do()
+		
+		@_trigger( 'module.set.compound', @, [ action ] )	
+		
 		return this
 		
 	# Sets the metabolite to the start values (alias for setCompound)
@@ -198,6 +225,10 @@ class Model.Module extends Helper.Mixable
 		@_trigger( 'module.after.step', @, [ t, substrates, mu, results ] )
 		return results
 		
+	# Listify a list
+	#
+	# @todo make this a helper function
+	#
 	_listify: ( items, bind = 'and', nothing = 'nothing' ) ->
 		return nothing if items.length is 0
 		return items[0] if items.length is 1
@@ -269,13 +300,14 @@ class Model.Module extends Helper.Mixable
 			parameters[ parameter ] = @[ parameter ]
 
 		type = @constructor.name
-		
+	
 		result = { 
 			name: @name
 			parameters: parameters
 			type: type 
-			amount: @amount? 0
+			amount: @amount ? 0
 			step: @_step.toString() if type is "Module" and @_step?
+			id: @id
 		}
 		
 		return JSON.stringify( result )  if to_string
@@ -330,9 +362,11 @@ class Model.Module extends Helper.Mixable
 			params.push
 				key: key
 				value: value
-				
+			
 		module_parameters_data =
 			module_parameters: params
+			module_instance:
+				amount: @amount
 			
 		promise = $.ajax( @url, { data: module_parameters_data, type: 'PUT' } )
 		
@@ -374,8 +408,6 @@ class Model.Module extends Helper.Mixable
 			[ 'create instance' ],
 			Model.Module.Notification.Info
 		)		
-		
-		console.log Model.Module.Notification
 		
 		module_instance_data = @_getModuleInstanceData( 
 			instance, template, cell 
@@ -465,6 +497,7 @@ class Model.Module extends Helper.Mixable
 		
 		serialized = JSON.parse( serialized ) if _( serialized ).isString()
 		serialized.parameters.name = serialized.parameters.name ? serialized.name
+		serialized.parameters.amount = serialized.parameters.amount ? serialized.amount
 		fn = ( window || @ )["Model"]
 		return new fn[ serialized.type ]( serialized.parameters ) unless serialized.type is "Module"
 		
@@ -488,8 +521,7 @@ class Model.Module extends Helper.Mixable
 			# Done
 			( data ) =>
 				result = Model.Module.deserialize( data )
-				cell.add result
-				callback.apply( @, result ) if callback?
+				callback.call( @, result ) if callback?
 				
 				module._notificate(
 					cell, module, 

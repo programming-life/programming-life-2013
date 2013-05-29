@@ -156,6 +156,7 @@ class Model.Metabolism extends Model.Module
 			properties:
 				metabolites: [ 'orig', 'dest' ]
 				parameters: [ 'k', 'k_m', 'v', 'k_d' ]
+				dna: [ 'dna' ]
 				
 			tests:
 				compounds: [ 'name', 'dna', 'orig', 'dest' ]

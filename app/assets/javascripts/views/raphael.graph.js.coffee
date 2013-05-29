@@ -3,7 +3,7 @@
 class View.Graph extends View.RaphaelBase
 	
 	# Maximum number of simultaneously displayed data sets
-	@MAX_DATASETS : 2
+	@MAX_DATASETS : 3
 	
 	# Maximum length of a set
 	@MAX_LENGTH : 100
@@ -14,16 +14,16 @@ class View.Graph extends View.RaphaelBase
 	# @param parent [View.Cell] The cell view this graph belongs to
 	#
 	constructor: ( paper, @_title, @_parent) ->
-		@_id = new Date().getMilliseconds()
-		@_container = $('<div id="graph-'+ @_id + '" class="graph-container"></div>')
+		@_id = _( 'graph' ).uniqueId() 
+		@_container = $('<div id="' + @_id + '" class="graph"></div>')
 		@_parent._container.append( @_container )
 
-		@_width = 300
+		@_width = 240
 		@_height = 175
 		@clear()
 
-		@_paper = Raphael("graph-"+@_id, @_width + 20, @_height + 20)
-		super(@_paper)
+		@_paper = Raphael( @_id, @_width + 20, @_height + 20)
+		super @_paper 
 
 		@_text = @_drawTitle()
 
@@ -34,8 +34,8 @@ class View.Graph extends View.RaphaelBase
 			smooth: true
 			axis: '0 0 1 1'
 			#axisxstep: @_dt
-			shade : false
-			colors: [ "blue", "red", "green", "yellow", "orange" ]
+			shade : on
+			colors: [ "rgba(140, 137, 132, 0.3)",  "rgba(1, 145, 200, 0.5)", "rgba(0, 91, 154, 0.85)" ]
 		}
 
 	# Add a dataset to visualize in this graphs
@@ -44,7 +44,7 @@ class View.Graph extends View.RaphaelBase
 	# @return [self] chainable self
 	#
 	addData: ( data ) ->
-		@_datasets.push [[data[0],data[1]]]
+		@_datasets.unshift data
 		return @
 	
 	# Append a dataset to the most recently added dataset
@@ -54,10 +54,13 @@ class View.Graph extends View.RaphaelBase
 	#
 	appendData: ( data ) ->
 		if @_datasets.length is 0
-			addData data
+			@addData data
 			return @
 
-		_( @_datasets ).last().push [data[0],data[1]]
+		last = _( @_datasets ).first()
+
+		last.xValues.push data.xValues.splice(1)...
+		last.yValues.push data.yValues.splice(1)...
 		
 		return @
 		
@@ -87,19 +90,17 @@ class View.Graph extends View.RaphaelBase
 	# @retun [Raphael] The chart object
 	#
 	_drawChart:() ->
-		datasets = _( @_datasets ).last()
-		@_framesize = datasets[0].length
-
 		xValues = []
 		yValues = []
 
-		for i in [0...datasets.length]
-			xValues.push datasets[i][0]
-			yValues.push datasets[i][1]
+		for i, dataset of _( @_datasets ).first( View.Graph.MAX_DATASETS )
+			xValues.unshift dataset.xValues
+			yValues.unshift dataset.yValues
+		
+		options = _( @_options ).clone ( true )
+		options.colors = _( options.colors ).last( xValues.length )
+		@_chart = @_paper.linechart( 20,0, @_width, @_height ,_( xValues ).clone( true ), _( yValues ).clone( true ), options )
 
-			@_chart?.remove()
-			@_drawn = off
-			@_chart = @_paper.linechart(20,0, (i + 1) * @_width, @_height ,xValues, yValues, @_options )
 
 	#	unless @_drawn
 	#		@_chart.hoverColumn ( event ) =>
@@ -118,7 +119,7 @@ class View.Graph extends View.RaphaelBase
 	#
 	# @param x [Integer] The x to move to
 	# @param time [Integer] The timespan to animate over
-	play: ( x = ( _(@_datasets).last().length - 1) * @_width, time = 500 ) ->
+	play: ( x = @_width, time = 500 ) ->
 		@_paper.animateViewBox(x, 0, @_width, @_height, time)
 
 	# Draws the title

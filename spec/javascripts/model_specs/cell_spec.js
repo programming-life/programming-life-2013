@@ -168,7 +168,7 @@ describe("Cell", function() {
 	});
 	
 	describe("when a metabolite has been added", function() {
-		var metabolite_name = 'mock';
+		var metabolite_name = 'mock#ext';
 		var metabolite_amount = 42;
 		var metabolite_supply = 2;
 		var placement = Model.Metabolite.Outside;
@@ -179,41 +179,41 @@ describe("Cell", function() {
 		});
 		
 		it("should have that metabolite", function() {
-			expect( cell.hasMetabolite( metabolite_name, placement ) ).toBeTruthy();
-			substrate = cell.getMetabolite( metabolite_name, placement );
-			expect( substrate ).toBeDefined();
-			expect( substrate ).not.toBe( null );
+			expect( cell.hasMetabolite( metabolite_name ) ).toBeTruthy();
+			metabolite = cell.getMetabolite( metabolite_name );
+			expect( metabolite ).toBeDefined();
+			expect( metabolite ).not.toBe( null );
 		});
 		
 		it("should have the amount specified", function() {
-			expect( cell.amountOf( metabolite_name, placement ) ).toBe( metabolite_amount );
-			metabolite = cell.getMetabolite( metabolite_name, placement );
+			expect( cell.amountOf( metabolite_name ) ).toBe( metabolite_amount );
+			metabolite = cell.getMetabolite( metabolite_name );
 			expect( metabolite.amount ).toBe( metabolite_amount );
 		});
 		
 		it("should have the supply specified", function() {
-			metabolite = cell.getMetabolite( metabolite_name, placement );
+			metabolite = cell.getMetabolite( metabolite_name );
 			expect( metabolite.supply ).toBe( metabolite_supply );
 		});
 		
 		it("should have the type specified", function() {
-			metabolite = cell.getMetabolite( metabolite_name, placement );
+			metabolite = cell.getMetabolite( metabolite_name );
 			expect( metabolite.type ).toBe( type );
 		});
 		
 		it("should have the placement specified", function() {
-			metabolite = cell.getMetabolite( metabolite_name, placement );
+			metabolite = cell.getMetabolite( metabolite_name );
 			expect( metabolite.placement ).toBe( placement );
 		});
 		
 		describe( "and parameters are not given", function() {
 			beforeEach(function() {
-				metabolite_name = 'foo';
-				cell.addMetabolite( metabolite_name);
+				metabolite_name = 'foo#ext';
+				cell.addMetabolite( metabolite_name );
 			});
 			
 			it("should have the defaults", function() {
-				metabolite = cell.getMetabolite( metabolite_name, placement );
+				metabolite = cell.getMetabolite( metabolite_name );
 				expect( metabolite.supply ).toBe( 1 );
 				expect( metabolite.type ).toBe( Model.Metabolite.Substrate );
 				expect( metabolite.placement ).toBe( Model.Metabolite.Outside );
@@ -230,14 +230,14 @@ describe("Cell", function() {
 		});
 		
 		it("should have added that module as metabolite", function() {
-			expect( Model.Cell.prototype.addMetaboliteModule ).toHaveBeenCalledWith( module );
+			expect( Model.Cell.prototype.addMetaboliteModule ).toHaveBeenCalledWith( module, true );
 		});
 		
 	});
 	
 	describe("when an external substrate has been added", function() {
 	
-		var substrate_name = 'mock';
+		var substrate_name = 'mock#ext';
 		var substrate_amount = 42;
 		var substrate_supply = 2;
 		var placement = Model.Metabolite.Outside;
@@ -248,56 +248,56 @@ describe("Cell", function() {
 		});
 		
 		it("should have that substrate", function() {
-			expect( cell.hasSubstrate( substrate_name, placement ) ).toBeTruthy();
-			substrate = cell.getSubstrate( substrate_name, placement );
+			expect( cell.hasSubstrate( substrate_name ) ).toBeTruthy();
+			substrate = cell.getSubstrate( substrate_name );
 			expect( substrate ).toBeDefined();
 			expect( substrate ).not.toBe( null );
 		});
 		
 		it("should have the amount specified", function() {
-			expect( cell.amountOf( substrate_name, placement ) ).toBe( substrate_amount );
-			substrate = cell.getSubstrate( substrate_name, placement );
+			expect( cell.amountOf( substrate_name ) ).toBe( substrate_amount );
+			substrate = cell.getSubstrate( substrate_name );
 			expect( substrate.amount ).toBe( substrate_amount );
 		});
 		
 		it("should have the supply specified", function() {
-			substrate = cell.getSubstrate( substrate_name, placement );
+			substrate = cell.getSubstrate( substrate_name );
 			expect( substrate.supply ).toBe( substrate_supply );
 		});
 		
 		it("should have the type specified", function() {
-			substrate = cell.getSubstrate( substrate_name, placement );
+			substrate = cell.getSubstrate( substrate_name );
 			expect( substrate.type ).toBe( type );
 		});
 		
 		it("should have the placement specified", function() {
-			substrate = cell.getSubstrate( substrate_name, placement );
+			substrate = cell.getSubstrate( substrate_name );
 			expect( substrate.placement ).toBe( placement );
 		});
 
 		it("should be able to remove that substrate", function() {
-			cell.removeSubstrate( substrate_name, placement );
-			expect( cell.hasSubstrate( substrate_name, placement ) ).toBeFalsy();
-			expect( cell.getSubstrate( substrate_name, placement ) ).toBeNull();
-			expect( cell.amountOf( substrate_name, placement ) ).not.toBeDefined();
+			cell.removeSubstrate( substrate_name );
+			expect( cell.hasSubstrate( substrate_name ) ).toBeFalsy();
+			expect( cell.getSubstrate( substrate_name ) ).not.toBeDefined();
+			expect( cell.amountOf( substrate_name ) ).not.toBeDefined();
 		});
 			
 		it("should replace the substrate amount if it already exists", function () {
-			substrate = cell.getSubstrate( substrate_name, placement );
+			substrate = cell.getSubstrate( substrate_name );
 			cell.addSubstrate( substrate_name, substrate_amount + 1, substrate_supply, false );
-			expect( substrate ).toBe( cell.getSubstrate( substrate_name, placement ) );
-			expect( cell.amountOf( substrate_name, placement ) ).toBe( substrate_amount + 1 );
+			expect( substrate ).toBe( cell.getSubstrate( substrate_name ) );
+			expect( cell.amountOf( substrate_name ) ).toBe( substrate_amount + 1 );
 			expect( substrate.amount ).toBe( substrate_amount + 1 );
 		});
 		
 		describe( "and parameters are not given", function() {
 			beforeEach(function() {
-				metabolite_name = 'foo';
+				metabolite_name = 'foo#ext';
 				cell.addSubstrate( metabolite_name );
 			});
 			
 			it("should have the defaults", function() {
-				metabolite = cell.getMetabolite( metabolite_name, placement );
+				metabolite = cell.getMetabolite( metabolite_name );
 				expect( metabolite.supply ).toBe( 1 );
 				expect( metabolite.type ).toBe( Model.Metabolite.Substrate );
 				expect( metabolite.placement ).toBe( Model.Metabolite.Outside );
@@ -308,7 +308,7 @@ describe("Cell", function() {
 	
 	describe("when an internal substrate has been added", function() {
 	
-		var substrate_name = 'mock';
+		var substrate_name = 'mock#int';
 		var substrate_amount = 42;
 		var substrate_supply = 2;
 		var placement = Model.Metabolite.Inside;
@@ -319,45 +319,45 @@ describe("Cell", function() {
 		});
 		
 		it("should have that substrate", function() {
-			expect( cell.hasSubstrate( substrate_name, placement ) ).toBeTruthy();
-			substrate = cell.getSubstrate( substrate_name, placement );
+			expect( cell.hasSubstrate( substrate_name ) ).toBeTruthy();
+			substrate = cell.getSubstrate( substrate_name );
 			expect( substrate ).toBeDefined();
 			expect( substrate ).not.toBe( null );
 		});
 		
 		it("should have the amount specified", function() {
-			expect( cell.amountOf( substrate_name, placement ) ).toBe( substrate_amount );
-			substrate = cell.getSubstrate( substrate_name, placement );
+			expect( cell.amountOf( substrate_name ) ).toBe( substrate_amount );
+			substrate = cell.getSubstrate( substrate_name );
 			expect( substrate.amount ).toBe( substrate_amount );
 		});
 		
 		it("should have the supply specified", function() {
-			substrate = cell.getSubstrate( substrate_name, placement );
+			substrate = cell.getSubstrate( substrate_name );
 			expect( substrate.supply ).toBe( substrate_supply );
 		});
 		
 		it("should have the type specified", function() {
-			substrate = cell.getSubstrate( substrate_name, placement );
+			substrate = cell.getSubstrate( substrate_name );
 			expect( substrate.type ).toBe( type );
 		});
 		
 		it("should have the placement specified", function() {
-			substrate = cell.getSubstrate( substrate_name, placement );
+			substrate = cell.getSubstrate( substrate_name );
 			expect( substrate.placement ).toBe( placement );
 		});
 
 		it("should be able to remove that substrate", function() {
-			cell.removeSubstrate( substrate_name, placement );
-			expect( cell.hasSubstrate( substrate_name, placement ) ).toBeFalsy();
-			expect( cell.getSubstrate( substrate_name, placement ) ).toBeNull();
-			expect( cell.amountOf( substrate_name, placement ) ).not.toBeDefined();
+			cell.removeSubstrate( substrate_name );
+			expect( cell.hasSubstrate( substrate_name ) ).toBeFalsy();
+			expect( cell.getSubstrate( substrate_name ) ).not.toBeDefined();
+			expect( cell.amountOf( substrate_name ) ).not.toBeDefined();
 		});
 			
 		it("should replace the substrate amount if it already exists", function () {
-			substrate = cell.getSubstrate( substrate_name, placement );
+			substrate = cell.getSubstrate( substrate_name );
 			cell.addSubstrate( substrate_name, substrate_amount + 1, substrate_supply, true );
-			expect( substrate ).toBe( cell.getSubstrate( substrate_name, placement ) );
-			expect( cell.amountOf( substrate_name, placement ) ).toBe( substrate_amount + 1 );
+			expect( substrate ).toBe( cell.getSubstrate( substrate_name ) );
+			expect( cell.amountOf( substrate_name ) ).toBe( substrate_amount + 1 );
 			expect( substrate.amount ).toBe( substrate_amount + 1 );
 		});
 
@@ -373,9 +373,9 @@ describe("Cell", function() {
 			var placement = Model.Metabolite.Outside;
 			var type = Model.Metabolite.Substrate;
 		
-			cell.addSubstrate( 'e_substrate', substrate_amount, substrate_supply, false );
-			expect( cell.hasSubstrate( 'e_substrate', placement  ) ).toBeTruthy();
-			substrate = cell.getSubstrate( 'e_substrate', placement );
+			cell.addSubstrate( 'e_substrate#ext', substrate_amount, substrate_supply, false );
+			expect( cell.hasSubstrate( 'e_substrate#ext'  ) ).toBeTruthy();
+			substrate = cell.getSubstrate( 'e_substrate#ext' );
 			expect( substrate.placement ).toBe( placement );
 			expect( substrate.type ).toBe( type );
 		});
@@ -385,9 +385,9 @@ describe("Cell", function() {
 			var placement = Model.Metabolite.Inside;
 			var type = Model.Metabolite.Substrate;
 		
-			cell.addSubstrate( 'i_substrate', substrate_amount, substrate_supply, true );
-			expect( cell.hasSubstrate( 'i_substrate', placement  ) ).toBeTruthy();
-			substrate = cell.getSubstrate( 'i_substrate', placement );
+			cell.addSubstrate( 'i_substrate#int', substrate_amount, substrate_supply, true );
+			expect( cell.hasSubstrate( 'i_substrate#int'  ) ).toBeTruthy();
+			substrate = cell.getSubstrate( 'i_substrate#int' );
 			expect( substrate.placement ).toBe( placement );
 			expect( substrate.type ).toBe( type );
 		});
@@ -398,9 +398,9 @@ describe("Cell", function() {
 			var placement = Model.Metabolite.Inside;
 			var type = Model.Metabolite.Product;
 		
-			cell.addProduct( 'i_product', substrate_amount, true );
-			expect( cell.hasProduct( 'i_product', placement  ) ).toBeTruthy();
-			substrate = cell.getProduct( 'i_product', placement );
+			cell.addProduct( 'i_product#int', substrate_amount, true );
+			expect( cell.hasProduct( 'i_product#int'  ) ).toBeTruthy();
+			substrate = cell.getProduct( 'i_product#int' );
 			expect( substrate.placement ).toBe( placement );
 			expect( substrate.type ).toBe( type );
 		});
@@ -410,9 +410,9 @@ describe("Cell", function() {
 			var placement = Model.Metabolite.Outside;
 			var type = Model.Metabolite.Product;
 		
-			cell.addProduct( 'e_product', substrate_amount, false );
-			expect( cell.hasProduct( 'e_product', placement  ) ).toBeTruthy();
-			substrate = cell.getProduct( 'e_product', placement );
+			cell.addProduct( 'e_product#ext', substrate_amount, false );
+			expect( cell.hasProduct( 'e_product#ext'  ) ).toBeTruthy();
+			substrate = cell.getProduct( 'e_product#ext' );
 			expect( substrate.placement ).toBe( placement );
 			expect( substrate.type ).toBe( type );
 		});
@@ -421,7 +421,7 @@ describe("Cell", function() {
 
 			var placement = Model.Metabolite.Outside;
 			var type = Model.Metabolite.Substrate;
-			var substrate_name= 'foo';
+			var substrate_name= 'foo#ext';
 
 			var serialized;
 			beforeEach( function() {
@@ -442,30 +442,30 @@ describe("Cell", function() {
 				});
 				
 				it("should have that substrate", function() {
-					expect( cell.hasSubstrate( substrate_name, placement ) ).toBeTruthy();
-					substrate = cell.getSubstrate( substrate_name, placement );
+					expect( cell.hasSubstrate( substrate_name ) ).toBeTruthy();
+					substrate = cell.getSubstrate( substrate_name );
 					expect( substrate ).toBeDefined();
 					expect( substrate ).not.toBe( null );
 				});
 				
 				it("should have the amount specified", function() {
-					expect( cell.amountOf( substrate_name, placement ) ).toBe( substrate_amount );
-					substrate = cell.getSubstrate( substrate_name, placement );
+					expect( cell.amountOf( substrate_name ) ).toBe( substrate_amount );
+					substrate = cell.getSubstrate( substrate_name );
 					expect( substrate.amount ).toBe( substrate_amount );
 				});
 				
 				it("should have the supply specified", function() {
-					substrate = cell.getSubstrate( substrate_name, placement );
+					substrate = cell.getSubstrate( substrate_name );
 					expect( substrate.supply ).toBe( substrate_supply );
 				});
 				
 				it("should have the type specified", function() {
-					substrate = cell.getSubstrate( substrate_name, placement );
+					substrate = cell.getSubstrate( substrate_name );
 					expect( substrate.type ).toBe( type );
 				});
 				
 				it("should have the placement specified", function() {
-					substrate = cell.getSubstrate( substrate_name, placement );
+					substrate = cell.getSubstrate( substrate_name );
 					expect( substrate.placement ).toBe( placement );
 				});
 			});
@@ -474,17 +474,27 @@ describe("Cell", function() {
 	
 	describe("when the cell has ran", function() {
 		var run_t = 10;
-		var result;
+		var result, promise;
 		
 		beforeEach(function() {
-			result = cell.run( run_t );
+			promise = cell.run( run_t );
 		});
 		
 		it("should have run with t runtime", function() {
-			expect( result ).toBeDefined();
-			expect( result.results.x ).toBeDefined();
-			expect( result.results.x[ 0 ] ).toBe( 0 );
-			expect( result.results.x[ result.results.x.length - 1 ] ).toBe( run_t );
+			
+			waitsFor( function() {
+				return promise.state() === "rejected" || promise.state() === "resolved" 
+			} )
+			
+			promise.done( function( r ) { result = r } );
+			
+			runs( function() {
+				expect( promise.state() ).toBe( "resolved" );
+				expect( result ).toBeDefined();
+				expect( result.results.x ).toBeDefined();
+				expect( result.results.x[ 0 ] ).toBe( 0 );
+				expect( result.results.x[ result.results.x.length - 1 ] ).toBe( run_t );
+			});
 			
 		});
 	});
@@ -546,51 +556,79 @@ describe("Cell", function() {
 		});
 
 		describe( "when ran for 0 seconds", function() {
-			var results, result, mapping;
+			var results, result, mapping, promise;
 			
 			beforeEach(function() {
-				results = cell.run( 0 );
-				result = results.results;
-				mapping = results.map;
+				promise = cell.run( 0 );
+				promise.done( function( r ) { results = r } );
+				waitsFor( function() {
+					return promise.state() === "rejected" || promise.state() === "resolved" 
+				} );
+				
 			});
-			
+
 			it("should have input values", function() {
-				expect( result ).toBeDefined();
-				expect( result.y[ result.y.length - 1 ][ mapping.enzyme ] ).toBe( enzyme );
-				expect( result.y[ result.y.length - 1 ][ mapping["food#ext"] ] ).toBe( food );
-				expect( result.y[ result.y.length - 1 ][ mapping["food#int"] ] ).toBe( 0 );
-				expect( result.y[ result.y.length - 1 ][ mapping.transp ] ).toBe( 0 );
+			
+				runs( function() {
+					result = results.results;
+					mapping = results.map;
+				
+					expect( result ).toBeDefined();
+					expect( result.y[ result.y.length - 1 ][ mapping.enzyme ] ).toBe( enzyme );
+					expect( result.y[ result.y.length - 1 ][ mapping["food#ext"] ] ).toBe( food );
+					expect( result.y[ result.y.length - 1 ][ mapping["food#int"] ] ).toBe( 0 );
+					expect( result.y[ result.y.length - 1 ][ mapping.transp ] ).toBe( 0 );
+				
+				});
 			});
 			
 		});
 		
 		describe( "when ran for 2 seconds", function() {
-			var result, mapping;
+			var result, mapping, promise;
 			
 			beforeEach(function() {
-				results = cell.run( 2 );
-				result = results.results;
-				mapping = results.map;
+				promise = cell.run( 2 );
+				promise.done( function( r ) { results = r } );
+				waitsFor( function() {
+					return promise.state() === "rejected" || promise.state() === "resolved" 
+				} );
 			});
-			
+
 			it("should have kept all the enzym", function() {
-				expect( result.y[ result.y.length - 1 ][ mapping.enzyme ] ).toBe( enzyme );
+				runs( function() {
+					result = results.results;
+					mapping = results.map;
+					expect( result.y[ result.y.length - 1 ][ mapping.enzyme ] ).toBe( enzyme );
+				});
 			});
 			
 			it("should have created transporters", function() {
-				expect( result.y[ result.y.length - 1 ][ mapping.transp ] ).toBe( create_transport.rate * 2 );
+				runs( function() {
+					result = results.results;
+					mapping = results.map;
+					expect( result.y[ result.y.length - 1 ][ mapping.transp ] ).toBeCloseTo( create_transport.rate * 2 );
+				});
 			});
 			
 			it("should have transported food", function() {
-				expect( result.y[ result.y.length - 1 ][ mapping["food#int"] ] ).toBeGreaterThan( 0 );
-				expect( result.y[ result.y.length - 1 ][ mapping["food#ext"] ] ).toBeLessThan( food );
+				runs( function() {
+					result = results.results;
+					mapping = results.map;
+					expect( result.y[ result.y.length - 1 ][ mapping["food#int"] ] ).toBeGreaterThan( 0 );
+					expect( result.y[ result.y.length - 1 ][ mapping["food#ext"] ] ).toBeLessThan( food );
+				});
 			});
 			
 			it("should have consumed food", function() {
-				expect( 
-					result.y[ result.y.length - 1 ][ mapping["food#int"] ] + 
-					result.y[ result.y.length - 1 ][ mapping["food#ext"] ] 
-				).toBeLessThan( food );
+				runs( function() {
+					result = results.results;
+					mapping = results.map;
+					expect( 
+						result.y[ result.y.length - 1 ][ mapping["food#int"] ] + 
+						result.y[ result.y.length - 1 ][ mapping["food#ext"] ] 
+					).toBeLessThan( food );
+				});
 			});
 
 			it("should summed up the rate if a second transporter uses the same substrate", function() {
@@ -609,12 +647,19 @@ describe("Cell", function() {
 
 				cell.add( create_transport_2 );
 
-				results = cell.run( 2 );
-				result = results.results;
-				mapping = results.map;
+				promise = cell.run( 2 );
+				promise.done( function( r ) { results = r } );
+				waitsFor( function() {
+					return promise.state() === "rejected" || promise.state() === "resolved" 
+				} );
+				
+				runs(function() {
+					result = results.results;
+					mapping = results.map;
 
-				expect( result.y[ result.y.length - 1 ][ mapping.transp ] ).
-					toBe( (create_transport.rate + create_transport_2.rate) * 2);
+					expect( result.y[ result.y.length - 1 ][ mapping.transp ] ).
+						toBeCloseTo( (create_transport.rate + create_transport_2.rate) * 2);
+				});
 			});
 			
 		});

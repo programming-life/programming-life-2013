@@ -128,10 +128,11 @@ class ModuleInstancesController < ApplicationController
 		
 			if params.has_key?( :module_parameters )
 				parameter_update( params[:module_parameters] )
-				format.json { render json: params[:module_parameters] }
-			elsif @module_instance.update_attributes(params[:module_instance])
+			end
+			
+			if @module_instance.update_attributes(params[:module_instance])
 				format.html { redirect_to @module_instance, notice: 'Module instance was successfully updated.' }
-				format.json { head :no_content }
+				format.json { render json: @module_instance }
 			else
 				format.html { render action: "edit" }
 				format.json { render json: @module_instance.errors, status: :unprocessable_entity }

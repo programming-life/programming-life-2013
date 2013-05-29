@@ -112,6 +112,7 @@ class Model.Lipid extends Model.Module
 			properties:
 				metabolites: [ 'consume' ]
 				parameters: [ 'k' ]
+				dna: [ 'dna' ]
 				
 			tests:
 				compounds: [ 'dna', 'name', 'consume' ]
