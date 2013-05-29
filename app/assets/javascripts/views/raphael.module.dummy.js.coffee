@@ -16,23 +16,23 @@ class View.DummyModule extends View.RaphaelBase
 		
 		super paper, parent
 		
-		@activated = off
 		@_type = @_modulector.name
 		@_count = @_cell.numberOf @_modulector
 		@_visible = @_number is -1 or @_count < @_number
 
-		@_bind( 'cell.add.module', @, @onModuleAdd )
-		@_bind( 'cell.add.metabolite', @, @onModuleAdd )
-		@_bind( 'cell.remove.module', @, @onModuleRemove )
-		@_bind( 'cell.remove.metabolite', @, @onModuleRemove )
+		@_bind( 'cell.module.added', @, @onModuleAdd )
+		@_bind( 'cell.module.removed', @, @onModuleRemove )
+		@_bind( 'cell.metabolite.added', @, @onModuleAdd )		
+		@_bind( 'cell.metabolite.removed', @, @onModuleRemove )
 		@_bind( 'paper.resize', @, @onPaperResize)
 		
-		@_bind( 'dummy.add.activate', @, @onAddActivated )
+		@_bind( 'module.creation.finished', @, @onModuleCreationFinished )
 		
 		# Here you would like to load a module properties view that calls the dummy.add.activate event on save
 		# The correct constructor gets auto called and no need to check it anymore :)
 		#
 		#@_propertiesView = new View.ModuleProperties( @, @_parent, @_cell, @_modulector )
+		@_propertiesView = new View.DummyModuleProperties( @, @_parent, @_cell, @_modulector )
 		@_notificationsView = new View.ModuleNotification( @, @_parent, @_cell, @_modulector )
 		
 		Object.defineProperty( @, 'visible',
@@ -64,22 +64,27 @@ class View.DummyModule extends View.RaphaelBase
 	# @params dummy [View.DummyModule] the dummy to activate
 	# @params params [Object] the params to pass to the constructor
 	#
-	onAddActivated : ( caller, dummy, params ) ->
+	onModuleCreationFinished : ( dummy, params ) ->
 		if dummy isnt this
 			return
-			
-		@_cell.add new @_modulector( _( params ).clone( true ) )
+
+		params = _( params ).defaults( @_params )
+		module = new @_modulector( _( params ).clone( true ) )			
+		@_cell.add module
+		@_trigger('module.selected.changed', module, [ on ])
 		
+		console.log params
 		switch @_type
 			when "Transporter"
-				if @_params.direction is Model.Transporter.Outward
-					@_cell.addProduct( @_params.transported ? 'p', 0, true )
-					@_cell.addProduct( @_params.transported ? 'p', 0, false )
-				if @_params.direction is Model.Transporter.Inward
-					@_cell.addSubstrate( @_params.transported ? 's', 0, 0, true )
+				if params.direction is Model.Transporter.Outward
+					@_cell.addProduct( params.transported , 0, false )
+				if params.direction is Model.Transporter.Inward
+					@_cell.addSubstrate( params.transported , 0, 0, true )
 			when "Metabolism"
-				@_cell.addSubstrate( @_params.orig ?'s', 0, 0, true )
-				@_cell.addProduct( @_params.dest ? 'p', 0, true )
+				for o in params.orig ? []
+					@_cell.addSubstrate( o , 0, 0, true )
+				for d in params.dest ? []
+					@_cell.addProduct( d , 0, true )
 				
 	# On Module Added to the Cell
 	#
@@ -129,6 +134,8 @@ class View.DummyModule extends View.RaphaelBase
 			when View.Module.Location.Bottom
 				return [@x, box.y2]
 
+	#
+	#
 	getAbsolutePoint: ( location ) ->
 		[x, y] = @getPoint(location)
 		return @getAbsoluteCoords(x, y)
@@ -151,10 +158,7 @@ class View.DummyModule extends View.RaphaelBase
 		hitbox = @drawHitbox(@_box)
 
 		hitbox.click =>
-			# Here normally this dummy would be 'selected' so the properties box comes on. Instead we directly 
-			# mimic the behaviour of entering the fields and adding a compound
-			#
-			_( @_trigger( 'dummy.add.activate', @, [ @, @_params ]) ).debounce( 100 )
+			@_trigger('module.creation.started', @)
 		
 		@_contents.push hitbox
 		@_contents.push contents
@@ -172,8 +176,11 @@ class View.DummyModule extends View.RaphaelBase
 		@_visible = on
 		return this
 		
+	# Kills this view
+	#
 	kill: () ->
 		super()
+		@_propertiesView?.kill()
 		@_notificationsView?.kill()
 		
 	# Draws the box

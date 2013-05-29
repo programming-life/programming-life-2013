@@ -35,7 +35,7 @@ class Model.Cell extends Helper.Mixable
 		@_defineProperties( paramscell )
 		
 		@_trigger( 'cell.creation', @, [ @creation, @id ] )
-		@_bind( 'cell.set.property', @, @onPropertySet )
+		@_bind( 'cell.property.changed', @, @onPropertySet )
 		@add new Model.CellGrowth( params, start ), false
 		
 	# Defines All the properties
@@ -51,8 +51,9 @@ class Model.Cell extends Helper.Mixable
 			_( params ).defaults( {
 				id: _.uniqueId "client:#{this.constructor.name}:"
 				creation: Date.now()
+				name: null
 			} ),
-			'cell.set.property'
+			'cell.property.changed'
 		)
 		
 		Object.seal @ 
@@ -146,7 +147,7 @@ class Model.Cell extends Helper.Mixable
 	#
 	_addModule: ( module ) ->
 		@_modules.push module
-		@_trigger( 'cell.add.module', @, [ module ] )
+		@_trigger( 'cell.module.added', @, [ module ] )
 		return this
 		
 		
@@ -157,6 +158,10 @@ class Model.Cell extends Helper.Mixable
 	#
 	addMetaboliteModule: ( metabolite, undoable = true ) ->
 	
+		if @hasMetabolite metabolite.name
+			@getMetabolite( metabolite.name ).amount = metabolite.amount
+			return this
+		
 		name = _( metabolite.name.split( '#' ) ).first()
 		action = 
 			@_createAction( "Added #{metabolite.constructor.name}: #{name} init=#{metabolite.amount} dt=#{metabolite.supply}" )
@@ -178,7 +183,7 @@ class Model.Cell extends Helper.Mixable
 	#
 	_addMetabolite: ( metabolite ) -> 
 		@_metabolites.push metabolite 
-		@_trigger( 'cell.add.metabolite', @, 
+		@_trigger( 'cell.metabolite.added', @, 
 			[ 
 				metabolite, 
 				metabolite.name, 
@@ -239,10 +244,10 @@ class Model.Cell extends Helper.Mixable
 	# @return [self] chainable instance
 	#
 	remove: ( module, undoable = true ) ->
-	
+
 		# Transparent adding of metabolites
 		if module instanceof Model.Metabolite
-			@removeMetabolite _( module.name.split( '#' ) ).first(), undoable
+			@removeMetabolite module.name, undoable
 			return this
 			
 		action = 
@@ -264,7 +269,7 @@ class Model.Cell extends Helper.Mixable
 	#
 	_removeModule: ( module ) ->
 		@_modules = _( @_modules ).without module
-		@_trigger( 'cell.remove.module', @, [ module ] )
+		@_trigger( 'cell.module.removed', @, [ module ] )
 		return this
 		
 	# Removes this metabolite from cell
@@ -297,7 +302,7 @@ class Model.Cell extends Helper.Mixable
 	_removeMetabolite: ( module ) -> 
 		return this unless module?
 		@_metabolites = _( @_metabolites ).without module
-		@_trigger( 'cell.remove.metabolite', @, [ module ] )
+		@_trigger( 'cell.metabolite.removed', @, [ module ] )
 		return this
 		
 	# Removes this substrate from cell (alias for removeMetabolite)
@@ -386,6 +391,20 @@ class Model.Cell extends Helper.Mixable
 	#
 	numberOf: ( module_type ) ->
 		return _( @_getModules() ).where( ( module ) -> module instanceof module_type ).length
+	
+	# Get compound names
+	# 
+	# @return [Array<String>] all the compound names
+	#
+	getCompoundNames: () ->
+		return _( @_modules ).map( ( m ) -> m.name )
+	
+	# Get Metabolite Names
+	#
+	# @return [Array<String>] all the metabolite names
+	#
+	getMetaboliteNames: () ->
+		return _( @_metabolites ).map( ( m ) -> m.name )
 
 	# Gets all the modules that are steppable
 	# 
@@ -449,7 +468,7 @@ class Model.Cell extends Helper.Mixable
 	# @param base_values [Array] the base values to try
 	# @return [self] chainable instance
 	#
-	run : ( timespan, base_values = [] ) ->
+	run : ( timespan, base_values = [], callback ) ->
 		
 		@_trigger( 'cell.before.run', @, [ timespan ] )
 								
@@ -486,12 +505,22 @@ class Model.Cell extends Helper.Mixable
 
 		# Run the ODE from 0...timespan with starting values and step function
 		[ values, continuation ] = @_tryUsingBaseValues( base_values, values )
-		sol = numeric.dopri( 0, timespan, values, @_step( modules, mapping, map ), 1e-16, 2500 )
+		promise = numeric.asyncdopri( 0, timespan, values, @_step( modules, mapping, map ), 1e-9, 4000 )
+		promise = promise.then( ( ret ) =>
 		
-		@_trigger( 'cell.after.run', @, [ timespan, sol, mapping ] )
+			@_trigger( 'cell.after.run', @, [ timespan, ret, mapping ] )
+			
+			result =
+				results: ret
+				map: mapping
+				append: continuation
+				
+			callback?( result )
+			return result
+		)
 		
 		# Return the system results
-		return { results: sol, map: mapping, append: continuation }
+		return promise
 		
 	# The step function for the cell
 	#
@@ -607,7 +636,7 @@ class Model.Cell extends Helper.Mixable
 		
 		result = {
 			cell:
-				name: 'My Test Cell'
+				name: @name ? 'Cell [' + @creation + ']'
 			modules: modules
 				
 		}
@@ -743,7 +772,7 @@ class Model.Cell extends Helper.Mixable
 			# Fail
 			, ( data ) => 
 			
-				if !result?
+				if not result?
 					result = cell
 					for module in result._modules
 						result.remove module, false
@@ -772,3 +801,11 @@ class Model.Cell extends Helper.Mixable
 		)
 
 		return promise
+		
+	@loadList: ( callback ) ->
+	
+		cell = new Model.Cell()
+		promise = $.get( cell.url, {} )
+		
+		return promise
+		

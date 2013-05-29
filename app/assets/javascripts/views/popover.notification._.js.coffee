@@ -2,7 +2,7 @@
 #
 class View.Notification extends View.HTMLPopOver
 
-	# Constructs a new ModuleProperties view.
+	# Constructs a new Notifications view.
 	#
 	# @param parent [View.Cell,View.Module] the accompanying view
 	# @param model [Model.Cell,Model.Module] the module for which to display its properties

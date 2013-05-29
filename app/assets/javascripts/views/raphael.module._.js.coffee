@@ -33,7 +33,6 @@ class View.Module extends View.RaphaelBase
 		@_visible = on
 
 		@addInteraction() if @_interaction is on
-		@_bind( 'paper.resize', @, @onPaperResize)
 				
 		Object.defineProperty( @, 'visible',
 			get: ->
@@ -51,9 +50,9 @@ class View.Module extends View.RaphaelBase
 		@_propertiesView = new View.ModuleProperties( @, @_parent, @_cell, @module )
 		@_notificationsView = new View.ModuleNotification( @, @_parent, @_cell, @module )
 	
-		@_bind( 'module.set.property', @, @onModuleInvalidated )
-		@_bind( 'module.set.selected', @, @onModuleSelected )
-		@_bind( 'module.set.hovered', @, @onModuleHovered )
+		@_bind( 'module.property.changed', @, @onModuleInvalidated )
+		@_bind( 'module.selected.changed', @, @onModuleSelected )
+		@_bind( 'module.hovered.changed', @, @onModuleHovered )
 		return this
 		
 	# Generates a hashcode based on the module name
@@ -158,12 +157,6 @@ class View.Module extends View.RaphaelBase
 				@_setHovered hovered
 		else if @_hovered isnt off
 			@_setHovered off
-
-	# Runs if paper is resized
-	#
-	onPaperResize: ( ) =>
-		@redraw() if @_selected
-		@_notificationsView?.draw() 
 
 	moveTo: ( x, y ) =>
 		dx = x - @x
@@ -331,13 +324,13 @@ class View.Module extends View.RaphaelBase
 		hitbox = @drawHitbox(@_box)
 
 		hitbox.click =>
-			_( @_trigger( 'module.set.selected', @module, [ on ]) ).debounce( 100 )
+			_( @_trigger( 'module.selected.changed', @module, [ on ]) ).debounce( 100 )
 
 		hitbox.mouseout =>
-			_( @_trigger( 'module.set.hovered', @module, [ off, @_selected ]) ).debounce( 100 )
+			_( @_trigger( 'module.hovered.changed', @module, [ off, @_selected ]) ).debounce( 100 )
 		
 		hitbox.mouseover =>
-			_( @_trigger( 'module.set.hovered', @module, [ on, @_selected ]) ).debounce( 100 )
+			_( @_trigger( 'module.hovered.changed', @module, [ on, @_selected ]) ).debounce( 100 )
 
 		@_view = @_paper.setFinish()
 		@_view.push( contents )
@@ -569,7 +562,7 @@ class View.Module extends View.RaphaelBase
 				y2 = y + r * Math.sin( -endAngle * rad )
 				path = @_paper.path( ["M", x, y, "L", x1, y1, "A", r, r, 0, +(endAngle - startAngle > 180), 0, x2, y2, "z"] )
 				path.node.setAttribute('class', "#{module}-substrate-sector")
-				return [ @_paper.path( ["M", x, y, "L", x1, y1, "A", r, r, 0, +(endAngle - startAngle > 180), 0, x2, y2, "z"] ) ]
+				return [ path ]
 				
 			when 'EnzymCircle'
 			

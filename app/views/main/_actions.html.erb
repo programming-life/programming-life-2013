@@ -1,0 +1,48 @@
+<div id="progress" class="progress progress-striped active fade" style="visibility: hidden">
+  <div class="bar" style="100%;"></div>
+</div>
+<%= nested_form_for(@cell, :html => {:class => "form-horizontal"} ) do |f| %>
+	<div class="form-actions">
+		<%= f.button '<i class="icon-play icon-white"></i> Simulate'.html_safe, 
+			:class => "btn btn-primary", :autocomplete => 'off', :value => 'simulate', :type => 'button', 
+			:data => { 
+				:action => 'simulate',
+				:toggle => 'button',
+				'toggle-text' => '<i class="icon-stop icon-white"></i> Simulating...',
+			} 
+		%>
+		
+		<%= f.button '<i class="icon-download"></i> Load'.html_safe, 
+			:class => "btn", :autocomplete => 'off', :value => 'load', :type => 'button', 
+			:data => { 
+				:action => 'load', 
+				'loading-text' => '<i class="icon-download"></i> Loading...',
+				'success-text' => '<i class="icon-download icon-white"></i> Load',
+				'error-text' => '<i class="icon-download icon-white"></i> Error while loading!' 
+			} 
+		%>
+		<%= f.button '<i class="icon-upload"></i> Save'.html_safe, 
+			:class => "btn", :autocomplete => 'off', :value => 'save', :type => 'button', 
+			:data => { 
+				:action => 'save', 
+				'loading-text' => '<i class="icon-upload"></i> Saving...',
+				'success-text' => '<i class="icon-upload icon-white"></i> Save',
+				'error-text' => '<i class="icon-upload icon-white"></i> Error while saving!' 
+			} 
+		%>
+		<%= f.text_field :name, :class => "", :value => '', :placeholder => 'Cell Name' %>
+		<%= f.button '<i class="icon-list-alt"></i> Generate report'.html_safe, 
+			:class => "btn btn", :autocomplete => 'off', :value => 'report', :type => 'button', 
+			:data => { 
+				:action => 'report', 
+				'loading-text' => '<i class="icon-list-alt"></i> Generating...',
+				'success-text' => '<i class="icon-list-alt icon-white"></i> Generate report',
+				'error-text' => '<i class="icon-list-alt icon-white"></i> Error while generating!' 
+			} 
+		%>
+		<%= f.button '<i class="icon-remove-circle icon-white"></i> Reset'.html_safe, 
+			:class => "btn btn-warning pull-right", :value => 'reset', :type => 'button', 
+			:data => { :action => 'reset' } 
+		%>
+	</div>
+<% end %>
