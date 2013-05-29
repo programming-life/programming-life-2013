@@ -9,7 +9,7 @@ Teabag.setup do |config|
   config.root = nil
 
   # Driver / Server
-  config.driver           = "selenium" # available: phantomjs, selenium
+  config.driver           = "phantomjs" # available: phantomjs, selenium
   #config.server           = nil # defaults to Rack::Server
 
 
