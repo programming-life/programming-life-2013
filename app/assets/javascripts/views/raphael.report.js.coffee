@@ -29,6 +29,7 @@ class View.Report extends View.RaphaelBase
 	# Loads the cell, then serializes the SVG
 	#
 	# @param cell_id [Integer] the cell id
+	# @todo refactor
 	#
 	load: ( cell_id ) ->
 		@_views[0].load( cell_id )
@@ -39,7 +40,7 @@ class View.Report extends View.RaphaelBase
 				$('#report_data').attr("value", cell_svg)
 
 				# Start the simulation
-				document.mvc._views[0].startSimulation(25, 10, 25).done( () =>
+				document.mvc._views[0].startSimulation(25, 10, 25)[0].done( () =>
 					graphs = $('#graphs').find('.graph').each( (i, graph) -> 
 						$("#graph-#{$( graph ).find( 'h2' ).text().replace('#', '_')}").append $ graph		
 					)

@@ -74,9 +74,7 @@ class View.Main extends View.RaphaelBase
 	
 		if action
 			return @cell.startSimulation( 25, 0, 50 )
-			
-		@cell.stopSimulation()
-		return this
+		return @cell.stopSimulation()
 		
 	# Resizes the cell to the window size
 	#
