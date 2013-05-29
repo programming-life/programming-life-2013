@@ -53,6 +53,9 @@ class View.Module extends View.RaphaelBase
 		@_bind( 'module.property.changed', @, @onModuleInvalidated )
 		@_bind( 'module.selected.changed', @, @onModuleSelected )
 		@_bind( 'module.hovered.changed', @, @onModuleHovered )
+
+		@_bind( 'cell.module.removed', @, @onModuleRemoved )
+		@_bind( 'cell.metabolite.removed', @, @onMetaboliteRemoved )
 		return this
 		
 	# Generates a hashcode based on the module name
@@ -158,36 +161,89 @@ class View.Module extends View.RaphaelBase
 		else if @_hovered isnt off
 			@_setHovered off
 
-	moveTo: ( x, y ) =>
+	# Gets called when a module is removed from a cell
+	#
+	# @param cell [Model.Cell] the cell from which the module was removed
+	# @param module [Module] the module that was removed
+	#
+	onModuleRemoved: ( cell, module ) ->
+		if @module.getFullType() is module.getFullType()
+			@setPosition()
+
+	# Gets called when a metabolite is removed from a cell
+	#
+	# @param cell [Model.Cell] the cell from which the metabolite was removed
+	# @param metabolite [Metabolite] the metabolite that was removed
+	#
+	onMetaboliteRemoved: ( cell, metabolite ) ->
+		if @module.getFullType() is metabolite.getFullType()
+			@setPosition()		
+
+	# Sets the position of this view according to its parent's instructions
+	#
+	# @param animate [Boolean] wether or not to animate the move
+	#
+	setPosition: ( animate = on ) ->
+		[x, y] = @_parent.getViewPlacement(@)
+		@moveTo(x, y, animate)
+
+	# Moves the view to a new position
+	#
+	# @param x [float] the x coordinate to which to move
+	# @param y [float] the y coordinate to which to move
+	# @param animate [Boolean] wether or not to animate the move
+	#
+	moveTo: ( x, y, animate = on ) =>
+		console.log @getBBox()
+
 		dx = x - @x
 		dy = y - @y
 
-		#@_view.translate(dx, dy)
-		@_view.toMatrix()
+		transform = "...t#{dx},#{dy}"
+
+		if animate
+			@_contents.animate
+				transform: transform
+			, 500, "ease-in-out", =>
+				@_propertiesView?.setPosition()
+				@_notificationsView?.setPosition()
+		else
+			@_contents.transform(transform)
+			@_propertiesView?.setPosition()
+			@_notificationsView?.setPosition()
+
 		@x = x
 		@y = y
 
+		
+	# Returns the full type of this view's module.
+	#
+	# @return [String] the full type string
+	#
+	getFullType: ( ) ->
+		return @module.getFullType()
+		
 	# Clears the module view
 	#
 	# @return [self] chainable self
 	#
 	clear: () ->
-		@_view?.remove()
+		@_contents?.remove()
+		super()
 		return this
 		
 	# Kills the module view
 	#
 	# @return [self] chainable self
 	#
-	kill: () ->
-		
+	kill: () ->	
 		@_visible = off
 		@_unbindAll()
 		
 		@_propertiesView?.kill()
 		@_notificationsView?.kill()
 		
-		@clear()
+		super()
 		return this
 
 	# Returns the bounding box of this view
@@ -215,6 +271,11 @@ class View.Module extends View.RaphaelBase
 			when View.Module.Location.Bottom
 				return [@x, box.y2]
 
+	# Returns the absolute coordinates of a location
+	#
+	# @param location [View.Module.Location] the location for which to get the coordinates
+	# @return [[float, float]] a tuple of the absolute x and y values, respectively
+	#
 	getAbsolutePoint: ( location ) ->
 		[x, y] = @getPoint(location)
 		return @getAbsoluteCoords(x, y)
@@ -243,34 +304,32 @@ class View.Module extends View.RaphaelBase
 	# Redraws this view iff it has been drawn before
 	#
 	redraw: ( ) ->
-		if @x and @y
-			_( @draw( @x, @y ) ).debounce( 50 )
+		_( @draw() ).debounce( 50 )
 		return this
 			
 	# Draws this view and thus the model
 	#
-	# @param x [Integer] the x position
-	# @param y [Integer] the y position
-	# @param scale [Integer] the scale
-	#
-	draw: ( x, y ) ->
+	draw: ( x = null, y = null ) ->
 		
 		@clear()
 
-		# Store x, y, and scale values for further redraws
-		@x = x
-		@y = y
-		@color = @hashColor(_.escape _( @module.name ).first())
-
 		unless @_visible
 			return
+
+		# Store x, y, and scale values for further redraws
+		if x? and y?
+			@x = x
+			@y = y			
+		else
+			[@x, @y] = @_parent?.getViewPlacement(@) ? [0, 0]
+
+		@color = @hashColor(_.escape _( @module.name ).first())
 		
 		# If we're either hovered or selected, we will display a bigger version of the view
-		big = @_selected || @_hovered
 		padding = 15
 
 		# Start a set for contents
-		contents = @drawContents( x, y, padding, big )
+		contents = @drawContents()
 
 		# Start a new set for the entire view
 		@_paper.setStart()
@@ -293,11 +352,20 @@ class View.Module extends View.RaphaelBase
 					((direction, metaboliteView) =>
 						_.defer ( ) =>
 							spline = @drawSpline(direction, metaboliteView)
-							@_view.push(spline)
+							@_contents.push(spline)
 							spline.insertAfter(@_paper.bottom)
 					) direction, metaboliteView
 
 		else if @_type is 'Metabolism'
+			###for metabolite in @module.orig.map( ( name ) => @_cell.getMetabolite name ) when metabolite?
+				view = @_parent.getView(metabolite)
+				new View.Spline(@_paper, @_parent, view, @)
+
+			for metabolite in @module.dest.map( ( name ) => @_cell.getMetabolite name ) when metabolite?
+				view = @_parent.getView(metabolite)
+				new View.Spline(@_paper, @_parent, @, view)
+
+			###
 			inwards = ([metabolite, View.Module.Direction.Inward] for metabolite in @module.orig.map( 
 				( name ) => 
 					@_cell.getMetabolite name
@@ -316,7 +384,7 @@ class View.Module extends View.RaphaelBase
 					((direction, metaboliteView) =>
 						_.defer ( ) =>
 							spline = @drawSpline(direction, metaboliteView)
-							@_view.push(spline)
+							@_contents.push(spline)
 							spline.insertAfter(@_paper.bottom)
 					) direction, metaboliteView
 
@@ -332,8 +400,8 @@ class View.Module extends View.RaphaelBase
 		hitbox.mouseover =>
 			_( @_trigger( 'module.hovered.changed', @module, [ on, @_selected ]) ).debounce( 100 )
 
-		@_view = @_paper.setFinish()
-		@_view.push( contents )
+		@_contents = @_paper.setFinish()
+		@_contents.push( contents )
 
 		@_trigger( 'module.drawn', @module )
 
@@ -343,20 +411,20 @@ class View.Module extends View.RaphaelBase
 	# @param y [Integer] y position
 	# @return [Raphael] the contents
 	#
-	drawContents: ( x, y ) ->
+	drawContents: () ->
 	
 		@_paper.setStart()		
 		switch @_type
 		
 			when 'Transporter'
 			
-				[ arrow ] = @drawComponent( 'transporter', 'ProcessArrow', x, y, { } )
+				[ arrow ] = @drawComponent( 'transporter', 'ProcessArrow', @x, @y, { } )
 				
 				params =
 					substrate: @module.orig ? "..."
 					showText: off
 				
-				[ substrateCircle ] = @drawComponent( 'transporter', 'SubstrateCircle', x, y, params )
+				[ substrateCircle ] = @drawComponent( 'transporter', 'SubstrateCircle', @x, @y, params )
 
 			when "Metabolite"		
 			
@@ -367,18 +435,18 @@ class View.Module extends View.RaphaelBase
 				[ substrateCircle, substrateText ] = @drawComponent( 
 					'substrate', 
 					'SubstrateCircle', 
-					x, y, params )
+					@x, @y, params )
 				
 			when "Metabolism"
 			
-				[ arrow ] = @drawComponent( 'transporter', 'ProcessArrow', x, y, { } )
+				[ arrow ] = @drawComponent( 'transporter', 'ProcessArrow', @x, @y, { } )
 				
 				params =
 					orig: @module.orig ? [ "..." ]
 					dest: @module.dest ? [ "..." ]
 					showText: off
 				
-				[ enzymCirclesOrig, enzymCircleDests ] = @drawComponent( 'enzym', 'EnzymCircle', x, y, params )
+				[ enzymCirclesOrig, enzymCircleDests ] = @drawComponent( 'enzym', 'EnzymCircle', @x, @y, params )
 									
 			when "Protein"	
 			
@@ -391,25 +459,25 @@ class View.Module extends View.RaphaelBase
 				[ substrateCircle, substrateText ] = @drawComponent( 
 					'Protein', 
 					'SubstrateCircle', 
-					x, y, params )
+					@x, @y, params )
 										
 			when "DNA"
 						
-				text = @_paper.text(x, y, _.escape @_type)
+				text = @_paper.text(@x, @y, _.escape @_type)
 				$(text.node).addClass('module-text')
 					
 			when "Lipid"
 						
-				text = @_paper.text(x, y, _.escape @_type)
+				text = @_paper.text(@x, @y, _.escape @_type)
 				$(text.node).addClass('module-text')
 									
 			when "CellGrowth"
 						
-				text = @_paper.text(x, y, _.escape @_type)
+				text = @_paper.text(@x, @y, _.escape @_type)
 				$(text.node).addClass('module-text')
 					
 			else
-				text = @_paper.text(x, y, _.escape @_type)
+				text = @_paper.text(@x, @y, _.escape @_type)
 				$(text.node).addClass('module-text')
 
 		return @_paper.setFinish()
@@ -517,13 +585,12 @@ class View.Module extends View.RaphaelBase
 	drawComponent : ( module, component, x, y, params = {} ) ->
 		switch component
 			when 'ProcessArrow'
-				arrow = @_paper.path("m #{x},#{y} 0,4.06536 85.154735,0 -4.01409,12.19606 27.12222,-16.26142 -27.12222,-16.26141 4.01409,12.19606 -85.154735,0 z")
+				arrow = @_paper.path("m #{x-50},#{y} 0,4.06536 85.154735,0 -4.01409,12.19606 27.12222,-16.26142 -27.12222,-16.26141 4.01409,12.19606 -85.154735,0 z")
 				arrow.node.setAttribute( 'class', "#{module}-arrow" )
 					
 				rect = arrow.getBBox()
 				dx = rect.x - x
 				dy = rect.y - y
-				arrow.translate(-dx - rect.width / 2, 0)
 				
 				return [ arrow ]
 				

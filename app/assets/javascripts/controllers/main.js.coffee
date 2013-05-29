@@ -4,7 +4,9 @@
 
 # The controller for the Main action and view
 #
-class Controller.Main
+class Controller.Main extends Helper.Mixable
+
+	@concern Mixin.EventBindings
 
 	# Creates a new instance of Main
 	#

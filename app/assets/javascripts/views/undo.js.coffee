@@ -159,15 +159,12 @@ class View.Undo extends Helper.Mixable
 	#
 	_onNodeSelect: ( tree, node ) ->
 		if tree is @_tree
-			Model.EventManager.trigger( 'paper.lock', @_paper )
 
 			nodes = @_tree.jump( node )
 			for undo in nodes.reverse
 				undo._object.undo()
 			for redo in nodes.forward
 				redo._object.redo()
-
-			Model.EventManager.trigger( 'paper.unlock', @_paper )
 
 			@_selectNode(node)
 

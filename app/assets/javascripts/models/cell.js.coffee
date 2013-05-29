@@ -146,8 +146,11 @@ class Model.Cell extends Helper.Mixable
 	# @return [self] chainable instance
 	#
 	_addModule: ( module ) ->
+		params = [ module ]
+
+		@_trigger( 'cell.module.add', @, params )
 		@_modules.push module
-		@_trigger( 'cell.module.added', @, [ module ] )
+		@_trigger( 'cell.module.added', @, params )
 		return this
 		
 		
@@ -182,16 +185,18 @@ class Model.Cell extends Helper.Mixable
 	# @return [self] chainable instance
 	#
 	_addMetabolite: ( metabolite ) -> 
-		@_metabolites.push metabolite 
-		@_trigger( 'cell.metabolite.added', @, 
-			[ 
+		params = [ 
 				metabolite, 
 				metabolite.name, 
 				metabolite.amount, 
 				metabolite.placement is Model.Metabolite.Inside, 
 				metabolite.type is Model.Metabolite.Product 
 			] 
-		)
+
+		@_trigger( 'cell.metabolite.add', @, params )
+		@_metabolites.push metabolite 
+		@_trigger( 'cell.metabolite.added', @, params )
+		
 		return this
 		
 	# Add metabolite to cell
@@ -268,8 +273,11 @@ class Model.Cell extends Helper.Mixable
 	# @return [self] the chainable self
 	#
 	_removeModule: ( module ) ->
+		params = [ module ]
+
+		@_trigger( 'cell.module.remove', @, params )
 		@_modules = _( @_modules ).without module
-		@_trigger( 'cell.module.removed', @, [ module ] )
+		@_trigger( 'cell.module.removed', @, params )
 		return this
 		
 	# Removes this metabolite from cell
@@ -301,8 +309,12 @@ class Model.Cell extends Helper.Mixable
 	#
 	_removeMetabolite: ( module ) -> 
 		return this unless module?
+
+		params = [ module ]
+
+		@_trigger( 'cell.metabolite.remove', @, params )
 		@_metabolites = _( @_metabolites ).without module
-		@_trigger( 'cell.metabolite.removed', @, [ module ] )
+		@_trigger( 'cell.metabolite.removed', @, params )
 		return this
 		
 	# Removes this substrate from cell (alias for removeMetabolite)

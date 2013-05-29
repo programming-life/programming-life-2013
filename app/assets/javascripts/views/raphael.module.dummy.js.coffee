@@ -71,9 +71,8 @@ class View.DummyModule extends View.RaphaelBase
 		params = _( params ).defaults( @_params )
 		module = new @_modulector( _( params ).clone( true ) )			
 		@_cell.add module
-		@_trigger('module.selected.changed', module, [ on ])
+		#@_trigger('module.selected.changed', module, [ on ])
 		
-		console.log params
 		switch @_type
 			when "Transporter"
 				if params.direction is Model.Transporter.Outward
@@ -96,6 +95,8 @@ class View.DummyModule extends View.RaphaelBase
 			@_count += 1
 			if @_number isnt -1 and @_number <= @_count
 				@hide() if @_visible
+			else
+				@setPosition()
 
 	# On Module Removed from the Cell
 	#
@@ -107,7 +108,35 @@ class View.DummyModule extends View.RaphaelBase
 			@_count -= 1
 			if @_number > @_count
 				@show() unless @_visible
-					# Redraws this view iff it has been drawn before
+			else
+				@setPosition()
+
+	setPosition: ( animate = on ) ->
+		[x, y] = @_parent.getViewPlacement(@)
+		@moveTo(x, y, animate)
+
+	moveTo: ( x, y, animate = on ) =>
+		dx = x - @x
+		dy = y - @y
+
+		transform = "...t#{dx},#{dy}"
+
+		if animate
+			@_contents.animate
+				transform: transform
+			, 500, "ease-in-out", =>
+				@_propertiesView?.setPosition()
+				@_notificationsView?.setPosition()
+		else
+			@_contents.transform(transform)
+			@_propertiesView?.setPosition()
+			@_notificationsView?.setPosition()
+
+		@x = x
+		@y = y
+
+	getFullType: ( ) ->
+		return @_modulector::getFullType(@_params.direction, @_params.type, @_params.placement)
 
 	# Returns the bounding box of this view
 	#
@@ -142,13 +171,23 @@ class View.DummyModule extends View.RaphaelBase
 
 	# Draws this view
 	#
-	draw: ( x, y ) ->
+	draw: ( x = null, y = null ) ->
 		
-		super x, y
+		@clear()
+
+		unless @_visible
+			return
+
+		if x? and y?
+			@x = x
+			@y = y			
+		else
+			[@x, @y] = @_parent?.getViewPlacement(@) ? [0, 0]
+
 		padding = 15
 		
 		# Start a set for contents
-		contents = @drawContents( x, y, padding )
+		contents = @drawContents( @x, @y, padding )
 		
 		# Draw box
 		@_box = @drawBox( contents )
@@ -168,12 +207,14 @@ class View.DummyModule extends View.RaphaelBase
 	#
 	hide: () ->
 		@_visible = off
+		@_contents.hide()
 		return this
 		
 	# Shows this view
 	#
 	show: () ->
 		@_visible = on
+		@_contents.show()
 		return this
 		
 	# Kills this view
@@ -207,10 +248,10 @@ class View.DummyModule extends View.RaphaelBase
 	# @param y [Integer] y position
 	# @return [Raphael] the contents
 	#
-	drawContents: ( x, y, padding ) ->
+	drawContents: ( ) ->
 		
 		@_paper.setStart()
-		text = @_paper.text( x, y, _.escape "Add #{@_type}" )
+		text = @_paper.text( @x, @y, _.escape "Add #{@_type}" )
 		$(text.node).addClass('module-text')
 
 		return @_paper.setFinish()

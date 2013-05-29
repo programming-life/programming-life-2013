@@ -22,6 +22,7 @@ class View.Cell extends View.RaphaelBase
 		@_container.data( 'cell', Model.Cell.extractId( cell ).id )
 		
 		@_drawn = []
+		@_viewsByType = {}
 		@_graphs = {}
 		@_numGraphs = 0
 
@@ -30,18 +31,10 @@ class View.Cell extends View.RaphaelBase
 		
 		@_allowEventBindings()
 		@_defineAccessors()
-		@model = cell		
+		@model = cell
+
 		@_interpolation = off
 		@_significance = 1e-15
-
-		@_bind( 'paper.lock', @, =>
-			@_locked = on
-		)
-		@_bind( 'paper.unlock', @, =>
-			@_locked = off
-			if @_queuedRedraw
-				@redraw()
-		)
 		
 	# Defines the accessors for this view
 	#
@@ -58,7 +51,17 @@ class View.Cell extends View.RaphaelBase
 			get: -> @_model
 			set: @setCell
 		)
+
+		Object.defineProperty( @, '_views'
+			get: ->
+				return _.flatten(_.map(@_viewsByType, _.values)) )
 		
+	# Adds interaction to the cell
+	#
+	_addInteraction: () ->
+		@_createButtons()
+		@_notificationsView = new View.CellNotification( @, @model )
+
 	# Sets the displayed cell to value
 	#
 	# @param value [Model.Cell] the cell to display
@@ -70,25 +73,21 @@ class View.Cell extends View.RaphaelBase
 		@_model = value
 		for module in @_model._getModules()
 			view = new View.Module( @_paper, @, @_model, module, @_interaction )
-			@_views.push view
+			@addView view
 			@_drawn.push { model: module, view: view } 
 		
 		@_addInteraction() if @_interaction
-		@_bind( 'cell.module.added', @, @onModuleAdd )		
-		@_bind( 'cell.module.removed', @, @onModuleRemove )
-		@_bind( 'cell.metabolite.added', @, @onModuleAdd )
-		@_bind( 'cell.metabolite.removed', @, @onModuleRemove )
+		@_bind( 'cell.module.add', @, @onModuleAdd )		
+		@_bind( 'cell.module.remove', @, @onModuleRemove )
+		@_bind( 'cell.metabolite.add', @, @onModuleAdd )
+		@_bind( 'cell.metabolite.remove', @, @onModuleRemove )
+		@_bind( 'cell.spline.added', @, @onSplineAdd)
+		@_bind( 'cell.spline.removed', @, @onSplineRemove)
 		
 		@_trigger( 'view.cell.set', @, [ @model ] )
 
-		@redraw() if @_x? and @_y?
+		@redraw() if @x? and @y?
 		return this
-		
-	# Adds interaction to the cell
-	#
-	_addInteraction: () ->
-		@_createButtons()
-		@_notificationsView = new View.CellNotification( @, @_model )
 	
 	# Kills the cell view by resetting itself and its children
 	#
@@ -104,7 +103,7 @@ class View.Cell extends View.RaphaelBase
 		@_container.empty()
 		
 		@_drawn = []
-		@_views = []
+		@_viewsByType = {}
 		@_graphs = {}
 		@_numGraphs = 0
 		
@@ -112,15 +111,15 @@ class View.Cell extends View.RaphaelBase
 	# 
 	_createButtons: () ->
 		
-		@_views.push new View.DummyModule( @_paper, @, @_model, Model.CellGrowth, 1 )
-		@_views.push new View.DummyModule( @_paper, @, @_model, Model.DNA, 1 )
-		@_views.push new View.DummyModule( @_paper, @, @_model, Model.Lipid, 1 )
-		@_views.push new View.DummyModule( @_paper, @, @_model, Model.Metabolite, -1, { placement: Model.Metabolite.Outside, type: Model.Metabolite.Substrate, amount: 0, supply: 1 } )
-		@_views.push new View.DummyModule( @_paper, @, @_model, Model.Metabolite, -1, { placement: Model.Metabolite.Inside, type: Model.Metabolite.Product, amount: 0, supply: 0 } )
-		@_views.push new View.DummyModule( @_paper, @, @_model, Model.Transporter, -1, { direction: Model.Transporter.Inward } )
-		@_views.push new View.DummyModule( @_paper, @, @_model, Model.Metabolism, -1 )
-		@_views.push new View.DummyModule( @_paper, @, @_model, Model.Protein, -1 )
-		@_views.push new View.DummyModule( @_paper, @, @_model, Model.Transporter, -1, { direction: Model.Transporter.Outward } )
+		@addView new View.DummyModule( @_paper, @, @model, Model.CellGrowth, 1 )
+		@addView new View.DummyModule( @_paper, @, @model, Model.DNA, 1 )
+		@addView new View.DummyModule( @_paper, @, @model, Model.Lipid, 1 )
+		@addView new View.DummyModule( @_paper, @, @model, Model.Metabolite, -1, { placement: Model.Metabolite.Outside, type: Model.Metabolite.Substrate, amount: 0, supply: 1 } )
+		@addView new View.DummyModule( @_paper, @, @model, Model.Metabolite, -1, { placement: Model.Metabolite.Inside, type: Model.Metabolite.Product, amount: 0, supply: 0 } )
+		@addView new View.DummyModule( @_paper, @, @model, Model.Transporter, -1, { direction: Model.Transporter.Inward } )
+		@addView new View.DummyModule( @_paper, @, @model, Model.Metabolism, -1 )
+		@addView new View.DummyModule( @_paper, @, @model, Model.Protein, -1 )
+		@addView new View.DummyModule( @_paper, @, @model, Model.Transporter, -1, { direction: Model.Transporter.Outward } )
 
 	# Returns the bounding box of this view
 	#
@@ -139,63 +138,68 @@ class View.Cell extends View.RaphaelBase
 
 		switch location
 			when View.Module.Location.Left
-				return [box.x ,@_y]
+				return [box.x ,@y]
 			when View.Module.Location.Right
-				return [box.x2 ,@_y]
+				return [box.x2 ,@y]
 			when View.Module.Location.Top
-				return [@_x, box.y]
+				return [@x, box.y]
 			when View.Module.Location.Bottom
-				return [@_x, box.y2]
+				return [@x, box.y2]
 
 	#
 	#
 	getAbsolutePoint: ( location ) ->
 		[x, y] = @getPoint(location)
 		return @getAbsoluteCoords(x, y)
+
+	# Add a view to draw in the container
+	#
+	# @param view [View.Base] The view to add
+	#
+	addView: ( view ) ->
+		type = view.getFullType()
+
+		unless @_viewsByType[type]?
+			@_viewsByType[type] = []
+
+		dummies = _(@_viewsByType[type]).filter( (v) -> v instanceof View.DummyModule)
+		@_viewsByType[type].push(view)
+		@_viewsByType[type] = _(@_viewsByType[type]).difference(dummies).concat(dummies)
+		view.draw()
+
+	# Removes a view from the container
+	#
+	# @param [View.Base] The view to remove
+	#
+	removeView: ( view ) ->
+		type = view.getFullType()
+		@_viewsByType[type] = _( @_viewsByType[type] ).without view
+
+		view.kill()
+
+	# Get module view for the given module
+	#
+	# @param module [Module] the module for which to return the view
+	# @return [Module.View] the view which represents the given module
+	#
+	getView: ( module ) ->
+		return _( @_drawn ).find( ( d ) -> d.model is module )?.view
+
+	# Draws the cell
+	#
+	# @param x [Integer] x location
+	# @param y [Integer] y location
+	#
+	draw: (  @x = 0, @y = 0, @_radius = 400 ) ->
+		@clear()
+
+		@_drawCell()
+		@_drawViews()
 		
 	# Redraws the cell
 	# 		
 	redraw: () ->
-		if @_locked
-			@_queuedRedraw = true
-		else
-			@draw( @_x, @_y )
-	
-	# Gets modules placement for a module view
-	# 
-	# @param view [View.Module, View.DummyModule] the view to get the placement for
-	# @param x [Integer] base x
-	# @param y [Integer] base y
-	# @param radius [Integer] radius of the cell
-	# @param scale [Integer] the scale
-	# @param counters [Object] counter object to keep track what is drawn
-	# @return [Object] the placement object
-	#
-	_getModulePlacement: ( view, x, y, radius, scale, counters = {} ) ->
-	
-		type = view.type
-		direction = if view.module.direction? then view.module.direction else 0
-		placement = if view.module.placement? then view.module.placement else 0
-		placement_type = if view.module.type? and type is "Metabolite" then view.module.type else 0
-		counter_name = "#{type}_#{direction}_#{placement}_#{placement_type}"
-		counter = counters[ counter_name ] ? 0
-
-		params = { 
-			count: counter
-			view: view
-			type: type 
-			direction: direction
-			placement: placement
-			placement_type: placement_type
-			cx: x
-			cy: y
-			r: radius
-			scale: scale
-		}
-				
-		counters[ counter_name ] = ++counter
-		
-		return @getLocationForModule( params )
+		@draw( @x, @y )	
 		
 	# Draws the cell on coordinates
 	# 
@@ -204,13 +208,10 @@ class View.Cell extends View.RaphaelBase
 	# @param radius [Integer] radius of the cell
 	# @return [Raphael] the cell shape
 	#
-	_drawCell: ( x, y, radius ) ->
-		@_shape = @_paper.circle( x, y, radius )
-		@_shape.node.setAttribute( 'class', 'cell' )
-		@_shape.attr
-			cx: x
-			cy: y
-			r: radius
+	_drawCell: ( ) ->
+		@_shape = @_paper.circle( @x, @y, @_radius )
+		$(@_shape.node).addClass('cell' )
+
 		@_contents.push @_shape
 		return @_shape
 		
@@ -221,125 +222,72 @@ class View.Cell extends View.RaphaelBase
 	# @param scale [Integer] the scale
 	# @param radius [Integer] the radius of the cell
 	#
-	_drawViews: ( x, y, radius, scale ) ->
-	
-		counters = {}
+	_drawViews: ( ) ->
+		view.draw() for view in @_views when view.visible
+
+	# Returns the location for a module view
+	#
+	# @return [[float, float]] a type of the x and y coordinates
+	#
+	getViewPlacement: ( view ) ->
+		type = view.getFullType()
+		views = @_viewsByType[type]
+
+		index = views.indexOf(view)
 		
-		for view in @_views when view.visible
-			if ( view instanceof View.Module or view instanceof View.DummyModule)
-				placement = @_getModulePlacement( view, x, y, radius, scale, counters )
-			if ( view instanceof View.Play )
-				placement = { x: x, y: y }
-			if ( view instanceof View.Tree )
-				placement = { x: 300, y: 100 }
-
-			view.draw( placement?.x, placement?.y, scale )
-
-	# Draws the cell
-	# 
-	# @param x [Integer] x location
-	# @param y [Integer] y location
-	#
-	draw: (  @_x = 0, @_y = 0, radius = 400 ) ->
-		@clear()
-
-		@_drawCell( @_x, @_y, radius )
-		@_drawViews( @_x, @_y, radius, 1 )
-		
-	# On module added, add it from the cell
-	# 
-	# @param cell [Model.Cell] cell added to
-	# @param module [Model.Module] module added
-	#
-	onModuleAdd: ( cell, module ) =>
-		unless cell isnt @_model
-			unless ( _( @_drawn ).find( ( d ) -> d.model is module ) )?
-				view = new View.Module( @_paper, @, @_model, module, @_interaction )
-				@_drawn.unshift { model: module, view: view }
-				@_views.unshift view
-				@redraw()
-			
-	# On module removed, removed it from the cell
-	# 
-	# @param cell [Model.Cell] cell removed from
-	# @param module [Model.Module] module removed
-	#
-	onModuleRemove: ( cell, module ) =>
-		if ( drawn = _( @_drawn ).find( ( d ) -> d.model is module ) )?
-			view = drawn.view.kill()
-			@_views = _( @_views ).without view
-			@_drawn = _( @_drawn ).without drawn
-			@redraw()
-
-	# Returns the location for a module
-	#
-	# @return [Object] the size as an object with x, y
-	#
-	getLocationForModule: ( params ) ->
-		x = 0
-		y = 0
-		
-		switch params.type
+		switch type
 		
 			when "CellGrowth"
-				alpha = -3 * Math.PI / 4 + ( ( params.count + 1 ) * Math.PI / 12 )
-				x = params.cx + params.r * Math.cos( alpha )
-				y = params.cy + params.r * Math.sin( alpha )
+				alpha = -3 * Math.PI / 4 + ( ( index + 1 ) * Math.PI / 12 )
+				x = @x + @_radius * Math.cos( alpha )
+				y = @y + @_radius * Math.sin( alpha )
 			
 			when "Lipid"
-				alpha = -3 * Math.PI / 4 + ( params.count * Math.PI / 12 )
-				x = params.cx + params.r * Math.cos( alpha )
-				y = params.cy + params.r * Math.sin( alpha )
+				alpha = -3 * Math.PI / 4 + ( index * Math.PI / 12 )
+				x = @x + @_radius * Math.cos( alpha )
+				y = @y + @_radius * Math.sin( alpha )
 
-			when "Transporter"
-				dx = 80 * params.count * params.scale
-				
-				alpha = 0
-				if params.direction is Model.Transporter.Inward					
-					alpha = Math.PI - Math.asin( dx / params.r )
-				if params.direction is Model.Transporter.Outward		
-					alpha = Math.asin( dx / params.r )
+			when "Transporter-inward"
+				dx = 80 * index				
+				alpha = Math.PI - Math.asin( dx / @_radius )
+				x = @x + @_radius * Math.cos( alpha )
+				y = @y + @_radius * Math.sin( alpha )
 
-				x = params.cx + params.r * Math.cos( alpha )
-				y = params.cy + params.r * Math.sin( alpha )
+			when "Transporter-outward"
+				dx = 80 * index	
+				alpha = Math.asin( dx / @_radius )
+				x = @x + @_radius * Math.cos( alpha )
+				y = @y + @_radius * Math.sin( alpha )
 
 			when "DNA"
-				x = params.cx + ( params.count % 3 * 40 )
-				y = params.cy - params.r / 2 + ( Math.floor( params.count / 3 ) * 40 )
+				x = @x + ( index % 3 * 40 )
+				y = @y - @_radius / 2 + ( Math.floor( index / 3 ) * 40 )
 
 			when "Metabolism"
-				x = params.cx + ( params.count % 2 * 130 )
-				y = params.cy + params.r / 2 + ( Math.floor( params.count / 2 ) * 60 )
+				x = @x + ( index % 2 * 130 )
+				y = @y + @_radius / 2 + ( Math.floor( index / 2 ) * 60 )
 
 			when "Protein"
-				x = params.cx + params.r / 2 + ( params.count % 3 * 40 )
-				y = params.cy - params.r / 2 + ( Math.floor( params.count / 3 ) * 40 )
+				x = @x + @_radius / 2 + ( index % 3 * 40 )
+				y = @y - @_radius / 2 + ( Math.floor( index / 3 ) * 40 )
 				
-			when "Metabolite"
+			when "Metabolite-substrate-inside"
+				x = @x - 200
+				y = @y + index * 80
 
-				x = params.cx
-				if params.placement is Model.Metabolite.Inside
-					if params.placement_type is Model.Metabolite.Substrate
-						x = x - 200 * params.scale
-					if params.placement_type is Model.Metabolite.Product
-						x = x + 200 * params.scale
-				else if params.placement is Model.Metabolite.Outside
-					if params.placement_type is Model.Metabolite.Substrate
-						x = x - params.r - 200 * params.scale
-					if params.placement_type is Model.Metabolite.Product
-						x = x + params.r + 200 * params.scale
+			when "Metabolite-product-inside"
+				x = @x + 200
+				y = @y + index * 80
 
-				y = params.cy + ( Math.round( params.count ) * 100 * params.scale )
-				
-		return { x: x, y: y }
+			when "Metabolite-substrate-outside"
+				x = @x - @_radius - 200
+				y = @y + index * 80
 
-	# Get module view for the given module
-	#
-	# @param module [Module] the module for which to return the view
-	# @return [Module.View] the view which represents the given module
-	#
-	getView: ( module ) ->
-		return _( @_drawn ).find( ( d ) -> d.model is module )?.view
+			when "Metabolite-product-outside"
+				x = @x + @_radius + 200
+				y = @y + index * 80
+
+		return [x, y]
 	
 	# Get the simulation data from the cell
 	# 
@@ -350,7 +298,7 @@ class View.Cell extends View.RaphaelBase
 	#
 	_getCellData: ( duration, base_values = [], dt = 1, iteration = 0, token = numeric.asynccancel() ) ->
 	
-		promise = @_model.run( duration, base_values, iteration, token )
+		promise = @model.run( duration, base_values, iteration, token )
 		promise = promise.then( ( cell_run ) =>
 		
 			console.log cell_run
@@ -436,7 +384,6 @@ class View.Cell extends View.RaphaelBase
 			x: x
 			y: y
 		}
-		
 
 	# Draw the graphs with the data from the datasets
 	#
@@ -502,7 +449,7 @@ class View.Cell extends View.RaphaelBase
 		# Actually simulate
 		promise = @_simulate( step )
 	
-		@_trigger("simulation.start",@, [ @_model ])
+		@_trigger("simulation.start",@, [ @model ])
 		
 		return [ promise, @_token ]
 		
@@ -568,7 +515,7 @@ class View.Cell extends View.RaphaelBase
 		
 		@_running = off
 
-		@_trigger("simulation.stop",@, [ @_model ])
+		@_trigger("simulation.stop",@, [ @model ])
 		return [ undefined, @_token ]
 
 	# Loads a new cell into this view
@@ -600,3 +547,37 @@ class View.Cell extends View.RaphaelBase
 	_drawRedLines: ( x ) ->
 		for key, graph of @_graphs
 			graph._drawRedLine( x )
+
+	# On module added, add it from the cell
+	# 
+	# @param cell [Model.Cell] cell added to
+	# @param module [Model.Module] module added
+	#
+	onModuleAdd: ( cell, module ) =>
+		if cell is @model
+			unless ( _( @_drawn ).find( ( d ) -> d.model is module ) )?
+				view = new View.Module( @_paper, @, @model, module, @_interaction )
+				@_drawn.push({view: view, model: module})
+				@addView(view)		
+			
+	# On module removed, removed it from the cell
+	# 
+	# @param cell [Model.Cell] cell removed from
+	# @param module [Model.Module] module removed
+	#
+	onModuleRemove: ( cell, module ) =>
+		if cell is @model
+			if ( drawn = _( @_drawn ).find( ( d ) -> d.model is module ) )?
+				view = drawn.view.kill()				
+				@_drawn = _( @_drawn ).without drawn
+				@removeView(view)
+
+	onSplineAdd: ( cell, spline ) =>
+		if cell is @model
+			@_splines.push( spline )
+			spline.draw()
+
+	onSplineRemove: ( cell, spline ) =>
+		if cell is @model
+			@_splines = _( @_splines ).without spline
+			spline.kill()

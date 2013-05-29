@@ -5,17 +5,24 @@ class View.Spline extends View.RaphaelBase
 		super paper, parent
 
 		@_origDrawn = @_destDrawn = false
+		@type = 'Spline'
 
-		@addInteraction() if @_interaction is on			
-		
-		@draw()
+		@addInteraction() if @_interaction is on		
+
+	_die: ( ) ->
+		@_trigger( 'cell.spline.removed', @_parent, [ @ ] )
 
 	# Adds interaction to the spline
 	#
 	addInteraction: ( ) ->
-		@_bind( 'module.set.position', @, @onModuleMoved )
+		@_bind( 'cell.module.removed', @, @onModuleRemove )
+		@_bind( 'cell.metabolite.removed', @, @onModuleRemove )
+
+		@_bind( 'module.position.changed', @, @onModuleMove )
 		@_bind( 'module.property.changed', @, @onModuleInvalidated )
-		@_bind( 'module.drawn', @, @onModuleDrawn )
+		@_bind( 'module.drawn', @, @onModuleDraw )
+
+		@_trigger( 'cell.spline.added', @_parent, [ @ ] )
 
 		return this
 
@@ -27,14 +34,23 @@ class View.Spline extends View.RaphaelBase
 
 		@_contents?.attr('stroke', @color)
 
-	onModuleMoved: ( module ) =>
+	onModuleRemove: ( cell, module ) =>
+		if cell is @_parent and ( module is @origin.module or module is @destination.module )
+			@_die()
+
+	onModuleMove: ( module ) =>
 		if module is @origin.module or module is @destination.module
 			@draw()
 
 	onModuleInvalidated: ( module ) =>
+		if module.constructor.name is 'Transporter'
+			if module is @origin and @origin.transported isnt @destination.name or
+					module is @destination and @destination.transported isnt @origin.name
+				@_die()
+		
 		@setColor()
 
-	onModuleDrawn: ( module ) =>
+	onModuleDraw: ( module ) =>
 		if module is @origin.module
 			@_origDrawn = true
 		else if module is @destination.module
@@ -48,8 +64,6 @@ class View.Spline extends View.RaphaelBase
 
 		[origX, origY] = @origin.getPoint(View.Module.Location.Exit)
 		[destX, destY] = @destination.getPoint(View.Module.Location.Entrance)
-
-		console.log origX, origY, destX, destY
 
 		dx = Math.abs(destX - origX)
 		dy = destY - origY
