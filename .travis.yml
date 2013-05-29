@@ -22,7 +22,7 @@ postgres:
     username: postgres
 
 before_script:
-    - "psql -c 'create role life with createdb login password \'life\'' -U postgres"
+    - psql -c "create role life with createdb login password 'life';" -U postgres
     - rake db:create
     - rake db:migrate
     - rake db:seed
