@@ -362,9 +362,11 @@ class Model.Module extends Helper.Mixable
 			params.push
 				key: key
 				value: value
-				
+			
 		module_parameters_data =
 			module_parameters: params
+			module_instance:
+				amount: @amount
 			
 		promise = $.ajax( @url, { data: module_parameters_data, type: 'PUT' } )
 		
@@ -495,6 +497,7 @@ class Model.Module extends Helper.Mixable
 		
 		serialized = JSON.parse( serialized ) if _( serialized ).isString()
 		serialized.parameters.name = serialized.parameters.name ? serialized.name
+		serialized.parameters.amount = serialized.parameters.amount ? serialized.amount
 		fn = ( window || @ )["Model"]
 		return new fn[ serialized.type ]( serialized.parameters ) unless serialized.type is "Module"
 		

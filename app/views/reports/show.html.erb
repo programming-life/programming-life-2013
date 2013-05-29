@@ -44,7 +44,6 @@
 		</tr>
 		
 		<% 
-			@graph_id = 0
 			@module_instances.each do |module_instance| 
 				@module_template = ModuleTemplate.find(module_instance.module_template.id)
 
@@ -90,7 +89,7 @@
 								</table>
 								<!-- End parameter table -->
 							</td>
-							<td id="<%= @graph_id += 1 %>">
+							<td id="graph-<%= ( module_instance.name.gsub("#","_") ) %>">
 							</td>
 						</tr>
 					</tbody>

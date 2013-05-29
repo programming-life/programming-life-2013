@@ -81,8 +81,10 @@ class View.DummyModule extends View.RaphaelBase
 				if params.direction is Model.Transporter.Inward
 					@_cell.addSubstrate( params.transported , 0, 0, true )
 			when "Metabolism"
-				@_cell.addSubstrate( params.orig , 0, 0, true )
-				@_cell.addProduct( params.dest , 0, true )
+				for o in params.orig ? []
+					@_cell.addSubstrate( o , 0, 0, true )
+				for d in params.dest ? []
+					@_cell.addProduct( d , 0, true )
 				
 	# On Module Added to the Cell
 	#
@@ -132,6 +134,8 @@ class View.DummyModule extends View.RaphaelBase
 			when View.Module.Location.Bottom
 				return [@x, box.y2]
 
+	#
+	#
 	getAbsolutePoint: ( location ) ->
 		[x, y] = @getPoint(location)
 		return @getAbsoluteCoords(x, y)
@@ -172,8 +176,11 @@ class View.DummyModule extends View.RaphaelBase
 		@_visible = on
 		return this
 		
+	# Kills this view
+	#
 	kill: () ->
 		super()
+		@_propertiesView?.kill()
 		@_notificationsView?.kill()
 		
 	# Draws the box
