@@ -16,6 +16,7 @@ branches:
         - develop
         - /^release.*$/
         - /^hotfix.*$/
+        - /^test.*$/
 postgres:
     adapter: postgresql
     database: life_test
