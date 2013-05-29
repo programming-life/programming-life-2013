@@ -3,7 +3,7 @@
 class View.Graph extends View.RaphaelBase
 	
 	# Maximum number of simultaneously displayed data sets
-	@MAX_DATASETS : 2
+	@MAX_DATASETS : 3
 	
 	# Maximum length of a set
 	@MAX_LENGTH : 100
@@ -34,8 +34,8 @@ class View.Graph extends View.RaphaelBase
 			smooth: true
 			axis: '0 0 1 1'
 			#axisxstep: @_dt
-			shade : false
-			colors: [ "blue", "red", "green", "yellow", "orange" ]
+			shade : on
+			colors: [ "rgba(140, 137, 132, 0.3)",  "rgba(1, 145, 200, 0.5)", "rgba(0, 91, 154, 0.85)" ]
 		}
 
 	# Add a dataset to visualize in this graphs
@@ -93,11 +93,13 @@ class View.Graph extends View.RaphaelBase
 		xValues = []
 		yValues = []
 
-		for i, dataset of @_datasets
-			xValues.push dataset.xValues
-			yValues.push dataset.yValues
-
-		@_chart = @_paper.linechart(20,0, @_width, @_height ,_( xValues ).clone( true ), _( yValues ).clone( true ), @_options )
+		for i, dataset of _( @_datasets ).first( View.Graph.MAX_DATASETS )
+			xValues.unshift dataset.xValues
+			yValues.unshift dataset.yValues
+		
+		options = _( @_options ).clone ( true )
+		options.colors = _( options.colors ).last( xValues.length )
+		@_chart = @_paper.linechart( 20,0, @_width, @_height ,_( xValues ).clone( true ), _( yValues ).clone( true ), options )
 
 
 	#	unless @_drawn
