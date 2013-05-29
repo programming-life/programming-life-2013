@@ -1,19 +1,17 @@
 class HookController < ApplicationController
 	
-	TRAVIS_IP = "23.21.78.182"
-
 	def index
 		@version = `git describe`
 		@branch = `git rev-parse --abbrev-ref HEAD`
 	end
 
 	def post
-		@ip = request.remote_ip
+		@host  = `host #{request.remote_ip}`
 		@branch = params[:branch]
 		@status = params[:status_message]
 
 		if (
-			@ip == TRAVIS_IP and 
+			@host.include? "amazonaws.com" and
 			@branch == "master" and 
 			@status == "Passed"
 		)
