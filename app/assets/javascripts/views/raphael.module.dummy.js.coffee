@@ -39,11 +39,6 @@ class View.DummyModule extends View.RaphaelBase
 				return @_type
 		)
 		
-		Object.defineProperty( @, 'module',
-			get: ->
-				return @_params
-		)
-		
 	# Clicked the add button
 	#
 	# @params caller [Context] the caller of the event

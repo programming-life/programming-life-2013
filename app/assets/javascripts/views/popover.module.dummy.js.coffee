@@ -114,6 +114,7 @@ class View.DummyModuleProperties extends View.ModuleProperties
 	#
 	_save: ( ) ->
 		@_trigger('module.creation.finished', @_parent, [@_changes])
+		@_changes = {}
 
 	# Binds an on change event to a selectable input that sets the key
 	#
