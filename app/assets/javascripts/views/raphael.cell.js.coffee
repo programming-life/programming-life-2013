@@ -192,11 +192,10 @@ class View.Cell extends View.RaphaelBase
 	# @param x [Integer] x location
 	# @param y [Integer] y location
 	#
-	draw: (  @x = 0, @y = 0, @_radius = 400 ) ->
-		@clear()
+	draw: (  x = 0, y = 0, @_radius = 400 ) ->
+		super(x, y)
 
 		@_drawCell()
-		@_drawViews()
 		
 	# Redraws the cell
 	# 		
@@ -212,20 +211,11 @@ class View.Cell extends View.RaphaelBase
 	#
 	_drawCell: ( ) ->
 		@_shape = @_paper.circle( @x, @y, @_radius )
+		@_shape.insertBefore(@_paper.bottom)
 		$(@_shape.node).addClass('cell' )
 
 		@_contents.push @_shape
 		return @_shape
-		
-	# Draws the child views
-	# 
-	# @param x [Integer] the center x position
-	# @param y [Integer] the center y position
-	# @param scale [Integer] the scale
-	# @param radius [Integer] the radius of the cell
-	#
-	_drawViews: ( ) ->
-		view.draw() for view in @_views when view.visible
 
 	# Returns the location for a module view
 	#

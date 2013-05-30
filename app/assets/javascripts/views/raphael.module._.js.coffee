@@ -25,9 +25,6 @@ class View.Module extends View.RaphaelBase
 	
 		@_type = module.constructor.name
 		@_name = module.name
-		
-		@x = 0
-		@y = 0
 
 		@_selected = off	
 		@_visible = on
@@ -229,19 +226,14 @@ class View.Module extends View.RaphaelBase
 	# Draws this view and thus the model
 	#
 	draw: ( x = null, y = null ) ->
-		
-		@clear()
+		unless x? and y?
+			[x, y] = @_parent?.getViewPlacement(@) ? [0, 0]
+
+		super(x, y)
 
 		unless @_visible
 			return
-
-		# Store x, y, and scale values for further redraws
-		if x? and y?
-			@x = x
-			@y = y			
-		else
-			[@x, @y] = @_parent?.getViewPlacement(@) ? [0, 0]
-
+		
 		@color = @hashColor(_.escape _( @module.name ).first())
 		
 		contents = @drawContents()

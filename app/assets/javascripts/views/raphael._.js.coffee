@@ -10,10 +10,34 @@ class View.RaphaelBase extends Helper.Mixable
 	# @param _withPaper [Boolean] if true, adds a paper set on contents
 	#
 	constructor: ( @_paper = null, @_parent = null, @_withPaper = on ) ->
+		@visible = on
+
 		@_contents = @_paper?.set() if @_withPaper
 		@_views = []
 	
 		@_allowEventBindings()
+
+		Object.defineProperties(@, 
+			x:
+				get: ( ) ->
+					x = @_anchor?.getBBox()?.cx
+					unless x?
+						x = 0
+					return x
+
+				set: ( x ) ->
+					@moveTo(x, @y, off)
+			y:
+				get: ( ) ->
+					y = @_anchor?.getBBox()?.cy
+					unless y?
+						y = 0
+					return y
+
+				set: ( y ) ->
+					@moveTo(@x, y, off)
+		)
+
 		
 	# Gets the Bounding Box for this view
 	# 
@@ -70,13 +94,8 @@ class View.RaphaelBase extends Helper.Mixable
 	# @param animate [Boolean] wether or not to animate the move
 	#
 	move: (dx, dy, animate = on, moveViews = on) ->
-		x = @x + dx
-		y = @y + dy
-
 		done = ( ) =>
-			@_trigger( 'view.moved', @ )
-			@x = x
-			@y = y
+			@_trigger( 'view.moved', @ )			
 
 		@_contents.stop()
 
@@ -89,7 +108,7 @@ class View.RaphaelBase extends Helper.Mixable
 
 			@_contents.animate Raphael.animation(
 				transform: transform
-			, dt, ease, done
+			, dt, ease, _(done).once()
 			)
 				
 		else
@@ -107,11 +126,13 @@ class View.RaphaelBase extends Helper.Mixable
 	# @param y [Integer] The y position
 	# @retuns [Object] The contents drawn
 	#
-	draw: ( @x, @y ) ->
+	draw: ( x, y ) ->
 		@clear()
 
-		for view in @_views
-			@drawView view
+		@_anchor = @_paper.circle(x, y, 5)
+		@_contents.push(@_anchor)
+
+		@drawView view for view in @_views			
 
 		return @_contents
 	
@@ -119,9 +140,6 @@ class View.RaphaelBase extends Helper.Mixable
 	# 
 	redraw: ( ) ->
 		@draw( @x, @y )
-
-		for view in @_views
-			view.redraw()
 
 	# Add a view to draw in the container
 	#
@@ -135,12 +153,7 @@ class View.RaphaelBase extends Helper.Mixable
 	# @param view [View.Base] The view to draw
 	#
 	drawView: ( view ) ->
-		if view instanceof View.RaphaelBase
-			placement = @_getViewPlacement( view )
-			viewcontents = view.draw( placement.x, placement.y, 1)
-			@_contents.push viewcontents
-		else
-			view.draw()
+		view.draw() if view.visible
 	
 	# Removes a view from the container
 	#
@@ -149,11 +162,6 @@ class View.RaphaelBase extends Helper.Mixable
 	removeView: ( ) ->
 		@_views = _( @_views ).without view
 		@redraw()
-
-	#
-	#
-	@_getViewPlacement: ( view ) ->
-		return { x: 0, y:0, scale: 1 }
 
 	# Returns the absolute (document) coordinates of a point within the paper
 	#

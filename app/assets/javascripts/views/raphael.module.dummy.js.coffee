@@ -127,18 +127,14 @@ class View.DummyModule extends View.RaphaelBase
 
 	# Draws this view
 	#
-	draw: ( x = null, y = null ) ->
-		
-		@clear()
+	draw: ( x = null, y = null ) ->		
+		unless x? and y?
+			[x, y] = @_parent?.getViewPlacement(@) ? [0, 0]
+
+		super(x, y)
 
 		unless @_visible
 			return
-
-		if x? and y?
-			@x = x
-			@y = y			
-		else
-			[@x, @y] = @_parent?.getViewPlacement(@) ? [0, 0]
 
 		padding = 15
 		
