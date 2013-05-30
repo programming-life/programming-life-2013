@@ -177,6 +177,7 @@ numeric.asyncdopri =
 					if dopristep() and not token.cancelled
 						dopriloop() 
 					else
+						ret.msg = 'cancelled' if token.cancelled
 						ret.iterations = it
 						promise.reject ret
 						
