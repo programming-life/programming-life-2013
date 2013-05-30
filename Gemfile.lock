@@ -180,6 +180,7 @@ DEPENDENCIES
   coveralls
   jasmine
   jquery-rails
+  json
   nested_form
   rails (= 3.2.12)
   rake
