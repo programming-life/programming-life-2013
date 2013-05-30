@@ -75,25 +75,15 @@ class View.ModuleProperties extends View.HTMLPopOver
 	_createFooter: ( removeText = '<i class="icon-trash icon-white"></i>', saveText = '<i class=" icon-ok icon-white"></i> Save' ) ->
 		@_footer = $('<div class="modal-footer"></div>')
 
-		remove = () => @_remove()
 		@_removeButton = $('<button class="btn btn-danger pull-left">' + removeText + '</button>')
-		@_removeButton.on('click', remove ) if remove?
+		@_removeButton.on('click', @_remove )
 
-		save = () => @_save()
 		@_saveButton = $('<button class="btn btn-primary">' + saveText + '</button>')
-		@_saveButton.on('click', save ) if save?
-
+		@_saveButton.click @_save
 	
 		@_footer.append @_removeButton
 		@_footer.append @_saveButton
 		return [ @_footer, @_removeButton, @_saveButton ]
-
-	draw: ( ) ->
-		super()
-
-		@_elem.keyup( ( e ) => 
-			 @_trigger( 'module.selected.changed', @module, [ off ] ) if e.keyCode is 27
-		)
 		
 	# Draws a certain property
 	#
@@ -276,7 +266,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 	# 
 	_bindOnChange: ( key, input ) ->
 		((key) => 
-			input.on('change', (event) => 
+			input.on('keyup', (event) => 
 				value = event.target.value
 				value = parseFloat value unless isNaN value
 				@_changes[ key ] = value
@@ -407,17 +397,34 @@ class View.ModuleProperties extends View.HTMLPopOver
 		if selected	
 			@_elem.focus()
 			@_elem.find('input[type=text]:enabled').first().select()
+
+			@_elem.keyup( ( e ) => 
+				switch e.keyCode
+					when 27
+						@_close()
+					when 13
+						@_save()
+			)
 		else
 			@_elem.find('input').blur()
+			@_elem.off('keyup')
 
 	# Returns the properties of our module
 	#
 	_getModuleProperties: () ->
 		return @module.metadata.properties
 
+	# Closes the module
+	#
+	_close: ( ) =>
+		@_trigger( 'module.selected.changed', @module, [ off ] )
+
+
 	# Saves all changed properties to the module.
 	#
-	_save: ( ) ->	
+	_save: ( ) =>	
+		@_elem.find('input').blur()
+
 		for key, value of @_changes
 			@module[ key ] = value
 			
@@ -427,7 +434,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 	
 	# Removes this module from the cell
 	#
-	_remove: ( ) ->	
+	_remove: ( ) =>	
 		@_trigger('module.selected.changed', @module, [ off ])
 		@_cell.remove(@module)
 			
