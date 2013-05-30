@@ -18,7 +18,7 @@ class View.Cell extends View.RaphaelBase
 	constructor: ( paper, parent, cell, container = "#graphs", @_interaction = on ) ->
 		super paper, parent
 
-		@_container =  if $( container )[0] then $( container ) else $("<div id='graphs-#{_.uniqueId()}'></div>")
+		@_container = if $( container )[0] then $( container ) else $("<div id='graphs-#{_.uniqueId()}'></div>")
 		@_container.data( 'cell', Model.Cell.extractId( cell ).id )
 		
 		@_drawn = []

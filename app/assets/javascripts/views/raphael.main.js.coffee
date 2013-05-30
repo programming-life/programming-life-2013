@@ -89,10 +89,6 @@ class View.Main extends View.RaphaelBase
 	# Draws the main view
 	#
 	draw: ( ) ->
-		if @_locked
-			@_drawWhenUnlocked = true
-			return
-
 		for view in @_views
 			view.draw()
 
