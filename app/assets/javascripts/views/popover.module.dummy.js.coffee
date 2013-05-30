@@ -68,7 +68,7 @@ class View.DummyModuleProperties extends View.ModuleProperties
 	# @param saveText [String] the text on the save button
 	# @return [Array<jQuery.Elem>] the footer and the button element
 	#
-	_createFooter: ( removeText = '<i class="icon-trash icon-white"></i>', saveText = '<i class=" icon-ok icon-white"></i> Save' ) ->
+	_createFooter: ( removeText = '<i class="icon-trash icon-white"></i>', saveText = '<i class=" icon-ok icon-white"></i> Create' ) ->
 		@_footer = $('<div class="modal-footer"></div>')
 
 		save = () => @_save()
