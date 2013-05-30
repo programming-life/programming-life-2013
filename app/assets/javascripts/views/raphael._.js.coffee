@@ -129,7 +129,7 @@ class View.RaphaelBase extends Helper.Mixable
 	draw: ( x, y ) ->
 		@clear()
 
-		@_anchor = @_paper.circle(x, y, 5)
+		@_anchor = @_paper.circle(x, y, 0)
 		@_contents.push(@_anchor)
 
 		@drawView view for view in @_views			
