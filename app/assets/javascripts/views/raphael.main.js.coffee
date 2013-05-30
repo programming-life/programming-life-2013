@@ -137,7 +137,7 @@ class View.Main extends View.RaphaelBase
 		@_paper.remove()
 		@_resetModal.kill()
 		@_loadModal.kill()
-		@getActionButtons.removeProp( 'disabled' )
+		@getActionButtons().removeProp( 'disabled' )
 		$( window ).off( 'resize' )
 		return this
 		
