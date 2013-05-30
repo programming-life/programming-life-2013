@@ -87,6 +87,13 @@ class View.ModuleProperties extends View.HTMLPopOver
 		@_footer.append @_removeButton
 		@_footer.append @_saveButton
 		return [ @_footer, @_removeButton, @_saveButton ]
+
+	draw: ( ) ->
+		super()
+
+		@_elem.keyup( ( e ) => 
+			 @_trigger( 'module.selected.changed', @module, [ off ] ) if e.keyCode is 27
+		)
 		
 	# Draws a certain property
 	#
@@ -396,6 +403,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 			.prop( 'disabled', !selected )
 			
 		@_setSelectablesVisibility( selected )
+		@_elem.focus() if selected			
 
 	# Returns the properties of our module
 	#
