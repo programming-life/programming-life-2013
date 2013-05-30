@@ -1,28 +1,29 @@
 # Basic tree class
 #
-class Model.Tree extends Helper.Mixable
+class Model.Tree extends Model.Node
 	
-	@concern Mixin.EventBindings
-
 	# Constructor for tree
 	#
 	# @param [Node] root The root node of the tree
 	#
-	constructor: ( root = new Model.Node( null, null ) ) -> 
-		@_root = root
-		@_current = @_root
+	constructor: ( root ) -> 
+		super(null,null)
 
-		@_allowEventBindings()
+		if root?
+			@replace(root)
+
+		@current = this
+
 
 	# Set a new root for the tree
 	#
 	# @param root [Model.Node] The new root
+	#
 	setRoot: ( root ) ->
-		if @_current is @_root
-			@_current = root
+		if @current is this
+			@current = root
 
-		@_root.replace( root )
-		@_root = root
+		@replace( root )
 	
 	# Add an object to the tree
 	#
@@ -31,10 +32,8 @@ class Model.Tree extends Helper.Mixable
 	# @return [Node] the added node
 	#
 	add: ( object, parent = @_current ) ->
-		node = new Model.Node(object, parent)
-		@_current = node
-		if parent isnt null
-			parent._branch = node
+		node = parent.addChild( object )
+		@current = node
 
 		@_trigger( "tree.add.node", this, [ node ])
 
