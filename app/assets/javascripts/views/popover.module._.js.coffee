@@ -403,7 +403,12 @@ class View.ModuleProperties extends View.HTMLPopOver
 			.prop( 'disabled', !selected )
 			
 		@_setSelectablesVisibility( selected )
-		@_elem.focus() if selected			
+
+		if selected	
+			@_elem.focus()
+			@_elem.find('input[type=text]:enabled').first().select()
+		else
+			@_elem.find('input').blur()
 
 	# Returns the properties of our module
 	#
