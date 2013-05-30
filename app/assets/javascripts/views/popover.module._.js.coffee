@@ -135,6 +135,10 @@ class View.ModuleProperties extends View.HTMLPopOver
 		for section in sections
 			form.append section
 
+		form.find('input[type=text]').click( ( e ) ->
+			$(@).select()
+		)
+
 		@_body.append form
 
 	# Draws input 
