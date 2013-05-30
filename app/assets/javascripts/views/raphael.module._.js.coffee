@@ -262,7 +262,10 @@ class View.Module extends View.RaphaelBase
 		drawFunction.call @
 		return @_paper.setFinish()
 		
+	# Draws the meta contents ( shadow, hitbox ... )
 	#
+	# @param contents [Raphael.Set] the contents to draw meta on
+	# @return [Raphael.Set] the metacontents
 	#
 	drawMetaContents: ( contents ) ->
 		@_paper.setStart()
@@ -270,7 +273,7 @@ class View.Module extends View.RaphaelBase
 		@_box.insertBefore contents
 		@_shadow = @drawShadow @_box
 		@_hitbox = @drawHitbox @_box
-		@addInteraction() if @_interaction is on
+		@addHitBoxInteraction() if @_interaction is on
 		return @_paper.setFinish()
 		
 	# Draws this view with basic visualisation
