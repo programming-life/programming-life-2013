@@ -65,7 +65,10 @@ class View.Module extends View.RaphaelBase
 	#
 	addHitBoxInteraction: () ->
 		@_hitbox.click =>
-			_( @_trigger( 'module.selected.changed', @module, [ on ]) ).debounce( 100 )
+			unless @_selected
+				_( @_trigger( 'module.selected.changed', @module, [ on ]) ).debounce( 100 )
+			else
+				_( @_trigger( 'module.selected.changed', @module, [ off ]) ).debounce( 100 )
 
 		@_hitbox.mouseout =>
 			_( @_trigger( 'module.hovered.changed', @module, [ off, @_selected ]) ).debounce( 100 )

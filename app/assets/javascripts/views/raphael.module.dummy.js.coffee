@@ -24,6 +24,8 @@ class View.DummyModule extends View.RaphaelBase
 		@_bind( 'cell.module.removed', @, @onModuleRemove )
 		@_bind( 'cell.metabolite.added', @, @onModuleAdd )		
 		@_bind( 'cell.metabolite.removed', @, @onModuleRemove )
+		@_bind( 'module.creation.started', @, @onModuleCreationStarted )
+		@_bind( 'module.creation.aborted', @, @onModuleCreationAborted )
 		@_bind( 'module.creation.finished', @, @onModuleCreationFinished )
 		
 		@_propertiesView = new View.DummyModuleProperties( @, @_parent, @_cell, @_modulector )
@@ -38,7 +40,21 @@ class View.DummyModule extends View.RaphaelBase
 			get: ->
 				return @_type
 		)
+
+	# Gets called when a module creation has started
+	#
+	# @param dummy [View.DummyModule] the dummy for which the module creation has started
+	#
+	onModuleCreationStarted: ( dummy ) ->
+		@_setSelected on if dummy is @
 		
+	# Gets called when a module creation was aborted
+	#
+	# @param dummy [View.DummyModule] the dummy for which the module creation was aborted
+	#
+	onModuleCreationAborted: ( dummy ) ->
+		@_setSelected off if dummy is @
+
 	# Clicked the add button
 	#
 	# @params caller [Context] the caller of the event
@@ -52,6 +68,8 @@ class View.DummyModule extends View.RaphaelBase
 		params = _( params ).defaults( @_params )
 		module = new @_modulector( _( params ).clone( true ) )			
 		@_cell.add module
+
+		@_setSelected off
 		
 		switch @_type
 			when "Transporter"
@@ -148,8 +166,17 @@ class View.DummyModule extends View.RaphaelBase
 		# Draw hitbox
 		hitbox = @drawHitbox(@_box)
 
+		hitbox.mouseover =>
+			@_setHovered(on)
+
+		hitbox.mouseout =>
+			@_setHovered(off)
+
 		hitbox.click =>
-			@_trigger('module.creation.started', @)
+			unless @_selected
+				@_trigger('module.creation.started', @)
+			else
+				@_trigger('module.creation.aborted', @)
 		
 		@_contents.push hitbox
 		@_contents.push contents
@@ -175,6 +202,35 @@ class View.DummyModule extends View.RaphaelBase
 		super()
 		@_propertiesView?.kill()
 		@_notificationsView?.kill()
+
+	# Sets wether or not the module is selected
+	#
+	# @param selected [Boolean] selection state
+	#
+	_setSelected: ( selected ) ->
+		if selected isnt @_selected
+			if selected
+				@_setHovered off
+				$(@_box.node).addClass('selected')
+			else
+				$(@_box.node).removeClass('selected')
+
+		@_selected = selected
+		return this
+
+	# Sets wether or not the module is hovered
+	#
+	# @param hovered [Boolean] hover state
+	#
+	_setHovered: ( hovered ) ->
+		if hovered isnt @_hovered 
+			if hovered and not @_selected
+				$(@_box.node).addClass('hovered')
+			else
+				$(@_box.node).removeClass('hovered')
+
+		@_hovered = hovered
+		return this
 		
 	# Draws the box
 	#
