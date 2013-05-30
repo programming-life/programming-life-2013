@@ -14,8 +14,7 @@ class Controller.Main extends Helper.Mixable
 	#
 	constructor: ( @container ) ->
 		@view = new View.Main @container
-		
-		$( '#actions' ).on( 'click', '[data-action]', @onAction )
+		@view.bindActionButtonClick( () => @onAction( arguments... ) ) 
 		
 	# Loads a new cell into the main view
 	#
@@ -25,7 +24,7 @@ class Controller.Main extends Helper.Mixable
 	#
 	load: ( cell_id, callback ) ->
 		promise = @view.load cell_id, callback
-		promise.done( () => @_setCellNameActionField( @view.cell.model.name ) )
+		promise.always( () => @_setCellNameActionField( @view.cell.model.name ) )
 		return promise
 		
 	# Saves the main view cell
@@ -41,9 +40,7 @@ class Controller.Main extends Helper.Mixable
 	# @return [String] the cell name
 	#
 	_getCellNameActionField: () ->
-		value = $( '#cell_name' ).val()
-		return null if value.length is 0
-		return value ? null
+		return @view.getCellName()
 		
 	# Sets the cell name to the action field
 	# 
@@ -51,23 +48,23 @@ class Controller.Main extends Helper.Mixable
 	# @return [self] chainable self
 	#
 	_setCellNameActionField: ( name ) ->
-		value = $( '#cell_name' ).val name
+		@view.setCellName name
 		return this
 		
 	# Gets the progress bar
 	#
 	_getProgressBar: () ->
-		return $( '#progress' )
+		return @view.getProgressBar()
 	
 	# Sets the progress bar
 	#
 	# @param value [Integer] the current value
 	#
 	_setProgressBar: ( value ) =>
-		@_getProgressBar().find( '.bar' ).css( 'width', "#{value * 100 / @_num + 100 / @_num * @_curr }%" )
+		@view.setProgressBar value / @_num + 1 / @_num * @_curr
 		if ( value is 1 )
 			if ++@_curr is @_num
-				@_getProgressBar().css( 'opacity', 0 )
+				@view.hideProgressBar()
 			
 		return this
 	
@@ -76,7 +73,7 @@ class Controller.Main extends Helper.Mixable
 	# @return [jQuery.Collection] the action buttons
 	#
 	_findActionButtons: () ->
-		return $( '#actions' ).find( '[data-action]' )
+		
 		
 	# Runs on an action (click)
 	#
@@ -84,21 +81,11 @@ class Controller.Main extends Helper.Mixable
 	#
 	onAction: ( event ) =>
 		
-		@_findActionButtons()
-			.removeClass( 'btn-success' )
-			.removeClass( 'btn-danger' )
-			.prop( { disabled :  true } )
-			.filter( ':not([data-toggle])' )
-				.filter( ':not([class*="btn-warning"])' )
-				.find( 'i' )
-					.removeClass( 'icon-white' )
-
-		enable = () => 
-			@_findActionButtons()
-				.prop( 'disabled', false )
+		@view.resetActionButtons()
+		enable = () => @view.enableActionButtons()
 			
-		success = () => target.button( 'success' ).addClass( 'btn-success' ) 
-		error = () => target.button( 'error' ).addClass( 'btn-danger' ) 
+		success = () => @view.setButtonState( target, 'success', 'btn-success' ) 
+		error = () => @view.setButtonState( target, 'error', 'btn-danger' ) 
 		
 		target = $( event.currentTarget )
 		action = target.data( 'action' )
@@ -117,7 +104,7 @@ class Controller.Main extends Helper.Mixable
 	# @param error [Function] function to run on error
 	#
 	onSave: ( target, enable, success, error ) ->
-		target.button('loading')
+		@view.setButtonState target, 'loading'
 		@save().always( enable )
 			.done( success )
 			.fail( error )
@@ -130,8 +117,7 @@ class Controller.Main extends Helper.Mixable
 	# @param error [Function] function to run on error
 	#
 	onLoad: ( target, enable, success, error ) ->
-		target.button('loading')
-				
+		@view.setButtonState target, 'loading'
 		confirm = ( id ) =>
 			if id?
 				@load( id )
@@ -156,8 +142,7 @@ class Controller.Main extends Helper.Mixable
 	# @param error [Function] function to run on error
 	#
 	onReport: ( target, enable, success, error ) ->
-	
-		target.button('loading')
+		@view.setButtonState target, 'loading'
 		@save().then( ( cell ) =>
 				cell = cell[0] if _( cell ).isArray()
 				return $.post( '/reports.json', { report: { cell_id: cell.cell_id } } )
@@ -178,15 +163,14 @@ class Controller.Main extends Helper.Mixable
 	# @param error [Function] function to run on error
 	#
 	onReset: ( target, enable, success, error ) ->
-		@_findActionButtons()
-			.button( 'reset' )
+		@view.resetActionButtonState()
 		
-		confirm = () =>
+		action = () =>
 			@view.kill()
 			Model.EventManager.clear()
 			@view = new View.Main @container
 			
-		@view.confirmReset( confirm )
+		@view.confirmReset action
 		
 	# On Simulate Button clicked
 	#
@@ -197,26 +181,25 @@ class Controller.Main extends Helper.Mixable
 	#
 	onSimulate: ( target, enable, success, error ) ->
 		target.attr( 'disabled', false )
-		action = not target.hasClass( 'active' )
+		startSimulateFlag = not target.hasClass( 'active' )
 		
 		# hack
 		@_num = 2
 		@_curr = 0
 		
-		[ ppromise, token ] = @view.toggleSimulation action
-		if action
+		[ ppromise, token ] = @view.setSimulationState startSimulateFlag
+		if startSimulateFlag is on
 			@_token = token
-			@_getProgressBar().css( 'visibility', 'visible' )
-			@_getProgressBar().css( 'opacity', 1 )
+			@view.showProgressBar()
 			ppromise.progress @_setProgressBar
 			ppromise.always enable
-			ppromise.always () -> target.button( 'toggle' ) if target.hasClass( 'active' )
+			ppromise.always () => @view.setButtonState(target, 'toggle') if target.hasClass( 'active' )
 		else
 			@_token?.cancel()
-			@_getProgressBar().css( 'opacity', 0 )
+			@view.hideProgressBar()
 			enable()
-				
-	# Kills this controller
+	
+	#
 	#
 	kill: () ->
-		$( '#actions' ).find( '[data-action]' ).removeProp( 'disabled' )
+		
