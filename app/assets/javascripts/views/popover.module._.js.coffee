@@ -415,6 +415,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 	# Removes this module from the cell
 	#
 	_remove: ( ) ->	
+		@_trigger('module.selected.changed', @module, [ off ])
 		@_cell.remove(@module)
 			
 	# Runs when a compound is changed (added/removed)
