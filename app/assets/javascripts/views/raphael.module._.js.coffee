@@ -130,47 +130,6 @@ class View.Module extends View.RaphaelBase
 
 		@_hovered = hovered
 		return this
-
-	# Sets the position of this view according to its parent's instructions
-	#
-	# @param animate [Boolean] wether or not to animate the move
-	#
-	setPosition: ( animate = on ) ->
-		[x, y] = @_parent.getViewPlacement(@)
-		@moveTo(x, y, animate)
-
-	# Moves the view to a new position
-	#
-	# @param x [float] the x coordinate to which to move
-	# @param y [float] the y coordinate to which to move
-	# @param animate [Boolean] wether or not to animate the move
-	#
-	moveTo: ( x, y, animate = on ) =>
-		dx = x - @x
-		dy = y - @y
-
-		done = ( ) =>
-			@_propertiesView?.setPosition()
-			@_notificationsView?.setPosition()
-			@_trigger( 'module.view.moved', @module )
-
-		transform = "...t#{dx},#{dy}"
-		if animate
-			dt = 500
-			ease = 'ease-in-out'
-
-			@_trigger( 'module.view.moving', @module, [dx, dy, dt, ease] )
-
-			@_contents.animate
-				transform: transform
-			, dt, ease, done
-				
-		else
-			@_contents.transform(transform)
-			done()
-
-		@x = x
-		@y = y
 		
 	# Returns the full type of this view's module.
 	#
@@ -178,29 +137,16 @@ class View.Module extends View.RaphaelBase
 	#
 	getFullType: ( ) ->
 		return @module.getFullType()
-		
-	# Clears the module view
-	#
-	# @return [self] chainable self
-	#
-	clear: () ->
-		@_contents?.remove()
-		super()
-		return this
-		
+				
 	# Kills the module view
 	#
 	# @return [self] chainable self
 	#
-	kill: () ->	
-		@_visible = off
-		@_unbindAll()
-		
+	kill: () ->
 		@_propertiesView?.kill()
-		@_notificationsView?.kill()
+		@_notificationsView?.kill()		
 		
-		super()
-		return this
+		return super()
 
 	# Returns the bounding box of this view
 	#
@@ -296,6 +242,22 @@ class View.Module extends View.RaphaelBase
 
 		@_shadow = @drawShadow(@_box)
 
+
+		# Draw hitbox
+		hitbox = @drawHitbox(@_box)
+
+		hitbox.click =>
+			_( @_trigger( 'module.selected.changed', @module, [ on ]) ).debounce( 100 )
+
+		hitbox.mouseout =>
+			_( @_trigger( 'module.hovered.changed', @module, [ off, @_selected ]) ).debounce( 100 )
+		
+		hitbox.mouseover =>
+			_( @_trigger( 'module.hovered.changed', @module, [ on, @_selected ]) ).debounce( 100 )
+
+		@_contents = @_paper.setFinish()
+		@_contents.push( contents )
+
 		# Draw splines
 		if @type is 'Transporter'
 			for property in [ 'orig', 'dest' ]
@@ -319,22 +281,7 @@ class View.Module extends View.RaphaelBase
 				view = @_parent.getView(metabolite)
 				@_createSpline @, view
 
-		# Draw hitbox
-		hitbox = @drawHitbox(@_box)
-
-		hitbox.click =>
-			_( @_trigger( 'module.selected.changed', @module, [ on ]) ).debounce( 100 )
-
-		hitbox.mouseout =>
-			_( @_trigger( 'module.hovered.changed', @module, [ off, @_selected ]) ).debounce( 100 )
-		
-		hitbox.mouseover =>
-			_( @_trigger( 'module.hovered.changed', @module, [ on, @_selected ]) ).debounce( 100 )
-
-		@_contents = @_paper.setFinish()
-		@_contents.push( contents )
-
-		@_trigger( 'module.view.drawn', @module )
+		@_trigger( 'view.drawn', @ )
 
 	# Draws contents
 	#
@@ -632,7 +579,8 @@ class View.Module extends View.RaphaelBase
 	# @return [View.Spline] the created spline
 	#
 	_createSpline: ( orig, dest ) ->
-		return new View.Spline(@_paper, @_parent, @_cell, orig, dest)
+		new View.Spline(@_paper, @_parent, @_cell, orig, dest)
+		#return 
 
 	# Runs if module is invalidated
 	# 

@@ -55,7 +55,8 @@ class View.Cell extends View.RaphaelBase
 
 		Object.defineProperty( @, '_views'
 			get: ->
-				return _.flatten(_.map(@_viewsByType, _.values)) )
+				return (_.flatten(_.map(@_viewsByType, _.values))).concat(@_splines)
+		)
 		
 	# Adds interaction to the cell
 	#

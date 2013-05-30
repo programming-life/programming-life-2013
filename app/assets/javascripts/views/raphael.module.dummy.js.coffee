@@ -91,39 +91,6 @@ class View.DummyModule extends View.RaphaelBase
 			else
 				@setPosition()
 
-	# Sets the position of this view according to its parent's instructions
-	#
-	# @param animate [Boolean] wether or not to animate the move
-	#
-	setPosition: ( animate = on ) ->
-		[x, y] = @_parent.getViewPlacement(@)
-		@moveTo(x, y, animate)
-
-	# Moves the view to a new position
-	#
-	# @param x [float] the x coordinate to which to move
-	# @param y [float] the y coordinate to which to move
-	# @param animate [Boolean] wether or not to animate the move
-	#
-	moveTo: ( x, y, animate = on ) =>
-		dx = x - @x
-		dy = y - @y
-
-		transform = "...t#{dx},#{dy}"
-		if animate
-			@_contents.animate
-				transform: transform
-			, 500, "ease-in-out", =>
-				@_propertiesView?.setPosition()
-				@_notificationsView?.setPosition()
-		else
-			@_contents.transform(transform)
-			@_propertiesView?.setPosition()
-			@_notificationsView?.setPosition()
-
-		@x = x
-		@y = y
-
 	getFullType: ( ) ->
 		return @_modulector::getFullType(@_params.direction, @_params.type, @_params.placement)
 

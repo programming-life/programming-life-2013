@@ -21,7 +21,9 @@ class View.HTMLPopOver extends Helper.Mixable
 
 		@_allowEventBindings()
 		@_bind('paper.resize', @, @setPosition)
-		@_bind('module.view.drawn', @, @setPosition)
+
+		@_bind('view.drawn', @, @onViewPositioned)
+		@_bind('view.moved', @, @onViewPositioned)
 		@draw()
 		
 	# Creates the popover element
@@ -138,3 +140,7 @@ class View.HTMLPopOver extends Helper.Mixable
 
 		@_hovered = hovered
 		return this
+
+	onViewPositioned: ( view ) ->
+		if view is @_parent
+			@setPosition()
