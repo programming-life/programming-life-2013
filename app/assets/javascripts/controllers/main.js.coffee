@@ -13,19 +13,27 @@ class Controller.Main extends Controller.Base
 	#
 	constructor: ( @container, view ) ->
 		super view ? ( new View.Main @container )
-		@view.bindActionButtonClick( () => @onAction( arguments... ) ) 
 	
+		@_createChildren()
+		@_createBindings()
+		
+	# Creates children
+	#
+	_createChildren: () ->
+		
 		@addChild 'cell', new Controller.Cell( @view.paper, @view )
+		@addChild 'graphs', new Controller.Graphs( @view.paper )
 		@addChild 'undo', new Controller.Undo( @controller('cell').model.timemachine )
 		
-		@view.addView @controller('cell').view
+		@view.add @controller('cell').view
 		@view.addToLeftPane @controller('undo').view
-		
-		@_createBindings()
 		
 	# Creates bindings
 	#
 	_createBindings: () ->
+		
+		@view.bindActionButtonClick( () => @onAction( arguments... ) ) 
+	
 		@_bind( 'view.cell.set', @, 
 			( cell ) => @controller('undo').setTimemachine( cell.model.timemachine ) 
 		)
@@ -178,9 +186,11 @@ class Controller.Main extends Controller.Base
 		@view.resetActionButtonState()
 		
 		action = () =>
-			@view.kill()
+			@kill()
 			Model.EventManager.clear()
 			@view = new View.Main @container
+			@_createChildren()
+			@_createBindings()
 			
 		@view.confirmReset action
 		
