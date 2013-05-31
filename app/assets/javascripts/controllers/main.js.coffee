@@ -9,13 +9,34 @@ class Controller.Main extends Controller.Base
 	# Creates a new instance of Main
 	#
 	# @param container [String, Object] A string with an id or a DOM node to serve as a container for the view
+	# @param view [View.Main] the view for this controller
 	#
 	constructor: ( @container, view ) ->
 		super view ? ( new View.Main @container )
 		@view.bindActionButtonClick( () => @onAction( arguments... ) ) 
 	
-		@addChild new Controller.Cell( @view, @view.cell.model, @view.cell )
-		@addChild new Controller.Undo( @view.cell.model.timemachine, @view.undo )
+		@addChild 'cell', new Controller.Cell( @view.paper, @view )
+		@addChild 'undo', new Controller.Undo( @controller('cell').model.timemachine )
+		
+		@view.addView @controller('cell').view
+		@view.addToLeftPane @controller('undo').view
+		
+		@_createBindings()
+		
+	# Creates bindings
+	#
+	_createBindings: () ->
+		@_bind( 'view.cell.set', @, 
+			( cell ) => @controller('undo').setTimemachine( cell.model.timemachine ) 
+		)
+		
+		@_bind( 'module.selected.changed', @, 
+			(module, selected) => 
+				@controller('undo').setTimemachine if selected
+					module.timemachine 
+				else 
+					@controller('cell').model.timemachine 
+		)
 		
 	# Loads a new cell into the main view
 	#
@@ -24,8 +45,8 @@ class Controller.Main extends Controller.Base
 	# @return [jQuery.Promise] the promise
 	#
 	load: ( cell_id, callback ) ->
-		promise = @view.load cell_id, callback
-		promise.always( () => @_setCellNameActionField( @view.cell.model.name ) )
+		promise =  @controller('cell').load cell_id, callback
+		promise.always( () => @_setCellNameActionField( @controller('cell').model.name ) )
 		return promise
 		
 	# Saves the main view cell
@@ -34,7 +55,7 @@ class Controller.Main extends Controller.Base
 	#
 	save: () ->
 		name = @_getCellNameActionField()
-		return @view.save( name )
+		return @controller('cell').save( name )
 		
 	# Gets the cell name from the action field
 	#
@@ -174,6 +195,8 @@ class Controller.Main extends Controller.Base
 	# @param succes [Function] function to run on success
 	# @param error [Function] function to run on error
 	#
+	# @todo hack remove
+	#
 	onSimulate: ( target, enable, success, error ) ->
 		target.attr( 'disabled', false )
 		startSimulateFlag = not target.hasClass( 'active' )
@@ -182,7 +205,7 @@ class Controller.Main extends Controller.Base
 		@_num = 2
 		@_curr = 0
 		
-		[ ppromise, token ] = @view.setSimulationState startSimulateFlag
+		[ ppromise, token ] = @controller('cell').setSimulationState startSimulateFlag
 		if startSimulateFlag is on
 			@_token = token
 			@view.showProgressBar()
