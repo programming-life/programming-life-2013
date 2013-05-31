@@ -50,7 +50,16 @@ class View.Module extends View.RaphaelBase
 	
 		@_bind( 'module.selected.changed', @, @onModuleSelected )
 		@_bind( 'module.hovered.changed', @, @onModuleHovered )
+
+		@_onNotificate( @, @model, @onNotificate)
 		return this
+
+
+	# Forwards any notification from the model
+	#
+	onNotificate: ( context, source, identifier, type, message, args ) ->
+		@_notificate( @, @, identifier, type, message, args )
+
 		
 	# Adds bindings to the module (non-interaction)
 	#
