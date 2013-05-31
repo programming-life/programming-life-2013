@@ -145,9 +145,9 @@ class View.RaphaelBase extends Helper.Mixable
 	#
 	# @param view [View.Base] The view to add
 	#
-	addView: ( view ) ->
+	addView: ( view, draw = on ) ->
 		@_views.push view
-		@drawView view
+		@drawView view if draw
 		
 	# Draws the view
 	# @param view [View.Base] The view to draw
