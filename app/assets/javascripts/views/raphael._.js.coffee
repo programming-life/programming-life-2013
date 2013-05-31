@@ -35,8 +35,12 @@ class View.RaphaelBase extends Helper.Mixable
 					@moveTo(@x, y, off)
 		)
 
+	# Catcher function for Mixin.Catcher that will notificate any thrown Error on catchable methods
+	#
+	# @param e [Error] the error to notificate
+	#
 	_catcher: ( e ) =>
-		@_notificate(@, @, 'cell.module.add', e.name, [], View.RaphaelBase.Notification.Error)
+		@_notificate(@, @, '', e.name, [], View.RaphaelBase.Notification.Error)
 
 		
 	# Gets the Bounding Box for this view
