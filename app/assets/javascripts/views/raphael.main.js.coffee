@@ -14,29 +14,24 @@ class View.Main extends View.RaphaelBase
 		super Raphael(container, 0,0) 
 
 		@_viewbox = @_paper.setViewBox(-750, -500, 1500, 1000)
+		Object.defineProperty( @, 'paper'
+			get: () -> return @_paper 
+		)
 		
-		@_createCellView()
-		@_createUndoView()
+		@_createSidebars()
 		@_createConfirmReset()
 		@_createLoadModal()
+		@_createBindings()
 		
 		@resize()
-		@_createBindings()
+		
 		@draw()
-	
-	# Creates a new cell view
+		
+	# Creates sidebars
 	#
-	_createCellView: () ->
-		@cell = new View.Cell( @_paper, @, new Model.Cell() )
-		@_views.push @cell
-	
-	# Creates an undo view
-	# 
-	_createUndoView: () ->
-		@_leftPane = new View.Pane(View.Pane.Position.Left, false) 
-		@undo = new View.Undo( @cell.model.timemachine )
-		@_leftPane.addView( @undo )
-		@_views.push @_leftPane
+	_createSidebars: () ->
+		@_leftPane = new View.Pane( View.Pane.Position.Left, false ) 
+		@addView @_leftPane, off
 		
 	# Creates the confirmation for reset modal
 	#
@@ -58,14 +53,11 @@ class View.Main extends View.RaphaelBase
 	_createBindings: () ->
 		$( window ).on( 'resize', => _( @resize() ).debounce( 100 ) )
 		
-		@_bind( 'view.cell.set', @, 
-			(cell) => @undo.setTree( cell.model.timemachine ) 
-		)
-		@_bind( 'module.selected.changed', @, 
-			(module, selected) => 
-				@undo.setTree if selected then module.timemachine else @cell.model.timemachine 
-		)
-		
+	#
+	#
+	addToLeftPane: ( view ) ->
+		@_leftPane.addView view	
+	
 	# Sets the simulation state
 	#
 	# @param startSimulateFlag [Boolean] flag to start the simulation
@@ -136,23 +128,7 @@ class View.Main extends View.RaphaelBase
 		@getActionButtons().removeProp( 'disabled' )
 		$( window ).off( 'resize' )
 		return this
-		
-	# Loads a new cell into the cell view
-	#
-	# @param cell_id [Integer] the cell to load
-	# @param callback [Function] the callback function
-	# @return [jQuery.Promise] the promise
-	#
-	load: ( cell_id, callback ) ->
-		return @cell.load cell_id, callback
-		
-	# Saves the cell view model
-	#
-	# @return [jQuery.Promise] the promise
-	#
-	save: ( name ) ->
-		return @cell.save( name )
-		
+
 	# Gets the cell name
 	#
 	# @return [String, null] the cell name
@@ -287,7 +263,7 @@ class View.Main extends View.RaphaelBase
 		
 	# Call modal for load
 	#
-	# @param confirm [Function] action on confirmed
+	# @param load [Function] action on confirmed
 	# @param close [Function] action on closed
 	# @param always [Function] action always
 	# @return [self] chainable self
