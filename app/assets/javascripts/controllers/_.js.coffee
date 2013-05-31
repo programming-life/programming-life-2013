@@ -48,6 +48,7 @@ class Controller.Base extends Helper.Mixable
 	# @return [self] the chainable self
 	#
 	kill: () ->
-		removeChild( id, on ) for id, child of @_children
+		@removeChild( id, on ) for id, child of @_children
 		@view.kill()
+		@_unbindAll()
 		return this
