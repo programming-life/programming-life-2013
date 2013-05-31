@@ -24,7 +24,7 @@ class View.Spline extends View.RaphaelBase
 	# Adds interaction to the spline
 	#
 	addInteraction: ( ) ->
-		@_bind( 'cell.module.removed', @, @onModuleRemoved )
+		@_bind( 'cell.model.removed', @, @onModuleRemoved )
 		@_bind( 'cell.metabolite.removed', @, @onModuleRemoved )
 
 		@_bind( 'module.property.changed', @, @onModuleInvalidated )
@@ -92,7 +92,7 @@ class View.Spline extends View.RaphaelBase
 	# @param module [Module] the module that was removed
 	#
 	onModuleRemoved: ( cell, module ) =>
-		if cell is @_cell and ( module is @orig.module or module is @dest.module )
+		if cell is @_cell and ( module is @orig.model or module is @dest.model )
 			@_die()
 
 	# Gets called when a module is invalidated (had its properties changed)
@@ -101,12 +101,12 @@ class View.Spline extends View.RaphaelBase
 	#
 	onModuleInvalidated: ( module ) =>
 		if module.constructor.name is 'Transporter'
-			if (module is @orig.module and @orig.module.transported isnt @dest.module.name.split('#')[0]) or
-					(module is @dest.module and @dest.module.transported isnt @orig.module.name.split('#')[0])
+			if (module is @orig.model and @orig.model.transported isnt @dest.model.name.split('#')[0]) or
+					(module is @dest.model and @dest.model.transported isnt @orig.model.name.split('#')[0])
 				@_die()
 		else if module.constructor.name is 'Metabolism'
-			if (module is @orig.module and @dest.module.name not in @orig.module.dest) or
-					(module is @dest.module and @orig.module.name not in @dest.module.orig)
+			if (module is @orig.model and @dest.model.name not in @orig.model.dest) or
+					(module is @dest.model and @orig.model.name not in @dest.model.orig)
 				@_die()
 		
 		@setColor()
@@ -136,7 +136,7 @@ class View.Spline extends View.RaphaelBase
 	# @param view [Raphael] the view which has moved
 	#
 	onViewMoved: ( module ) =>
-		if module is @orig.module or module is @dest.module
+		if module is @orig.model or module is @dest.model
 			@draw()
 
 	# Gets called when a view view was drawn
@@ -144,7 +144,7 @@ class View.Spline extends View.RaphaelBase
 	# @param view [Raphael] the view that was drawn
 	#
 	onViewDrawn: ( module ) =>
-		if module is @orig.module or module is @dest.module
+		if module is @orig.model or module is @dest.model
 			@draw()
 
 
