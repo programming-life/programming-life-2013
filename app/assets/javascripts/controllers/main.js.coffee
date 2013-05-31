@@ -4,17 +4,47 @@
 
 # The controller for the Main action and view
 #
-class Controller.Main extends Helper.Mixable
-
-	@concern Mixin.EventBindings
+class Controller.Main extends Controller.Base
 
 	# Creates a new instance of Main
 	#
 	# @param container [String, Object] A string with an id or a DOM node to serve as a container for the view
+	# @param view [View.Main] the view for this controller
 	#
-	constructor: ( @container ) ->
-		@view = new View.Main @container
+	constructor: ( @container, view ) ->
+		super view ? ( new View.Main @container )
+	
+		@_createChildren()
+		@_createBindings()
+		
+	# Creates children
+	#
+	_createChildren: () ->
+		
+		@addChild 'cell', new Controller.Cell( @view.paper, @view )
+		@addChild 'graphs', new Controller.Graphs( @view.paper )
+		@addChild 'undo', new Controller.Undo( @controller('cell').model.timemachine )
+		
+		@view.add @controller('cell').view
+		@view.addToLeftPane @controller('undo').view
+		
+	# Creates bindings
+	#
+	_createBindings: () ->
+		
 		@view.bindActionButtonClick( () => @onAction( arguments... ) ) 
+	
+		@_bind( 'view.cell.set', @, 
+			( cell ) => @controller('undo').setTimemachine( cell.model.timemachine ) 
+		)
+		
+		@_bind( 'module.selected.changed', @, 
+			(module, selected) => 
+				@controller('undo').setTimemachine if selected
+					module.timemachine 
+				else 
+					@controller('cell').model.timemachine 
+		)
 		
 	# Loads a new cell into the main view
 	#
@@ -23,8 +53,8 @@ class Controller.Main extends Helper.Mixable
 	# @return [jQuery.Promise] the promise
 	#
 	load: ( cell_id, callback ) ->
-		promise = @view.load cell_id, callback
-		promise.always( () => @_setCellNameActionField( @view.cell.model.name ) )
+		promise =  @controller('cell').load cell_id, callback
+		promise.always( () => @_setCellNameActionField( @controller('cell').model.name ) )
 		return promise
 		
 	# Saves the main view cell
@@ -33,7 +63,7 @@ class Controller.Main extends Helper.Mixable
 	#
 	save: () ->
 		name = @_getCellNameActionField()
-		return @view.save( name )
+		return @controller('cell').save( name )
 		
 	# Gets the cell name from the action field
 	#
@@ -61,19 +91,8 @@ class Controller.Main extends Helper.Mixable
 	# @param value [Integer] the current value
 	#
 	_setProgressBar: ( value ) =>
-		@view.setProgressBar value / @_num + 1 / @_num * @_curr
-		if ( value is 1 )
-			if ++@_curr is @_num
-				@view.hideProgressBar()
-			
+		@view.setProgressBar value / @_iterations + 1 / @_iterations * @_currentIteration
 		return this
-	
-	# Finds the action buttons
-	#
-	# @return [jQuery.Collection] the action buttons
-	#
-	_findActionButtons: () ->
-		
 		
 	# Runs on an action (click)
 	#
@@ -161,14 +180,17 @@ class Controller.Main extends Helper.Mixable
 	# @param enable [Function] function to re-enable buttons
 	# @param succes [Function] function to run on success
 	# @param error [Function] function to run on error
+	# @todo action should be more dynamic for child controllers and views
 	#
 	onReset: ( target, enable, success, error ) ->
 		@view.resetActionButtonState()
 		
 		action = () =>
-			@view.kill()
+			@kill()
 			Model.EventManager.clear()
 			@view = new View.Main @container
+			@_createChildren()
+			@_createBindings()
 			
 		@view.confirmReset action
 		
@@ -179,27 +201,27 @@ class Controller.Main extends Helper.Mixable
 	# @param succes [Function] function to run on success
 	# @param error [Function] function to run on error
 	#
+	# @todo hack remove
+	#
 	onSimulate: ( target, enable, success, error ) ->
 		target.attr( 'disabled', false )
 		startSimulateFlag = not target.hasClass( 'active' )
 		
-		# hack
-		@_num = 2
-		@_curr = 0
-		
-		[ ppromise, token ] = @view.setSimulationState startSimulateFlag
+		iterationDone = ( results, from, to ) =>
+			@_currentIteration++
+			@_setProgressBar 0
+			
+		@_iterations = 4
+		@_currentIteration = 0
+		[ token, progress_promise ] = @controller('cell').setSimulationState startSimulateFlag, iterationDone, 20, @_iterations
 		if startSimulateFlag is on
 			@_token = token
 			@view.showProgressBar()
-			ppromise.progress @_setProgressBar
-			ppromise.always enable
-			ppromise.always () => @view.setButtonState(target, 'toggle') if target.hasClass( 'active' )
+			progress_promise.progress @_setProgressBar
+			progress_promise.always enable
+			progress_promise.always () => @view.setButtonState( target, 'toggle' ) if target.hasClass( 'active' )
+			progress_promise.done () => @view.hideProgressBar()
 		else
 			@_token?.cancel()
 			@view.hideProgressBar()
 			enable()
-	
-	#
-	#
-	kill: () ->
-		

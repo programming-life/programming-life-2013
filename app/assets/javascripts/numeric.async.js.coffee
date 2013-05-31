@@ -166,7 +166,6 @@ numeric.asyncdopri =
 			
 		# The asyncloop
 		dopriloop = ( ) =>
-			#console.log "loop enter #{x0} < #{x1} and #{it} < #{maxit}"
 			
 			# While looping
 			if x0 < x1 and it < maxit
@@ -186,7 +185,7 @@ numeric.asyncdopri =
 			# When done
 			done = () =>
 				promise.notify( Math.max( x0 / x1, it / maxit ) )
-				#console.log "loop end #{it}"
+				
 				ret.iterations = it
 				promise.resolve ret
 				
@@ -194,6 +193,4 @@ numeric.asyncdopri =
 			return
 			
 		promise = $.Deferred dopriloop
-		console.log "after create"
-		
 		return promise.promise()
