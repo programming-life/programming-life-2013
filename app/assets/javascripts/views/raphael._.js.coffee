@@ -157,7 +157,7 @@ class View.RaphaelBase extends Helper.Mixable
 	# @param view [View.Base] The view to draw
 	#
 	drawView: ( view ) ->
-		view.draw() if view.visible
+		view.draw()
 	
 	# Removes a view from the container
 	#

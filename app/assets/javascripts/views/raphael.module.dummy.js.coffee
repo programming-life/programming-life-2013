@@ -18,7 +18,9 @@ class View.DummyModule extends View.RaphaelBase
 		
 		@_type = @_modulector.name
 		@_count = @_cell.numberOf @_modulector
+
 		@_visible = @_number is -1 or @_count < @_number
+		#console.log @_count, @_number, @_visible if @_type = 'CellGrowth'
 
 		@_bind( 'cell.module.added', @, @onModuleAdd )
 		@_bind( 'cell.module.removed', @, @onModuleRemove )
@@ -103,6 +105,8 @@ class View.DummyModule extends View.RaphaelBase
 	# @param module [Model.Module] the module removed
 	#
 	onModuleRemove : ( cell, module ) ->
+		console.log @_count
+
 		if cell is @_cell and module instanceof @_modulector 
 			@_count -= 1
 			if @_number > @_count
@@ -152,8 +156,8 @@ class View.DummyModule extends View.RaphaelBase
 
 		super(x, y)
 
-		unless @_visible
-			return
+		#unless @_visible
+		#	return
 
 		padding = 15
 		
@@ -182,6 +186,9 @@ class View.DummyModule extends View.RaphaelBase
 		@_contents.push hitbox
 		@_contents.push contents
 		@_contents.push @_box
+
+		unless @_visible
+			@hide()
 		
 	# Hides this view
 	#
@@ -193,6 +200,7 @@ class View.DummyModule extends View.RaphaelBase
 	# Shows this view
 	#
 	show: () ->
+		@setPosition(off)
 		@_visible = on
 		@_contents.show()
 		return this
