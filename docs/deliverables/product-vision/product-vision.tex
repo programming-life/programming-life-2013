@@ -101,27 +101,29 @@ This product will be developed using the Scrum methodologies and the development
 				\textbf{Q3/W6}\\
 				Toolchain needed to develop the code is set up. Basic module and cell classes are made and properly tested.
 			\subsubsection*{Sprint 1 (Q3/W7)}
-				The properties of the modules are not static but can be changed. Start working on integration tests.
+				A cell can be created by selecting modules from a list. Start working on integration tests.
 			\subsubsection*{Sprint 2 (Q3/W8)}
-				The cell environment can be changed by adding substrates. Modules can react on these substrates.
+				
 			\subsubsection*{Sprint 3 (Q3/W9)}
-				A basic visualisation of the model data is present. This consists of at least one graph per module that indicates the concentration over time. A set of static modules is available for model composition.
+				
 			\subsubsection*{Sprint 4 (Q3/W10) Demo product}
-				The product should be usable, stable and completed in terms of the items that are considered MUST. This means that the first 4 items from the High-Level Product backlog are incorporated in this demo. The demo consists of a series of acceptance tests devised in sprint 4.
+				A basic visualisation of the model data is present. This consists of at least one graph per module that indicates the concentration over time. A set of static modules is available for model composition.	 Equations are solved using an ODE solver.
 			\subsubsection*{Sprint 5 (Q4/W1)}
-				The output can be exported as a document (HTML/PDF/Excel). Initial rigorous acceptance tests, as the next sprint as a product demo. The models created can now be saved and loaded. Feedback on module constraints is visible
+				Initial rigorous acceptance tests, as the next sprint as a product demo.  Substrates can now be added to the cell. Tests should be run automatically using Continuous Integration. Release first version with basic functionality.
 			\subsubsection*{Sprint 6 (Q4/W2)}
-				Feedback on errors and optimisation is now visible in the application.
+				All events should now be handled by an Event Manager. There should be a reasonable amount of tests covering a reasonable amount of code. Release the demo version for the product demo.
 			\subsubsection*{Sprint 7 (Q4/W3)}
-				Fixing failing unit/functional tests and conducting acceptance tests.\\
+				The GUI now provides a graphical way to add modules to the cell it should also provide a way to control the simulation of the cell. The cell models created can now be saved and loaded. An API should also be provided. Prepare for SIG evaluation.
 			\subsubsection*{Sprint 8 (Q4/W4)}
-				The product is internationalised.
+				HTML/PDF/EXCEL reports can now be generated from created cells, containing parameter values and graphs from simulations. A user can now change module constants. Connections between modules are visualised. 
 			\subsubsection*{Sprint 9 (Q4/W5)}
-				Bug-fixes, acceptance tests and final review of code. Prepare for SIG review.
+				Bug-fixes, acceptance tests and final review of code. Implement SIG feedback. A user can use the undo function in the GUI. Feedback on module constraints and errors is visible.
 			\subsubsection*{Sprint 10 (Q4/W6)}
-				The product should be usable, stable and completed in terms of the items that are considered MUST (First four in the high level product backlog) and SHOULD (Item 5 and 6 in the high level product backlog).
+				
 			\subsubsection*{Sprint 11 (Q4/W7)}
+				Feedback on optimisation is now visible in the application. 
 			\subsubsection*{Sprint 12 (Q4/W8) Final product}
+				All remaining bugs are fixed. All tests should pass with a good coverage. Prepare for product presentation. Release presentation demo version.
 
 	\clearpage
 	\section{Product backlog}
@@ -173,10 +175,14 @@ This product will be developed using the Scrum methodologies and the development
 	\section{Definition of done}
 		Defining when the following are done is important to keep the flow in the project and make sure the product is deliverable. \\
 		\\
-		\textbf{Task:} If the description is fulfilled and this can be verified with a \emph{user} and/or an \emph{integration} test. {\scriptsize This is important because features have to be complete, else there will be unfinished code in the system which will cause instability.}\\
-		\textbf{User Story:} If the story is fulfilled and this can be tested with an \emph{acceptance test}.  {\scriptsize This is important because the user stories are the basis to defining the functions the system must provide.}\\
-		\textbf{Sprint:} Sunday 23:59. { \scriptsize This is important because it limits the amount of work done during a sprint.}\\
-		(version of a) \textbf{Product/Release:} If the product can be shipped to the \emph{stakeholder}. { \scriptsize This is important because this is what the stakeholder gets to see. It can be shipped when all features which are considered a MUST and SHOULD are implemented, see the high-level product backlog and roadmap} \\
+		\textbf{Task:} If the description is fulfilled and this can be verified with a \emph{user} and/or an \emph{integration} test. This is important because features have to be complete, else there will be unfinished code in the system which will cause instability.\\
+		\newline
+		\textbf{User Story:} If the story is fulfilled and this can be tested with an \emph{acceptance test}.  This is important because the user stories are the basis to defining the functions the system must provide.\\
+		\newline
+		\textbf{Sprint:} Sunday 23:59. This is important because it limits the amount of work done during a sprint.\\
+		\newline
+		(version of a) \textbf{Product/Release:} If the product can be shipped to the \emph{stakeholder}. This is important because this is what the stakeholder gets to see. It can be shipped when all features which are considered a MUST and SHOULD are implemented, see the high-level product backlog and roadmap. \\
+		\newline
 		\textbf{Project:} Never or when the \emph{stakeholder} decides (\emph{June 14$^{th}$}).
 
 	\section{Glossary}
