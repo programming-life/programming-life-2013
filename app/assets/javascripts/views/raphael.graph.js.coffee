@@ -1,42 +1,30 @@
 # Class to generate graphs from a set of data points
 #
 class View.Graph extends View.RaphaelBase
-	
+
 	# Maximum number of simultaneously displayed data sets
 	@MAX_DATASETS : 3
 	
-	# Maximum length of a set
-	@MAX_LENGTH : 100
+	@DEFAULTS : 
+		smooth: true
+		axis: '0 0 1 1'
+		#axisxstep: @_dt
+		shade : on
+		colors: [ "rgba(140, 137, 132, 0.3)",  "rgba(1, 145, 200, 0.5)", "rgba(0, 91, 154, 0.85)" ]
 	
 	# Construct a new Graph object
 	#
 	# @param title [String] The title of the graph	
 	# @param parent [View.Cell] The cell view this graph belongs to
 	#
-	constructor: ( paper, @_title, @_parent) ->
-		@_id = _( 'graph' ).uniqueId() 
-		@_container = $('<div id="' + @_id + '" class="graph"></div>')
-		@_parent._container.append( @_container )
+	constructor: ( @_id = _( 'graph' ).uniqueId() , @_title, parent, container = "#graphs", @_width = 240, @_height = 175 ) ->
+		super Raphael( @_id, @_width + 20, @_height + 20), parent
+		$( container ).append( @_container = $('<div id="' + @_id + '" class="graph"></div>') )
 
-		@_width = 240
-		@_height = 175
 		@clear()
+		@drawTitle()
 
-		@_paper = Raphael( @_id, @_width + 20, @_height + 20)
-		super @_paper 
-
-		@_text = @_drawTitle()
-
-		@_datasets = []
-
-		@_dt = 1
-		@_options = {
-			smooth: true
-			axis: '0 0 1 1'
-			#axisxstep: @_dt
-			shade : on
-			colors: [ "rgba(140, 137, 132, 0.3)",  "rgba(1, 145, 200, 0.5)", "rgba(0, 91, 154, 0.85)" ]
-		}
+		@options = _( Graph.DEFAULTS ).clone( true )
 
 	# Add a dataset to visualize in this graphs
 	#
@@ -129,7 +117,7 @@ class View.Graph extends View.RaphaelBase
 	# @param scale [Float] the scale
 	# @return [JQuery] the text object
 	#
-	_drawTitle: ( x, y, scale ) ->
+	drawTitle: ( x, y, scale ) ->
 		h2 = $('<h2>'+ @_title + '</h2>')
 		@_container.prepend( h2 )
 
