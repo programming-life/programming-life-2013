@@ -34,8 +34,6 @@ class View.Cell extends View.RaphaelBase
 		@_defineAccessors()
 		@model = cell
 
-		@_interpolation = off
-		@_significance = 1e-15
 		
 	# Defines the accessors for this view
 	#

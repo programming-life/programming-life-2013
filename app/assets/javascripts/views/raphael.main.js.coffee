@@ -58,15 +58,6 @@ class View.Main extends View.RaphaelBase
 	addToLeftPane: ( view ) ->
 		@_leftPane.addView view	
 	
-	# Sets the simulation state
-	#
-	# @param startSimulateFlag [Boolean] flag to start the simulation
-	#
-	setSimulationState: ( startSimulateFlag ) ->
-		if startSimulateFlag
-			return @cell.startSimulation( 25, 0, 50 )
-		return @cell.stopSimulation()
-		
 	# Resizes the cell to the target size
 	#
 	resize: ( ) =>	
@@ -74,9 +65,9 @@ class View.Main extends View.RaphaelBase
 		height = $( @_target ).height() - 110
 
 		edge = Math.min(width / 1.5, height)
-		@_paper.setSize( edge * 1.5, edge )
+		@paper.setSize( edge * 1.5, edge )
 
-		@_trigger( 'paper.resize', @_paper )
+		@_trigger( 'paper.resize', @paper )
 
 	# Draws the main view
 	#
@@ -122,7 +113,7 @@ class View.Main extends View.RaphaelBase
 	#
 	kill: ( ) ->
 		super()
-		@_paper.remove()
+		@paper.remove()
 		@_resetModal.kill()
 		@_loadModal.kill()
 		@getActionButtons().removeProp( 'disabled' )
