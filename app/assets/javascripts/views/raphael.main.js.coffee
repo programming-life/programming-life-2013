@@ -31,7 +31,7 @@ class View.Main extends View.RaphaelBase
 	#
 	_createSidebars: () ->
 		@_leftPane = new View.Pane( View.Pane.Position.Left, false ) 
-		@addView @_leftPane, off
+		@add @_leftPane, off
 		
 	# Creates the confirmation for reset modal
 	#

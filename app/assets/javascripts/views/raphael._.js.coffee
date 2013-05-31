@@ -1,20 +1,20 @@
 # Base class for views that use Raphael
 # 
-class View.RaphaelBase extends Helper.Mixable
+class View.RaphaelBase extends View.Collection
 	
 	@concern Mixin.EventBindings
 
 	# Constructs a new Base view
 	# 
 	# @param _paper [Object] The paper to draw on
-	# @param _withPaper [Boolean] if true, adds a paper set on contents
 	#
-	constructor: ( @_paper = null, @_parent = null, @_withPaper = on ) ->
-		@visible = on
-
-		@_contents = @_paper?.set() if @_withPaper
-		@_views = []
-	
+	constructor: ( @_paper, @_parent = null ) ->
+		super()
+		
+		@_contents = @_paper?.set()
+		
+		console.log @_contents
+		
 		@_allowEventBindings()
 
 		Object.defineProperties(@, 
@@ -50,15 +50,12 @@ class View.RaphaelBase extends Helper.Mixable
 	# 
 	clear: ( ) ->
 		@_contents?.remove()
-		for view in @_views
-			view.clear()
+		super()
 			
 	# Kills this view 
 	#
 	kill: ( ) ->
-		@clear()	
-		for view in @_views
-			view.kill?()
+		super()
 		@_unbindAll()
 
 	# Sets the position of this view according to its parent's instructions
@@ -132,36 +129,14 @@ class View.RaphaelBase extends Helper.Mixable
 		@_anchor = @_paper.circle(x, y, 0)
 		@_contents.push(@_anchor)
 
-		@drawView view for view in @_views			
+		super()		
 
 		return @_contents
 	
 	# Redraw this view and it's children with their current parameters
 	# 
 	redraw: ( ) ->
-		@draw( @x, @y )
-
-	# Add a view to draw in the container
-	#
-	# @param view [View.Base] The view to add
-	#
-	addView: ( view, draw = on ) ->
-		@_views.push view
-		@drawView view if draw
-		
-	# Draws the view
-	# @param view [View.Base] The view to draw
-	#
-	drawView: ( view ) ->
-		view.draw() if view.visible
-	
-	# Removes a view from the container
-	#
-	# @param [View.Base] The view to remove
-	#
-	removeView: ( ) ->
-		@_views = _( @_views ).without view
-		@redraw()
+		return @draw( @x, @y )
 
 	# Returns the absolute (document) coordinates of a point within the paper
 	#

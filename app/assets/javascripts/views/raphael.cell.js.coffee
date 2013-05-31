@@ -13,18 +13,14 @@ class View.Cell extends View.RaphaelBase
 	# @param paper [Raphael] paper parent
 	# @param parent [View.RaphaelBase] base view
 	# @param cell [Model.Cell] cell to view
-	# @param container [String] container element for the strings 
+	#
 	# 	
-	constructor: ( paper, parent, cell, container = "#graphs", @_interaction = on ) ->
+	constructor: ( paper, parent, cell, @_interaction = on ) ->
 		super paper, parent
-
-		@_container = if $( container )[0] then $( container ) else $("<div id='graphs-#{_.uniqueId()}'></div>")
-		@_container.data( 'cell', Model.Cell.extractId( cell ).id )
 		
 		@_drawn = []
 		@_viewsByType = {}
 		@_splines = []
-		@_graphs = {}
 		@_numGraphs = 0
 
 		@_width = @_paper.width
@@ -73,7 +69,7 @@ class View.Cell extends View.RaphaelBase
 		@_model = value
 		for module in @_model._getModules()
 			view = new View.Module( @_paper, @, @_model, module, @_interaction )
-			@addView view
+			@add view
 			@_drawn.push { model: module, view: view } 
 		
 		@_addInteraction() if @_interaction
@@ -95,31 +91,23 @@ class View.Cell extends View.RaphaelBase
 		super()
 		
 		@_notificationsView?.kill()
-
-		if @_graphs?
-			for name, graph of @_graphs
-				graph.clear()
-		
-		@_container.empty()
 		
 		@_drawn = []
 		@_viewsByType = {}
-		@_graphs = {}
-		@_numGraphs = 0
 		
 	# Creates the interaction buttons
 	# 
 	_createButtons: () ->
 		
-		@addView new View.DummyModule( @_paper, @, @model, Model.CellGrowth, 1 )
-		@addView new View.DummyModule( @_paper, @, @model, Model.DNA, 1 )
-		@addView new View.DummyModule( @_paper, @, @model, Model.Lipid, 1 )
-		@addView new View.DummyModule( @_paper, @, @model, Model.Metabolite, -1, { placement: Model.Metabolite.Outside, type: Model.Metabolite.Substrate, amount: 0, supply: 1 } )
-		@addView new View.DummyModule( @_paper, @, @model, Model.Metabolite, -1, { placement: Model.Metabolite.Inside, type: Model.Metabolite.Product, amount: 0, supply: 0 } )
-		@addView new View.DummyModule( @_paper, @, @model, Model.Transporter, -1, { direction: Model.Transporter.Inward } )
-		@addView new View.DummyModule( @_paper, @, @model, Model.Metabolism, -1 )
-		@addView new View.DummyModule( @_paper, @, @model, Model.Protein, -1 )
-		@addView new View.DummyModule( @_paper, @, @model, Model.Transporter, -1, { direction: Model.Transporter.Outward } )
+		@add new View.DummyModule( @_paper, @, @model, Model.CellGrowth, 1 )
+		@add new View.DummyModule( @_paper, @, @model, Model.DNA, 1 )
+		@add new View.DummyModule( @_paper, @, @model, Model.Lipid, 1 )
+		@add new View.DummyModule( @_paper, @, @model, Model.Metabolite, -1, { placement: Model.Metabolite.Outside, type: Model.Metabolite.Substrate, amount: 0, supply: 1 } )
+		@add new View.DummyModule( @_paper, @, @model, Model.Metabolite, -1, { placement: Model.Metabolite.Inside, type: Model.Metabolite.Product, amount: 0, supply: 0 } )
+		@add new View.DummyModule( @_paper, @, @model, Model.Transporter, -1, { direction: Model.Transporter.Inward } )
+		@add new View.DummyModule( @_paper, @, @model, Model.Metabolism, -1 )
+		@add new View.DummyModule( @_paper, @, @model, Model.Protein, -1 )
+		@add new View.DummyModule( @_paper, @, @model, Model.Transporter, -1, { direction: Model.Transporter.Outward } )
 
 	# Returns the bounding box of this view
 	#
@@ -156,7 +144,7 @@ class View.Cell extends View.RaphaelBase
 	#
 	# @param view [View.Base] The view to add
 	#
-	addView: ( view ) ->
+	add: ( view ) ->
 		type = view.getFullType()
 
 		unless @_viewsByType[type]?
@@ -171,7 +159,7 @@ class View.Cell extends View.RaphaelBase
 	#
 	# @param [View.Base] The view to remove
 	#
-	removeView: ( view ) ->
+	remove: ( view ) ->
 		type = view.getFullType()
 		@_viewsByType[type] = _( @_viewsByType[type] ).without view
 
@@ -356,7 +344,7 @@ class View.Cell extends View.RaphaelBase
 			unless ( _( @_drawn ).find( ( d ) -> d.model is module ) )?
 				view = new View.Module( @_paper, @, @model, module, @_interaction )
 				@_drawn.push({view: view, model: module})
-				@addView(view)		
+				@add view		
 			
 	# On module removed, removed it from the cell
 	# 
@@ -368,7 +356,7 @@ class View.Cell extends View.RaphaelBase
 			if ( drawn = _( @_drawn ).find( ( d ) -> d.model is module ) )?
 				view = drawn.view.kill()				
 				@_drawn = _( @_drawn ).without drawn
-				@removeView(view)
+				@remove view
 
 	# On spline added, add it to the cell and draw
 	# 
