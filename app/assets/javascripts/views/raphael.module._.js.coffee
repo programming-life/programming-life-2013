@@ -169,10 +169,25 @@ class View.Module extends View.RaphaelBase
 	# @return [self] chainable self
 	#
 	kill: () ->
+
+		@_contents.insertBefore(@_paper.bottom)
+
+		fadeOut = ( ) =>
+			@_contents.stop()
+			@_contents.animate Raphael.animation(
+				transform: '...S0'
+			, 500, 'ease-in', =>
+					
+				View.RaphaelBase::kill.apply( @ )
+			)
+
 		@_propertiesView?.kill()
-		@_notificationsView?.kill()		
-		
-		return super()
+		@_notificationsView?.kill()	
+
+
+		_(fadeOut).defer()
+
+		return this
 
 	# Returns the bounding box of this view
 	#
@@ -250,11 +265,16 @@ class View.Module extends View.RaphaelBase
 		
 		contents = @drawContents()
 		@_contents.push @drawMetaContents( contents )
-		@_contents.push contents
+		@_contents.push contents		
 		
 		@createSplines()
-		
+
 		@_trigger( 'view.drawn', @ )
+
+		@_contents.transform('S.1').animate Raphael.animation(
+			transform: 'S1'
+		, 900 + Math.random() * 100, 'elastic'
+		)
 
 	# Draws the contents (module)
 	#
@@ -619,7 +639,7 @@ class View.Module extends View.RaphaelBase
 	# @param module [Module] the module that was removed
 	#
 	onModuleRemoved: ( cell, module ) ->
-		if @getFullType() is module.getFullType()
+		if @getFullType() is module.getFullType() and module isnt @model
 			@setPosition()
 
 	# Gets called when a metabolite is added to a cell
@@ -645,5 +665,5 @@ class View.Module extends View.RaphaelBase
 	# @param metabolite [Metabolite] the metabolite that was removed
 	#
 	onMetaboliteRemoved: ( cell, metabolite ) ->
-		if @getFullType() is metabolite.getFullType()
+		if @getFullType() is metabolite.getFullType() and metabolite isnt @model
 			@setPosition()		

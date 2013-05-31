@@ -105,8 +105,8 @@ class View.RaphaelBase extends Helper.Mixable
 
 		transform = "...t#{dx},#{dy}"
 		if animate
-			dt = 500
-			ease = 'ease-in-out'
+			dt = 900
+			ease = 'elastic'
 
 			@_trigger( 'view.moving', @, [dx, dy, dt, ease] )
 
