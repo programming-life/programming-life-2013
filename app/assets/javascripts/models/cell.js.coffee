@@ -522,7 +522,7 @@ class Model.Cell extends Helper.Mixable
 			from = 0
 			to =  to - from
 		
-		promise = numeric.asyncdopri( 0, to - from, values, @_step( modules, mapping, map ), 1e-9, 4000, undefined, token )
+		promise = numeric.asyncdopri( 0, to - from, values, @_step( modules, mapping, map ), stepsize, iterations, undefined, token )
 		promise = promise.then( ( ret ) =>
 		
 			@_trigger( 'cell.after.run', @, [ to - from, ret, mapping ] )
