@@ -37,7 +37,7 @@ class View.Main extends View.RaphaelBase
 	#
 	_createConfirmReset: () ->
 		@_resetModal = new View.ConfirmModal( 
-			'Reset Confirmation',
+			'Confirm resetting the virtual cell',
 			'Are you sure you want to reset the virtual cell?
 			You will lose all unsaved changes and this action
 			can not be undone.'
