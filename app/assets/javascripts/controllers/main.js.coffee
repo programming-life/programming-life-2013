@@ -4,17 +4,18 @@
 
 # The controller for the Main action and view
 #
-class Controller.Main extends Helper.Mixable
-
-	@concern Mixin.EventBindings
+class Controller.Main extends Controller.Base
 
 	# Creates a new instance of Main
 	#
 	# @param container [String, Object] A string with an id or a DOM node to serve as a container for the view
 	#
-	constructor: ( @container ) ->
-		@view = new View.Main @container
+	constructor: ( @container, view ) ->
+		super view ? ( new View.Main @container )
 		@view.bindActionButtonClick( () => @onAction( arguments... ) ) 
+	
+		@addChild new Controller.Cell( @view, @view.cell.model, @view.cell )
+		@addChild new Controller.Undo( @view.cell.model.timemachine, @view.undo )
 		
 	# Loads a new cell into the main view
 	#
@@ -67,13 +68,6 @@ class Controller.Main extends Helper.Mixable
 				@view.hideProgressBar()
 			
 		return this
-	
-	# Finds the action buttons
-	#
-	# @return [jQuery.Collection] the action buttons
-	#
-	_findActionButtons: () ->
-		
 		
 	# Runs on an action (click)
 	#
@@ -161,6 +155,7 @@ class Controller.Main extends Helper.Mixable
 	# @param enable [Function] function to re-enable buttons
 	# @param succes [Function] function to run on success
 	# @param error [Function] function to run on error
+	# @todo action should be more dynamic for child controllers and views
 	#
 	onReset: ( target, enable, success, error ) ->
 		@view.resetActionButtonState()
@@ -198,8 +193,3 @@ class Controller.Main extends Helper.Mixable
 			@_token?.cancel()
 			@view.hideProgressBar()
 			enable()
-	
-	#
-	#
-	kill: () ->
-		
