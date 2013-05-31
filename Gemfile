@@ -28,6 +28,7 @@ end
 # Gems used only for development and testing
 # not rquired in production environments by default
 group :development, :test do
+  gem 'rails-erd'
   gem 'rake'
   gem 'jasmine'
   gem 'coveralls', require: false

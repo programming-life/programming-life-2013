@@ -1,0 +1,70 @@
+digraph ProgrammingLife {
+rankdir = "LR";
+ranksep = "0.5";
+nodesep = "0.4";
+pad = "0.4,0.4";
+margin = "0,0";
+concentrate = "true";
+labelloc = "t";
+fontsize = "13";
+fontname = "Arial Bold";
+node[ shape  =  "Mrecord" , fontsize  =  "10" , fontname  =  "Arial" , margin  =  "0.07,0.05" , penwidth  =  "1.0"];
+edge[ fontname  =  "Arial" , fontsize  =  "7" , dir  =  "both" , arrowsize  =  "0.9" , penwidth  =  "1.0" , labelangle  =  "32" , labeldistance  =  "1.8"];
+label = "ProgrammingLife domain model\n\n";
+m_Cell [label = <<table border="0" align="center" cellspacing="0.5" cellpadding="0" width="134">
+  <tr><td align="center" valign="bottom" width="130"><font face="Arial Bold" point-size="11">Cell</font></td></tr>
+</table>
+|
+<table border="0" align="left" cellspacing="2" cellpadding="0" width="134">
+  <tr><td align="left" width="130" port="name">name <font face="Arial Italic" color="grey60">string</font></td></tr>
+</table>
+>];
+m_ModuleInstance [label = <<table border="0" align="center" cellspacing="0.5" cellpadding="0" width="134">
+  <tr><td align="center" valign="bottom" width="130"><font face="Arial Bold" point-size="11">ModuleInstance</font></td></tr>
+</table>
+|
+<table border="0" align="left" cellspacing="2" cellpadding="0" width="134">
+  <tr><td align="left" width="130" port="amount">amount <font face="Arial Italic" color="grey60">float</font></td></tr>
+  <tr><td align="left" width="130" port="name">name <font face="Arial Italic" color="grey60">string ∗</font></td></tr>
+</table>
+>];
+m_ModuleParameter [label = <<table border="0" align="center" cellspacing="0.5" cellpadding="0" width="134">
+  <tr><td align="center" valign="bottom" width="130"><font face="Arial Bold" point-size="11">ModuleParameter</font></td></tr>
+</table>
+|
+<table border="0" align="left" cellspacing="2" cellpadding="0" width="134">
+  <tr><td align="left" width="130" port="key">key <font face="Arial Italic" color="grey60">string</font></td></tr>
+</table>
+>];
+m_ModuleTemplate [label = <<table border="0" align="center" cellspacing="0.5" cellpadding="0" width="134">
+  <tr><td align="center" valign="bottom" width="130"><font face="Arial Bold" point-size="11">ModuleTemplate</font></td></tr>
+</table>
+|
+<table border="0" align="left" cellspacing="2" cellpadding="0" width="134">
+  <tr><td align="left" width="130" port="file">file <font face="Arial Italic" color="grey60">string</font></td></tr>
+  <tr><td align="left" width="130" port="javascript_model">javascript_model <font face="Arial Italic" color="grey60">string</font></td></tr>
+  <tr><td align="left" width="130" port="name">name <font face="Arial Italic" color="grey60">string ∗</font></td></tr>
+  <tr><td align="left" width="130" port="step">step <font face="Arial Italic" color="grey60">text</font></td></tr>
+</table>
+>];
+m_ModuleValue [label = <<table border="0" align="center" cellspacing="0.5" cellpadding="0" width="134">
+  <tr><td align="center" valign="bottom" width="130"><font face="Arial Bold" point-size="11">ModuleValue</font></td></tr>
+</table>
+|
+<table border="0" align="left" cellspacing="2" cellpadding="0" width="134">
+  <tr><td align="left" width="130" port="value">value <font face="Arial Italic" color="grey60">text</font></td></tr>
+</table>
+>];
+m_Report [label = <<table border="0" align="center" cellspacing="0.5" cellpadding="0" width="134">
+  <tr><td align="center" valign="bottom" width="130"><font face="Arial Bold" point-size="11">Report</font></td></tr>
+</table>
+>];
+  m_Cell -> m_ModuleInstance [arrowhead = "normal", arrowtail = "none", weight = "2"];
+  m_Cell -> m_ModuleTemplate [style = "dotted", arrowhead = "normal", arrowtail = "none", weight = "2", constraint = "false"];
+  m_Cell -> m_Report [arrowhead = "none", arrowtail = "none", weight = "2"];
+  m_ModuleInstance -> m_ModuleValue [arrowhead = "normal", arrowtail = "none", weight = "2"];
+  m_ModuleInstance -> m_ModuleParameter [style = "dotted", arrowhead = "normal", arrowtail = "none", weight = "1", constraint = "false"];
+  m_ModuleTemplate -> m_ModuleInstance [arrowhead = "normal", arrowtail = "none", weight = "2"];
+  m_ModuleTemplate -> m_ModuleParameter [arrowhead = "normal", arrowtail = "none", weight = "2"];
+  m_ModuleParameter -> m_ModuleValue [arrowhead = "normal", arrowtail = "none", weight = "2"];
+}
