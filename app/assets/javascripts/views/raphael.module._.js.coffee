@@ -177,10 +177,12 @@ class View.Module extends View.RaphaelBase
 			@_contents.animate Raphael.animation(
 				transform: '...S0'
 			, 500, 'ease-in', =>
-				@_propertiesView?.kill()
-				@_notificationsView?.kill()		
+					
 				View.RaphaelBase::kill.apply( @ )
 			)
+
+		@_propertiesView?.kill()
+		@_notificationsView?.kill()	
 
 
 		_(fadeOut).defer()
