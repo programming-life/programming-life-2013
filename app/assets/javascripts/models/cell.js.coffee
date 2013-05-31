@@ -481,7 +481,7 @@ class Model.Cell extends Helper.Mixable
 	# @param base_values [Array] the base values to try
 	# @return [self] chainable instance
 	#
-	run : ( from, to, base_values = [], callback, token ) ->
+	run : ( from, to, base_values = [], callback, token, stepsize = 1e-9, iterations = 4000 ) ->
 		
 		@_trigger( 'cell.before.run', @, [ to - from ] )
 								
@@ -530,8 +530,8 @@ class Model.Cell extends Helper.Mixable
 			result =
 				results: ret
 				map: mapping
-				from: from
-				to: to
+				from: from + ret.x[0]
+				to: from + ret.x[ret.x.length - 1 ]
 				
 			callback?( result )
 			return result
