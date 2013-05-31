@@ -188,21 +188,43 @@ class View.DummyModule extends View.RaphaelBase
 		@_contents.push @_box
 
 		unless @_visible
-			@hide()
+			@hide(off)
 		
 	# Hides this view
 	#
-	hide: () ->
-		@_visible = off
-		@_contents.hide()
+	hide: ( animate = on ) ->
+		done = ( ) =>
+			@_contents.hide()
+			@_visible = off
+		
+
+		if animate
+			@_contents.attr('opacity', 1)
+			@_contents.animate Raphael.animation(
+				opacity: 0
+			, 200, 'ease-in', done)
+		else
+			done()
+
 		return this
 		
 	# Shows this view
 	#
-	show: () ->
-		@setPosition(off)
-		@_visible = on
-		@_contents.show()
+	show: ( animate = on ) ->
+		done = ( ) =>
+			@_visible = on
+
+		@setPosition(off)		
+
+		if animate
+			@_contents.attr('opacity', 0)
+			@_contents.show()
+			@_contents.animate Raphael.animation(
+				opacity: 1
+			, 100, 'ease-out', done)
+		else
+			done()
+
 		return this
 		
 	# Kills this view

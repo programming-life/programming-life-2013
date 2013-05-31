@@ -170,7 +170,7 @@ class View.Module extends View.RaphaelBase
 	#
 	kill: () ->
 
-		@_contents.insertBefore(@_paper.bottom)
+		#@_contents.insertBefore(@_paper.bottom)
 
 		fadeOut = ( ) =>
 			@_contents.stop()
