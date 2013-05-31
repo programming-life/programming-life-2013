@@ -21,18 +21,14 @@ class View.RaphaelBase extends Helper.Mixable
 			x:
 				get: ( ) ->
 					x = @_anchor?.getBBox()?.cx
-					unless x?
-						x = 0
-					return x
+					return x ? 0
 
 				set: ( x ) ->
 					@moveTo(x, @y, off)
 			y:
 				get: ( ) ->
 					y = @_anchor?.getBBox()?.cy
-					unless y?
-						y = 0
-					return y
+					return y ? 0
 
 				set: ( y ) ->
 					@moveTo(@x, y, off)
@@ -170,4 +166,10 @@ class View.RaphaelBase extends Helper.Mixable
 	# @return [[float, float]] a tuple of the document x and y coordinates, respectively
 	#
 	getAbsoluteCoords: ( x, y ) ->
-		return @_parent.getAbsoluteCoords(x, y)
+		coords = @_parent?.getAbsoluteCoords(x, y)
+		return coords if coords?
+		return [ x, y ] unless @_paper?
+		offset = $(@_paper.canvas).offset()
+		absX = offset.left + x
+		absY = offset.top + y
+		return [ absX, absY ]
