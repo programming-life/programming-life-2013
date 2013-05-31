@@ -423,8 +423,6 @@ class View.ModuleProperties extends View.HTMLPopOver
 	# Saves all changed properties to the module.
 	#
 	_save: ( ) =>	
-		@_elem.find('input').blur()
-
 		for key, value of @_changes
 			@module[ key ] = value
 			

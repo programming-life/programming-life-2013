@@ -112,12 +112,13 @@ class View.DummyModuleProperties extends View.ModuleProperties
 	#
 	_close: ( ) =>
 		@_trigger( 'module.creation.aborted', @_parent )
+		@_elem.find('input').blur()
 
 	# Saves all changed properties to the module.
 	#
 	_save: ( ) =>
-		@_elem.find('input').blur()
 		@_trigger('module.creation.finished', @_parent, [@_changes])
+		@_elem.find('input').blur()
 		@_changes = {}
 
 	# Binds an on change event to a selectable input that sets the key
