@@ -10,10 +10,34 @@ class View.RaphaelBase extends Helper.Mixable
 	# @param _withPaper [Boolean] if true, adds a paper set on contents
 	#
 	constructor: ( @_paper = null, @_parent = null, @_withPaper = on ) ->
+		@visible = on
+
 		@_contents = @_paper?.set() if @_withPaper
 		@_views = []
 	
 		@_allowEventBindings()
+
+		Object.defineProperties(@, 
+			x:
+				get: ( ) ->
+					x = @_anchor?.getBBox()?.cx
+					unless x?
+						x = 0
+					return x
+
+				set: ( x ) ->
+					@moveTo(x, @y, off)
+			y:
+				get: ( ) ->
+					y = @_anchor?.getBBox()?.cy
+					unless y?
+						y = 0
+					return y
+
+				set: ( y ) ->
+					@moveTo(@x, y, off)
+		)
+
 		
 	# Gets the Bounding Box for this view
 	# 
@@ -37,17 +61,78 @@ class View.RaphaelBase extends Helper.Mixable
 			view.kill?()
 		@_unbindAll()
 
+	# Sets the position of this view according to its parent's instructions
+	#
+	# @param animate [Boolean] wether or not to animate the move
+	#
+	setPosition: ( animate = on ) ->
+		[x, y] = @_parent?.getViewPlacement(@) ? [null, null]
+
+		if x? and y?
+			@moveTo(x, y, animate)
+
+		return this
+
+	# Moves the view to a new position
+	#
+	# @param x [float] the x coordinate to which to move
+	# @param y [float] the y coordinate to which to move
+	# @param animate [Boolean] wether or not to animate the move
+	#
+	moveTo: ( x, y, animate = on ) ->
+		dx = x - @x
+		dy = y - @y
+
+		@move(dx, dy, animate)
+
+		return this
+
+	# Moves the view to a new position
+	#
+	# @param dx [float] the amount to move in the x direction
+	# @param dy [float] the amount to move in the y direction
+	# @param animate [Boolean] wether or not to animate the move
+	#
+	move: (dx, dy, animate = on, moveViews = on) ->
+		done = ( ) =>
+			@_trigger( 'view.moved', @ )			
+
+		@_contents.stop()
+
+		transform = "...t#{dx},#{dy}"
+		if animate
+			dt = 500
+			ease = 'ease-in-out'
+
+			@_trigger( 'view.moving', @, [dx, dy, dt, ease] )
+
+			@_contents.animate Raphael.animation(
+				transform: transform
+			, dt, ease, _(done).once()
+			)
+				
+		else
+			@_contents.transform(transform)
+			done()
+
+		if moveViews
+			view.move(dx, dy, animate) for view in @_views				
+
+		return this
+
 	# Draw this view and it's children
 	# 
 	# @param x [Integer] The x position
 	# @param y [Integer] The y position
 	# @retuns [Object] The contents drawn
 	#
-	draw: ( @x, @y ) ->
+	draw: ( x, y ) ->
 		@clear()
 
-		for view in @_views
-			@drawView view
+		@_anchor = @_paper.circle(x, y, 0)
+		@_contents.push(@_anchor)
+
+		@drawView view for view in @_views			
 
 		return @_contents
 	
@@ -55,9 +140,6 @@ class View.RaphaelBase extends Helper.Mixable
 	# 
 	redraw: ( ) ->
 		@draw( @x, @y )
-
-		for view in @_views
-			view.redraw()
 
 	# Add a view to draw in the container
 	#
@@ -71,12 +153,7 @@ class View.RaphaelBase extends Helper.Mixable
 	# @param view [View.Base] The view to draw
 	#
 	drawView: ( view ) ->
-		if view instanceof View.RaphaelBase
-			placement = @_getViewPlacement( view )
-			viewcontents = view.draw( placement.x, placement.y, 1)
-			@_contents.push viewcontents
-		else
-			view.draw()
+		view.draw() if view.visible
 	
 	# Removes a view from the container
 	#
@@ -85,11 +162,6 @@ class View.RaphaelBase extends Helper.Mixable
 	removeView: ( ) ->
 		@_views = _( @_views ).without view
 		@redraw()
-
-	#
-	#
-	@_getViewPlacement: ( view ) ->
-		return { x: 0, y:0, scale: 1 }
 
 	# Returns the absolute (document) coordinates of a point within the paper
 	#

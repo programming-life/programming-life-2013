@@ -29,9 +29,9 @@ class View.Spline extends View.RaphaelBase
 
 		@_bind( 'module.property.changed', @, @onModuleInvalidated )
 
-		@_bind( 'module.view.moving', @, @onModuleMoving )
-		@_bind( 'module.view.moved', @, @onModuleMoved )
-		@_bind( 'module.view.drawn', @, @onModuleDrawn )
+		@_bind( 'view.moving', @, @onViewMoving )
+		@_bind( 'view.moved', @, @onViewMoved )
+		@_bind( 'view.drawn', @, @onViewDrawn )
 
 		@_trigger( 'cell.spline.add', @_cell, [ @ ] )
 
@@ -111,38 +111,39 @@ class View.Spline extends View.RaphaelBase
 		
 		@setColor()
 
-	# Gets called when a module view is about to move (animated)
+	# Gets called when a view is about to move (animated)
 	#
-	# @param module [Module] the module will be moving
+	# @param view [Raphael] the view will be moving
 	# @param dx [float] the amount to move in the x direction
 	# @param dy [float] the amount to move in the y direction
 	# @param dt [float] the amount of milliseconds for which to animate
 	# @param ease [String] the easing transition being used
 	#
-	onModuleMoving: ( module, dx, dy, dt, ease ) =>
-		if module is @orig.module
-			path = @_getPathString(dx, dy, 0, 0)			
-		else if module is @dest.module
+	onViewMoving: ( view, dx, dy, dt, ease ) =>
+		if view is @orig
+			path = @_getPathString(dx, dy, 0, 0)
+		else if view is @dest
 			path = @_getPathString(0, 0, dx, dy)
 
 		if path?
+			@_contents?.stop()
 			@_contents?.animate
 				path: path
 			, dt, ease
 
-	# Gets called when a module view has moved
+	# Gets called when a view has moved
 	#
-	# @param module [Module] the module which has moved
+	# @param view [Raphael] the view which has moved
 	#
-	onModuleMoved: ( module ) =>
+	onViewMoved: ( module ) =>
 		if module is @orig.module or module is @dest.module
 			@draw()
 
-	# Gets called when a module view was drawn
+	# Gets called when a view view was drawn
 	#
-	# @param module [Module] the module that was drawn
+	# @param view [Raphael] the view that was drawn
 	#
-	onModuleDrawn: ( module ) =>
+	onViewDrawn: ( module ) =>
 		if module is @orig.module or module is @dest.module
 			@draw()
 

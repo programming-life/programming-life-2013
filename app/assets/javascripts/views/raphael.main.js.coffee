@@ -8,7 +8,7 @@ class View.Main extends View.RaphaelBase
 	# @todo dummy module inactivate if already in cell
 	# @param container [String, Object] A string with an id or a DOM node to serve as a container for the view
 	#
-	constructor: ( container = "#paper" ) ->
+	constructor: ( container = "#paper", @_target = window ) ->
 	
 		container = $( container )[0]
 		super Raphael(container, 0,0) 
@@ -66,21 +66,20 @@ class View.Main extends View.RaphaelBase
 				@undo.setTree if selected then module.timemachine else @cell.model.timemachine 
 		)
 		
-	# Toggles the simulation
+	# Sets the simulation state
 	#
-	# @param action [Boolean] start simulation
+	# @param startSimulateFlag [Boolean] flag to start the simulation
 	#
-	toggleSimulation: ( action ) ->
-	
-		if action
+	setSimulationState: ( startSimulateFlag ) ->
+		if startSimulateFlag
 			return @cell.startSimulation( 25, 0, 50 )
 		return @cell.stopSimulation()
 		
-	# Resizes the cell to the window size
+	# Resizes the cell to the target size
 	#
 	resize: ( ) =>	
-		width = $( window ).width()
-		height = $( window ).height() - 110
+		width = $( @_target ).width()
+		height = $( @_target ).height() - 110
 
 		edge = Math.min(width / 1.5, height)
 		@_paper.setSize( edge * 1.5, edge )
@@ -90,10 +89,6 @@ class View.Main extends View.RaphaelBase
 	# Draws the main view
 	#
 	draw: ( ) ->
-		if @_locked
-			@_drawWhenUnlocked = true
-			return
-
 		for view in @_views
 			view.draw()
 
@@ -121,19 +116,26 @@ class View.Main extends View.RaphaelBase
 		
 	# Clears this view
 	#
+	# @return [self] chainable self
+	#
 	clear: () ->
 		super()
 		@_resetModal.clear()
 		@_loadModal.clear()
+		return this
 	
 	# Kills the main view
+	#
+	# @return [self] chainable self
 	#
 	kill: ( ) ->
 		super()
 		@_paper.remove()
 		@_resetModal.kill()
 		@_loadModal.kill()
+		@getActionButtons().removeProp( 'disabled' )
 		$( window ).off( 'resize' )
+		return this
 		
 	# Loads a new cell into the cell view
 	#
@@ -151,11 +153,125 @@ class View.Main extends View.RaphaelBase
 	save: ( name ) ->
 		return @cell.save( name )
 		
+	# Gets the cell name
+	#
+	# @return [String, null] the cell name
+	#
+	getCellName: () ->
+		value = $( '#cell_name' ).val()
+		return null if value.length is 0
+		return value ? null
+	
+	# Sets the cell name
+	#
+	# @param name [String] the cell name
+	# @return [self] chainable self
+	#
+	setCellName: ( name ) ->
+		value = $( '#cell_name' ).val name
+		return this
+		
+	# Gets the progress bar
+	#
+	# @return [jQuery.Elem] the progress bar
+	#
+	getProgressBar: () ->
+		return $( '#progress' )
+		
+	# Sets the progress bar
+	#
+	# @param value [Float] range 0..1 percentage filled
+	# @return [self] chainable self
+	#
+	setProgressBar: ( value ) ->
+		@getProgressBar()
+			.find( '.bar' )
+			.css( 'width', "#{value * 100}%" )
+		return this
+		
+	# Hides the progress bar
+	#
+	# @return [self] chainable self
+	#
+	hideProgressBar: ( ) ->
+		@getProgressBar().css( 'opacity', 0 )
+		return this
+		
+	# Shows the progress bar
+	#
+	# @return [self] chainable self
+	#
+	showProgressBar: () ->
+		@getProgressBar().css( 'visibility', 'visible' )
+		@getProgressBar().css( 'opacity', 1 )
+		return this
+		
+	# Binds an action on the action buttons
+	#
+	# @return [self] chainable self
+	#
+	bindActionButtonClick: ( action ) ->
+		$( '#actions' ).on( 'click', '[data-action]', action )
+		return this
+		
+	# Gets the action buttons
+	#
+	# @return [jQuery.Collection] the action button elements
+	#
+	getActionButtons: ( ) ->
+		return $( '#actions' ).find( '[data-action]' )
+		
+	# Resets the action buttons visual state
+	# 
+	# @return [self] chainable self
+	# 
+	resetActionButtons: () ->
+		@getActionButtons()
+			.removeClass( 'btn-success' )
+			.removeClass( 'btn-danger' )
+			.prop( { disabled :  true } )
+			.filter( ':not([data-toggle])' )
+				.filter( ':not([class*="btn-warning"])' )
+				.find( 'i' )
+					.removeClass( 'icon-white' )
+		return this
+		
+	# Resets the action button button state
+	#
+	# @return [self] chainable self
+	# 
+	resetActionButtonState: () ->
+		@getActionButtons()
+			.button( 'reset' )
+		return this
+		
+	# Enable the action buttons (undisable)
+	#
+	# @return [self] chainable self
+	#
+	enableActionButtons: () ->
+		@getActionButtons()
+			.prop( 'disabled', false )
+		return this
+			
+	# Sets a button statr
+	#
+	# @param elem [jQuery.elem]
+	# @param state [String] the button state
+	# @param className [String] the class to add
+	# @return [self] chainable self
+	#
+	setButtonState: ( elem, state, classname ) ->
+		elem.button( state )
+		elem.addClass( classname ) if classname?
+		return this
+		
 	# Call confirmation for reset
 	#
 	# @param confirm [Function] action on confirmed
 	# @param close [Function] action on closed
 	# @param always [Function] action always
+	# @return [self] chainable self
 	#
 	confirmReset: ( confirm, close, always ) ->
 	
@@ -167,17 +283,18 @@ class View.Main extends View.RaphaelBase
 			
 		@_resetModal.onClosed( @, func )
 		@_resetModal.show()
+		return this
 		
 	# Call modal for load
 	#
 	# @param confirm [Function] action on confirmed
 	# @param close [Function] action on closed
 	# @param always [Function] action always
+	# @return [self] chainable self
 	#
 	showLoad: ( load, close, always ) ->
 	
 		func = ( caller, action ) =>
-			console.log action
 			load?( @_loadModal.cell ) if action is 'load'
 			close?() if action is 'cancel' or action is undefined
 			always?()
@@ -186,3 +303,5 @@ class View.Main extends View.RaphaelBase
 			
 		@_loadModal.onClosed( @, func )
 		@_loadModal.show()
+		
+		return this

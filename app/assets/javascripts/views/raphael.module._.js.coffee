@@ -25,13 +25,11 @@ class View.Module extends View.RaphaelBase
 	
 		@_type = module.constructor.name
 		@_name = module.name
-		
-		@x = 0
-		@y = 0
 
 		@_selected = off	
 		@_visible = on
 
+		@addBindings()
 		@addInteraction() if @_interaction is on
 				
 		Object.defineProperty( @, 'visible',
@@ -44,20 +42,39 @@ class View.Module extends View.RaphaelBase
 				return @_type
 		)
 		
-	# Adds interaction to the module
+	# Adds interaction to the module ( popovers )
 	#
 	addInteraction: () ->
 		@_propertiesView = new View.ModuleProperties( @, @_parent, @_cell, @module )
 		@_notificationsView = new View.ModuleNotification( @, @_parent, @_cell, @module )
 	
-		@_bind( 'module.property.changed', @, @onModuleInvalidated )
 		@_bind( 'module.selected.changed', @, @onModuleSelected )
 		@_bind( 'module.hovered.changed', @, @onModuleHovered )
-
+		return this
+		
+	# Adds bindings to the module (non-interaction)
+	#
+	addBindings: () ->
+		@_bind( 'module.property.changed', @, @onModuleInvalidated )
 		@_bind( 'cell.module.added', @, @onModuleAdded )
 		@_bind( 'cell.module.removed', @, @onModuleRemoved )
 		@_bind( 'cell.metabolite.added', @, @onMetaboliteAdded )
 		@_bind( 'cell.metabolite.removed', @, @onMetaboliteRemoved )
+		
+	# Adds hitbox interaction (click, mouseout, mouseover)
+	#
+	addHitBoxInteraction: () ->
+		@_hitbox.click =>
+			unless @_selected
+				_( @_trigger( 'module.selected.changed', @module, [ on ]) ).debounce( 100 )
+			else
+				_( @_trigger( 'module.selected.changed', @module, [ off ]) ).debounce( 100 )
+
+		@_hitbox.mouseout =>
+			_( @_trigger( 'module.hovered.changed', @module, [ off, @_selected ]) ).debounce( 100 )
+		
+		@_hitbox.mouseover =>
+			_( @_trigger( 'module.hovered.changed', @module, [ on, @_selected ]) ).debounce( 100 )
 		return this
 		
 	# Generates a hashcode based on the module name
@@ -130,47 +147,6 @@ class View.Module extends View.RaphaelBase
 
 		@_hovered = hovered
 		return this
-
-	# Sets the position of this view according to its parent's instructions
-	#
-	# @param animate [Boolean] wether or not to animate the move
-	#
-	setPosition: ( animate = on ) ->
-		[x, y] = @_parent.getViewPlacement(@)
-		@moveTo(x, y, animate)
-
-	# Moves the view to a new position
-	#
-	# @param x [float] the x coordinate to which to move
-	# @param y [float] the y coordinate to which to move
-	# @param animate [Boolean] wether or not to animate the move
-	#
-	moveTo: ( x, y, animate = on ) =>
-		dx = x - @x
-		dy = y - @y
-
-		done = ( ) =>
-			@_propertiesView?.setPosition()
-			@_notificationsView?.setPosition()
-			@_trigger( 'module.view.moved', @module )
-
-		transform = "...t#{dx},#{dy}"
-		if animate
-			dt = 500
-			ease = 'ease-in-out'
-
-			@_trigger( 'module.view.moving', @module, [dx, dy, dt, ease] )
-
-			@_contents.animate
-				transform: transform
-			, dt, ease, done
-				
-		else
-			@_contents.transform(transform)
-			done()
-
-		@x = x
-		@y = y
 		
 	# Returns the full type of this view's module.
 	#
@@ -178,29 +154,16 @@ class View.Module extends View.RaphaelBase
 	#
 	getFullType: ( ) ->
 		return @module.getFullType()
-		
-	# Clears the module view
-	#
-	# @return [self] chainable self
-	#
-	clear: () ->
-		@_contents?.remove()
-		super()
-		return this
-		
+				
 	# Kills the module view
 	#
 	# @return [self] chainable self
 	#
-	kill: () ->	
-		@_visible = off
-		@_unbindAll()
-		
+	kill: () ->
 		@_propertiesView?.kill()
-		@_notificationsView?.kill()
+		@_notificationsView?.kill()		
 		
-		super()
-		return this
+		return super()
 
 	# Returns the bounding box of this view
 	#
@@ -266,152 +229,133 @@ class View.Module extends View.RaphaelBase
 	# Draws this view and thus the model
 	#
 	draw: ( x = null, y = null ) ->
-		
-		@clear()
+		unless x? and y?
+			[x, y] = @_parent?.getViewPlacement(@) ? [0, 0]
+
+		super(x, y)
 
 		unless @_visible
 			return
-
-		# Store x, y, and scale values for further redraws
-		if x? and y?
-			@x = x
-			@y = y			
-		else
-			[@x, @y] = @_parent?.getViewPlacement(@) ? [0, 0]
-
+		
 		@color = @hashColor(_.escape _( @module.name ).first())
 		
-		# If we're either hovered or selected, we will display a bigger version of the view
-		padding = 15
-
-		# Start a set for contents
 		contents = @drawContents()
-
-		# Start a new set for the entire view
-		@_paper.setStart()
-
-		# Draw box
-		@_box = @drawBox(contents)
-		@_box.insertBefore(contents)
-
-		@_shadow = @drawShadow(@_box)
-
-		# Draw splines
-		if @type is 'Transporter'
-			for property in [ 'orig', 'dest' ]
-				metabolite = @_cell.getMetabolite @module[ property ]
-				if metabolite
-					placement = metabolite.placement
-					view = @_parent.getView(metabolite)
-					direction = @_getSplineDirection(placement)
-
-					if direction is View.Module.Direction.Inward
-						@_createSpline view, @
-					else if direction is View.Module.Direction.Outward
-						@_createSpline @, view
-
-		else if @type is 'Metabolism'
-			for metabolite in @module.orig.map( ( name ) => @_cell.getMetabolite name ) when metabolite?
-				view = @_parent.getView(metabolite)
-				@_createSpline view, @
-
-			for metabolite in @module.dest.map( ( name ) => @_cell.getMetabolite name ) when metabolite?
-				view = @_parent.getView(metabolite)
-				@_createSpline @, view
-
-		# Draw hitbox
-		hitbox = @drawHitbox(@_box)
-
-		hitbox.click =>
-			_( @_trigger( 'module.selected.changed', @module, [ on ]) ).debounce( 100 )
-
-		hitbox.mouseout =>
-			_( @_trigger( 'module.hovered.changed', @module, [ off, @_selected ]) ).debounce( 100 )
+		@_contents.push @drawMetaContents( contents )
+		@_contents.push contents
 		
-		hitbox.mouseover =>
-			_( @_trigger( 'module.hovered.changed', @module, [ on, @_selected ]) ).debounce( 100 )
+		@createSplines()
+		
+		@_trigger( 'view.drawn', @ )
 
-		@_contents = @_paper.setFinish()
-		@_contents.push( contents )
-
-		@_trigger( 'module.view.drawn', @module )
-
-	# Draws contents
+	# Draws the contents (module)
 	#
-	# @param x [Integer] x position
-	# @param y [Integer] y position
-	# @return [Raphael] the contents
+	# @return [Raphael.Set] the contents
 	#
 	drawContents: () ->
-	
 		@_paper.setStart()		
-		switch @_type
-		
-			when 'Transporter'
-			
-				[ arrow ] = @drawComponent( 'transporter', 'ProcessArrow', @x, @y, { } )
-				
-				params =
-					substrate: @module.orig ? "..."
-					showText: off
-				
-				[ substrateCircle ] = @drawComponent( 'transporter', 'SubstrateCircle', @x, @y, params )
-
-			when "Metabolite"		
-			
-				params =
-					substrate: @module.name ? "..."
-					showText: on
-					
-				[ substrateCircle, substrateText ] = @drawComponent( 
-					'substrate', 
-					'SubstrateCircle', 
-					@x, @y, params )
-				
-			when "Metabolism"
-			
-				[ arrow ] = @drawComponent( 'transporter', 'ProcessArrow', @x, @y, { } )
-				
-				params =
-					orig: @module.orig ? [ "..." ]
-					dest: @module.dest ? [ "..." ]
-					showText: off
-				
-				[ enzymCirclesOrig, enzymCircleDests ] = @drawComponent( 'enzym', 'EnzymCircle', @x, @y, params )
-									
-			when "Protein"	
-			
-				params =
-					substrate: @module.name ? "..."
-					showText: on
-					useFullName : on
-					r: 45
-					
-				[ substrateCircle, substrateText ] = @drawComponent( 
-					'Protein', 
-					'SubstrateCircle', 
-					@x, @y, params )
-										
-			when "DNA"
-						
-				text = @_paper.text(@x, @y, _.escape @_type)
-				$(text.node).addClass('module-text')
-					
-			when "Lipid"
-						
-				text = @_paper.text(@x, @y, _.escape @_type)
-				$(text.node).addClass('module-text')
-									
-			when "CellGrowth"
-						
-				text = @_paper.text(@x, @y, _.escape @_type)
-				$(text.node).addClass('module-text')
-					
-			else
-				text = @_paper.text(@x, @y, _.escape @_type)
-				$(text.node).addClass('module-text')
-
+		drawFunction = @["drawAs#{@type}"] ? @drawAsBasic
+		drawFunction.call @
 		return @_paper.setFinish()
+		
+	# Draws the meta contents ( shadow, hitbox ... )
+	#
+	# @param contents [Raphael.Set] the contents to draw meta on
+	# @return [Raphael.Set] the metacontents
+	#
+	drawMetaContents: ( contents ) ->
+		@_paper.setStart()
+		@_box = @drawBox contents
+		@_box.insertBefore contents
+		@_shadow = @drawShadow @_box
+		@_hitbox = @drawHitbox @_box
+		@addHitBoxInteraction() if @_interaction is on
+		return @_paper.setFinish()
+		
+	# Draws this view with basic visualisation
+	#
+	# @return [Array<Raphael>] the contents
+	#
+	drawAsBasic: () ->
+		text = @_paper.text(@x, @y, _.escape @_type)
+		$(text.node).addClass('module-text')
+		return [ text ]
+		
+	# Draws this view as a transporter
+	#
+	# @return [Array<Raphael>] the contents
+	#
+	drawAsTransporter: () ->
+		[ arrow ] = @drawComponent( 'transporter', 'ProcessArrow', @x, @y, { } )
+		params =
+			substrate: @module.orig ? "..."
+			showText: off
+		[ substrateCircle ] = @drawComponent( 'transporter', 'SubstrateCircle', @x, @y, params )
+		return [ substrateCircle, arrow ]
+		
+	# Draws this view as a metabolite
+	#
+	# @return [Array<Raphael>] the contents
+	#
+	drawAsMetabolite: () ->
+		params =
+			substrate: @module.name ? "..."
+			showText: on
+			
+		[ substrateCircle, substrateText ] = @drawComponent( 
+			'substrate', 
+			'SubstrateCircle', 
+			@x, @y, params )
+		return [ substrateCircle, substrateText ] 
+		
+	# Draws this view as a metabolism
+	#
+	# @return [Array<Raphael>] the contents
+	#
+	drawAsMetabolism: () ->
+		[ arrow ] = @drawComponent( 'transporter', 'ProcessArrow', @x, @y, { } )
+				
+		params =
+			orig: @module.orig ? [ "..." ]
+			dest: @module.dest ? [ "..." ]
+			showText: off
+		[ enzymCirclesOrig, enzymCircleDests ] = @drawComponent( 'enzym', 'EnzymCircle', @x, @y, params )
+		
+		return [ enzymCirclesOrig, enzymCircleDests, arrow ]
+		
+	# Draws this view as a protein
+	#
+	# @return [Array<Raphael>] the contents
+	#
+	drawProtein: () ->
+		params =
+			substrate: @module.name ? "..."
+			showText: on
+			useFullName : on
+			r: 45
+			
+		[ substrateCircle, substrateText ] = @drawComponent( 
+			'Protein', 
+			'SubstrateCircle', 
+			@x, @y, params )
+		return [ substrateCirlce, substrateText ]
+		
+	# Draws this view as a DNA
+	#
+	# @return [Array<Raphael>] the contents
+	#
+	drawAsDNA: () -> @drawAsBasic()
+	
+	# Draws this view as a Lipid
+	#
+	# @return [Array<Raphael>] the contents
+	#
+	drawAsLipid: () -> @drawAsBasic()
+	
+	# Draws this view as a cell growth
+	#
+	# @return [Array<Raphael>] the contents
+	#
+	drawAsCellGrowth: () -> @drawAsBasic()
 
 	# Draws this view bounding box
 	#
@@ -435,47 +379,32 @@ class View.Module extends View.RaphaelBase
 		$( box.node ).addClass  @type.toLowerCase() + '-box'
 		
 		return box
-
-	# Draws a spline from between two points
+		
+	# Creates splines for this module
 	#
-	# @param origX [float] the starting x coordinate
-	# @param origY [float] the starting y coordinate
-	# @param destX [float] the terminal x coordinate
-	# @param destY [float] the terminal y coordinate
-	# @return [Raphael] the spline path
-	#
-	drawSpline : ( direction, target ) ->
-		switch direction
-			when View.Module.Direction.Inward
-				[origX, origY] = @getPoint(View.Module.Location.Entrance)
-				[destX, destY] = target.getPoint(View.Module.Location.Exit)
+	createSplines: () ->
+		if @type is 'Transporter'
+			for property in [ 'orig', 'dest' ]
+				metabolite = @_cell.getMetabolite @module[ property ]
+				if metabolite
+					placement = metabolite.placement
+					view = @_parent.getView(metabolite)
+					direction = @_getSplineDirection(placement)
 
-				dx = -Math.abs(destX - origX)
-				dy = destY - origY
+					if direction is View.Module.Direction.Inward
+						@_createSpline view, @
+					else if direction is View.Module.Direction.Outward
+						@_createSpline @, view
 
-				x1 = origX + 2/3 * dx - 20
-				y1 = origY + 1/4 * dy
-				x2 = destX - 2/3 * dx + 20
-				y2 = destY - 1/4 * dy
+		else if @type is 'Metabolism'
+			for metabolite in @module.orig.map( ( name ) => @_cell.getMetabolite name ) when metabolite?
+				view = @_parent.getView(metabolite)
+				@_createSpline view, @
 
-			when View.Module.Direction.Outward
-				[origX, origY] = @getPoint(View.Module.Location.Exit)
-				[destX, destY] = target.getPoint(View.Module.Location.Entrance)
-
-				dx = Math.abs(destX - origX)
-				dy = destY - origY
-
-				x1 = origX + 2/3 * dx + 20
-				y1 = origY + 1/4 * dy
-				x2 = destX - 2/3 * dx - 20 
-				y2 = destY - 1/4 * dy
-
-		spline = @_paper.path("M#{origX},#{origY}C#{x1},#{y1} #{x2},#{y2} #{destX},#{destY}")
-		spline.attr('stroke', target.color)
-		spline.node.setAttribute('class', 'metabolite-spline')
-
-		return spline
-
+			for metabolite in @module.dest.map( ( name ) => @_cell.getMetabolite name ) when metabolite?
+				view = @_parent.getView(metabolite)
+				@_createSpline @, view
+		return this
 
 	# Draws this view shadow
 	#
@@ -632,7 +561,8 @@ class View.Module extends View.RaphaelBase
 	# @return [View.Spline] the created spline
 	#
 	_createSpline: ( orig, dest ) ->
-		return new View.Spline(@_paper, @_parent, @_cell, orig, dest)
+		new View.Spline(@_paper, @_parent, @_cell, orig, dest)
+		#return 
 
 	# Runs if module is invalidated
 	# 
