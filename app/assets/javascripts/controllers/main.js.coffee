@@ -83,11 +83,7 @@ class Controller.Main extends Controller.Base
 	# @param value [Integer] the current value
 	#
 	_setProgressBar: ( value ) =>
-		@view.setProgressBar value / @_num + 1 / @_num * @_curr
-		if ( value is 1 )
-			if ++@_curr is @_num
-				@view.hideProgressBar()
-			
+		@view.setProgressBar value / @_iterations + 1 / @_iterations * @_currentIteration
 		return this
 		
 	# Runs on an action (click)
@@ -201,17 +197,20 @@ class Controller.Main extends Controller.Base
 		target.attr( 'disabled', false )
 		startSimulateFlag = not target.hasClass( 'active' )
 		
-		# hack
-		@_num = 2
-		@_curr = 0
-		
-		[ ppromise, token ] = @controller('cell').setSimulationState startSimulateFlag
+		iterationDone = ( results, from, to ) =>
+			@_currentIteration++
+			@_setProgressBar 0
+			
+		@_iterations = 4
+		@_currentIteration = 0
+		[ token, progress_promise ] = @controller('cell').setSimulationState startSimulateFlag, iterationDone, 20, @_iterations
 		if startSimulateFlag is on
 			@_token = token
 			@view.showProgressBar()
-			ppromise.progress @_setProgressBar
-			ppromise.always enable
-			ppromise.always () => @view.setButtonState(target, 'toggle') if target.hasClass( 'active' )
+			progress_promise.progress @_setProgressBar
+			progress_promise.always enable
+			progress_promise.always () => @view.setButtonState( target, 'toggle' ) if target.hasClass( 'active' )
+			progress_promise.done () => @view.hideProgressBar()
 		else
 			@_token?.cancel()
 			@view.hideProgressBar()
