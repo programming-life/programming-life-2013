@@ -3,6 +3,7 @@
 class View.RaphaelBase extends Helper.Mixable
 	
 	@concern Mixin.EventBindings
+	@concern Mixin.Catcher
 
 	# Constructs a new Base view
 	# 
@@ -33,6 +34,13 @@ class View.RaphaelBase extends Helper.Mixable
 				set: ( y ) ->
 					@moveTo(@x, y, off)
 		)
+
+	# Catcher function for Mixin.Catcher that will notificate any thrown Error on catchable methods
+	#
+	# @param e [Error] the error to notificate
+	#
+	_catcher: ( e ) =>
+		@_notificate(@, @, '', e.name, [], View.RaphaelBase.Notification.Error)
 
 		
 	# Gets the Bounding Box for this view

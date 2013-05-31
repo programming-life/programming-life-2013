@@ -61,27 +61,28 @@ class View.DummyModule extends View.RaphaelBase
 	# @params dummy [View.DummyModule] the dummy to activate
 	# @params params [Object] the params to pass to the constructor
 	#
-	onModuleCreationFinished : ( dummy, params ) ->
-		if dummy isnt this
-			return
+	@catchable
+		onModuleCreationFinished : ( dummy, params ) ->
+			if dummy isnt this
+				return
 
-		params = _( params ).defaults( @_params )
-		module = new @_modulector( _( params ).clone( true ) )			
-		@_cell.add module
+			params = _( params ).defaults( @_params )
+			module = new @_modulector( _( params ).clone( true ) )			
+			@_cell.add module
 
-		@_setSelected off
-		
-		switch @_type
-			when "Transporter"
-				if params.direction is Model.Transporter.Outward
-					@_cell.addProduct( params.transported , 0, false )
-				if params.direction is Model.Transporter.Inward
-					@_cell.addSubstrate( params.transported , 0, 0, true )
-			when "Metabolism"
-				for o in params.orig ? []
-					@_cell.addSubstrate( o , 0, 0, true )
-				for d in params.dest ? []
-					@_cell.addProduct( d , 0, true )
+			@_setSelected off
+			
+			switch @_type
+				when "Transporter"
+					if params.direction is Model.Transporter.Outward
+						@_cell.addProduct( params.transported , 0, false )
+					if params.direction is Model.Transporter.Inward
+						@_cell.addSubstrate( params.transported , 0, 0, true )
+				when "Metabolism"
+					for o in params.orig ? []
+						@_cell.addSubstrate( o , 0, 0, true )
+					for d in params.dest ? []
+						@_cell.addProduct( d , 0, true )
 				
 	# On Module Added to the Cell
 	#
