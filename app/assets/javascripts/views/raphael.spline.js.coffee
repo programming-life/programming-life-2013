@@ -24,7 +24,7 @@ class View.Spline extends View.RaphaelBase
 	# Adds interaction to the spline
 	#
 	addInteraction: ( ) ->
-		@_bind( 'cell.model.removed', @, @onModuleRemoved )
+		@_bind( 'cell.module.removed', @, @onModuleRemoved )
 		@_bind( 'cell.metabolite.removed', @, @onModuleRemoved )
 
 		@_bind( 'module.property.changed', @, @onModuleInvalidated )
@@ -55,6 +55,7 @@ class View.Spline extends View.RaphaelBase
 		path = @_getPathString()
 
 		@_contents = @_paper.path(path)
+		@_contents.insertBefore(@_paper.bottom)
 		$(@_contents.node).addClass('metabolite-spline')
 
 		@setColor()
