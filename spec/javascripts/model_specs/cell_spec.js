@@ -30,7 +30,7 @@ describe("Cell", function() {
 
 	// mixin: timemachine
 	it("should have an undotree", function() {
-		expect( cell._tree ).toBeDefined();
+		expect( cell.tree ).toBeDefined();
 	});
 	
 	// mixin:  event bindings
@@ -107,7 +107,7 @@ describe("Cell", function() {
 
 			// mixin: timemachine
 			it("should have an undotree", function() {
-				expect( cell._tree ).toBeDefined();
+				expect( cell.tree ).toBeDefined();
 			});
 
 			// mixin:  event bindings
@@ -147,7 +147,7 @@ describe("Cell", function() {
 		beforeEach(function() {
 			module = new Model.Module()
 
-			old = cell._tree._current;
+			old = cell.tree.current;
 
 			cell.add( module );
 		});
@@ -162,7 +162,7 @@ describe("Cell", function() {
 		});
 
 		it("should have added a node to the undotree", function() {
-			expect( cell._tree._current._parent ).toBe( old );
+			expect( cell.tree.current.parent ).toBe( old );
 		});
 
 	});

@@ -30,7 +30,7 @@ class Model.Cell extends Helper.Mixable
 		@_allowEventBindings()
 		@_allowTimeMachine()
 		action = @_createAction( "Created cell" )
-		@_tree.setRoot( new Model.Node(action, null) )
+		@tree.setRoot( new Model.Node(action, null) )
 		
 		@_defineProperties( paramscell )
 		
@@ -137,7 +137,7 @@ class Model.Cell extends Helper.Mixable
 				)
 				.do()
 		
-		@addUndoableEventToSub( action, module ) if undoable
+		@addUndoableEvent( action ) if undoable
 		return this
 		
 	# Actually adds the module to the cell
@@ -174,7 +174,7 @@ class Model.Cell extends Helper.Mixable
 				)
 				.do()
 		
-		@addUndoableEventToSub( action, metabolite ) if undoable
+		@addUndoableEvent( action ) if undoable
 		
 		return this
 		

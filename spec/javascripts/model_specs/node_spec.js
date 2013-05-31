@@ -4,7 +4,7 @@ xdescribe("Node", function() {
 	beforeEach( function() {
 	});
 
-	xdescribe("when a root node with children is constructed", function() {
+	describe("when a root node with children is constructed", function() {
 		var left, right;
 		var children;
 
@@ -36,10 +36,9 @@ xdescribe("Node", function() {
 				expect( node.children ).toMatch([right]);
 			});
 
-			it("should keep the branch indicater intact if it exists", function() {
-				right.branch = right;
+			it("should set the branch of the parent to the child", function() {
 				left.rebase( right );
-				expect( right.branch ).toBe( right );
+				expect( right.branch ).toBe( left );
 			});
 
 		});
