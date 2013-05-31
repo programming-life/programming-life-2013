@@ -41,12 +41,12 @@
 	\section{Introduction}
 		Synthetic biologists try to create cells that work in certain ways. Before they accomplish this, they would like to simulate the internal workings of cells and their outputs by using combinations of several differential equations which influence each other. 
 By varying the properties, say factors and values used by these equations, the biologists can simulate the output of the cell and measure the effect of that set of factors. 
-However, the complexity of the simulation can be daunting if done on paper or programmed by hand per set of factors and that is also time-consuming.\\
+However, the complexity of the simulation can be daunting if done on paper or programmed by hand per set of factors which is also time-consuming.\\
 
 GigaBase is an intuitive application that should overcome this last problem by providing a GUI and allow the simulation of an extensive number of modules with user-specified properties and environment and thereby simulate a complete cell.
 A module simulates a part of a cell by solving a systems of ODE describing its behaviour. 
 
-By using this application, the biologists can efficiently find the optimal properties with less work and calculations prone to error, to get their preferred outcome, such as maximizing the yield of a cell.
+By using this application, the user can efficiently find the optimal properties with less work to get their preferred outcome, such as maximizing the product of a cell. The user also doesn't have to worry about doing calculations which are prone to error and take a long time to perform.
 \\
 
 This product will be developed using the Scrum methodologies and the development wil be iterated in weekly sprints.
@@ -62,7 +62,7 @@ This product will be developed using the Scrum methodologies and the development
 		\subsection{High-level product backlog}
 			\textbf{A user can model a cell by selecting modules.}\\
 			\indent
-				\textit{Note: A GUI provides certain modules.}\\
+				\textit{Note: A GUI provides the modules needed to model a cell.}\\
 			\textbf{A user can see the output of a model when it’s simulated over a period of time.}\\
 			\indent
 				\textit{Glossary: A model is a selection of modules with their properties and initial conditions set.}\\
@@ -73,7 +73,7 @@ This product will be developed using the Scrum methodologies and the development
 				\textit{Note: A GUI lists the properties and allows changing.}\\
 			\textbf{A user can export the results of the design to a report.}\\
 			\indent
-				\textit{Note: output file(s) such as HTML, Excel and/or PDF.}\\
+				\textit{Note: output file(s) such as HTML, Excel, SBML and/or PDF.}\\
 			\textbf{A user can save and load models}.\\
 			\indent
 				\textit{Note: Models are serializable. A database is used for storage.}\\
@@ -82,41 +82,46 @@ This product will be developed using the Scrum methodologies and the development
 				\textit{Note: Visual feedback such as constraints for modules, errors and possible optimizations.}\\
 			\textbf{A user can add or change modules.}\\
 			\indent
-				\textit{Note: The differential equation(s) of a module should be changeable. The inter-module constraints should be changed accordingly. The equation can be inputted, or built from selecting partsregistry biobricks.}\\
-			\textbf{The product is internationalized.}\\
+				\textit{Note: The differential equation(s) of a module should be changeable. The inter-module constraints should be changed accordingly.}\\
+			\textbf{A user can undo an action.}\\
 			\indent
-				\textit{Note: GUI option to select the language.}
-
+				\textit{Note: Actions such as adding/editing/removing modules.}\\
+			
+		\clearpage
 		\subsection{Roadmap}
-			After each sprint the product backlog is updated.\\\\
-			\textbf{Sprint 0}\\
-			\indent
-				\textbf{Q3/W4 Draft planning:} The product and domain are researched, the product vision and high-level product backlog are devised with initial list of user stories composed. The user stories can be found under the product backlog.\\
-			\indent
-				\textbf{Q3/W5 Initial planning:} The user story list is fine-tuned and tasks devised for the first sprints.\\
-				The user stories can be found under the product backlog. After this sprint all data models for should be present.\\
-			\textbf{Sprint 1 (Q3/W6)}\\
+			\begin{figure}[htb]
+			\centerline{\includegraphics[scale=1]{Roadmap.png}}
+			\caption{Roadmap}
+			\label{fig: Roadmap}
+			\end{figure}	
+			\subsubsection*{Sprint 0}
+				\textbf{Q3/W4 Draft planning:}\\ The product and domain are researched, the product vision and high-level product backlog are devised with initial list of user stories composed. The user stories can be found under the product backlog.\\
+				\textbf{Q3/W5 Initial planning:}\\ The user story list is fine-tuned and tasks devised for the first sprints.\\
+				The user stories can be found under the product backlog. After this sprint all data models for should be present.\\		
+				\textbf{Q3/W6}\\
 				Toolchain needed to develop the code is set up. Basic module and cell classes are made and properly tested.
-			\textbf{Sprint 2 (Q3/W7)}\\
-				The properties of the modules are not static but can be changed. Start working on integration tests.\\
-			\textbf{Sprint 3 (Q3/W8)}\\
-				The cell environment can be changed by adding substrates. Modules can react on these substrates.\\
-			\textbf{Sprint 4 (Q4/W1)}\\
-				A basic visualisation of the model data is present. This consists of at least one graph per module that indicates the concentration over time. A set of static modules is available for model composition.\\
-			\textbf{Sprint 5 (Q4/W2) Demo product}\\
-				The product should be usable, stable and completed in terms of the items that are considered MUST. This means that the first 4 items from the High-Level Product backlog are incorporated in this demo. The demo consists of a series of acceptance tests devised in sprint 4.\\
-			\textbf{Sprint 6 (Q4/W3)}\\
-				The output can be exported as a document (HTML/PDF/Excel). Initial rigorous acceptance tests, as the next sprint as a product demo. The models created can now be saved and loaded. Feedback on module constraints is visible\\
-			\textbf{Sprint 7 (Q4/W4)}\\
-				Feedback on errors and optimisation is now visible in the application.\\
-			\textbf{Sprint 8 (Q4/W5)}\\
+			\subsubsection*{Sprint 1 (Q3/W7)}
+				The properties of the modules are not static but can be changed. Start working on integration tests.
+			\subsubsection*{Sprint 2 (Q3/W8)}
+				The cell environment can be changed by adding substrates. Modules can react on these substrates.
+			\subsubsection*{Sprint 3 (Q3/W9)}
+				A basic visualisation of the model data is present. This consists of at least one graph per module that indicates the concentration over time. A set of static modules is available for model composition.
+			\subsubsection*{Sprint 4 (Q3/W10) Demo product}
+				The product should be usable, stable and completed in terms of the items that are considered MUST. This means that the first 4 items from the High-Level Product backlog are incorporated in this demo. The demo consists of a series of acceptance tests devised in sprint 4.
+			\subsubsection*{Sprint 5 (Q4/W1)}
+				The output can be exported as a document (HTML/PDF/Excel). Initial rigorous acceptance tests, as the next sprint as a product demo. The models created can now be saved and loaded. Feedback on module constraints is visible
+			\subsubsection*{Sprint 6 (Q4/W2)}
+				Feedback on errors and optimisation is now visible in the application.
+			\subsubsection*{Sprint 7 (Q4/W3)}
 				Fixing failing unit/functional tests and conducting acceptance tests.\\
-			\textbf{Sprint 9 (Q4/W6)}\\
-				The product is internationalised.\\
-			\textbf{Sprint 10 (Q4/W7)}\\
-				Bug-fixes, acceptance tests and final review of code. Prepare for SIG review.\\
-			\textbf{Sprint 11 (Q4/W8) Final product}\\
+			\subsubsection*{Sprint 8 (Q4/W4)}
+				The product is internationalised.
+			\subsubsection*{Sprint 9 (Q4/W5)}
+				Bug-fixes, acceptance tests and final review of code. Prepare for SIG review.
+			\subsubsection*{Sprint 10 (Q4/W6)}
 				The product should be usable, stable and completed in terms of the items that are considered MUST (First four in the high level product backlog) and SHOULD (Item 5 and 6 in the high level product backlog).
+			\subsubsection*{Sprint 11 (Q4/W7)}
+			\subsubsection*{Sprint 12 (Q4/W8) Final product}
 
 	\clearpage
 	\section{Product backlog}
@@ -129,7 +134,7 @@ This product will be developed using the Scrum methodologies and the development
 			Modules can be selected from a list and placed in the cell.\\
 		\indent
 			Estimate: 6 hours} \\
-		\textbf{A user can create the output of the simulation. }\\
+		\textbf{A user can see the output of the simulation. }\\
 		\indent
 			\textit{Note: a visual representation of the reactions with a module in the form of graphs. \\
 		\indent
@@ -174,7 +179,6 @@ This product will be developed using the Scrum methodologies and the development
 		(version of a) \textbf{Product/Release:} If the product can be shipped to the \emph{stakeholder}. { \scriptsize This is important because this is what the stakeholder gets to see. It can be shipped when all features which are considered a MUST and SHOULD are implemented, see the high-level product backlog and roadmap} \\
 		\textbf{Project:} Never or when the \emph{stakeholder} decides (\emph{June 14$^{th}$}).
 
-	\clearpage
 	\section{Glossary}
 		\textbf{Backlog Item}\\
 		A unit of work small enough to be completed by a team in one sprint iteration. Backlog items are decomposed into one or more tasks. \\
