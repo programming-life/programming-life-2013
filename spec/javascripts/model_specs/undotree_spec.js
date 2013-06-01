@@ -145,10 +145,6 @@ describe("UndoTree", function() {
 							it("should have switched the branch to the old branch", function() {
 								expect( tree.current ).toBe( oldBranchNode );
 							});
-
-							it("should not have added a node", function() {
-								expect( tree.current.parent.children.length ).toBe( 2 );
-							});
 						});
 
 						describe("and then redoing", function() {

@@ -34,7 +34,7 @@ class Model.Tree extends Helper.Mixable
 		node = parent.addChild( object )
 		@current = node
 
-		@_trigger( "tree.add.node", this, [ node ])
+		@_trigger( "tree.node.added", this, [ node ])
 
 		return node
 	

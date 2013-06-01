@@ -5,6 +5,7 @@
 class View.Cell extends View.RaphaelBase
 
 	@concern Mixin.EventBindings
+	@concern Mixin.DynamicProperties
 
 	@MAX_RUNTIME: 50
 
@@ -21,7 +22,6 @@ class View.Cell extends View.RaphaelBase
 		@_drawn = []
 		@_viewsByType = {}
 		@_splines = []
-		@_numGraphs = 0
 
 		@_width = @_paper.width
 		@_height = @_paper.height
@@ -34,23 +34,22 @@ class View.Cell extends View.RaphaelBase
 	# Defines the accessors for this view
 	#
 	_defineAccessors: () ->
-		
-		Object.defineProperty( @ , "_model",
-			value: undefined
-			configurable: false
-			enumerable: false
-			writable: true
-		)
-		
-		Object.defineProperty( @, 'model',
-			get: -> @_model
-			set: @setCell
-		)
 
-		Object.defineProperty( @, '_views'
-			get: ->
+		@property
+			_model:
+				value: undefined
+				configurable: false
+				enumerable: false
+				writable: true
+
+		@getter
+			model: ( ) ->
+				return @_model
+			_views: ( ) ->
 				return (_.flatten(_.map(@_viewsByType, _.values))).concat(@_splines)
-		)
+
+		@setter
+			model: @setCell
 		
 	# Adds interaction to the cell
 	#
@@ -267,73 +266,6 @@ class View.Cell extends View.RaphaelBase
 
 		return [x, y]
 	
-
-	# Get the graph placement
-	# 
-	# @return [Object] A placement object
-	# @todo why is there width/height code here? should come from graph
-	#
-	_getGraphPlacement: ( basex, basey, scale, graph_num ) ->
-	
-		x = basex + 100
-		y = basey + 50
-		
-		unless graph_num is 0
-			width = 350 
-			height = 175
-			padding_x = 200
-			padding_y = 100
-			x += ( width + padding_x ) * ( graph_num % 2 )
-			y += ( height + padding_y ) * Math.floor( graph_num / 2 ) 
-		
-		return {
-			x: x
-			y: y
-		}
-
-	# Draw the graphs with the data from the datasets
-	#
-	# @param datasets [Object] An object of datasets
-	# @param x [Integer] x location to draw
-	# @param y [Integer] y location to draw
-	# @return [Object] graphs
-	#
-	_drawGraphs: ( datasets, x, y, append = off ) ->
-	
-		graph_num = 0
-		
-		for key, graph of @_graphs
-			graph.clear()
-			delete @_graphs[ key ] unless datasets[ key ]?
-		
-		for key, dataset of datasets
-			if ( !@_graphs[ key ]? )
-				@_graphs[ key ] = new View.Graph( @_container, key, @ )
-
-			
-			@_graphs[ key ].appendData( dataset ) if append
-			@_graphs[ key ].addData( dataset ) unless append
-			@_graphs[ key ].draw( )
-
-			#@_graphs[ key ].play( undefined, 2500)
-			
-		
-		return @_graphs
-	
-	# Redraw graphs
-	#
-	_redrawGraphs: ( ) ->
-		for graph in @_graphs
-			graph.redraw()
-			
-	# Draws red lines
-	#
-	# @param x [Integer] x position
-	#
-	_drawRedLines: ( x ) ->
-		for key, graph of @_graphs
-			graph._drawRedLine( x )
-
 	# On module added, add it to the cell
 	# 
 	# @param cell [Model.Cell] cell added to

@@ -106,6 +106,7 @@ class View.Module extends View.RaphaelBase
 	# @return [String] the CSS color
 	#
 	hashColor : ( hashee = @_name ) ->
+		hashee = hashee.split('#')[0]
 		return '#' + md5( hashee ).slice(0, 6) #@numToColor @hashCode hashee
 
 	# Generates a colour based on a numer
@@ -261,7 +262,7 @@ class View.Module extends View.RaphaelBase
 		unless @_visible
 			return
 		
-		@color = @hashColor(_.escape _( @model.name ).first())
+		@color = @hashColor( _.escape @model.name )
 		
 		contents = @drawContents()
 		@_contents.push @drawMetaContents( contents )
@@ -493,7 +494,7 @@ class View.Module extends View.RaphaelBase
 				substrateCircle = @_paper.circle( x, y, params.r ? 20 )
 				substrateCircle.node.setAttribute('class', "#{module}-substrate-circle" )
 				substrateCircle.attr
-					'fill': @hashColor substrateText
+					'fill': @hashColor substrate
 				
 				if ( params.showText )
 					substrateTextShadow = @_paper.text( x, y - 1, substrateText )

@@ -777,15 +777,15 @@ class Model.Cell extends Helper.Mixable
 					Model.Cell.Notification.Info
 				);
 				
-				promiseses = []
+				promises = []
 				for module_id in data.modules
-					promiseses.push Model.Module.load( 
+					promises.push Model.Module.load( 
 						module_id, 
 						result, 
 						( module ) => result.add module, false 
 					)
 				
-				return $.when( promiseses... )
+				return $.when.apply( $, promises )
 				
 			# Fail
 			, ( data ) => 
@@ -809,7 +809,7 @@ class Model.Cell extends Helper.Mixable
 			)
 			
 		promise.done( ( data ) => 
-		
+			
 			result._notificate( @, result, 
 				'cell.load',
 				"Successfully loaded the cell #{ result.name }",
@@ -817,7 +817,7 @@ class Model.Cell extends Helper.Mixable
 				Model.Cell.Notification.Success
 			)	
 		)
-
+		
 		return promise
 		
 	@loadList: ( callback ) ->

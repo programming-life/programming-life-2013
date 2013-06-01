@@ -10,7 +10,7 @@ class Controller.Undo extends Controller.Base
 	constructor: ( @model, view ) ->
 		super view ? new View.Undo( @model )
 		
-	setTimemachine: ( timemachine ) ->
+	setTimeMachine: ( timemachine ) ->
 		@view.setTree timemachine
 		return this
 	

@@ -15,9 +15,6 @@ class Model.UndoTree extends Model.Tree
 	# @return [Node] The node containing the object.
 	#
 	add: ( object ) ->
-		for child in @current.children
-			@current = child if child.object is object
-
 		@current = super( object, @current)
 		return @current
 	

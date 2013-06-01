@@ -51,9 +51,8 @@ class View.ModuleProperties extends View.HTMLPopOver
 	_createHeader: ( ) ->
 		@_header = $('<div class="popover-title"></div>')
 
-		onclick = () => @_trigger( 'module.selected.changed', @module, [ off ] )
 		@_closeButton = $('<button class="close">&times;</button>')
-		@_closeButton.on('click', onclick ) if onclick?
+		@_closeButton.on('click', @_close )
 		
 		@_header.append @title
 		@_header.append @_closeButton
@@ -172,14 +171,14 @@ class View.ModuleProperties extends View.HTMLPopOver
 				controls.append @_drawParameter( id, key, value )
 
 			when 'metabolites'
-				controls.append @_drawMetabolite( id, key, v ) for v in value
+				#controls.append @_drawMetabolite( id, key, v ) for v in value
 				controls.append @_drawSelectionFor( type, drawtype, id, key, value )
 					
 			when 'dna'
 				controls.append @_drawDNA( id, key, value )
 			
 			when 'compounds'
-				controls.append @_drawCompound( id, key, v ) for v in value
+				#controls.append @_drawCompound( id, key, v ) for v in value
 				controls.append @_drawSelectionFor( type, drawtype, id, key, value )
 
 			when 'enumeration'
@@ -343,9 +342,13 @@ class View.ModuleProperties extends View.HTMLPopOver
 			elem = $( "<input type='#{selectable.type}' name='#{selectable.name}' id='#{selectable.id}-#{option}' value='#{option}'>" )
 			elem.prop( 'checked', values.contains(option) )
 			@_bindOnSelectableChange( selectable.key, elem )
+
+			text = option?.split( '#' )[0]
+			color = View.Module::hashColor text	
 			
 			display_name = option.replace( /#(.*)/, '' )
-			labeltext = $("<span class='badge #{if !options.contains(option) then 'unknown' else ''}'>#{display_name}</span>")
+			labeltext = $("<span class='badge #{selectable.drawtype} #{if !options.contains(option) then 'unknown' else ''}'>#{display_name}</span>")
+			labeltext.css('background', color)
 			label.append elem
 			label.append labeltext 
 			selectable.container.append label
@@ -365,13 +368,12 @@ class View.ModuleProperties extends View.HTMLPopOver
 	# @param selected [Boolean] is selected flag
 	#
 	_setSelectablesVisibility: ( selected ) ->
-		@_getThisForm()
-			.find( '[data-selectable-value]' )
-			.css( 'display', if selected then 'none' else 'inline-block' )
+		if selected
+			@_getThisForm().find( '[data-selectable]').find('input').parent().removeClass('selectable-hide')
+		else
+			@_getThisForm().find( '[data-selectable]').find('input:not(:checked)').parent().addClass('selectable-hide')			
 			
-		@_getThisForm()
-			.find( '[data-selectable]' )
-			.css( 'display', if selected then 'inline-block' else 'none' )
+		#.css( 'display', if selected then 'inline-block' else 'none' )
 		
 	# Gets this form element
 	#
