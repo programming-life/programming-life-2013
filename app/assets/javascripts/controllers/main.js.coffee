@@ -33,6 +33,7 @@ class Controller.Main extends Controller.Base
 		@addChild 'undo', new Controller.Undo( @timemachine )
 		
 		@view.add @controller('cell').view
+		@view.add @controller('graphs').view
 		@view.addToLeftPane @controller('undo').view
 		
 	# Creates bindings

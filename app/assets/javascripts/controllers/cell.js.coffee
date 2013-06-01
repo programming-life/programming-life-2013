@@ -23,7 +23,7 @@ class Controller.Cell extends Controller.Base
 		view = if arguments.length is 1
 			arguments[ 0 ]
 		else
-			new View.Cell( arguments[ 0 ], arguments[ 1 ], arguments[ 2 ] ? new Model.Cell() )	
+			new View.Cell( arguments[ 0 ], arguments[ 1 ], arguments[ 2 ] ? new Model.Cell(), arguments[ 3 ] ? on )	
 		super view
 				
 		Object.defineProperty( @, 'model', 
