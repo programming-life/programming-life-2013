@@ -11,10 +11,7 @@ class View.RaphaelBase extends View.Collection
 	constructor: ( @_paper, @_parent = null ) ->
 		super()
 		
-		@_contents = @_paper?.set()
-		
-		console.log @_contents
-		
+		@_contents = @_paper?.set()		
 		@_allowEventBindings()
 
 		Object.defineProperties(@, 
