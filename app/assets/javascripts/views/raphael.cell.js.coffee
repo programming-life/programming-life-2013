@@ -5,6 +5,7 @@
 class View.Cell extends View.RaphaelBase
 
 	@concern Mixin.EventBindings
+	@concern Mixin.DynamicProperties
 
 	@MAX_RUNTIME: 50
 
@@ -33,23 +34,22 @@ class View.Cell extends View.RaphaelBase
 	# Defines the accessors for this view
 	#
 	_defineAccessors: () ->
-		
-		Object.defineProperty( @ , "_model",
-			value: undefined
-			configurable: false
-			enumerable: false
-			writable: true
-		)
-		
-		Object.defineProperty( @, 'model',
-			get: -> @_model
-			set: @setCell
-		)
 
-		Object.defineProperty( @, '_views'
-			get: ->
+		@property
+			_model:
+				value: undefined
+				configurable: false
+				enumerable: false
+				writable: true
+
+		@getter
+			model: ( ) ->
+				return @_model
+			_views: ( ) ->
 				return (_.flatten(_.map(@_viewsByType, _.values))).concat(@_splines)
-		)
+
+		@setter
+			model: @setCell
 		
 	# Adds interaction to the cell
 	#

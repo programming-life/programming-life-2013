@@ -4,6 +4,7 @@ class View.RaphaelBase extends View.Collection
 	
 	@concern Mixin.EventBindings
 	@concern Mixin.Catcher
+	@concern Mixin.DynamicProperties
 
 	# Constructs a new Base view
 	# 
@@ -15,22 +16,17 @@ class View.RaphaelBase extends View.Collection
 		@_contents = @_paper?.set()		
 		@_allowEventBindings()
 
-		Object.defineProperties(@, 
-			x:
-				get: ( ) ->
-					x = @_anchor?.getBBox()?.cx
-					return x ? 0
+		@setter
+			x: ( x ) ->
+				@moveTo(x, @y, off)
+			y: ( y ) ->
+				@moveTo(@x, y, off)
 
-				set: ( x ) ->
-					@moveTo(x, @y, off)
-			y:
-				get: ( ) ->
-					y = @_anchor?.getBBox()?.cy
-					return y ? 0
-
-				set: ( y ) ->
-					@moveTo(@x, y, off)
-		)
+		@getter
+			x: ( ) ->
+				return @_anchor?.getBBox()?.cx ? 0
+			y: ( ) ->
+				return @_anchor?.getBBox()?.cy ? 0
 
 	# Catcher function for Mixin.Catcher that will notificate any thrown Error on catchable methods
 	#
