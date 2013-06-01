@@ -18,7 +18,9 @@ class View.DummyModule extends View.RaphaelBase
 		
 		@_type = @_modulector.name
 		@_count = @_cell.numberOf @_modulector
+
 		@_visible = @_number is -1 or @_count < @_number
+		#console.log @_count, @_number, @_visible if @_type = 'CellGrowth'
 
 		@_bind( 'cell.module.added', @, @onModuleAdd )
 		@_bind( 'cell.module.removed', @, @onModuleRemove )
@@ -61,27 +63,28 @@ class View.DummyModule extends View.RaphaelBase
 	# @params dummy [View.DummyModule] the dummy to activate
 	# @params params [Object] the params to pass to the constructor
 	#
-	onModuleCreationFinished : ( dummy, params ) ->
-		if dummy isnt this
-			return
+	@catchable
+		onModuleCreationFinished : ( dummy, params ) ->
+			if dummy isnt this
+				return
 
-		params = _( params ).defaults( @_params )
-		module = new @_modulector( _( params ).clone( true ) )			
-		@_cell.add module
+			params = _( params ).defaults( @_params )
+			module = new @_modulector( _( params ).clone( true ) )			
+			@_cell.add module
 
-		@_setSelected off
-		
-		switch @_type
-			when "Transporter"
-				if params.direction is Model.Transporter.Outward
-					@_cell.addProduct( params.transported , 0, false )
-				if params.direction is Model.Transporter.Inward
-					@_cell.addSubstrate( params.transported , 0, 0, true )
-			when "Metabolism"
-				for o in params.orig ? []
-					@_cell.addSubstrate( o , 0, 0, true )
-				for d in params.dest ? []
-					@_cell.addProduct( d , 0, true )
+			@_setSelected off
+			
+			switch @_type
+				when "Transporter"
+					if params.direction is Model.Transporter.Outward
+						@_cell.addProduct( params.transported , 0, false )
+					if params.direction is Model.Transporter.Inward
+						@_cell.addSubstrate( params.transported , 0, 0, true )
+				when "Metabolism"
+					for o in params.orig ? []
+						@_cell.addSubstrate( o , 0, 0, true )
+					for d in params.dest ? []
+						@_cell.addProduct( d , 0, true )
 				
 	# On Module Added to the Cell
 	#
@@ -102,6 +105,8 @@ class View.DummyModule extends View.RaphaelBase
 	# @param module [Model.Module] the module removed
 	#
 	onModuleRemove : ( cell, module ) ->
+		console.log @_count
+
 		if cell is @_cell and module instanceof @_modulector 
 			@_count -= 1
 			if @_number > @_count
@@ -151,8 +156,8 @@ class View.DummyModule extends View.RaphaelBase
 
 		super(x, y)
 
-		unless @_visible
-			return
+		#unless @_visible
+		#	return
 
 		padding = 15
 		
@@ -181,19 +186,45 @@ class View.DummyModule extends View.RaphaelBase
 		@_contents.push hitbox
 		@_contents.push contents
 		@_contents.push @_box
+
+		unless @_visible
+			@hide(off)
 		
 	# Hides this view
 	#
-	hide: () ->
-		@_visible = off
-		@_contents.hide()
+	hide: ( animate = on ) ->
+		done = ( ) =>
+			@_contents.hide()
+			@_visible = off
+		
+
+		if animate
+			@_contents.attr('opacity', 1)
+			@_contents.animate Raphael.animation(
+				opacity: 0
+			, 200, 'ease-in', done)
+		else
+			done()
+
 		return this
 		
 	# Shows this view
 	#
-	show: () ->
-		@_visible = on
-		@_contents.show()
+	show: ( animate = on ) ->
+		done = ( ) =>
+			@_visible = on
+
+		@setPosition(off)		
+
+		if animate
+			@_contents.attr('opacity', 0)
+			@_contents.show()
+			@_contents.animate Raphael.animation(
+				opacity: 1
+			, 100, 'ease-out', done)
+		else
+			done()
+
 		return this
 		
 	# Kills this view

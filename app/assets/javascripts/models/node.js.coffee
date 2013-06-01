@@ -1,6 +1,10 @@
 # Basic node class
 #
-class Model.Node
+# @concern Mixin.EventBindings
+#
+class Model.Node extends Helper.Mixable
+
+	@concern Mixin.EventBindings
 
 	# Constructor for node
 	#
@@ -8,51 +12,51 @@ class Model.Node
 	# @param parent [Node] The parent of this node
 	# @param children [Array] An array contraining the children. Default is empty.
 	#
-	constructor: ( object, parent, children = [] ) -> 
+	constructor: ( @object, @parent, children ) -> 
 		@id = _.uniqueId('node')
+		@branch = null
 
-		@_object = object
-		@_parent = parent
-		@_children = children
-		@_branch = null
-		@_creation = new Date()
+		@_defineProperties( children )
 
-		@_parent._children.push( this ) if @_parent
+		@parent?.children.push( this ) 
+		@parent?.branch = this
 
-		Model.EventManager.trigger( 'node.creation', @, [] )
+		@_allowEventBindings()
+		@_trigger( 'node.creation', @, [] )
 
-	# Rebase this branch on a different node than its current parent.
+	# Define the properties of the node
 	#
-	# @param parent [Node] The new parent for the branch.
-	# @return [self] chainable self
+	# @param children [Array] Initial children of this node
 	#
-	rebase: ( parent ) ->
-		parent._children.push this
-		parent._branch = this if not parent._branch
-
-		if @_parent isnt null
-			index = @_parent._children.indexOf this
-			@_parent._children.splice( index, 1 )
-
-		@_parent = parent
-		return this
+	_defineProperties: ( children = [] ) ->
+		Object.defineProperty( @, "children",
+			value: children
+			writable: off
+			configurable: off
+		)
+		Object.defineProperty( @, "creation",
+			value: new Date()
+			writable: off
+			configurable: off
+		)
 	
+	# Add a child to this node
+	#
+	# @param object [Object] The object to be contained in the child
+	# @return [Model.Node] The created node
+	#
+	addChild: ( object ) ->
+		node = new Model.Node(object, this)
+		return node
+
 	# Replace this node with a different node
 	#
 	# @param other [Model.Node] The other node
 	# @return [Model.Node] The other node
 	#
 	replace: ( other ) ->
-		other._branch = @_branch unless other._branch
-
-		if @_parent?._branch is this
-			@_parent._branch = other
+		index = @parent?.children.indexOf this
+		@parent?.children.splice( index, 1 )
 		
-		other._children.push @_children...
-
-		if @_parent?
-			index = @_parent._children.indexOf this
-			@_parent._children.splice( index, 1 )
-		
-		for child in @_children
-			child._parent = other
+		for child in @children
+			child.parent = other

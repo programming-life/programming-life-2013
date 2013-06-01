@@ -30,7 +30,7 @@ describe("Cell", function() {
 
 	// mixin: timemachine
 	it("should have an undotree", function() {
-		expect( cell._tree ).toBeDefined();
+		expect( cell.tree ).toBeDefined();
 	});
 	
 	// mixin:  event bindings
@@ -107,7 +107,7 @@ describe("Cell", function() {
 
 			// mixin: timemachine
 			it("should have an undotree", function() {
-				expect( cell._tree ).toBeDefined();
+				expect( cell.tree ).toBeDefined();
 			});
 
 			// mixin:  event bindings
@@ -147,7 +147,7 @@ describe("Cell", function() {
 		beforeEach(function() {
 			module = new Model.Module()
 
-			old = cell._tree._current;
+			old = cell.tree.current;
 
 			cell.add( module );
 		});
@@ -162,7 +162,7 @@ describe("Cell", function() {
 		});
 
 		it("should have added a node to the undotree", function() {
-			expect( cell._tree._current._parent ).toBe( old );
+			expect( cell.tree.current.parent ).toBe( old );
 		});
 
 	});
@@ -477,7 +477,7 @@ describe("Cell", function() {
 		var result, promise;
 		
 		beforeEach(function() {
-			promise = cell.run( run_t );
+			promise = cell.run( 0, run_t );
 		});
 		
 		it("should have run with t runtime", function() {
@@ -559,7 +559,7 @@ describe("Cell", function() {
 			var results, result, mapping, promise;
 			
 			beforeEach(function() {
-				promise = cell.run( 0 );
+				promise = cell.run( 0, 0 );
 				promise.done( function( r ) { results = r } );
 				waitsFor( function() {
 					return promise.state() === "rejected" || promise.state() === "resolved" 
@@ -588,7 +588,7 @@ describe("Cell", function() {
 			var result, mapping, promise;
 			
 			beforeEach(function() {
-				promise = cell.run( 2 );
+				promise = cell.run( 0, 2 );
 				promise.done( function( r ) { results = r } );
 				waitsFor( function() {
 					return promise.state() === "rejected" || promise.state() === "resolved" 
@@ -647,7 +647,7 @@ describe("Cell", function() {
 
 				cell.add( create_transport_2 );
 
-				promise = cell.run( 2 );
+				promise = cell.run( 0, 2 );
 				promise.done( function( r ) { results = r } );
 				waitsFor( function() {
 					return promise.state() === "rejected" || promise.state() === "resolved" 

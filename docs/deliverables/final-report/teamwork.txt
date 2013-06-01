@@ -1,0 +1,17 @@
+Broyologramming
+Voorbereiding
+Toolchain, autodidact rails, coffeescript en ruby te leren. Coding guidelines en styles hebben opgezet. 
+Contactmomenten
+Wekelijks sprint planning op de eerste dag van de workweek, dag van meeting met de ta, aan het einde van de werkweek, skype, weekend, avond, nacht, drebbelweg, pair programming. Facebook groep
+Taakverdeling
+Taken self assignen, scrum master wisselde door, regelde de vergadering. Openstaand taken werken opgenomen door mensen met minder uur. Nooit een probleem met taken die ongewild waren en niemand was a-relaxt. 
+Omgang
+Respect, geen negativiteit. Gebrek aan afleveren gaf verantwoordelijk. Voor vroege ontmoetingen was ere en problem, in het team opgelost door compensatiegedrag. Gezellig. Koffiepas! 
+Blocked/problem solving
+Er wordt om hulp gevraagd. Naar elkaar toe komen om vragen te stellen over geproduceerde code. We zagen elkaar veel dus dat kon ook.
+Notable Sit.
+Tijdens tentamens niet gedaan hebben. Gelukkig was dit na de tentamen zo voorbij – mentaliteit is awesome.
+Challenges and solutions
+Niveau verschil -> besproken, project taal was voor iedereen onbekend, geïsoleerde projecten, motavatiepraatjes.
+Elkaars code niet kennen -> test code zelf en voor ander mans code schrijven, zodat je alles uiteindelijk kent. Door te pair programmen en vraag- en antwoord momentjes tijdens contactmomenten. Strict documenteren van functies/commentaar
+

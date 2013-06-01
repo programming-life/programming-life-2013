@@ -20,11 +20,11 @@ class View.Module extends View.RaphaelBase
 	# @param paper [Raphael.Paper] the raphael paper
 	# @param module [Model.Module] the module to show
 	#
-	constructor: ( paper, parent, @_cell, @module, @_interaction = on ) ->
+	constructor: ( paper, parent, @_cell, @model, @_interaction = on ) ->
 		super paper, parent
 	
-		@_type = module.constructor.name
-		@_name = module.name
+		@_type = @model.constructor.name
+		@_name = @model.name
 
 		@_selected = off	
 		@_visible = on
@@ -45,12 +45,21 @@ class View.Module extends View.RaphaelBase
 	# Adds interaction to the module ( popovers )
 	#
 	addInteraction: () ->
-		@_propertiesView = new View.ModuleProperties( @, @_parent, @_cell, @module )
-		@_notificationsView = new View.ModuleNotification( @, @_parent, @_cell, @module )
+		@_propertiesView = new View.ModuleProperties( @, @_parent, @_cell, @model )
+		@_notificationsView = new View.ModuleNotification( @, @_parent, @_cell, @model )
 	
 		@_bind( 'module.selected.changed', @, @onModuleSelected )
 		@_bind( 'module.hovered.changed', @, @onModuleHovered )
+
+		@_onNotificate( @, @model, @onNotificate)
 		return this
+
+
+	# Forwards any notification from the model
+	#
+	onNotificate: ( context, source, identifier, type, message, args ) ->
+		@_notificate( @, @, identifier, message, args, type )
+
 		
 	# Adds bindings to the module (non-interaction)
 	#
@@ -66,15 +75,15 @@ class View.Module extends View.RaphaelBase
 	addHitBoxInteraction: () ->
 		@_hitbox.click =>
 			unless @_selected
-				_( @_trigger( 'module.selected.changed', @module, [ on ]) ).debounce( 100 )
+				_( @_trigger( 'module.selected.changed', @model, [ on ]) ).debounce( 100 )
 			else
-				_( @_trigger( 'module.selected.changed', @module, [ off ]) ).debounce( 100 )
+				_( @_trigger( 'module.selected.changed', @model, [ off ]) ).debounce( 100 )
 
 		@_hitbox.mouseout =>
-			_( @_trigger( 'module.hovered.changed', @module, [ off, @_selected ]) ).debounce( 100 )
+			_( @_trigger( 'module.hovered.changed', @model, [ off, @_selected ]) ).debounce( 100 )
 		
 		@_hitbox.mouseover =>
-			_( @_trigger( 'module.hovered.changed', @module, [ on, @_selected ]) ).debounce( 100 )
+			_( @_trigger( 'module.hovered.changed', @model, [ on, @_selected ]) ).debounce( 100 )
 		return this
 		
 	# Generates a hashcode based on the module name
@@ -97,6 +106,7 @@ class View.Module extends View.RaphaelBase
 	# @return [String] the CSS color
 	#
 	hashColor : ( hashee = @_name ) ->
+		hashee = hashee.split('#')[0]
 		return '#' + md5( hashee ).slice(0, 6) #@numToColor @hashCode hashee
 
 	# Generates a colour based on a numer
@@ -153,17 +163,32 @@ class View.Module extends View.RaphaelBase
 	# @return [String] the full type string
 	#
 	getFullType: ( ) ->
-		return @module.getFullType()
+		return @model.getFullType()
 				
 	# Kills the module view
 	#
 	# @return [self] chainable self
 	#
 	kill: () ->
+
+		#@_contents.insertBefore(@_paper.bottom)
+
+		fadeOut = ( ) =>
+			@_contents.stop()
+			@_contents.animate Raphael.animation(
+				transform: '...S0'
+			, 500, 'ease-in', =>
+					
+				View.RaphaelBase::kill.apply( @ )
+			)
+
 		@_propertiesView?.kill()
-		@_notificationsView?.kill()		
-		
-		return super()
+		@_notificationsView?.kill()	
+
+
+		_(fadeOut).defer()
+
+		return this
 
 	# Returns the bounding box of this view
 	#
@@ -206,7 +231,7 @@ class View.Module extends View.RaphaelBase
 	#
 	_getSplineDirection: ( metabolitePlacement ) ->
 		if @_type is 'Transporter'
-			switch @module.direction
+			switch @model.direction
 				when Model.Transporter.Inward
 					switch metabolitePlacement
 						when Model.Metabolite.Inside
@@ -237,15 +262,20 @@ class View.Module extends View.RaphaelBase
 		unless @_visible
 			return
 		
-		@color = @hashColor(_.escape _( @module.name ).first())
+		@color = @hashColor( _.escape @model.name )
 		
 		contents = @drawContents()
 		@_contents.push @drawMetaContents( contents )
-		@_contents.push contents
+		@_contents.push contents		
 		
 		@createSplines()
-		
+
 		@_trigger( 'view.drawn', @ )
+
+		@_contents.transform('S.1').animate Raphael.animation(
+			transform: 'S1'
+		, 900 + Math.random() * 100, 'elastic'
+		)
 
 	# Draws the contents (module)
 	#
@@ -287,7 +317,7 @@ class View.Module extends View.RaphaelBase
 	drawAsTransporter: () ->
 		[ arrow ] = @drawComponent( 'transporter', 'ProcessArrow', @x, @y, { } )
 		params =
-			substrate: @module.orig ? "..."
+			substrate: @model.orig ? "..."
 			showText: off
 		[ substrateCircle ] = @drawComponent( 'transporter', 'SubstrateCircle', @x, @y, params )
 		return [ substrateCircle, arrow ]
@@ -298,7 +328,7 @@ class View.Module extends View.RaphaelBase
 	#
 	drawAsMetabolite: () ->
 		params =
-			substrate: @module.name ? "..."
+			substrate: @model.name ? "..."
 			showText: on
 			
 		[ substrateCircle, substrateText ] = @drawComponent( 
@@ -315,8 +345,8 @@ class View.Module extends View.RaphaelBase
 		[ arrow ] = @drawComponent( 'transporter', 'ProcessArrow', @x, @y, { } )
 				
 		params =
-			orig: @module.orig ? [ "..." ]
-			dest: @module.dest ? [ "..." ]
+			orig: @model.orig ? [ "..." ]
+			dest: @model.dest ? [ "..." ]
 			showText: off
 		[ enzymCirclesOrig, enzymCircleDests ] = @drawComponent( 'enzym', 'EnzymCircle', @x, @y, params )
 		
@@ -328,7 +358,7 @@ class View.Module extends View.RaphaelBase
 	#
 	drawProtein: () ->
 		params =
-			substrate: @module.name ? "..."
+			substrate: @model.name ? "..."
 			showText: on
 			useFullName : on
 			r: 45
@@ -385,7 +415,7 @@ class View.Module extends View.RaphaelBase
 	createSplines: () ->
 		if @type is 'Transporter'
 			for property in [ 'orig', 'dest' ]
-				metabolite = @_cell.getMetabolite @module[ property ]
+				metabolite = @_cell.getMetabolite @model[ property ]
 				if metabolite
 					placement = metabolite.placement
 					view = @_parent.getView(metabolite)
@@ -397,11 +427,11 @@ class View.Module extends View.RaphaelBase
 						@_createSpline @, view
 
 		else if @type is 'Metabolism'
-			for metabolite in @module.orig.map( ( name ) => @_cell.getMetabolite name ) when metabolite?
+			for metabolite in @model.orig.map( ( name ) => @_cell.getMetabolite name ) when metabolite?
 				view = @_parent.getView(metabolite)
 				@_createSpline view, @
 
-			for metabolite in @module.dest.map( ( name ) => @_cell.getMetabolite name ) when metabolite?
+			for metabolite in @model.dest.map( ( name ) => @_cell.getMetabolite name ) when metabolite?
 				view = @_parent.getView(metabolite)
 				@_createSpline @, view
 		return this
@@ -464,7 +494,7 @@ class View.Module extends View.RaphaelBase
 				substrateCircle = @_paper.circle( x, y, params.r ? 20 )
 				substrateCircle.node.setAttribute('class', "#{module}-substrate-circle" )
 				substrateCircle.attr
-					'fill': @hashColor substrateText
+					'fill': @hashColor substrate
 				
 				if ( params.showText )
 					substrateTextShadow = @_paper.text( x, y - 1, substrateText )
@@ -569,7 +599,7 @@ class View.Module extends View.RaphaelBase
 	# @param module [Model.Module] the module invalidated
 	#
 	onModuleInvalidated: ( module ) =>
-		if module is @module
+		if module is @model
 			@redraw()
 	
 	# Gets called when a module view selected.
@@ -578,7 +608,7 @@ class View.Module extends View.RaphaelBase
 	# @param selected [Boolean] the selection state of the module
 	#
 	onModuleSelected: ( module, selected ) ->
-		if module is @module 
+		if module is @model 
 			if @_selected isnt selected
 				@_setSelected selected 
 		else if @_selected isnt off
@@ -590,7 +620,7 @@ class View.Module extends View.RaphaelBase
 	# @param selected [Boolean] the hover state of the module
 	#
 	onModuleHovered: ( module, hovered ) ->
-		if module is @module 
+		if module is @model 
 			if @_hovered isnt hovered
 				@_setHovered hovered
 		else if @_hovered isnt off
@@ -610,7 +640,7 @@ class View.Module extends View.RaphaelBase
 	# @param module [Module] the module that was removed
 	#
 	onModuleRemoved: ( cell, module ) ->
-		if @getFullType() is module.getFullType()
+		if @getFullType() is module.getFullType() and module isnt @model
 			@setPosition()
 
 	# Gets called when a metabolite is added to a cell
@@ -620,14 +650,14 @@ class View.Module extends View.RaphaelBase
 	#
 	onMetaboliteAdded: ( cell, metabolite ) ->
 		if @type is 'Transporter'
-			if metabolite.name is @module.orig
+			if metabolite.name is @model.orig
 				@_createSpline @_parent.getView(metabolite), @
-			else if metabolite.name is @module.dest
+			else if metabolite.name is @model.dest
 				@_createSpline @, @_parent.getView(metabolite)
 		else if @type is 'Metabolism'
-			if metabolite.name in @module.orig
+			if metabolite.name in @model.orig
 				@_createSpline @_parent.getView(metabolite), @
-			else if metabolite.name in @module.dest
+			else if metabolite.name in @model.dest
 				@_createSpline @, @_parent.getView(metabolite)
 
 	# Gets called when a metabolite is removed from a cell
@@ -636,5 +666,5 @@ class View.Module extends View.RaphaelBase
 	# @param metabolite [Metabolite] the metabolite that was removed
 	#
 	onMetaboliteRemoved: ( cell, metabolite ) ->
-		if @getFullType() is metabolite.getFullType()
+		if @getFullType() is metabolite.getFullType() and metabolite isnt @model
 			@setPosition()		

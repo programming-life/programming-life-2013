@@ -3,6 +3,7 @@
 class View.RaphaelBase extends View.Collection
 	
 	@concern Mixin.EventBindings
+	@concern Mixin.Catcher
 
 	# Constructs a new Base view
 	# 
@@ -18,22 +19,25 @@ class View.RaphaelBase extends View.Collection
 			x:
 				get: ( ) ->
 					x = @_anchor?.getBBox()?.cx
-					unless x?
-						x = 0
-					return x
+					return x ? 0
 
 				set: ( x ) ->
 					@moveTo(x, @y, off)
 			y:
 				get: ( ) ->
 					y = @_anchor?.getBBox()?.cy
-					unless y?
-						y = 0
-					return y
+					return y ? 0
 
 				set: ( y ) ->
 					@moveTo(@x, y, off)
 		)
+
+	# Catcher function for Mixin.Catcher that will notificate any thrown Error on catchable methods
+	#
+	# @param e [Error] the error to notificate
+	#
+	_catcher: ( e ) =>
+		@_notificate(@, @, '', e.name, [], View.RaphaelBase.Notification.Error)
 
 		
 	# Gets the Bounding Box for this view
@@ -95,8 +99,8 @@ class View.RaphaelBase extends View.Collection
 
 		transform = "...t#{dx},#{dy}"
 		if animate
-			dt = 500
-			ease = 'ease-in-out'
+			dt = 900
+			ease = 'elastic'
 
 			@_trigger( 'view.moving', @, [dx, dy, dt, ease] )
 
@@ -142,4 +146,10 @@ class View.RaphaelBase extends View.Collection
 	# @return [[float, float]] a tuple of the document x and y coordinates, respectively
 	#
 	getAbsoluteCoords: ( x, y ) ->
-		return @_parent.getAbsoluteCoords(x, y)
+		coords = @_parent?.getAbsoluteCoords(x, y)
+		return coords if coords?
+		return [ x, y ] unless @_paper?
+		offset = $(@_paper.canvas).offset()
+		absX = offset.left + x
+		absY = offset.top + y
+		return [ absX, absY ]

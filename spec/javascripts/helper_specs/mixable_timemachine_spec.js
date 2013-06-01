@@ -15,7 +15,7 @@ describe("Mixin: TimeMachine", function() {
 		});
 		
 		it( "should have set a private variable", function() {
-			expect( mixed._tree ).toBeDefined();
+			expect( mixed.tree ).toBeDefined();
 		});
 		
 		describe("and action is added", function() {
@@ -23,12 +23,12 @@ describe("Mixin: TimeMachine", function() {
 			var action = 'foo'; 
 			
 			beforeEach( function() {
-				spyOn( mixed._tree, 'add' )
+				spyOn( mixed.tree, 'add' )
 				mixed.addUndoableEvent( action );
 			});
 			
 			it( "should called tree adding", function() {
-				expect( mixed._tree.add ).toHaveBeenCalledWith( action );
+				expect( mixed.tree.add ).toHaveBeenCalledWith( action );
 			});
 			
 			describe("and is undone", function() {
@@ -37,12 +37,12 @@ describe("Mixin: TimeMachine", function() {
 				var action = { undo: undo };
 				
 				beforeEach( function() {
-					spyOn( mixed._tree, 'undo' ).andReturn( action );
+					spyOn( mixed.tree, 'undo' ).andReturn( action );
 					mixed.undo();
 				});
 				
 				it( "should called tree undo", function() {
-					expect( mixed._tree.undo ).toHaveBeenCalled();
+					expect( mixed.tree.undo ).toHaveBeenCalled();
 				});
 				
 				it( "should undone the returned action", function() {
@@ -55,12 +55,12 @@ describe("Mixin: TimeMachine", function() {
 					var action = { redo: redo };
 					
 					beforeEach( function() {
-						spyOn( mixed._tree, 'redo' ).andReturn( action );
+						spyOn( mixed.tree, 'redo' ).andReturn( action );
 						mixed.redo();
 					});
 					
 					it( "should called tree redo", function() {
-						expect( mixed._tree.redo ).toHaveBeenCalled();
+						expect( mixed.tree.redo ).toHaveBeenCalled();
 					});
 					
 					it( "should redone the returned action", function() {
@@ -70,23 +70,6 @@ describe("Mixin: TimeMachine", function() {
 			});
 		});
 		
-		describe("and action is added, with sub", function() {
-		
-			var action = 'foo';
-			var node = 'bar';
-			var setRoot = jasmine.createSpy( 'setRoot' );
-			var sub = { _tree: { setRoot: setRoot } }
-			
-			beforeEach( function() {
-				spyOn( mixed._tree, 'add' ).andReturn( node );
-				mixed.addUndoableEventToSub( action, sub );
-			});
-			
-			it( "should called tree adding", function() {
-				expect( mixed._tree.add ).toHaveBeenCalledWith( action );
-			});
-			
-		});
 	});
 	
 	describe("when action is created", function() {

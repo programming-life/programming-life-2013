@@ -5,6 +5,8 @@
 # The controller for the Main action and view
 #
 class Controller.Main extends Controller.Base
+	
+	@concern Mixin.TimeMachine
 
 	# Creates a new instance of Main
 	#
@@ -13,19 +15,25 @@ class Controller.Main extends Controller.Base
 	#
 	constructor: ( @container, view ) ->
 		super view ? ( new View.Main @container )
+
+		@_allowTimeMachine()
+		@timemachines = []
 	
 		@_createChildren()
 		@_createBindings()
+
 		
 	# Creates children
 	#
 	_createChildren: () ->
-		
 		@addChild 'cell', new Controller.Cell( @view.paper, @view )
+		@timemachines.push @controller("cell").model.timemachine
+		@timemachine.setRoot new Model.Node(@controller("cell").model.tree.root.object)
 		@addChild 'graphs', new Controller.Graphs( @view.paper )
-		@addChild 'undo', new Controller.Undo( @controller('cell').model.timemachine )
+		@addChild 'undo', new Controller.Undo( @timemachine )
 		
 		@view.add @controller('cell').view
+		@view.add @controller('graphs').view
 		@view.addToLeftPane @controller('undo').view
 		
 	# Creates bindings
@@ -35,15 +43,22 @@ class Controller.Main extends Controller.Base
 		@view.bindActionButtonClick( () => @onAction( arguments... ) ) 
 	
 		@_bind( 'view.cell.set', @, 
-			( cell ) => @controller('undo').setTimemachine( cell.model.timemachine ) 
+			( cell ) => @controller('undo').setTimeMachine( @timemachine ) 
 		)
 		
 		@_bind( 'module.selected.changed', @, 
 			(module, selected) => 
-				@controller('undo').setTimemachine if selected
+				@controller('undo').setTimeMachine if selected
 					module.timemachine 
 				else 
-					@controller('cell').model.timemachine 
+					@timemachine 
+		)
+		@_bind( 'cell.metabolite.added', @, @addTimeMachine )
+		@_bind( 'cell.module.added', @, @addTimeMachine )
+		@_bind( 'tree.node.added', @, 
+			( tree, node ) => 
+				if tree in @timemachines
+					@addUndoableEvent(node.object)
 		)
 		
 	# Loads a new cell into the main view
@@ -226,3 +241,12 @@ class Controller.Main extends Controller.Base
 			@_token?.cancel()
 			@view.hideProgressBar()
 			enable()
+	
+	# Adds a timemachine to the list of timemachines this timemachine can control
+	#
+	# @param cell [Model.Cell] The source of the event
+	# @param tm [Mixin.TimeMachine] The object containing the timemachine
+	#
+	addTimeMachine: ( cell, tm ) ->
+		if cell is @controller("cell").model
+			@timemachines.push tm.timemachine

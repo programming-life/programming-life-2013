@@ -40,6 +40,12 @@ class View.Graph extends View.RaphaelBase
 		
 		@_line = null
 		super()
+		
+	# Kills the view
+	#
+	kill: () ->
+		@_container.remove()
+		super()
 	
 	# Draws the graph
 	#

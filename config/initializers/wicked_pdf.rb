@@ -1,4 +1,4 @@
 WickedPdf.config = {
-	:exe_path => '/usr/bin/wkhtmltopdf',
+	:exe_path => '/usr/local/bin/wkhtmltopdf',
 	:layout => 'pdf.html'
 }
