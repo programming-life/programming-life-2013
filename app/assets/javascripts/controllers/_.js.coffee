@@ -43,6 +43,11 @@ class Controller.Base extends Helper.Mixable
 	controller: ( id ) ->
 		return @_children[ id ]
 		
+	#
+	#
+	controllers: () ->
+		return @_children
+		
 	# Kills the controler and all subsequent views
 	#
 	# @return [self] the chainable self
