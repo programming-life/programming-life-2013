@@ -16,7 +16,7 @@ Mixin.TimeMachine =
 		_allowTimeMachine: () ->
 			unless @_tree?
 			
-				Object.defineProperty( @, '_tree',
+				Object.defineProperty( @, 'tree',
 					value: new Model.UndoTree()
 					writable: false
 					configurable: false
@@ -24,7 +24,7 @@ Mixin.TimeMachine =
 				)
 
 				Object.defineProperty( @, 'timemachine',
-					get: -> @_tree
+					get: -> @tree
 				)
 				
 			return this
@@ -35,30 +35,19 @@ Mixin.TimeMachine =
 		# @return [Model.Node] the tree node returned
 		#
 		addUndoableEvent: ( action ) ->
-			return @_tree.add action
+			return @tree.add action
 		
-		# Adds an undoable event to the subtree
-		#
-		# @params action [Model.Action] action that is undoable
-		# @params sub [TimeMachine] sub that has timemachine
-		# @return [Model.Node] the tree node returned
-		#	
-		addUndoableEventToSub: ( action, sub ) ->
-			tree_node = @addUndoableEvent action
-			#sub?._tree?.setRoot tree_node
-			return tree_node
-			
 		# Undoes the last action
 		#
 		undo: () ->
-			action = @_tree.undo()
+			action = @tree.undo()
 			action.undo() if action?
 			return this
 			
 		# Redoes the last action
 		#
 		redo: () ->
-			action = @_tree.redo()
+			action = @tree.redo()
 			action.redo() if action?
 			return this
 			

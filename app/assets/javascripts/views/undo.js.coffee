@@ -54,7 +54,7 @@ class View.Undo extends Helper.Mixable
 
 		body = $('<div class="undo-body"></div>')
 		@_list = $('<div class="undo-list"></div>')
-		@_list.append(@_getTreeView(@_tree._root))
+		@_list.append(@_getTreeView(@_tree.root))
 
 		body.append(@_list)
 		@_contents.append(body)
@@ -71,7 +71,7 @@ class View.Undo extends Helper.Mixable
 		@_contents.append(@_footer)
 		container.append(@_contents)
 
-		@_selectNode(@_tree._current)
+		@_selectNode(@_tree.current)
 	
 	# Gets the view for the node
 	#
@@ -80,7 +80,7 @@ class View.Undo extends Helper.Mixable
 	_getTreeView: ( node ) ->
 		contents = [@_getNodeView(node)]
 
-		child = node._branch
+		child = node.branch
 		if child?
 			return contents.concat(@_getTreeView(child))
 
@@ -96,9 +96,9 @@ class View.Undo extends Helper.Mixable
 		row = $('<div class="undo-row"></div>')
 
 		dl = $('<dl class="undo-node"></dl>')
-		dl.append('<dt>' + node._object._description + '</dt>')
+		dl.append('<dt>' + node.object._description + '</dt>')
 
-		alternatives = (node._parent?._children.length ? 1) - 1
+		alternatives = (node.parent?.children.length ? 1) - 1
 		dl.append('<dd>' + alternatives + ' alternative actions</dd>')
 
 		row.append(dl)
@@ -133,11 +133,11 @@ class View.Undo extends Helper.Mixable
 			if @_list.scrollTop() == @_list[0].scrollHeight - @_list.height()
 				doScroll = true
 
-			if node._parent?._children.length - 1 > 0
+			if node.parent?.children.length - 1 > 0
 				@_drawContents()
 			else
 				@_list.append(@_getNodeView(node))
-				@_selectNode(@_tree._current)
+				@_selectNode(@_tree.current)
 
 			if doScroll
 				@_scrollToBottom()
@@ -150,7 +150,7 @@ class View.Undo extends Helper.Mixable
 	_onNodeRemove: ( tree, node ) ->
 		if tree is @_tree
 			@_list.append(@_getNodeView(node))
-			@_selectNode(@_tree._current)
+			@_selectNode(@_tree.current)
 	
 	# Is called when a node is selected
 	#
@@ -162,9 +162,11 @@ class View.Undo extends Helper.Mixable
 
 			nodes = @_tree.jump( node )
 			for undo in nodes.reverse
-				undo._object.undo()
+				undo.object.undo()
 			for redo in nodes.forward
-				redo._object.redo()
+				redo.object.redo()
+
+			console.log(nodes.reverse...,nodes.forward...)
 
 			@_selectNode(node)
 
@@ -178,9 +180,9 @@ class View.Undo extends Helper.Mixable
 		@_elem.find('.undo-row').removeClass('selected')
 		row.addClass('selected')
 
-		alternatives = (node._parent?._children.length ? 1) - 1
+		alternatives = (node.parent?.children.length ? 1) - 1
 		if alternatives > 0
-			@_branchIndex = node._parent._children.indexOf node
+			@_branchIndex = node.parent.children.indexOf node
 			@_showButtons()
 		else
 			@_hideButtons()
@@ -214,7 +216,7 @@ class View.Undo extends Helper.Mixable
 	# @param direction [int] the direction (-1 or 1) in which to move
 	#
 	_branch: ( direction ) ->
-		length = @_tree._current._parent?._children?.length
+		length = @_tree.current.parent?.children?.length
 		return unless length?
 		
 		switch length
@@ -224,10 +226,10 @@ class View.Undo extends Helper.Mixable
 				index = !@_branchIndex + 0
 			else
 				index = (@_branchIndex + direction + length) % length
-		node = @_tree._current._parent._children[index]
+		node = @_tree.current.parent.children[index]
 		old = @_tree.switchBranch( node )
-		old._object.undo()
-		node._object.redo()
+		old.object.undo()
+		node.object.redo()
 		@_drawContents()
 
 	# Sets the tree of the view

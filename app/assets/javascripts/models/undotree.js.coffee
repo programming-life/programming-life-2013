@@ -15,20 +15,20 @@ class Model.UndoTree extends Model.Tree
 	# @return [Node] The node containing the object.
 	#
 	add: ( object ) ->
-		for child in @_current._children
-			@_current = child if child._object is object
+		for child in @current.children
+			@current = child if child.object is object
 
-		@_current = super( object, @_current)
-		return @_current
+		@current = super( object, @current)
+		return @current
 	
 	# Moves the pointer to the active node of the current branch back a step.
 	#
 	# @return [Object, null] The object contained within the most recent active node.
 	#
 	undo: ( ) ->
-		if @_current isnt @_root
-			object = @_current._object
-			@_current = @_current._parent
+		if @current isnt @root
+			object = @current.object
+			@current = @current.parent
 			return object
 		else
 			return null
@@ -38,9 +38,9 @@ class Model.UndoTree extends Model.Tree
 	# @return [Object, null] The object contained within the now active node.
 	#
 	redo: ( ) ->
-		if @_current._branch isnt null
-			@_current = @_current._branch
-			object = @_current._object
+		if @current.branch isnt null
+			@current = @current.branch
+			object = @current.object
 			return object
 		else
 			return null
@@ -52,9 +52,10 @@ class Model.UndoTree extends Model.Tree
 	# @return [self] Chainable self
 	#
 	rebase: ( branch, parent) ->
-		branch.rebase(parent)
-		if branch is @_root
-			@_root = parent
+		branch.parent = parent
+		if branch is @root
+			@root = parent
+
 		return this
 	
 	# Rewinds the tree from the current node and up to the node to jump to
@@ -66,13 +67,13 @@ class Model.UndoTree extends Model.Tree
 		undo = []
 
 		# Behind the current node
-		if node._creation < @_current._creation
+		if node.creation < @current.creation
 			undo = @_getReverseTrail( node )
 		# In front of current node
-		else if node._creation > @_current._creation
-			todo = @_getForwardTrail( node, @_current )
+		else if node.creation > @current.creation
+			todo = @_getForwardTrail( node, @current )
 
-		@_current = node
+		@current = node
 
 		return {reverse: undo, forward: todo}
 	
@@ -83,10 +84,10 @@ class Model.UndoTree extends Model.Tree
 	_getReverseTrail: ( node ) ->
 		undo = []
 		
-		back = @_current
-		until back is node or back is @_root
-			undo.unshift back
-			back = back._parent
+		back = @current
+		until back is node or back is @root
+			undo.push back
+			back = back.parent
 		
 		return undo
 		
@@ -94,11 +95,11 @@ class Model.UndoTree extends Model.Tree
 	#
 	# @param node [Model.Node] The node to get the path to
 	#
-	_getForwardTrail: ( node, base = @_root ) ->
+	_getForwardTrail: ( node, base = @ ) ->
 		todo = []
 		forward = base 
-		until forward is node or forward._branch is null
-			forward = forward._branch
+		until forward is node or forward.branch is null
+			forward = forward.branch
 			todo.push forward
 		return todo
 	

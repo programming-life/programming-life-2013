@@ -1,5 +1,5 @@
 describe("Tree", function() {
-    var tree, root;
+    var tree;
 	var rootObject;
 		
 	beforeEach(function() {
@@ -10,28 +10,20 @@ describe("Tree", function() {
 			tree = new Model.Tree();
 		});
 
-		it("should have a default root node", function() {
-			expect( tree._root._parent ).toBe( null );
-			expect( tree._root._object).toBe( null );
-			expect( tree._root._children.length).toBe( 0 );
-		});
-		
 		it("the current node should be the root node", function() {
-			expect( tree._current ).toBe( tree._root );
+			expect( tree.current ).toBe( tree.root );
 		});
 	});
 	
 	describe("when a tree is constructed", function() {
 	
 		beforeEach( function() {
-			rootObject = "root";
-			root = new Model.Node(rootObject, null);
-
+			root = new Model.Node(rootObject = "root", null);
 			tree = new Model.Tree(root);
 		});
 		
-		it("should have the provided root as a root", function() {
-			expect( tree._root ).toEqual( root );
+		it("should have the root node as a the root", function() {
+			expect( tree.root ).toBe( root );
 		});
 
 		it("should be able to find the object contained in root", function() {
@@ -44,15 +36,15 @@ describe("Tree", function() {
 			beforeEach( function() {
 				nodeObject = {test: "test2"};
 				node = new Model.Node(nodeObject, root);
-				tree.add( node );
+				tree.addNode( node );
 			});
 
 			it("should have root as a parent", function() {
-				expect( node._parent ).toEqual( root );
+				expect( node.parent ).toEqual( root );
 			});
 
 			it("should have added the new node to the children of it's parent", function() {
-				expect( node._parent._children[0] ).toEqual( node );
+				expect( node.parent.children[0] ).toBe( node );
 			});
 
 			describe("when the node is searched for", function() {
@@ -97,10 +89,10 @@ describe("Tree", function() {
 			});
 
 			it( "should be able to switch branches", function() {
-				oldBranch = nodes[1]._parent._branch
+				oldBranch = nodes[1].parent.branch
 				tree.switchBranch( nodes[1] )
-				expect( oldBranch ).not.toBe( nodes[1]._parent._branch );
-				expect( nodes[1]._parent._branch ).toBe( nodes[1] );
+				expect( oldBranch ).not.toBe( nodes[1].parent.branch );
+				expect( nodes[1].parent.branch ).toBe( nodes[1] );
 			});
 
 		});
@@ -109,16 +101,16 @@ describe("Tree", function() {
 			var node,previous;
 			beforeEach( function() {
 				node = new Model.Node(null,null)
-				previous = tree._current;
+				previous = tree.current;
 				tree.addNode(node);
 			});
 
 			it("should have added that node to the tree", function() {
-				expect( tree._current ).toBe( node );
+				expect( tree.current ).toBe( node );
 			});
 
 			it("should have updated the parent of that node to the previous node", function() {
-				expect( node._parent ).toBe( previous );
+				expect( node.parent ).toBe( previous );
 			});
 			
 		});

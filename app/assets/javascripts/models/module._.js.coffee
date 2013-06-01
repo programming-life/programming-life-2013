@@ -30,7 +30,7 @@ class Model.Module extends Helper.Mixable
 		@_defineProperties( params, step, metadata )
 		
 		action = @_createAction( "Created #{this.constructor.name}:#{this.name}")
-		@_tree.setRoot( new Model.Node(action, null) )
+		@tree.setRoot( new Model.Node(action, null) )
 					
 		@_bind( 'module.property.changed', @, @onActionDo )
 		@_bind( 'module.set.compound', @, @onActionDo )
@@ -170,6 +170,7 @@ class Model.Module extends Helper.Mixable
 	# @return [self] for chaining
 	#
 	setCompound: ( compound, value ) ->
+		console.log(compound, value)
 		
 		return this if  @starts[ compound ] is value
 		

@@ -3,26 +3,26 @@
 class Model.Tree extends Helper.Mixable
 	
 	@concern Mixin.EventBindings
-
+	
 	# Constructor for tree
 	#
 	# @param [Node] root The root node of the tree
 	#
-	constructor: ( root = new Model.Node( null, null ) ) -> 
-		@_root = root
-		@_current = @_root
-
+	constructor: ( @root = new Model.Node() ) -> 
+		@current = @root
 		@_allowEventBindings()
+
 
 	# Set a new root for the tree
 	#
 	# @param root [Model.Node] The new root
+	#
 	setRoot: ( root ) ->
-		if @_current is @_root
-			@_current = root
+		if @current is @root
+			@current = root
 
-		@_root.replace( root )
-		@_root = root
+		@root = root
+		@root.replace( root )
 	
 	# Add an object to the tree
 	#
@@ -30,11 +30,9 @@ class Model.Tree extends Helper.Mixable
 	# @param parent [Node] The future parent
 	# @return [Node] the added node
 	#
-	add: ( object, parent = @_current ) ->
-		node = new Model.Node(object, parent)
-		@_current = node
-		if parent isnt null
-			parent._branch = node
+	add: ( object, parent = @current ) ->
+		node = parent.addChild( object )
+		@current = node
 
 		@_trigger( "tree.add.node", this, [ node ])
 
@@ -45,11 +43,11 @@ class Model.Tree extends Helper.Mixable
 	# @param node [Model.Node] The node to add.
 	# @param parent [Model.Node] The new parent of the node.
 	#
-	addNode: ( node, parent = @_current ) ->
-		node._parent = parent
-		parent._branch = node
-		parent._children.push node
-		@_current = node
+	addNode: ( node, parent = @current ) ->
+		node.parent = parent
+		parent.branch = node
+		parent.children.push node
+		@current = node
 		return node
 	
 	# Find an objects location in the tree
@@ -58,11 +56,11 @@ class Model.Tree extends Helper.Mixable
 	# @param [Node] start The node to start searching from. Default is root
 	# @return [Node] The node containing the object or null if it doesn't exist.
 	#
-	find: ( object, start = @_root ) ->
-		return start if object is start._object
-		for child in start._children
+	find: ( object, start = @root ) ->
+		return start if object is start.object
+		for child in start.children
 			res = @find( object, child)
-			return res if res
+			return res if res?
 		return null
 	
 	# A wrapper method the breadthfirst iterator	
@@ -75,12 +73,12 @@ class Model.Tree extends Helper.Mixable
 	#
 	# @param start [Model.Node] The root of the iterator
 	# @return [Array] An array with the nodes of the tree in breadthfirst order
-	breadthfirst: ( start = @_root ) ->
+	breadthfirst: ( start = @root ) ->
 		res = [start]
 
-		res.push start._children...
+		res.push start.children...
 
-		for child in start._children
+		for child in start.children
 			arr = @breadthfirst(child)
 			arr.splice(0,1)
 			res.push arr...
@@ -91,10 +89,10 @@ class Model.Tree extends Helper.Mixable
 	#
 	# @param start [Model.Node] The root of the iterator
 	# @return [Array] An array with the nodes of the tree in depthfirst order
-	depthfirst: ( start = @_root ) ->
+	depthfirst: ( start = @root ) ->
 		res = [start]
 
-		for child in start._children
+		for child in start.children
 			res.push @depthfirst(child)...
 
 		return res
@@ -105,8 +103,8 @@ class Model.Tree extends Helper.Mixable
 	# @retun [Model.Node] The old branch
 	#
 	switchBranch: ( node ) ->
-		old = @_current
-		if node._parent?
-			node._parent._branch = node
-			@_current = node
+		old = @current
+		if node.parent?
+			node.parent.branch = node
+			@current = node
 		return old

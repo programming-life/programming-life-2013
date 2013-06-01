@@ -2,23 +2,17 @@ describe("UndoTree", function() {
 	var tree, root;
 	
 	beforeEach( function() {
-		root = new Model.Node({root: "test"}, null);
+		root = new Model.Node({root: "root"}, null);
 		tree = new Model.UndoTree(root);
 	});
 
 	describe("when a tree is contructed without a root", function() {
 		beforeEach( function() {
-			tree = new Model.UndoTree();
+			tree.root = new Model.UndoTree();
 		});
 
-		it("should have a default root node", function() {
-			expect( tree._root._parent ).toBe( null );
-			expect( tree._root._object).toBe( null );
-			expect( tree._root._children.length ).toBe( 0);
-		});
-		
 		it("the current node should be the root node", function() {
-			expect( tree._current ).toBe( tree._root );
+			expect( tree.current ).toBe( root );
 		});
 	});
 
@@ -52,11 +46,11 @@ describe("UndoTree", function() {
 			var newNode;
 			beforeEach( function() {
 				newNode = new Model.Node({base: "base"},null);
-				tree.rebase(tree._root, newNode);
+				tree.rebase(root, newNode);
 			});
 
 			it("should have replaced the root node with the new node", function() {
-				expect( tree._root ).toBe( newNode );
+				expect( tree.root ).toEqual( newNode );
 			});
 		});
 
@@ -76,7 +70,7 @@ describe("UndoTree", function() {
 		});
 
 		it("should have the node that was added last as current", function() {
-			expect( tree._current ).toBe( node[5] );
+			expect( tree.current ).toBe( node[5] );
 		});
 
 		describe("when undo has been called", function() {
@@ -87,7 +81,7 @@ describe("UndoTree", function() {
 			});
 
 			it("should have the second last node as current", function() {
-				expect( tree._current ).toBe( node[4] );
+				expect( tree.current ).toBe( node[4] );
 			});
 
 			it("should have returned the last action", function() {
@@ -101,7 +95,7 @@ describe("UndoTree", function() {
 				});
 
 				it("should have the third last node as current", function() {
-					expect( tree._current ).toBe( node[3] );
+					expect( tree.current ).toBe( node[3] );
 				});
 
 				it("should have returned the second last action", function() {
@@ -115,7 +109,7 @@ describe("UndoTree", function() {
 					});
 
 					it("should have the second last node as current", function() {
-						expect( tree._current ).toBe( node[4] );
+						expect( tree.current ).toBe( node[4] );
 					});
 
 					it("should have returned the second last action", function() {
@@ -123,7 +117,7 @@ describe("UndoTree", function() {
 					});
 
 					it("should have returned the same action as the object of the node that is now current", function() {
-						expect( tree._current._object ).toBe( redone)
+						expect( tree.current.object ).toBe( redone)
 					});
 				});
 
@@ -134,8 +128,8 @@ describe("UndoTree", function() {
 					});
 
 					it("should have switched the branch", function() {
-						expect( tree._current ).toBe( newNode );
-						expect( tree._current._parent._children.length ).toBe( 2 );
+						expect( tree.current ).toBe( newNode );
+						expect( tree.current.parent.children.length ).toBe( 2 );
 					});
 
 					describe("when undoing", function() {
@@ -149,11 +143,11 @@ describe("UndoTree", function() {
 							});
 
 							it("should have switched the branch to the old branch", function() {
-								expect( tree._current ).toBe( oldBranchNode );
+								expect( tree.current ).toBe( oldBranchNode );
 							});
 
 							it("should not have added a node", function() {
-								expect( tree._current._parent._children.length ).toBe( 2 );
+								expect( tree.current.parent.children.length ).toBe( 2 );
 							});
 						});
 
@@ -163,8 +157,8 @@ describe("UndoTree", function() {
 							});
 
 							it("should have the same tree", function() {
-								expect( tree._current ).toBe( newNode );
-								expect( tree._current._parent._children.length ).toBe( 2 );
+								expect( tree.current ).toBe( newNode );
+								expect( tree.current.parent.children.length ).toBe( 2 );
 							});
 						});
 
@@ -180,16 +174,16 @@ describe("UndoTree", function() {
 			beforeEach( function() {
 				branch = node[2];
 				base = new Model.Node({rebase: "base"});
-				oldParent = branch._parent;
+				oldParent = branch.parent;
 				tree.rebase( branch, base );
 			});
 
 			it("should have a branch with the new parent", function() {
-				expect( branch._parent ).toBe( base );
+				expect( branch.parent ).toBe( base );
 			});
 
 			it("should have differing old and new parents", function() {
-				expect( branch._parent).not.toBe( oldParent );
+				expect( branch.parent).not.toBe( oldParent );
 			});
 
 		});
@@ -212,7 +206,7 @@ describe("UndoTree", function() {
 			});
 
 			it("should have set the tree to the node", function() {
-				expect( tree._current ).toBe( node[5] );
+				expect( tree.current ).toBe( node[5] );
 			});
 
 			it("should have returned the nodes in between in the right order", function() {

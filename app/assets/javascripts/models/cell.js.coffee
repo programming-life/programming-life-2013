@@ -30,7 +30,7 @@ class Model.Cell extends Helper.Mixable
 		@_allowEventBindings()
 		@_allowTimeMachine()
 		action = @_createAction( "Created cell" )
-		@_tree.setRoot( new Model.Node(action, null) )
+		@tree.setRoot( new Model.Node(action, null) )
 		
 		@_defineProperties( paramscell )
 		
@@ -137,7 +137,7 @@ class Model.Cell extends Helper.Mixable
 				)
 				.do()
 		
-		@addUndoableEventToSub( action, module ) if undoable
+		@addUndoableEvent( action ) if undoable
 		return this
 		
 	# Actually adds the module to the cell
@@ -174,7 +174,7 @@ class Model.Cell extends Helper.Mixable
 				)
 				.do()
 		
-		@addUndoableEventToSub( action, metabolite ) if undoable
+		@addUndoableEvent( action ) if undoable
 		
 		return this
 		
@@ -476,13 +476,14 @@ class Model.Cell extends Helper.Mixable
 		
 	# Runs this cell
 	#
-	# @param timespan [Integer] the time it should run for
+	# @param from [Integer] the time it should run from
+	# @param to [Integer] the time it should run to
 	# @param base_values [Array] the base values to try
 	# @return [self] chainable instance
 	#
-	run : ( timespan, base_values = [], callback, token ) ->
+	run : ( from, to, base_values = [], callback, token, stepsize = 1e-9, iterations = 4000 ) ->
 		
-		@_trigger( 'cell.before.run', @, [ timespan ] )
+		@_trigger( 'cell.before.run', @, [ to - from ] )
 								
 		exclude = []
 		while not ( finished ? off )
@@ -517,15 +518,20 @@ class Model.Cell extends Helper.Mixable
 
 		# Run the ODE from 0...timespan with starting values and step function
 		[ values, continuation ] = @_tryUsingBaseValues( base_values, values )
-		promise = numeric.asyncdopri( 0, timespan, values, @_step( modules, mapping, map ), 1e-9, 4000, undefined, token )
+		unless continuation
+			from = 0
+			to =  to - from
+		
+		promise = numeric.asyncdopri( 0, to - from, values, @_step( modules, mapping, map ), stepsize, iterations, undefined, token )
 		promise = promise.then( ( ret ) =>
 		
-			@_trigger( 'cell.after.run', @, [ timespan, ret, mapping ] )
+			@_trigger( 'cell.after.run', @, [ to - from, ret, mapping ] )
 			
 			result =
 				results: ret
 				map: mapping
-				append: continuation
+				from: from + ret.x[0]
+				to: from + ret.x[ret.x.length - 1 ]
 				
 			callback?( result )
 			return result
