@@ -40,3 +40,9 @@ class View.Collection extends Helper.Mixable
 	draw: () ->
 		view.draw() for view in @_views	
 		return this
+		
+	# Redraws this collection
+	#
+	redraw: () ->
+		view.redraw() for view in @_views
+		return this
