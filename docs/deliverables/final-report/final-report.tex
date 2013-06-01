@@ -6,7 +6,7 @@
 \usepackage{amssymb}
 \usepackage{graphicx}
 \usepackage{hyperref}
-\usepackage{lstlisting}
+\usepackage{listings}
 \usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry}
 
 \title{Title}
@@ -63,7 +63,8 @@ ODE Solver( T, f, y, I )
 			increment i
 		y[ t ] = solved values
 		increment t
-			\end{lstlising}
+			\end{lstlisting}
+
 			The outer while block was deferred. Deferring in JavaScript is achieved by pushing a function to the end of the callstack, using setTimeout.
 		
 		\subsection{Concurrency}
@@ -79,9 +80,9 @@ ODE Solver( T, f, y, I )
 			The beauty of this solution is that you don't need to install anything and the application simply degrades to online-only if these features are not available.
 		
 		\subsection{Undo}
-			The ability to undo and redo your actions makes an interface more user friendly and easy to use, and so the decision to add this functionality to our application was made early on. This resulted in a functionality that could be added to as the application grew in complexity. The challenge in accomplishing this, is to store and update the relevant data in such a way in becomes a self containing entity. To do this, the functionality needs to have an easy to use interface, while all the complex logic is contained within the entity itself.\\
+			The ability to undo and redo your actions makes an interface more user friendly and easy to use, and so the decision to add this functionality to our application was made early on. This resulted in a functionality that could be added to as the application grew in complexity. The challenge in accomplishing this, is to store and update the relevant data in such a way in becomes a self containing entity. To do this, the functionality needs to have an easy to use interface, while all the complex logic is contained within the entity itself.
 			
-			In implementing this, it becomes evident that the interface to the entity consists of it's basic functions; namely \emph{undo}, \emph{redo}, and \emph{addAction}. Any action that can be undone and redone is stored a tree structure, each point in time containing a reference to the previous point and all the future point that emerged from that specific snapshot in time. This allows for multiple possible timelines, and makes this functionality more powerfull without adding much complexity to the use of it, because everything complicated is contained within the entity.\\
+			In implementing this, it becomes evident that the interface to the entity consists of it's basic functions; namely \emph{undo], \emph{redo}, and \emph{addAction}. Any action that can be undone and redone is stored a tree structure, each point in time containing a reference to the previous point and all the future point that emerged from that specific snapshot in time. This allows for multiple possible timelines, and makes this functionality more powerfull without adding much complexity to the use of it, because everything complicated is contained within the entity.
 
 			In addition to creating an easy to use implementation, it is also required that the functionality remains simple even when the cell model is very complex. To easily maintain the timeline of the entire application, each module keeps track of it's own history and future and makes this data avaiable. The cell also track changes made to it and makes its timeline avaiable. Because of this separation, any part of the cell model can be adapted without having to think about the consequences of the changes to other parts of the model, allowing for easier development and generally higher quality software.
 	
