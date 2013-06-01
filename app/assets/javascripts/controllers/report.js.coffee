@@ -48,7 +48,7 @@ class Controller.Report extends Controller.Base
 			@solveTheSystem()
 		)
 			
-		#return promise
+		return promise
 		
 	#
 	#
