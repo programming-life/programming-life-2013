@@ -12,9 +12,9 @@ class View.Undo extends Helper.Mixable
 	constructor: ( @_tree ) ->
 		@_allowEventBindings()
 
-		@_bind("tree.add.node", @, @_onNodeAdd)
-		@_bind("tree.remove.node", @, @_onNodeRemove)
-		@_bind("tree.select.node", @, @_onNodeSelect)
+		@_bind("tree.node.added", @, @_onNodeAdd)
+		@_bind("tree.node.removed", @, @_onNodeRemove)
+		@_bind("tree.node.selected", @, @_onNodeSelect)
 
 		@_rows = {}
 
@@ -105,7 +105,7 @@ class View.Undo extends Helper.Mixable
 
 		((node) =>
 			row.click( node, ( event ) =>
-				@_trigger('tree.select.node', @_tree, [ event.data ])
+				@_trigger('tree.node.selected', @_tree, [ event.data ])
 			)
 		) node
 		
