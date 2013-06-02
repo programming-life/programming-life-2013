@@ -70,7 +70,7 @@
 				\clearpage
 				\begin{figure}[htb]
 					\begin{center}
-						\includegraphics[scale=0.95]{EAD.png}
+						\includegraphics[height=20cm,keepaspectratio=true]{EAD.png}
 						\caption{Deployment Diagram}
 						\label{fig: EAD}
 					\end{center}
@@ -84,12 +84,12 @@
 				\subsubsection{MVC Models and Database Design}
 					\begin{figure}[htb]
 						\begin{center}
-							\includegraphics[scale=0.4]{erd.pdf}
+							\includegraphics[width=\linewidth]{erd.pdf}
 							\caption{Database and Ruby Models}
 							\label{fig: erd}
 						\end{center}
 					\end{figure}	
-					A report always shows the current cell data, so there is a one to one relation between reports and cells. The component definitions are seperated from the values. A cell contains components, called modules (module_instance). These components are instances of blueprints (module_template). Each component blueprint can provide multiple parameters (module_parameter). Each instance has a value for each parameter (module_value).\\
+					A report always shows the current cell data, so there is a one to one relation between reports and cells. The component definitions are seperated from the values. A cell contains components, called modules (module\_instance). These components are instances of blueprints (module\_template). Each component blueprint can provide multiple parameters (module\_parameter). Each instance has a value for each parameter (module\_value).\\
 					The database design was devised this way, so templates are seperated from instances, resulting in no data redundancy.
 				\subsubsection{Active Database}
 					Ruby models are mapped to any Relational Database Management System (RDMS \footnote{http://en.wikipedia.org/wiki/Relational\_database\_management\_system} ) such as SQLite, MySQL and PostgreSQL. By not restricting the server database technology, switching systems, servers or extending their capacity should be fairly simple and easy. Database operations are done through Active Database, part of rails, which transparently maps the query to the technology's language.
@@ -98,7 +98,7 @@
 			\clearpage
 			\begin{figure}[htb]
 				\begin{center}
-				\includegraphics[scale=0.4]{SequenceDiagramLife.png}
+				\includegraphics[width=\linewidth]{SequenceDiagramLife.png}
 				\caption{Sequence Diagram}
 				\label{fig: SequenceDiagram}
 				\end{center}
@@ -111,7 +111,7 @@
 				\subsubsection{Models}
 					\begin{figure}[htb]
 						\begin{center}
-							\includegraphics[scale=0.2]{models.png}
+							\includegraphics[width=\linewidth]{models.png}
 							\caption{Client Models}
 							\label{fig: cmodels}
 						\end{center}
@@ -124,7 +124,7 @@
 				\subsubsection{Views}
 					\begin{figure}[htb]
 						\begin{center}
-							\includegraphics[scale=0.2]{views.png}
+							\includegraphics[width=\linewidth]{views.png}
 							\caption{Client Views}
 							\label{fig: cmodels}
 						\end{center}
@@ -135,7 +135,7 @@
 				\subsubsection{Controllers}
 					\begin{figure}[htb]
 						\begin{center}
-							\includegraphics[scale=0.2]{controllers.png}
+							\includegraphics[width=\linewidth]{controllers.png}
 							\caption{Client Controllers}
 							\label{fig: cmodels}
 						\end{center}
@@ -146,7 +146,7 @@
 				\subsubsection{Helpers}
 					\begin{figure}[htb]
 						\begin{center}
-							\includegraphics[scale=0.2]{helpers.png}
+							\includegraphics[width=\linewidth]{helpers.png}
 							\caption{Client Helpers}
 							\label{fig: cmodels}
 						\end{center}
@@ -195,7 +195,7 @@
 			All computations run client-side and are performed by our ODE Solver, which is built upon the numericjs \footnote{http://www.numericjs.com/} library. This is a library which makes it possible to perform sophisticated numerical computations in pure JavaScript and thus is able to run in the browser. The ODEs are solved using the Dormand-Prince RK method \footnote{http://en.wikipedia.org/wiki/Dormand\%E2\%80\%93Prince\_method} , also known as the ode45-function in MATLAB (previously used by our client).
 			
 		\subsection{API}
-			The API can be found online here: \url{http://coffeedoc.info/github/Derkje-J/programming-life/develop/} \\
+			The API can be found online here: \url{http://coffeedoc.info/github/Derkje-J/programming-life/} \\
 			In the future there will be a Rubydoc online for server-side assets and is updated after each commit.
 		\newpage
 			
@@ -211,4 +211,96 @@ See \href{http://goo.gl/Lfwhs}{http://goo.gl/Lfwhs} for more information.
 
 \listoffootnotes \clearpage
 
+\begin{thebibliography}{9}
+
+\bibitem{ror}
+Ruby on Rails,
+\emph{A web-application framework to create database-backed web applications according to the Model-View-Controller (MVC) architecture.}
+\href{http://api.rubyonrails.org/}{http://api.rubyonrails.org/}
+
+\bibitem{ruby}
+Bill Venners,
+\emph{The Philosophy of Ruby}.
+2003.
+\href{http://www.artima.com/intv/rubyP.html}{http://www.artima.com/intv/rubyP.html}
+
+\bibitem{rdbms}
+Relational Database Management System, 
+\emph{a database management system that is based on the relational model.}
+\href{http://en.wikipedia.org/wiki/Relational\_database\_management\_system}{http://en.wikipedia.org/wiki/Relational\_database\_management\_system}
+
+\bibitem{erb}
+ERB,
+\emph{a simple but powerful templating system.}
+\href{http://ruby-doc.org/stdlib-2.0/libdoc/erb/rdoc/ERB.html}{http://ruby-doc.org/stdlib-2.0/libdoc/erb/rdoc/ERB.html}
+
+\bibitem{coffeescript}
+Coffeescript,
+\emph{a language that compiles into JavaScript.}
+\href{http://coffeescript.org/\#language}{http://coffeescript.org/\#language}
+
+\bibitem{sass}
+SASS,
+\emph{ an extension of CSS3.}
+\href{http://sass-lang.com/docs/yardoc/file.SASS\_REFERENCE.html}{http://sass-lang.com/docs/yardoc/file.SASS\_REFERENCE.html}
+
+\bibitem{svg}
+SVG,
+\emph{an XML-based vector image format for two-dimensional graphics that has support for interactivity and animation.}
+\href{http://www.w3.org/Graphics/SVG/}{http://www.w3.org/Graphics/SVG/}
+
+\bibitem{raphael}
+Raphael,
+\emph{a JavaScript library that should simplify working with vector graphics on the web.}
+\href{http://raphaeljs.com/reference.html}{http://raphaeljs.com/reference.html}
+
+\bibitem{bdd}
+Behaviour Driven Development,
+\emph{a software development process based on test-driven development (TDD).}
+\href{http://en.wikipedia.org/wiki/Behavior\-driven\_development}{http://en.wikipedia.org/wiki/Behavior\-driven\_development}
+
+\bibitem{tdd}
+Test Driven Development,
+\emph{a software development process where tests are written first}
+\href{http://en.wikipedia.org/wiki/Test\-driven\_development}{http://en.wikipedia.org/wiki/Test\-driven\_development}
+
+\bibitem{jasmine}
+Jasmine,
+\emph{a behavior-driven development framework for testing JavaScript code.}
+\href{http://pivotal.github.io/jasmine/}{http://pivotal.github.io/jasmine/}
+
+\bibitem{teabag}
+Teabag,
+\emph{ a Javascript test runner built on top of Rails.}
+\href{https://github.com/modeset/teabag}{https://github.com/modeset/teabag}
+
+\bibitem{istanbul}
+Istanbul,
+\emph{a Javascript code coverage tool written in Javascript.}
+\href{https://github.com/gotwarlost/istanbul}{https://github.com/gotwarlost/istanbul}
+
+\bibitem{rspec}
+Rspec framework,
+\href{http://rubydoc.info/gems/rspec\-rails/frames}{http://rubydoc.info/gems/rspec\-rails/frames}
+
+\bibitem{javascript}
+Javascript
+\href{https://developer.mozilla.org/en-US/docs/JavaScript/Reference}{https://developer.mozilla.org/en-US/docs/JavaScript/Reference}
+
+\bibitem{uglifier}
+Uglifier,
+\emph{Ruby wrapper for UglifyJS JavaScript compressor.}
+\href{http://rubydoc.info/gems/uglifier/2.1.0/frames}{http://rubydoc.info/gems/uglifier/2.1.0/frames}
+
+\bibitem{numericjs}
+NumericJS,
+\emph{a library which allows you to perform sophisticated numerical computations in pure javascript in the browser and elsewhere.}
+\href{http://www.numericjs.com/}{http://www.numericjs.com/}
+
+\bibitem{dormandprince}
+Dormand-Prince RK method ,
+\emph{a method for solving ordinary differential equations.}
+\href{http://en.wikipedia.org/wiki/Dormand\%E2\%80\%93Prince\_method}{http://en.wikipedia.org/wiki/Dormand\%E2\%80\%93Prince\_method}
+
+\end{thebibliography}
 \end{document}
