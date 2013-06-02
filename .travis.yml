@@ -9,8 +9,8 @@ env:
   matrix:
   - DB=postgres DISPLAY=":99.0"
   global:
-  - secure: ! 'Tc2c5LTHDnkDWvlXVwD/VCTb/k+9pyKSBN29RlR0pGrcorMG52iCnhV1gZ23UjxW0YJKxR4H5UPTfa9uNb3ngZc4PEaRp0b7AHQ4Q7IE9HfJnM4DtZuOu4PqpFR9HY0eot7GksoTTUoOZK+lxsEfi4lWO4EvlpzzxH/oeiBGO0Q='
-  - secure: ! 'XVbITbkKHc6wC3Ls5DrfVFZzkKTP5EmrTyOL6FoNATTlFiLQ3VAc2JfeQMKRi5dKINuUy91Psg7rXzKzEl5JGJ2CQ0XbONvow1ihv4U2LhYwWpBigVxLDpqltkri74wyzWBzuTwSnYHTPP15CnzNlpaQwarOSJug/NQDahdmP+s='
+  - secure: Tc2c5LTHDnkDWvlXVwD/VCTb/k+9pyKSBN29RlR0pGrcorMG52iCnhV1gZ23UjxW0YJKxR4H5UPTfa9uNb3ngZc4PEaRp0b7AHQ4Q7IE9HfJnM4DtZuOu4PqpFR9HY0eot7GksoTTUoOZK+lxsEfi4lWO4EvlpzzxH/oeiBGO0Q=
+  - secure: ! 'GOwXORPN1Og3wMYtrnoymLfTmm/JgPVYU3J18Jc98uTexQHT4Gb1s0PmMa9TxgSkaR5bMiQNbIma9Ga5lEUPFovgenh0ATzBoo/2XkGcX3U2FESrGwMt/l3nswdnWlh3z+IFaZHjSOHkhjZQ5JtmwVETk3RR60YsRgnj+S0LKaA='
 matrix:
   allow_failures:
   - rvm: ruby-head
