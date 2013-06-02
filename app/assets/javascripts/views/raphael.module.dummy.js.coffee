@@ -20,15 +20,16 @@ class View.DummyModule extends View.RaphaelBase
 		@_count = @_cell.numberOf @_modulector
 
 		@_visible = @_number is -1 or @_count < @_number
-		#console.log @_count, @_number, @_visible if @_type = 'CellGrowth'
 
 		@_bind( 'cell.module.added', @, @onModuleAdd )
 		@_bind( 'cell.module.removed', @, @onModuleRemove )
 		@_bind( 'cell.metabolite.added', @, @onModuleAdd )		
 		@_bind( 'cell.metabolite.removed', @, @onModuleRemove )
-		@_bind( 'module.creation.started', @, @onModuleCreationStarted )
+		@_bind( 'module.creation.started', @, @onModuleCreationStarted)
 		@_bind( 'module.creation.aborted', @, @onModuleCreationAborted )
 		@_bind( 'module.creation.finished', @, @onModuleCreationFinished )
+		@_bind "module.properties.change", @, @onModulePropertiesChange
+		@_bind "module.selected.changed", @, @onModuleSelected
 		
 		@_propertiesView = new View.DummyModuleProperties( @, @_parent, @_cell, @_modulector )
 		@_notificationsView = new View.ModuleNotification( @, @_parent, @_cell, @_modulector )
@@ -48,14 +49,27 @@ class View.DummyModule extends View.RaphaelBase
 	# @param dummy [View.DummyModule] the dummy for which the module creation has started
 	#
 	onModuleCreationStarted: ( dummy ) ->
-		@_setSelected on if dummy is @
+		if dummy is @
+			@_setSelected on
+		else
+			if @_selected
+				@_setSelected off
+		
 		
 	# Gets called when a module creation was aborted
 	#
 	# @param dummy [View.DummyModule] the dummy for which the module creation was aborted
 	#
 	onModuleCreationAborted: ( dummy ) ->
-		@_setSelected off if dummy is @
+		if dummy is @
+			@_setSelected off
+			@_trigger "module.creation.ended", @, [@module]
+	
+	onModulePropertiesChange:( source, key, value ) ->
+		if source is @
+			@module[ key ] = value
+			@_trigger "module.property.changed", @, [@module]
+			@_trigger "module.creation.changed", @, [@module]
 
 	# Clicked the add button
 	#
@@ -68,11 +82,11 @@ class View.DummyModule extends View.RaphaelBase
 			if dummy isnt this
 				return
 
-			params = _( params ).defaults( @_params )
-			module = new @_modulector( _( params ).clone( true ) )			
-			@_cell.add module
-
 			@_setSelected off
+
+			params = _( params ).defaults( @_params )
+			@module = new @_modulector( _( params ).clone( true ) )
+			@_cell.add @module
 			
 			switch @_type
 				when "Transporter"
@@ -85,7 +99,7 @@ class View.DummyModule extends View.RaphaelBase
 						@_cell.addSubstrate( o , 0, 0, true )
 					for d in params.dest ? []
 						@_cell.addProduct( d , 0, true )
-				
+	
 	# On Module Added to the Cell
 	#
 	# @param cell [Model.Cell] the cell added to
@@ -105,8 +119,6 @@ class View.DummyModule extends View.RaphaelBase
 	# @param module [Model.Module] the module removed
 	#
 	onModuleRemove : ( cell, module ) ->
-		console.log @_count
-
 		if cell is @_cell and module instanceof @_modulector 
 			@_count -= 1
 			if @_number > @_count
@@ -179,9 +191,10 @@ class View.DummyModule extends View.RaphaelBase
 
 		hitbox.click =>
 			unless @_selected
-				@_trigger('module.creation.started', @)
+				@module = new @_modulector( _( @_params ).clone( true ) )
+				@_trigger 'module.creation.started', @, [ @module ]
 			else
-				@_trigger('module.creation.aborted', @)
+				@_trigger 'module.creation.aborted', @, [ @module ]
 		
 		@_contents.push hitbox
 		@_contents.push contents
@@ -240,13 +253,14 @@ class View.DummyModule extends View.RaphaelBase
 	#
 	_setSelected: ( selected ) ->
 		if selected isnt @_selected
+			@_selected = selected
 			if selected
 				@_setHovered off
 				$(@_box.node).addClass('selected')
 			else
 				$(@_box.node).removeClass('selected')
+				@_trigger "module.creation.ended", @, [@module]
 
-		@_selected = selected
 		return this
 
 	# Sets wether or not the module is hovered
@@ -306,3 +320,14 @@ class View.DummyModule extends View.RaphaelBase
 		hitbox.node.setAttribute('class', 'module-hitbox hitdummy-' + @_type.toLowerCase() )	
 
 		return hitbox
+	
+
+	# Gets called when a module view selected.
+	#
+	# @param module [Module] the module that is being selected
+	# @param selected [Boolean] the selection state of the module
+	#
+	onModuleSelected: ( module, selected ) ->
+		unless module is @module
+			@_trigger "module.creation.ended", @, [@module]
+

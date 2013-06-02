@@ -170,8 +170,6 @@ class Model.Module extends Helper.Mixable
 	# @return [self] for chaining
 	#
 	setCompound: ( compound, value ) ->
-		console.log(compound, value)
-		
 		return this if  @starts[ compound ] is value
 		
 		todo = _( ( compound, value ) -> @starts[ compound ] = value ).bind( @, compound, value )

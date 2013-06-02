@@ -32,6 +32,17 @@ class Controller.Cell extends Controller.Base
 			set: ( value ) -> 
 				@view.model = value
 		)
+
+		@_createBindings()
+	
+	# Create event bindings
+	#
+	_createBindings: ( ) ->
+		@_bind "module.creation.started", @, ( source, module ) => @view.previewModule( source, module, on )
+		@_bind "module.creation.ended", @, ( source, module ) => @view.previewModule( source, module, off )
+		#@_bind "module.creation.changed", @, (( source, newModule ) =>
+		#	@view.previewModule( source, newModule, on )
+		#)
 		
 	# Loads a new cell into the view
 	#

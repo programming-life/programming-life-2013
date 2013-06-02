@@ -313,3 +313,21 @@ class View.Cell extends View.RaphaelBase
 		if cell is @model
 			@_splines = _( @_splines ).without spline
 			spline.kill()
+	
+	# Creates or removes a preview view for a module
+	#
+	# @param source [Model.View] The source of the preview request
+	# @param module [Model.Module] The module that needs to be previewed
+	# @param selected [boolean] The selected state of the module view
+	#
+	previewModule: ( source, module, selected ) ->
+		type = source.getFullType()
+		if source in @_viewsByType[type]
+			if selected
+				preview = new View.ModulePreview( @_paper, @, @model, module, off )
+				@_drawn.push({view: preview, model: module})
+				@add preview
+			else
+				preview = @getView( module )
+				if preview
+					@remove preview
