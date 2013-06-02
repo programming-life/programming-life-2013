@@ -1,42 +1,44 @@
+---
 language: ruby
 bundler_args: --without development
 rvm:
-    - 1.9.3
-    - 2.0.0
-    - ruby-head
+- 1.9.3
+- 2.0.0
+- ruby-head
 env:
-    - DB=postgres DISPLAY=":99.0"
-matrix:  
+  matrix:
+  - DB=postgres DISPLAY=":99.0"
+  global:
+  - secure: ! 'Tc2c5LTHDnkDWvlXVwD/VCTb/k+9pyKSBN29RlR0pGrcorMG52iCnhV1gZ23UjxW0YJKxR4H5UPTfa9uNb3ngZc4PEaRp0b7AHQ4Q7IE9HfJnM4DtZuOu4PqpFR9HY0eot7GksoTTUoOZK+lxsEfi4lWO4EvlpzzxH/oeiBGO0Q='
+  - secure: ! 'XVbITbkKHc6wC3Ls5DrfVFZzkKTP5EmrTyOL6FoNATTlFiLQ3VAc2JfeQMKRi5dKINuUy91Psg7rXzKzEl5JGJ2CQ0XbONvow1ihv4U2LhYwWpBigVxLDpqltkri74wyzWBzuTwSnYHTPP15CnzNlpaQwarOSJug/NQDahdmP+s='
+matrix:
   allow_failures:
-    - rvm: ruby-head
-
+  - rvm: ruby-head
 branches:
-    only:
-        - master
-        - develop
-        - /^release.*$/
-        - /^hotfix.*$/
-        - /^test.*$/
+  only:
+  - master
+  - develop
+  - /^release.*$/
+  - /^hotfix.*$/
+  - /^test.*$/
 postgres:
-    adapter: postgresql
-    database: life_test
-    username: postgres
-
+  adapter: postgresql
+  database: life_test
+  username: postgres
 before_script:
-    - psql -c "create role life with createdb login password 'life';" -U postgres
-    - rake db:create
-    - rake db:migrate
-    - rake db:seed
-    - rake db:test:prepare
-    - export DISPLAY=:99.0
-    - sh -e /etc/init.d/xvfb start
-
+- psql -c "create role life with createdb login password 'life';" -U postgres
+- rake db:create
+- rake db:migrate
+- rake db:seed
+- rake db:test:prepare
+- export DISPLAY=:99.0
+- sh -e /etc/init.d/xvfb start
 script:
-    - bundle exec rake test
-    - bundle exec rake jasmine:ci
+- bundle exec rake test
+- bundle exec rake jasmine:ci
 notifications:
-    webhooks:
-        urls:
-            - http://life.jstfy.com/hook
-        on_succes: always
-        on_failure: never
+  webhooks:
+    urls:
+    - http://life.jstfy.com/hook
+    on_succes: always
+    on_failure: never

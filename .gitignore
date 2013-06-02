@@ -186,8 +186,9 @@ docs\deliverables\~$*
 *.aux
 *.out
 *.toc
+*.pdf
+*.fnt
 *.synctex.gz
 
 /coverage
-/coverage/*
 /.jhw-cache
