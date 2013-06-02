@@ -48,7 +48,7 @@ class Controller.Main extends Controller.Base
 		
 		@_bind( 'module.selected.changed', @, 
 			(module, selected) => 
-				@controller('undo').setTimeMachine if selected
+				@controller('undo').focusTimeMachine if selected
 					module.timemachine 
 				else 
 					@timemachine 
