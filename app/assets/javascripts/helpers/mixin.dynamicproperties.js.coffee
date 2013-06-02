@@ -101,7 +101,7 @@ Mixin.DynamicProperties =
 							
 							if event?
 								func = @_trigger ? Model.EventManager.trigger
-								func( event, @, [ action ] )
+								func( event, @, [ action, key, param ] )
 							
 						get: ->
 							return @["_#{key}"]
