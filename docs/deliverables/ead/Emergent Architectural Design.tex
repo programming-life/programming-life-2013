@@ -31,60 +31,70 @@
 
 	\clearpage
 	
-\newcommand{\listfootnotesname}{List of Footnotes}% 'List of Footnotes' title
-\newlistof{footnotes}{fnt}{\listfootnotesname}% New 'List of...' for footnotes
+\newcommand{\listfootnotesname}{List of Footnotes}
+\newlistof{footnotes}{fnt}{\listfootnotesname}
 
-\let\oldfootnote\footnote % Save the old \footnote{...} command
-\renewcommand\footnote[1]{% Redefine the new footnote to also add 'List of Footnote' entries.
-    \refstepcounter{footnotes}% Add and step a reference to the footnote/counter.
-    \oldfootnote{#1}% Make a regular footnote.
+\let\oldfootnote\footnote
+\renewcommand\footnote[1]{
+    \refstepcounter{footnotes}
+    \oldfootnote{#1}
     \addcontentsline{fnt}{footnotes}{\protect
-\numberline{\thefootnotes}#1}% Add the 'List of...' entry.
+\numberline{\thefootnotes}#1}
 } 	
 	
 	\section{Introduction}
 		This document contains the architectural design for the application created during the Context Project `Programming Life: Synthetic Biology'. The application is targeted at synthetic biologists and its main purpose is to easily model, simulate and validate the complex workings of a cell. \\
-		The design of this application is explained first in terms of its design goals. Then a subsystem decomposition follows, which serves to uncover the inner workings of the application, along with a description of the mapping of subsystems to processes and computers, a hardware/software mapping. After this, the management of data and shared resources is discussed. In conclusion a short summary of the system architecture is given.
+		The design of this application is explained first in terms of its design goals. Then a subsystem decomposition follows, which serves to uncover the inner workings of the application, along with a description of the mapping of subsystems to processes and computers, a hardware/software mapping. After this, the management of data and shared resources is discussed. 
 		\subsection{Design goals}
-			Because the application has a very specific use, modelling cells and the processes within, the main design goal is to make this task as easy and intuitive as possible.
-			Further, as requested by the client, we want to give users:
+			The application can model cells and the processes within. The main design goal is to make this task as easy and intuitive as possible. Further, as requested by the client, it should:
 			\begin{itemize}
-				\item clear indication that changes can be made and to what these changes apply.
-				\item the ability to easily import and export datasets from and to frequently used data-formats e.g. CSV, SBML, HTML, PDF and Excel.
-				\item feedback on incomplete/erroneous cell-models, for instance: missing modules,  created by the user. If mistakes are made, they need to be easily identified and corrected.
-				\item compare simulations by plotting data on other simulations.
-				\item the ability to work locally without the need to be connected to the server.
-				\item feedback on and the ability to share what is saved.
-				\item an easy way to undo changes.
+				\item give an indication how changes to the cell will reflect on the rest of the cell
+				\item have the ability to easily import and export datasets from and to frequently used data-formats e.g. CSV, SBML, HTML, PDF and Excel.
+				\item give feedback to the user about mistakes and when possible provide a solution. An example is telling the user components are missing for a correctly working cell.
+				\item compare simulations by plotting data on top of other simulations.
+				\item be available offline, once the application is loaded once.
+				\item have the functionality to share data with other users.
+				\item have an easy way to undo changes.
 			\end{itemize}
 			To broaden their knowledge and expand their experience, the developers agreed to use programming languages and frameworks previously unknown to them.
 	\clearpage
 	\section{Architecture}
 	
 			\subsection{Overview}
+				Because the application is available offline, the server-client relation is very decoupled. This means that the main functionality resides on the client. The server is merely used for administrative purposes, storing application and user data and providing the clientside functionality. A backend on the server also allows for data manipulation on the database.
 				
-			
 			\subsection{Server}
-				The server subsystems consist of two key parts: the server back end and the database, this can be seen in figure 1. The server keeps an up-to-date copy of the database and sychronises with the client side when possible. In the future it could be used to do calculations that are too complicated for the client-side of the application (calculations are deemed too complicated when they take a notable amount of time to complete).
-				The database is used for storage of user data, modules for cell design, as well as cell models created using the application. It provides a centralised storage, so users can share their modelled cells and can access their data anywhere. However the client-side application can function on any platform without a persistent internet connection.
+				The primary function of the server is to provide the clientside application. After the application is downloaded the first time, it will reside on the client. Each time a client is online the application is automatically updated. \\
+				The secondary function is to provide storage for everything created by the user. Sharing data is made possible by the storing functionality. \\
+				In the figure below you can see this concept. The server provides all the client side assets and outputs these assets and html files to the client. The clients have a local copy of the database and can synchronise this with the server side database.
 				\clearpage
 				\begin{figure}[htb]
-				\begin{center}
-				\includegraphics[scale=0.95]{EAD.png}
-				\caption{Deployment Diagram}
-				\label{fig: EAD}
-				\end{center}
+					\begin{center}
+						\includegraphics[scale=0.95]{EAD.png}
+						\caption{Deployment Diagram}
+						\label{fig: EAD}
+					\end{center}
 				\end{figure}
 				\clearpage
 									
 				\subsubsection{Rails}
 					The server runs on Ruby on Rails \footnote{http://api.rubyonrails.org/} . This is a fairly new but very stable platform that is not only free but also open source. This means active development by a lot of people. Problems are easily fixed and this should ease the use of the application that is being designed. The language itself is written from a standpoint where you should just be able to write code and not worry about breaking the interpreter \footnote{www.artima.com/intv/rubyP.html} . This makes it easy to write comprehensible code that executes complex tasks.				
-				\subsubsection{MVC}
-					The pages served are HTML5 for markup with CSS3 for styling and Javascript for interaction. Pages are built by a comprehensive and solid Model-Viewer-Controller system. This keeps data separated from the representation, further increasing maintainability. Interaction is illustrated in figure 2. Because interaction and data are separated, change of the data through interaction can easily be stored and reversed providing the undo-functionality as per the design goals.			
-				\subsubsection{Models and Database}
-					Ruby models are mapped to any Relational Database Management System (RDMS \footnote{http://en.wikipedia.org/wiki/Relational\_database\_management\_system} ) such as SQLite, MySQL and PostgreSQL. By not restricting the server database technology, switching systems, servers or extending  their capacity should be fairly simple and easy.
+				\subsubsection{MVC on the server}
+					The pages served are HTML5 for markup with CSS3 for styling and Javascript for interaction. Pages are built by a comprehensive and solid Model-Viewer-Controller system. This keeps data separated from the representation, further increasing maintainability. Interaction is illustrated in figure 3. Rails uses MVC in its core. It made it easy to create the backend views and client side representations because displaying data, the interaction and the actual data are seperated. This is a reason to stick with this system.
+				\subsubsection{MVC Models and Database Design}
+					\begin{figure}[htb]
+						\begin{center}
+							\includegraphics[scale=0.4]{erd.pdf}
+							\caption{Database and Ruby Models}
+							\label{fig: erd}
+						\end{center}
+					\end{figure}	
+					A report always shows the current cell data, so there is a one to one relation between reports and cells. The component definitions are seperated from the values. A cell contains components, called modules (module_instance). These components are instances of blueprints (module_template). Each component blueprint can provide multiple parameters (module_parameter). Each instance has a value for each parameter (module_value).\\
+					The database design was devised this way, so templates are seperated from instances, resulting in no data redundancy.
+				\subsubsection{Active Database}
+					Ruby models are mapped to any Relational Database Management System (RDMS \footnote{http://en.wikipedia.org/wiki/Relational\_database\_management\_system} ) such as SQLite, MySQL and PostgreSQL. By not restricting the server database technology, switching systems, servers or extending their capacity should be fairly simple and easy. Database operations are done through Active Database, part of rails, which transparently maps the query to the technology's language.
 				\subsubsection{Views and ERB} 
-					The views are in ERB \footnote{http://ruby-doc.org/stdlib-2.0/libdoc/erb/rdoc/ERB.html} which is an HTML template system. It comes with the Rails framework, so it does not require any extra software. Rails controllers written in Ruby can expose data to these views. New views are easily added this way, so new ways of data representation are quickly devised.
+					The views are in ERB \footnote{http://ruby-doc.org/stdlib-2.0/libdoc/erb/rdoc/ERB.html} which is an HTML template system. It comes with the Rails framework, so it does not require any extra software. Rails controllers written in Ruby can expose data to these views. Using a templating system such as this allows for quick translation from model to display. 
 			\clearpage
 			\begin{figure}[htb]
 				\begin{center}
@@ -101,6 +111,18 @@
 					Javascript determines the local storage engine that is availabe and uses that to maintain an offline copy of the application and the created cells/modules. This makes it very easy to design new cells or edit saved cells even when the user isn't connected to the internet. This is communicated to the user, but requires no further interaction. Synchronization is completely transparent.
 				\subsubsection{Interaction by Javascript}
 					Javascript facilitates interaction and processes all the differential equations. It generates the graphs and the reports with the help of the canvas element and SVG, part of HTML5.
+					
+				\subsection{Models}
+					\includegraphics[scale=0.2]{models.png}
+				
+				\subsection{Views}
+					\includegraphics[scale=0.2]{views.png}
+					
+				\subsection{Controllers}
+					\includegraphics[scale=0.2]{controllers.png}
+					
+				\subsection{Helpers}
+					\includegraphics[scale=0.2]{helpers.png}
 		
 		\subsection{Data management}
 			When the user has access to the server, it can export simulation results to a report in multiple standardised format, such as \emph{HTML}, \emph{Excel} and \emph{PDF} which can then be shared. Maintaining a standardised format allows for consistency in the reports as requested by the user.		
