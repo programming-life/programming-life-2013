@@ -70,7 +70,7 @@
 				\clearpage
 				\begin{figure}[htb]
 					\begin{center}
-						\includegraphics[scale=0.95]{EAD.png}
+						\includegraphics[height=20cm,keepaspectratio=true]{EAD.png}
 						\caption{Deployment Diagram}
 						\label{fig: EAD}
 					\end{center}
@@ -84,12 +84,12 @@
 				\subsubsection{MVC Models and Database Design}
 					\begin{figure}[htb]
 						\begin{center}
-							\includegraphics[scale=0.4]{erd.pdf}
+							\includegraphics[width=\linewidth]{erd.pdf}
 							\caption{Database and Ruby Models}
 							\label{fig: erd}
 						\end{center}
 					\end{figure}	
-					A report always shows the current cell data, so there is a one to one relation between reports and cells. The component definitions are seperated from the values. A cell contains components, called modules (module_instance). These components are instances of blueprints (module_template). Each component blueprint can provide multiple parameters (module_parameter). Each instance has a value for each parameter (module_value).\\
+					A report always shows the current cell data, so there is a one to one relation between reports and cells. The component definitions are seperated from the values. A cell contains components, called modules (module\_instance). These components are instances of blueprints (module\_template). Each component blueprint can provide multiple parameters (module\_parameter). Each instance has a value for each parameter (module\_value).\\
 					The database design was devised this way, so templates are seperated from instances, resulting in no data redundancy.
 				\subsubsection{Active Database}
 					Ruby models are mapped to any Relational Database Management System (RDMS \footnote{http://en.wikipedia.org/wiki/Relational\_database\_management\_system} ) such as SQLite, MySQL and PostgreSQL. By not restricting the server database technology, switching systems, servers or extending their capacity should be fairly simple and easy. Database operations are done through Active Database, part of rails, which transparently maps the query to the technology's language.
@@ -98,7 +98,7 @@
 			\clearpage
 			\begin{figure}[htb]
 				\begin{center}
-				\includegraphics[scale=0.4]{SequenceDiagramLife.png}
+				\includegraphics[width=\linewidth]{SequenceDiagramLife.png}
 				\caption{Sequence Diagram}
 				\label{fig: SequenceDiagram}
 				\end{center}
@@ -111,7 +111,7 @@
 				\subsubsection{Models}
 					\begin{figure}[htb]
 						\begin{center}
-							\includegraphics[scale=0.2]{models.png}
+							\includegraphics[width=\linewidth]{models.png}
 							\caption{Client Models}
 							\label{fig: cmodels}
 						\end{center}
@@ -124,7 +124,7 @@
 				\subsubsection{Views}
 					\begin{figure}[htb]
 						\begin{center}
-							\includegraphics[scale=0.2]{views.png}
+							\includegraphics[width=\linewidth]{views.png}
 							\caption{Client Views}
 							\label{fig: cmodels}
 						\end{center}
@@ -135,7 +135,7 @@
 				\subsubsection{Controllers}
 					\begin{figure}[htb]
 						\begin{center}
-							\includegraphics[scale=0.2]{controllers.png}
+							\includegraphics[width=\linewidth]{controllers.png}
 							\caption{Client Controllers}
 							\label{fig: cmodels}
 						\end{center}
@@ -146,7 +146,7 @@
 				\subsubsection{Helpers}
 					\begin{figure}[htb]
 						\begin{center}
-							\includegraphics[scale=0.2]{helpers.png}
+							\includegraphics[width=\linewidth]{helpers.png}
 							\caption{Client Helpers}
 							\label{fig: cmodels}
 						\end{center}
@@ -210,5 +210,16 @@ See \href{http://goo.gl/Lfwhs}{http://goo.gl/Lfwhs} for more information.
 
 
 \listoffootnotes \clearpage
+
+\begin{thebibliography}{9}
+
+\bibitem{lamport94}
+Leslie Lamport,
+\emph{\LaTeX: A Document Preparation System}.
+Addison Wesley, Massachusetts,
+2nd Edition,
+1994.
+
+\end{thebibliography}
 
 \end{document}
