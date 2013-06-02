@@ -11,6 +11,7 @@ class Controller.Report extends Controller.Base
 	
 		super view ? new View.Report( @container )
 		
+		@_currentIteration = 0
 		@_createChildren()
 		@_createBindings()
 		
@@ -50,22 +51,28 @@ class Controller.Report extends Controller.Base
 			
 		return promise
 		
+	# Serializes a paper
 	#
+	# @return [String] the serialized paper in XML
 	#
 	serializePaper: () ->
 		cell_svg = new XMLSerializer().serializeToString @view.paper.canvas
 		$( '#report_data' ).attr( "value", cell_svg )
+		return cell_svg
 		
+	# Solve the system
 	#
+	# @return [Tuple<CancelToken, jQuery.Promise>] a token and the promise
 	#
 	solveTheSystem: () ->
-		[ token, promise ] = @controller('cell').startSimulation( 20, 2 )
+	
+		iterationDone = ( results, from, to ) =>
+			console.log @_currentIteration
+			@controller( 'graphs' ).show( results.datasets, @_currentIteration > 0, 'key' )
+			@_currentIteration++
+
+		[ token, promise ] = @controller('cell').startSimulation( 20, 2, iterationDone )
 		promise.done( () =>
-				
-				$('#graphs').find('.graph').each( (i, graph) -> 
-					$("#graph-#{$( graph ).find( 'h2' ).text().replace('#', '_')}").empty().append $ graph		
-				)
-					
 				$('#create-pdf').removeProp('disabled')
 			)
 		

@@ -21,7 +21,11 @@ class View.Graph extends View.RaphaelBase
 	# @param parent [View.Cell] The cell view this graph belongs to
 	#
 	constructor: ( id , @_titletext, parent, container = "#graphs", @_width = 240, @_height = 175 ) ->
-		$( container ).append( @_container = $('<div id="' + id + '" class="graph"></div>') )
+		
+		@_container = $( "##{id}" )
+		 
+		unless @_container.length
+			$( container ).append( @_container = $('<div id="' + id + '" class="graph"></div>') )
 		
 		super Raphael( id, @_width + Graph.AXISPADDING, @_height + Graph.AXISPADDING), parent
 
