@@ -84,7 +84,6 @@
 					Ruby models are mapped to any Relational Database Management System (RDBMS \cite{rdbms} ) such as SQLite, MySQL and PostgreSQL. By not restricting the server database technology, switching systems, servers or extending their capacity should be fairly simple and easy. Database operations are done through Active Database, part of rails, which transparently maps the query to the technology's language.
 				\subsubsection{Views and ERB} 
 					The views are in ERB \cite{erb} which is an HTML template system. It comes with the Rails framework, so it does not require any extra software. Rails controllers written in Ruby can expose data to these views. Using a templating system such as this allows for quick translation from model to display. 
-			\clearpage
 			\begin{figure}[htb]
 				\begin{center}
 				\includegraphics[width=\linewidth]{SequenceDiagramLife.png}
@@ -113,11 +112,12 @@
 				\subsubsection{Views}
 					\begin{figure}[htb]
 						\begin{center}
-							\includegraphics[width=\linewidth]{views.png}
+							\includegraphics[scale=0.675]{views.png}
 							\caption{Client Views}
 							\label{fig: cmodels}
 						\end{center}
 					\end{figure}	
+
 					The views are of two basic types: Raphael or HTML. There is a meta class Collection which just holds views. All views can have children and display a single model. Raphael typed views use SVG to display their contents. To display a model differently, new views can be added. The views only have display functionality. They do not add interaction. \\
 					Events on the models ensure views to be able to update their display. This way a view is notified of changes instead of needing to poll for changes.
 					
@@ -131,7 +131,7 @@
 					\end{figure}	
 					Controllers add interaction to views and models. Controllers can have children. Parent controllers can alter a child controllers behaviour. This way there is no need for a large set of controllers, e.g. a MainCell controller and a ReportCell are now combined into one Cell controller. \\
 					For collections of elements, views can use unobtrusive JavaScript to enlist those elements for interaction. A view might add data-xxx attributes to elements. Controllers may or may not bind javascript to elements with these attributes. Keeps the HTML clean and the interaction in the controllers hand. 
-					
+				\clearpage
 				\subsubsection{Helpers}
 					\begin{figure}[htb]
 						\begin{center}
