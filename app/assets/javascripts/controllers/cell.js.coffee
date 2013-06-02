@@ -2,9 +2,12 @@
 #
 class Controller.Cell extends Controller.Base
 
-	@concern Mixin.EventBindings
-	
+	# Maximum number of iterations for the simulation
+	#
 	@MAX_ITERATIONS = 100
+	
+	# The minimum change required for a data point to be significant
+	#
 	@SIGNIFICANCE = 1e-15
 	
 	# Creates a new instance of Cell
@@ -48,6 +51,7 @@ class Controller.Cell extends Controller.Base
 		
 	# Saves the cell view model
 	#
+	# @param name the name to save with
 	# @return [jQuery.Promise] the promise
 	#
 	save: ( name ) ->
@@ -56,9 +60,12 @@ class Controller.Cell extends Controller.Base
 		
 	# Get the simulation data from the cell
 	# 
-	# @param duration [Integer] The duration of the simulation
+	# @param from [Integer] The t0 of the simulation
+	# @param to [Integer] the tn of the simulation
 	# @param dt [Float] The timestep for the graphs
 	# @param base_values [Array] continuation values
+	# @param token [CancelToken] the cancellation token
+	# @param interpolate [Boolean] wether to interpolate
 	# @return [Object] Object with data such as An array of datapoints
 	#
 	solveTheSystem: ( from, to, base_values = [], token = numeric.asynccancel(), dt = 1, interpolate = off ) ->
@@ -124,7 +131,7 @@ class Controller.Cell extends Controller.Base
 	# @param t [Integer] duration of each step call
 	# @param iterations [Integer] maximum t to run
 	# @param dt [Integer] graph dt
-	# @return [ [ token, promise ] ] tuple
+	# @return [ Tuple<CancelToken, jQuery.Promise> ] tuple
 	#
 	setSimulationState: ( startSimulateFlag, callback, t, iterations, dt ) ->
 		if startSimulateFlag
@@ -137,6 +144,7 @@ class Controller.Cell extends Controller.Base
 	# @param iterations [Integer] maximum t to run
 	# @param callback [Function] the callback function after each iteration
 	# @param dt [Integer] graph dt
+	# @return [ Tuple<CancelToken, jQuery.Promise> ] tuple of token and promise
 	#
 	startSimulation: ( t = 20, iterations = Cell.MAX_ITERATIONS, callback, dt = 0.001 ) ->
 		
@@ -147,6 +155,7 @@ class Controller.Cell extends Controller.Base
 		# given filled in as a partial. It is throtthed over step_update. This
 		# means that you can call it an infinite number of times, but it will
 		# only be executed after step_update passes.
+		#
 		step = _( @_step )
 			.chain()
 			.bind( @, dt, callback )
@@ -166,8 +175,6 @@ class Controller.Cell extends Controller.Base
 	# @param max [Integer] max t
 	# @return [Array<Float>] the new values
 	#
-	# @todo view.drawGraphs should be extracted
-	#
 	_step : ( dt, callback, from, to, base_values ) ->
 	
 		return base_values unless @_running
@@ -185,6 +192,11 @@ class Controller.Cell extends Controller.Base
 	# Actually loops the simulation. Expects step to be a throttled function
 	# and gracefully defers execution of this step function. 
 	#
+	# @param step [Function] the step function
+	# @param t [Integer] the duration T of a step
+	# @param iterations [Integer] the number of iterations/steps
+	# @return [jQuery.Promise] the promise
+	#
 	_simulate: ( step, t, iterations ) ->
 		
 		# While running step this function and recursively
@@ -192,7 +204,11 @@ class Controller.Cell extends Controller.Base
 		# the call_stack is emptied before execution.
 		#
 		# @param step [Function] step function
-		# @param results [any*] arguments to pass
+		# @param from [Integer] the t0 of the simulation
+		# @param to [Integer] the tn of the simulation
+		# @param args [any*] arguments to pass
+		# @return [jQuery.Promise] the promise
+		#
 		simulation = ( step, from, to, args ) => 
 			if @_running
 				promise = step( from, to, args ) 
@@ -209,6 +225,8 @@ class Controller.Cell extends Controller.Base
 		return simulation( step, 0, t, [] )
 		
 	# Stops the simulation
+	#
+	# @return [ Tuple<CancelToken, jQuery.Promise> ] tuple of token and promise
 	#
 	stopSimulation: ( ) ->
 		@_running = off
