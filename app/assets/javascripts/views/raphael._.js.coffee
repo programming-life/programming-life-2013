@@ -30,6 +30,9 @@ class View.RaphaelBase extends View.Collection
 
 				set: ( y ) ->
 					@moveTo(@x, y, off)
+					
+			paper: 
+				get: ( ) -> return @_paper
 		)
 
 	# Catcher function for Mixin.Catcher that will notificate any thrown Error on catchable methods
