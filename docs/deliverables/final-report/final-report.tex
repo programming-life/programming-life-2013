@@ -6,6 +6,7 @@
 \usepackage{amssymb}
 \usepackage{graphicx}
 \usepackage{hyperref}
+\usepackage{lstlisting}
 \usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry}
 
 \title{Title}
@@ -52,15 +53,17 @@
 			Our ordinary differential equations solver is the same used in MATLAB. It's very powerfull but this did yield some problems. The more components we added, the more noticeable the delay between pressing simulate and the actual output. To get accurate results we were doing the caluclations on a low tolerance and a high number of iterations. \\
 			One could always tweak this tolerance and iteration number, but defining that dynamically is hard. Instead we took a different road. We re-implemented the ODE by implementing the algorithm and deferring each iteration. This made the overal solving time higher, but there was no UI freeze anymore whatsoever. We could now also display results on the fly and show progress.\\
 			If the next function denotes the pseudocode:\\
-			ODE Solver( T, f, y, I )
-				initialize t = 0, y = [ y ], i = 0
-				WHILE t \lt T AND i \lt I
-				    WHILE error \gt tolerance
-						6 times solve dopri f()
-						determine error
-						increment i
-					y[ t ] = solved values
-					increment t\\
+			\begin{lstlisting}
+ODE Solver( T, f, y, I )
+	initialize t = 0, y = [ y ], i = 0
+	WHILE t \lt T AND i \lt I
+		WHILE error \gt tolerance
+			6 times solve dopri f()
+			determine error
+			increment i
+		y[ t ] = solved values
+		increment t
+			\end{lstlising}
 			The outer while block was deferred. Deferring in JavaScript is achieved by pushing a function to the end of the callstack, using setTimeout.
 		
 		\subsection{Concurrency}
@@ -134,8 +137,10 @@ Elkaars code niet kennen -> test code zelf en voor ander mans code schrijven, zo
 		
 	\section{Lightweight SCRUM plans}
 		-- Dear TA's, what's expected here? We do have these on paper and on planbox and in de PV --
-	
 		
 	\section{Conclusion}
+		We struggled a bit, we fought even harder. This project has thought us a great deal about scrum. Told us that great projectmembers still exist. It opened up our eyes to the beauty of biology and chemistry into engineering, and most of all, we encouraged ourselved to learn more and even more. \\
+		Working on this application and working together as we did, was a lot of fun. A lot of laughter and a lot of great moments, both positive and negative. As a team we grew. As computer scientists even so.\\
+		Not only did we apprehend the context, we learned three new languages and even more new technologies. Technology seems limitless. 
 	
 \end{document}
