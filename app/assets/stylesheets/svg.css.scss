@@ -1,0 +1,98 @@
+.cell {
+	stroke: #cacaca;
+	stroke-width: 40px;
+}
+
+rect, circle:not(.cell) {
+	vector-effect:non-scaling-stroke;
+}
+
+.module-box {
+	stroke: rgba(0, 0, 0, .2);	
+	stroke-width: 1px;
+	fill: rgba( 255, 255, 255, 1 );
+	opacity:1;
+
+	transition: all 0.3s ease-in-out;
+	
+	&.inactive {
+		stroke-dasharray: 5,5;
+		fill: rgba( 255, 255, 255, 0.6 );		
+	}
+	
+	&.hovered {
+		stroke: rgb( 100, 200, 100 );
+	}
+	
+	&.selected {
+		stroke: rgba(82, 168, 236, 0.8);
+	}
+}
+
+text, tspan {
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+}
+
+.module-text {
+	font-size: 16px !important;
+	fill: #333;
+}
+
+[class$='-substrate-text'], [class$='-substrate-text-shadow'] {
+	font-weight: bolder !important;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+	font-size:18px !important
+}
+
+.module-hitbox {
+	fill: rgba(255, 0, 0, 0);
+	stroke: rgba(255, 0, 0, 0);
+	stroke-width: 1px;
+
+	cursor:pointer;
+}
+
+.node-hitbox {
+	fill: rgba(255, 0, 0, 0);
+	stroke: rgba(255, 0, 0, 0);
+	stroke-width: 1px;
+	opacity: 0;
+}
+
+.module-shadow {
+	opacity:0 !important;
+	transition: opacity .3s ease-in-out;
+
+	&.selected {
+		opacity:.182 !important;
+	}
+}
+
+[class$='-substrate-circle'] {
+	stroke-width: 1px;
+	stroke:rgba(0, 0, 0, .5);
+}
+
+[class$='-substrate-sector'] {
+	stroke-width: 1px;
+	stroke:rgba(0, 0, 0, .5);
+}
+
+[class$='-substrate-text'] {
+	fill: #fff;
+}
+
+[class$='-substrate-text-shadow'] {
+	fill: rgba(0, 0, 0, .25);
+}
+
+.metabolite-spline {
+	stroke-width: 1px;
+	vector-effect:non-scaling-stroke;
+}
+
+.transporter-arrow {
+	fill: #000;
+	stroke: #333;
+	stroke-width: 1px;
+}

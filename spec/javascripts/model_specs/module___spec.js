@@ -93,7 +93,7 @@ describe("Module", function() {
 			var oldNode;
 			beforeEach( function() {
 				module.k = 8;
-				oldNode = module._tree._current;
+				oldNode = module.tree.current;
 			});
 		
 		
@@ -102,7 +102,7 @@ describe("Module", function() {
 			});
 
 			it( "should have stored that change", function() {
-				expect( module._tree._current._object ).not.toEqual( oldNode );
+				expect( module.tree.current.object ).not.toEqual( oldNode );
 			});
 			
 			describe( "and module was serialized and deserialized", function() { 
@@ -122,7 +122,7 @@ describe("Module", function() {
 			describe("and undoing that change", function() {
 				var undone;			
 				beforeEach( function() {
-					undone = module._tree._current;
+					undone = module.tree.current;
 					module.undo();
 				});
 
@@ -131,7 +131,7 @@ describe("Module", function() {
 				});
 
 				it( "should have updated the most recent change", function() {
-					expect( module._tree._current ).toEqual( module._tree._root);
+					expect( module.tree.current ).toEqual( module.tree.root);
 				});
 
 				describe( "and redoing it", function() {
@@ -144,7 +144,7 @@ describe("Module", function() {
 					});
 
 					it( "should have updated the most recent change", function() {
-						expect( module._tree._current ).toBe( undone )
+						expect( module.tree.current ).toBe( undone )
 					});
 
 				});
@@ -155,11 +155,11 @@ describe("Module", function() {
 					});
 					
 					it( "should have updated the most recent change", function() {
-						expect( module._tree._current ).not.toBe( undone )
+						expect( module.tree.current ).not.toBe( undone )
 					});
 
 					it( "should have kept the old change in a different branch", function() {
-						expect( module._tree._current._parent._children ).toContain( undone )
+						expect( module.tree.current.parent.children ).toContain( undone )
 					});
 				});
 			});
@@ -177,7 +177,7 @@ describe("Module", function() {
 			});	
 
 			it( "should not have stored that change", function() {
-				expect( module._tree._current._object ).not.toEqual( ["_k",3, 10] );
+				expect( module.tree.current.object ).not.toEqual( ["_k",3, 10] );
 			});
 		});
 

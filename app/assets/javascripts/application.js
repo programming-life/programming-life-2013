@@ -26,8 +26,6 @@
 //= require_tree ./views
 //= require_tree ./controllers
 //
-//= require_tree .
-//
 //= require bootstrap
 //= require raphael.min
 //= require g.raphael-min
@@ -42,3 +40,6 @@
 //= require chart
 //= require md5.min
 //= require numeric-1.2.6
+//= require numeric.async
+//
+//= require_tree .

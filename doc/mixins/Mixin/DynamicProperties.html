@@ -2,7 +2,7 @@
 <html>
   <head>
   <meta charset='UTF-8'>
-  <title>CoffeeScript API Documentation</title>
+  <title>Broyologramming Life API Documentation</title>
   <link rel='stylesheet' href='../../assets/codo.css' type='text/css'>
   <script src='../../assets/codo.js'></script>
   <script src='../../assets/search_data.js'></script>
@@ -28,6 +28,7 @@
     <div id='search'>
       <a id='class_list_link' href='../../class_list.html'>Classes</a>
       <a id='mixin_list_link' href='../../mixin_list.html'>Mixins</a>
+      <a id='file_list_link' href='../../file_list.html'>Files</a>
       <a id='method_list_link' href='../../method_list.html'>Methods</a>
       <a id='extra_list_link' href='../../extra_list.html'>Extras</a>
     </div>
@@ -127,6 +128,46 @@
       <ul class='summary'>
   <li>
     <span class='signature'>
+      <a href='#setter-instance'>
+        - (void) <strong>setter</strong>(setters)
+      </a>
+    </span>
+    <span class='desc'>
+      Defines setters from an object of properties mapped to function calls
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#getter-instance'>
+        - (void) <strong>getter</strong>(getters)
+      </a>
+    </span>
+    <span class='desc'>
+      Defines getters from an object of properties mapped to function calls
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#property-instance'>
+        - (void) <strong>property</strong>(properties)
+      </a>
+    </span>
+    <span class='desc'>
+      Defines object properties from an object of properties
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_defineProperty-instance'>
+        - (void) <strong>_defineProperty</strong>(key)
+      </a>
+    </span>
+    <span class='desc'>
+      Defines default setters and getters for key
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
       <a href='#_propertiesFromParams-instance'>
         - (void) <strong>_propertiesFromParams</strong>(params, event)
       </a>
@@ -142,7 +183,7 @@
       </a>
     </span>
     <span class='desc'>
-      Defines a non enurable property with a value @param params key [String] key to define for @param params value [any] value of the property
+      Defines a non enurable property with a value
     </span>
   </li>
   <li>
@@ -152,12 +193,96 @@
       </a>
     </span>
     <span class='desc'>
-      Defines Properties from param @param params key [String] key to define for @param params value [any] value of the property
+      Defines Properties from param
     </span>
   </li>
 </ul>
       <h2>Instance Method Details</h2>
       <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='setter-instance'>
+      - (void) <strong>setter</strong>(setters)
+    </p>
+    <div class='docstring'>
+  <p>Defines setters from an object of properties mapped to function calls</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>setters</span>
+      <span class='type'>
+        (<tt>Object</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the object of setters</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='getter-instance'>
+      - (void) <strong>getter</strong>(getters)
+    </p>
+    <div class='docstring'>
+  <p>Defines getters from an object of properties mapped to function calls</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>getters</span>
+      <span class='type'>
+        (<tt>Object</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the object of getters</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='property-instance'>
+      - (void) <strong>property</strong>(properties)
+    </p>
+    <div class='docstring'>
+  <p>Defines object properties from an object of properties</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>properties</span>
+      <span class='type'>
+        (<tt>Object</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the object of properties</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_defineProperty-instance'>
+      - (void) <strong>_defineProperty</strong>(key)
+    </p>
+    <div class='docstring'>
+  <p>Defines default setters and getters for key</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>key</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the key for which to add setters and getters</span>
+    </li>
+  </ul>
+</div>
+  </div>
   <div class='method_details'>
     <p class='signature' id='_propertiesFromParams-instance'>
       - (void) <strong>_propertiesFromParams</strong>(params, event)
@@ -192,10 +317,28 @@
       - (void) <strong>_nonEnumerableValue</strong>(key, value)
     </p>
     <div class='docstring'>
-  <p>Defines a non enurable property with a value</p><p>@param params key [String] key to define for
-@param params value [any] value of the property</p>
+  <p>Defines a non enurable property with a value</p>
 </div>
 <div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>key</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>key to define for</span>
+    </li>
+    <li>
+      <span class='name'>value</span>
+      <span class='type'>
+        (<tt>any</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>value of the property</span>
+    </li>
+  </ul>
 </div>
   </div>
   <div class='method_details'>
@@ -203,17 +346,35 @@
       - (void) <strong>_nonEnumerableGetter</strong>(key, getter)
     </p>
     <div class='docstring'>
-  <p>Defines Properties from param</p><p>@param params key [String] key to define for
-@param params value [any] value of the property</p>
+  <p>Defines Properties from param</p>
 </div>
 <div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>key</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>key to define for</span>
+    </li>
+    <li>
+      <span class='name'>value</span>
+      <span class='type'>
+        (<tt>any</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>value of the property</span>
+    </li>
+  </ul>
 </div>
   </div>
 </div>
     </div>
     <div id='footer'>
   Generated on
-  Sun May 19 2013 15:38:42 GMT+0200 (W. Europe Daylight Time)
+  Sun Jun 02 2013 15:47:57 GMT+0200 (W. Europe Daylight Time)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

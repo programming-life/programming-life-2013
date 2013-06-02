@@ -1,6 +1,6 @@
 class RemoveModuleTemplateFromModuleTemplate < ActiveRecord::Migration
 	def up
-		remove_column :module_templates, :module_template
+		#remove_column :module_templates, :module_template
 	end
 
 	def down

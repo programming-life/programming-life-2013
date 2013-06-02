@@ -2,7 +2,7 @@
 <html>
   <head>
   <meta charset='UTF-8'>
-  <title>CoffeeScript API Documentation</title>
+  <title>Broyologramming Life API Documentation</title>
   <link rel='stylesheet' href='../../assets/codo.css' type='text/css'>
   <script src='../../assets/codo.js'></script>
   <script src='../../assets/search_data.js'></script>
@@ -28,6 +28,7 @@
     <div id='search'>
       <a id='class_list_link' href='../../class_list.html'>Classes</a>
       <a id='mixin_list_link' href='../../mixin_list.html'>Mixins</a>
+      <a id='file_list_link' href='../../file_list.html'>Files</a>
       <a id='method_list_link' href='../../method_list.html'>Methods</a>
       <a id='extra_list_link' href='../../extra_list.html'>Extras</a>
     </div>
@@ -113,12 +114,12 @@
       <table class='box'>
         <tr>
           <td>Defined in:</td>
-          <td>app&#47;assets&#47;javascripts&#47;views&#47;raphael.pane.js.coffee</td>
+          <td>app&#47;assets&#47;javascripts&#47;views&#47;pane.js.coffee</td>
         </tr>
         <tr>
           <td>Inherits:</td>
           <td>
-            <a href='../../classes/View/RaphaelBase.html'>View.RaphaelBase</a>
+            <a href='../../classes/Helper/Mixable.html'>Helper.Mixable</a>
           </td>
         </tr>
       </table>
@@ -128,33 +129,12 @@
 </div>
 <div class='tags'>
 </div>
-      <h2>Constant Summary</h2>
-      <dl class='constants'>
-        <dt id='LEFT_SIDE-constant'>
-          LEFT_SIDE
-          =
-          <div class='tags'>
-</div>
-        </dt>
-        <dd>
-          <pre><code class='coffee'>"left"</code></pre>
-        </dd>
-        <dt id='RIGHT_SIDE-constant'>
-          RIGHT_SIDE
-          =
-          <div class='tags'>
-</div>
-        </dt>
-        <dd>
-          <pre><code class='coffee'>"right"</code></pre>
-        </dd>
-      </dl>
       <h2>Instance Method Summary</h2>
       <ul class='summary'>
   <li>
     <span class='signature'>
       <a href='#constructor-instance'>
-        - (void) <strong>constructor</strong>(_side)
+        - (void) <strong>constructor</strong>(position)
       </a>
     </span>
     <span class='constructor note title'>Constructor</span>
@@ -164,12 +144,12 @@
   </li>
   <li>
     <span class='signature'>
-      <a href='#resize-instance'>
-        - (void) <strong>resize</strong>()
+      <a href='#clear-instance'>
+        - (void) <strong>clear</strong>()
       </a>
     </span>
     <span class='desc'>
-      Resizes the view
+      Clears this view
     </span>
   </li>
   <li>
@@ -185,7 +165,7 @@
   <li>
     <span class='signature'>
       <a href='#draw-instance'>
-        - (void) <strong>draw</strong>(side = @_side)
+        - (void) <strong>draw</strong>(position = @position)
       </a>
     </span>
     <span class='desc'>
@@ -194,68 +174,38 @@
   </li>
   <li>
     <span class='signature'>
-      <a href='#_getXY-instance'>
-        - (void) <strong>_getXY</strong>(side = @_side)
+      <a href='#addView-instance'>
+        - (void) <strong>addView</strong>(view)
       </a>
     </span>
     <span class='desc'>
-      Get the x and y for this view based on the side
+      Add a view to draw in the container
     </span>
   </li>
   <li>
     <span class='signature'>
-      <a href='#_addPaper-instance'>
-        - (void) <strong>_addPaper</strong>()
+      <a href='#removeView-instance'>
+        - (void) <strong>removeView</strong>(view)
       </a>
     </span>
     <span class='desc'>
-      Add paper to the container node
+      Removes a view from the container
     </span>
   </li>
   <li>
     <span class='signature'>
-      <a href='#_addContainerNode-instance'>
-        - (void) <strong>_addContainerNode</strong>()
+      <a href='#toggle-instance'>
+        - (void) <strong>toggle</strong>()
       </a>
     </span>
     <span class='desc'>
-      Adds a node to act as the container for the pane @retun [Object] The node that will contain the pane
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#_drawButton-instance'>
-        - (void) <strong>_drawButton</strong>(x, y)
-      </a>
-    </span>
-    <span class='desc'>
-      Draw the button to extend or retract the pane
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#_drawContainer-instance'>
-        - (void) <strong>_drawContainer</strong>(x, y)
-      </a>
-    </span>
-    <span class='desc'>
-      Draws container and any elements to be drawn within it
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#_switchState-instance'>
-        - (void) <strong>_switchState</strong>()
-      </a>
-    </span>
-    <span class='desc'>
-      Switches the pane from extended to retracted and vice versa
+      Toggle the panes extension
     </span>
   </li>
   <li>
     <span class='signature'>
       <a href='#extend-instance'>
-        - (void) <strong>extend</strong>(time = 500)
+        - (void) <strong>extend</strong>()
       </a>
     </span>
     <span class='desc'>
@@ -265,61 +215,17 @@
   <li>
     <span class='signature'>
       <a href='#retract-instance'>
-        - (void) <strong>retract</strong>(time = 500)
+        - (void) <strong>retract</strong>()
       </a>
     </span>
     <span class='desc'>
       Retracts the pane if not already retracted
     </span>
   </li>
-  <li>
-    <span class='signature'>
-      <a href='#setButtonOptions-instance'>
-        - (void) <strong>setButtonOptions</strong>(options = {})
-      </a>
-    </span>
-    <span class='desc'>
-      Set the button options
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#setContainerOptions-instance'>
-        - (void) <strong>setContainerOptions</strong>(options = {})
-      </a>
-    </span>
-    <span class='desc'>
-      Set the container options
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#_getViewPlacement-instance'>
-        - (Object) <strong>_getViewPlacement</strong>(view)
-      </a>
-    </span>
-    <span class='desc'>
-      Gets the view placement for a specific view
-    </span>
-  </li>
 </ul>
       <h2>
         <small>Inherited Method Summary</small>
       </h2>
-      <h3 class='inherited'>
-        Methods inherited from
-        <a href='../../classes/View/RaphaelBase.html'>View.RaphaelBase</a>
-      </h3>
-      <p class='inherited'>
-                <a href='../../classes/View/RaphaelBase.html#constructor-instance'>#constructor</a>,
-                <a href='../../classes/View/RaphaelBase.html#clear-instance'>#clear</a>,
-                <a href='../../classes/View/RaphaelBase.html#draw-instance'>#draw</a>,
-                <a href='../../classes/View/RaphaelBase.html#redraw-instance'>#redraw</a>,
-                <a href='../../classes/View/RaphaelBase.html#addView-instance'>#addView</a>,
-                <a href='../../classes/View/RaphaelBase.html#removeView-instance'>#removeView</a>,
-                <a href='../../classes/View/RaphaelBase.html#resize-instance'>#resize</a>,
-        <a href='../../classes/View/RaphaelBase.html#kill-instance'>#kill</a>
-      </p>
       <h3 class='inherited'>
         Methods inherited from
         <a href='../../classes/Helper/Mixable.html'>Helper.Mixable</a>
@@ -333,7 +239,7 @@
       <div class='methods'>
   <div class='method_details'>
     <p class='signature' id='constructor-instance'>
-      - (void) <strong>constructor</strong>(_side)
+      - (void) <strong>constructor</strong>(position)
     </p>
     <div class='docstring'>
   <p>Creates a new Pane</p>
@@ -342,9 +248,9 @@
   <h3>Parameters:</h3>
   <ul class='param'>
     <li>
-      <span class='name'>side</span>
+      <span class='name'>position</span>
       <span class='type'>
-        (<tt>String</tt>)
+        (<tt>View.Pane.Position</tt>)
       </span>
       &mdash;
       <span class='desc'>The side the pane needs to be on</span>
@@ -356,11 +262,11 @@
       <h2>Instance Method Details</h2>
       <div class='methods'>
   <div class='method_details'>
-    <p class='signature' id='resize-instance'>
-      - (void) <strong>resize</strong>()
+    <p class='signature' id='clear-instance'>
+      - (void) <strong>clear</strong>()
     </p>
     <div class='docstring'>
-  <p>Resizes the view</p>
+  <p>Clears this view</p>
 </div>
 <div class='tags'>
 </div>
@@ -377,7 +283,7 @@
   </div>
   <div class='method_details'>
     <p class='signature' id='draw-instance'>
-      - (void) <strong>draw</strong>(side = @_side)
+      - (void) <strong>draw</strong>(position = @position)
     </p>
     <div class='docstring'>
   <p>Draw the view</p>
@@ -386,9 +292,9 @@
   <h3>Parameters:</h3>
   <ul class='param'>
     <li>
-      <span class='name'>side</span>
+      <span class='name'>position</span>
       <span class='type'>
-        (<tt>String</tt>)
+        (<tt>View.Pane.Position</tt>)
       </span>
       &mdash;
       <span class='desc'>The side the pane needs to be on</span>
@@ -397,204 +303,11 @@
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='_getXY-instance'>
-      - (void) <strong>_getXY</strong>(side = @_side)
+    <p class='signature' id='addView-instance'>
+      - (void) <strong>addView</strong>(view)
     </p>
     <div class='docstring'>
-  <p>Get the x and y for this view based on the side</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>side</span>
-      <span class='type'>
-        (<tt>String</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>The side to base the coordinates on</span>
-    </li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='_addPaper-instance'>
-      - (void) <strong>_addPaper</strong>()
-    </p>
-    <div class='docstring'>
-  <p>Add paper to the container node</p>
-</div>
-<div class='tags'>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='_addContainerNode-instance'>
-      - (void) <strong>_addContainerNode</strong>()
-    </p>
-    <div class='docstring'>
-  <p>Adds a node to act as the container for the pane</p><p>@retun [Object] The node that will contain the pane</p>
-</div>
-<div class='tags'>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='_drawButton-instance'>
-      - (void) <strong>_drawButton</strong>(x, y)
-    </p>
-    <div class='docstring'>
-  <p>Draw the button to extend or retract the pane</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>x</span>
-      <span class='type'>
-        (<tt>Integer</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>The x position</span>
-    </li>
-    <li>
-      <span class='name'>y</span>
-      <span class='type'>
-        (<tt>Integer</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>The y position</span>
-    </li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='_drawContainer-instance'>
-      - (void) <strong>_drawContainer</strong>(x, y)
-    </p>
-    <div class='docstring'>
-  <p>Draws container and any elements to be drawn within it</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>x</span>
-      <span class='type'>
-        (<tt>Integer</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>The x position</span>
-    </li>
-    <li>
-      <span class='name'>y</span>
-      <span class='type'>
-        (<tt>Integer</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>The y position</span>
-    </li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='_switchState-instance'>
-      - (void) <strong>_switchState</strong>()
-    </p>
-    <div class='docstring'>
-  <p>Switches the pane from extended to retracted and vice versa</p>
-</div>
-<div class='tags'>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='extend-instance'>
-      - (void) <strong>extend</strong>(time = 500)
-    </p>
-    <div class='docstring'>
-  <p>Extends the pane if not already extended</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>time</span>
-      <span class='type'>
-        (<tt>Integer</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>The time for the animation to take</span>
-    </li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='retract-instance'>
-      - (void) <strong>retract</strong>(time = 500)
-    </p>
-    <div class='docstring'>
-  <p>Retracts the pane if not already retracted</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>time</span>
-      <span class='type'>
-        (<tt>Integer</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>The time for the animation to take</span>
-    </li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='setButtonOptions-instance'>
-      - (void) <strong>setButtonOptions</strong>(options = {})
-    </p>
-    <div class='docstring'>
-  <p>Set the button options</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>options</span>
-      <span class='type'>
-        (<tt>Object</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>The new options</span>
-    </li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='setContainerOptions-instance'>
-      - (void) <strong>setContainerOptions</strong>(options = {})
-    </p>
-    <div class='docstring'>
-  <p>Set the container options</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>options</span>
-      <span class='type'>
-        (<tt>Object</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>The new options</span>
-    </li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='_getViewPlacement-instance'>
-      - (Object) <strong>_getViewPlacement</strong>(view)
-    </p>
-    <div class='docstring'>
-  <p>Gets the view placement for a specific view</p>
+  <p>Add a view to draw in the container</p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
@@ -602,28 +315,70 @@
     <li>
       <span class='name'>view</span>
       <span class='type'>
-        (<tt>View.Base</tt>)
+        (<tt>Object</tt>)
       </span>
       &mdash;
-      <span class='desc'>The view to get placement for</span>
+      <span class='desc'>The view to add</span>
     </li>
   </ul>
-  <h3>Returns:</h3>
-  <ul class='return'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='removeView-instance'>
+      - (void) <strong>removeView</strong>(view)
+    </p>
+    <div class='docstring'>
+  <p>Removes a view from the container</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
     <li>
-      <span class='type'></span>
-      (<tt>Object</tt>)
+      <span class='name'>The</span>
+      <span class='type'>
+        (<tt>Object</tt>)
+      </span>
       &mdash;
-      <span class='desc'>An object containing an x and y for the view</span>
+      <span class='desc'>view to remove</span>
     </li>
   </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='toggle-instance'>
+      - (void) <strong>toggle</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Toggle the panes extension</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='extend-instance'>
+      - (void) <strong>extend</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Extends the pane if not already extended</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='retract-instance'>
+      - (void) <strong>retract</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Retracts the pane if not already retracted</p>
+</div>
+<div class='tags'>
 </div>
   </div>
 </div>
     </div>
     <div id='footer'>
   Generated on
-  Sun May 19 2013 15:38:42 GMT+0200 (W. Europe Daylight Time)
+  Sun Jun 02 2013 15:47:57 GMT+0200 (W. Europe Daylight Time)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

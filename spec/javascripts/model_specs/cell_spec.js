@@ -30,7 +30,7 @@ describe("Cell", function() {
 
 	// mixin: timemachine
 	it("should have an undotree", function() {
-		expect( cell._tree ).toBeDefined();
+		expect( cell.tree ).toBeDefined();
 	});
 	
 	// mixin:  event bindings
@@ -107,7 +107,7 @@ describe("Cell", function() {
 
 			// mixin: timemachine
 			it("should have an undotree", function() {
-				expect( cell._tree ).toBeDefined();
+				expect( cell.tree ).toBeDefined();
 			});
 
 			// mixin:  event bindings
@@ -147,7 +147,7 @@ describe("Cell", function() {
 		beforeEach(function() {
 			module = new Model.Module()
 
-			old = cell._tree._current;
+			old = cell.tree.current;
 
 			cell.add( module );
 		});
@@ -162,7 +162,7 @@ describe("Cell", function() {
 		});
 
 		it("should have added a node to the undotree", function() {
-			expect( cell._tree._current._parent ).toBe( old );
+			expect( cell.tree.current.parent ).toBe( old );
 		});
 
 	});
@@ -474,17 +474,27 @@ describe("Cell", function() {
 	
 	describe("when the cell has ran", function() {
 		var run_t = 10;
-		var result;
+		var result, promise;
 		
 		beforeEach(function() {
-			result = cell.run( run_t );
+			promise = cell.run( 0, run_t );
 		});
 		
 		it("should have run with t runtime", function() {
-			expect( result ).toBeDefined();
-			expect( result.results.x ).toBeDefined();
-			expect( result.results.x[ 0 ] ).toBe( 0 );
-			expect( result.results.x[ result.results.x.length - 1 ] ).toBe( run_t );
+			
+			waitsFor( function() {
+				return promise.state() === "rejected" || promise.state() === "resolved" 
+			} )
+			
+			promise.done( function( r ) { result = r } );
+			
+			runs( function() {
+				expect( promise.state() ).toBe( "resolved" );
+				expect( result ).toBeDefined();
+				expect( result.results.x ).toBeDefined();
+				expect( result.results.x[ 0 ] ).toBe( 0 );
+				expect( result.results.x[ result.results.x.length - 1 ] ).toBe( run_t );
+			});
 			
 		});
 	});
@@ -546,51 +556,79 @@ describe("Cell", function() {
 		});
 
 		describe( "when ran for 0 seconds", function() {
-			var results, result, mapping;
+			var results, result, mapping, promise;
 			
 			beforeEach(function() {
-				results = cell.run( 0 );
-				result = results.results;
-				mapping = results.map;
+				promise = cell.run( 0, 0 );
+				promise.done( function( r ) { results = r } );
+				waitsFor( function() {
+					return promise.state() === "rejected" || promise.state() === "resolved" 
+				} );
+				
 			});
-			
+
 			it("should have input values", function() {
-				expect( result ).toBeDefined();
-				expect( result.y[ result.y.length - 1 ][ mapping.enzyme ] ).toBe( enzyme );
-				expect( result.y[ result.y.length - 1 ][ mapping["food#ext"] ] ).toBe( food );
-				expect( result.y[ result.y.length - 1 ][ mapping["food#int"] ] ).toBe( 0 );
-				expect( result.y[ result.y.length - 1 ][ mapping.transp ] ).toBe( 0 );
+			
+				runs( function() {
+					result = results.results;
+					mapping = results.map;
+				
+					expect( result ).toBeDefined();
+					expect( result.y[ result.y.length - 1 ][ mapping.enzyme ] ).toBe( enzyme );
+					expect( result.y[ result.y.length - 1 ][ mapping["food#ext"] ] ).toBe( food );
+					expect( result.y[ result.y.length - 1 ][ mapping["food#int"] ] ).toBe( 0 );
+					expect( result.y[ result.y.length - 1 ][ mapping.transp ] ).toBe( 0 );
+				
+				});
 			});
 			
 		});
 		
 		describe( "when ran for 2 seconds", function() {
-			var result, mapping;
+			var result, mapping, promise;
 			
 			beforeEach(function() {
-				results = cell.run( 2 );
-				result = results.results;
-				mapping = results.map;
+				promise = cell.run( 0, 2 );
+				promise.done( function( r ) { results = r } );
+				waitsFor( function() {
+					return promise.state() === "rejected" || promise.state() === "resolved" 
+				} );
 			});
-			
+
 			it("should have kept all the enzym", function() {
-				expect( result.y[ result.y.length - 1 ][ mapping.enzyme ] ).toBe( enzyme );
+				runs( function() {
+					result = results.results;
+					mapping = results.map;
+					expect( result.y[ result.y.length - 1 ][ mapping.enzyme ] ).toBe( enzyme );
+				});
 			});
 			
 			it("should have created transporters", function() {
-				expect( result.y[ result.y.length - 1 ][ mapping.transp ] ).toBeCloseTo( create_transport.rate * 2 );
+				runs( function() {
+					result = results.results;
+					mapping = results.map;
+					expect( result.y[ result.y.length - 1 ][ mapping.transp ] ).toBeCloseTo( create_transport.rate * 2 );
+				});
 			});
 			
 			it("should have transported food", function() {
-				expect( result.y[ result.y.length - 1 ][ mapping["food#int"] ] ).toBeGreaterThan( 0 );
-				expect( result.y[ result.y.length - 1 ][ mapping["food#ext"] ] ).toBeLessThan( food );
+				runs( function() {
+					result = results.results;
+					mapping = results.map;
+					expect( result.y[ result.y.length - 1 ][ mapping["food#int"] ] ).toBeGreaterThan( 0 );
+					expect( result.y[ result.y.length - 1 ][ mapping["food#ext"] ] ).toBeLessThan( food );
+				});
 			});
 			
 			it("should have consumed food", function() {
-				expect( 
-					result.y[ result.y.length - 1 ][ mapping["food#int"] ] + 
-					result.y[ result.y.length - 1 ][ mapping["food#ext"] ] 
-				).toBeLessThan( food );
+				runs( function() {
+					result = results.results;
+					mapping = results.map;
+					expect( 
+						result.y[ result.y.length - 1 ][ mapping["food#int"] ] + 
+						result.y[ result.y.length - 1 ][ mapping["food#ext"] ] 
+					).toBeLessThan( food );
+				});
 			});
 
 			it("should summed up the rate if a second transporter uses the same substrate", function() {
@@ -609,12 +647,19 @@ describe("Cell", function() {
 
 				cell.add( create_transport_2 );
 
-				results = cell.run( 2 );
-				result = results.results;
-				mapping = results.map;
+				promise = cell.run( 0, 2 );
+				promise.done( function( r ) { results = r } );
+				waitsFor( function() {
+					return promise.state() === "rejected" || promise.state() === "resolved" 
+				} );
+				
+				runs(function() {
+					result = results.results;
+					mapping = results.map;
 
-				expect( result.y[ result.y.length - 1 ][ mapping.transp ] ).
-					toBeCloseTo( (create_transport.rate + create_transport_2.rate) * 2);
+					expect( result.y[ result.y.length - 1 ][ mapping.transp ] ).
+						toBeCloseTo( (create_transport.rate + create_transport_2.rate) * 2);
+				});
 			});
 			
 		});

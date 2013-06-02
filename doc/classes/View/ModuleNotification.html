@@ -2,7 +2,7 @@
 <html>
   <head>
   <meta charset='UTF-8'>
-  <title>CoffeeScript API Documentation</title>
+  <title>Broyologramming Life API Documentation</title>
   <link rel='stylesheet' href='../../assets/codo.css' type='text/css'>
   <script src='../../assets/codo.js'></script>
   <script src='../../assets/search_data.js'></script>
@@ -28,6 +28,7 @@
     <div id='search'>
       <a id='class_list_link' href='../../class_list.html'>Classes</a>
       <a id='mixin_list_link' href='../../mixin_list.html'>Mixins</a>
+      <a id='file_list_link' href='../../file_list.html'>Files</a>
       <a id='method_list_link' href='../../method_list.html'>Methods</a>
       <a id='extra_list_link' href='../../extra_list.html'>Extras</a>
     </div>
@@ -147,6 +148,16 @@
       Constructs a new ModuleProperties view.
     </span>
   </li>
+  <li>
+    <span class='signature'>
+      <a href='#_filter-instance'>
+        - (void) <strong>_filter</strong>(message)
+      </a>
+    </span>
+    <span class='desc'>
+      Filters incoming messages
+    </span>
+  </li>
 </ul>
       <h2>
         <small>Inherited Method Summary</small>
@@ -158,10 +169,9 @@
       <p class='inherited'>
                 <a href='../../classes/View/Notification.html#constructor-instance'>#constructor</a>,
                 <a href='../../classes/View/Notification.html#display-instance'>#display</a>,
+                <a href='../../classes/View/Notification.html#show-instance'>#show</a>,
                 <a href='../../classes/View/Notification.html#hide-instance'>#hide</a>,
-                <a href='../../classes/View/Notification.html#_createHeader-instance'>#_createHeader</a>,
                 <a href='../../classes/View/Notification.html#_createBody-instance'>#_createBody</a>,
-                <a href='../../classes/View/Notification.html#_createFooter-instance'>#_createFooter</a>,
         <a href='../../classes/View/Notification.html#getAlertClassFromType-class'>.getAlertClassFromType</a>
       </p>
       <h3 class='inherited'>
@@ -179,7 +189,8 @@
                 <a href='../../classes/View/HTMLPopOver.html#_createFooter-instance'>#_createFooter</a>,
                 <a href='../../classes/View/HTMLPopOver.html#setPosition-instance'>#setPosition</a>,
                 <a href='../../classes/View/HTMLPopOver.html#_setSelected-instance'>#_setSelected</a>,
-        <a href='../../classes/View/HTMLPopOver.html#_setHovered-instance'>#_setHovered</a>
+                <a href='../../classes/View/HTMLPopOver.html#_setHovered-instance'>#_setHovered</a>,
+        <a href='../../classes/View/HTMLPopOver.html#onViewPositioned-instance'>#onViewPositioned</a>
       </p>
       <h3 class='inherited'>
         Methods inherited from
@@ -262,10 +273,23 @@
 </div>
   </div>
 </div>
+      <h2>Instance Method Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='_filter-instance'>
+      - (void) <strong>_filter</strong>(message)
+    </p>
+    <div class='docstring'>
+  <p>Filters incoming messages</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+</div>
     </div>
     <div id='footer'>
   Generated on
-  Sun May 19 2013 15:38:42 GMT+0200 (W. Europe Daylight Time)
+  Sun Jun 02 2013 15:47:57 GMT+0200 (W. Europe Daylight Time)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

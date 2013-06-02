@@ -6,21 +6,27 @@ class HookController < ApplicationController
 	end
 
 	def post
-		# TODO check if this is really from Travis CI
-		# Check if the branch name is master
-		# Check if it built correctly
-				
-		`cd /var/www/life/`
-		`git fetch --tags`
-		`git checkout master`
-		`git reset --hard HEAD`
-		`git pull origin master`
-		@version = `git describe --abbrev=0`
+		@host  = `host #{request.remote_ip}`
+		@branch = params[:branch]
+		@status = params[:status_message]
 
-		`bundle install --deployment`
-		
-		# Delete tmp directory?
-		# chmod 774 ?
-		# permissions?
+		if (
+			@host.include? "amazonaws.com" and
+			@branch == "master" and 
+			@status == "Passed"
+		)
+			@command = "cd /var/www/life/ && " +
+			"git fetch --tags && " + 
+			"git checkout master && " +
+			"git reset --hard HEAD && " + 
+			"git pull origin master"
+
+			`#{@command}`
+			@exitcode = $?.exitstatus
+			@version = `git describe --abbrev=0`
+			
+			`bundle install --deployment`
+			`rake db:migrate`
+		end
 	end
 end

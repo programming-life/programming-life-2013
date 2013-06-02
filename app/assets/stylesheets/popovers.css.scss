@@ -1,0 +1,89 @@
+
+.module-properties {
+	max-width: 251px;
+	position: absolute;
+	display: none;
+	outline: none;
+
+	&.selected {
+		display: block;
+		opacity: 1;
+		z-index: 999;
+	}
+
+	.control-group {
+		margin-bottom:8px;
+	}
+
+	.control-label {
+		width: 104px;
+	}
+
+	.controls {
+		margin-left: 119px;
+
+		label {
+			display:block;
+			transition: opacity .3s ease-in-out;
+
+			&.selectable-hide {
+				opacity: .3;
+				overflow: hidden;
+
+				input {
+					display:none !important;
+				}				
+			}
+		}
+
+		input{
+			transition: opacity 1s ease-in-out;
+
+			&[disabled], &[disabled] {
+				border-color: rgba(0, 0, 0, 0);
+				box-shadow: none;
+				background:none;
+
+				&[type=checkbox], &[type=radio] {
+					
+					& + .badge {
+						margin-left:-20px;
+					}
+				}
+			}
+		}
+
+		.badge {
+			transition: margin-left .3s ease-in-out;
+
+			&.compounds {
+				border-radius:2px;
+			}
+		}
+
+		.badge-metabolite {
+			font-size:14px;
+			line-hight:18px;
+			margin-top:5px;
+			margin-left:5px;
+		}
+	}	
+
+	hr {
+		margin:8px;
+	}
+	
+	&.hovered {
+		display: block;
+		opacity: .9;
+		z-index: 1000;
+
+		.close {
+			display: none;
+		}
+
+		.modal-footer {
+			display: none;
+		}
+	}
+}

@@ -2,7 +2,7 @@
 <html>
   <head>
   <meta charset='UTF-8'>
-  <title>CoffeeScript API Documentation</title>
+  <title>Broyologramming Life API Documentation</title>
   <link rel='stylesheet' href='../../assets/codo.css' type='text/css'>
   <script src='../../assets/codo.js'></script>
   <script src='../../assets/search_data.js'></script>
@@ -28,6 +28,7 @@
     <div id='search'>
       <a id='class_list_link' href='../../class_list.html'>Classes</a>
       <a id='mixin_list_link' href='../../mixin_list.html'>Mixins</a>
+      <a id='file_list_link' href='../../file_list.html'>Files</a>
       <a id='method_list_link' href='../../method_list.html'>Methods</a>
       <a id='extra_list_link' href='../../extra_list.html'>Extras</a>
     </div>
@@ -144,12 +145,12 @@
   <li>
     <span class='signature'>
       <a href='#constructor-instance'>
-        - (void) <strong>constructor</strong>(parent, title = '', classname = '', placement = 'bottom')
+        - (void) <strong>constructor</strong>(_parent, title = '', classname = '', placement = 'bottom')
       </a>
     </span>
     <span class='constructor note title'>Constructor</span>
     <span class='desc'>
-      Constructs a new ModuleProperties view.
+      Constructs a new HTML Popover view.
     </span>
   </li>
   <li>
@@ -195,11 +196,11 @@
   <li>
     <span class='signature'>
       <a href='#_createHeader-instance'>
-        - (Array&lt;jQuery.Elem&gt;) <strong>_createHeader</strong>(onclick)
+        - (void) <strong>_createHeader</strong>()
       </a>
     </span>
     <span class='desc'>
-      Create the popover header
+      Nullifies the header
     </span>
   </li>
   <li>
@@ -215,11 +216,11 @@
   <li>
     <span class='signature'>
       <a href='#_createFooter-instance'>
-        - (Array&lt;jQuery.Elem&gt;) <strong>_createFooter</strong>(onclick, saveText = 'Save')
+        - (void) <strong>_createFooter</strong>()
       </a>
     </span>
     <span class='desc'>
-      Create footer content and append to footer
+      Nullifies the footer
     </span>
   </li>
   <li>
@@ -229,7 +230,7 @@
       </a>
     </span>
     <span class='desc'>
-      Sets the position of the popover so the arrow points straight at the module view
+      Sets the position of the popover so the arrow points straight at the model view
     </span>
   </li>
   <li>
@@ -250,6 +251,16 @@
     </span>
     <span class='desc'>
       Sets wether or not the module is hovered
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#onViewPositioned-instance'>
+        - (void) <strong>onViewPositioned</strong>(view)
+      </a>
+    </span>
+    <span class='desc'>
+      
     </span>
   </li>
 </ul>
@@ -285,10 +296,10 @@
       <div class='methods'>
   <div class='method_details'>
     <p class='signature' id='constructor-instance'>
-      - (void) <strong>constructor</strong>(parent, title = '', classname = '', placement = 'bottom')
+      - (void) <strong>constructor</strong>(_parent, title = '', classname = '', placement = 'bottom')
     </p>
     <div class='docstring'>
-  <p>Constructs a new ModuleProperties view.</p>
+  <p>Constructs a new HTML Popover view.</p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
@@ -393,32 +404,12 @@
   </div>
   <div class='method_details'>
     <p class='signature' id='_createHeader-instance'>
-      - (Array&lt;jQuery.Elem&gt;) <strong>_createHeader</strong>(onclick)
+      - (void) <strong>_createHeader</strong>()
     </p>
     <div class='docstring'>
-  <p>Create the popover header</p>
+  <p>Nullifies the header</p>
 </div>
 <div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>onclick</span>
-      <span class='type'>
-        (<tt>Function</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the function to yield on click</span>
-    </li>
-  </ul>
-  <h3>Returns:</h3>
-  <ul class='return'>
-    <li>
-      <span class='type'></span>
-      (<tt>Array&lt;jQuery.Elem&gt;</tt>)
-      &mdash;
-      <span class='desc'>the header and the button element</span>
-    </li>
-  </ul>
 </div>
   </div>
   <div class='method_details'>
@@ -442,40 +433,12 @@
   </div>
   <div class='method_details'>
     <p class='signature' id='_createFooter-instance'>
-      - (Array&lt;jQuery.Elem&gt;) <strong>_createFooter</strong>(onclick, saveText = 'Save')
+      - (void) <strong>_createFooter</strong>()
     </p>
     <div class='docstring'>
-  <p>Create footer content and append to footer</p>
+  <p>Nullifies the footer</p>
 </div>
 <div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>onclick</span>
-      <span class='type'>
-        (<tt>Function</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the function to yield on click</span>
-    </li>
-    <li>
-      <span class='name'>saveText</span>
-      <span class='type'>
-        (<tt>String</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the text on the save button</span>
-    </li>
-  </ul>
-  <h3>Returns:</h3>
-  <ul class='return'>
-    <li>
-      <span class='type'></span>
-      (<tt>Array&lt;jQuery.Elem&gt;</tt>)
-      &mdash;
-      <span class='desc'>the footer and the button element</span>
-    </li>
-  </ul>
 </div>
   </div>
   <div class='method_details'>
@@ -483,7 +446,7 @@
       - (void) <strong>setPosition</strong>()
     </p>
     <div class='docstring'>
-  <p>Sets the position of the popover so the arrow points straight at the module view</p>
+  <p>Sets the position of the popover so the arrow points straight at the model view</p>
 </div>
 <div class='tags'>
 </div>
@@ -530,11 +493,18 @@
   </ul>
 </div>
   </div>
+  <div class='method_details'>
+    <p class='signature' id='onViewPositioned-instance'>
+      - (void) <strong>onViewPositioned</strong>(view)
+    </p>
+    <div class='tags'>
+</div>
+  </div>
 </div>
     </div>
     <div id='footer'>
   Generated on
-  Sun May 19 2013 15:38:42 GMT+0200 (W. Europe Daylight Time)
+  Sun Jun 02 2013 15:47:57 GMT+0200 (W. Europe Daylight Time)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

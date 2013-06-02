@@ -20,12 +20,19 @@ class Model.Module extends Helper.Mixable
 		@_allowTimeMachine()
 		@_allowEventBindings()
 		
+		if params.amount?
+			amount = params.amount
+			delete params.amount
+			starts = params.starts ? { name: amount }
+			starts.name = amount
+			params.starts = starts
+		
 		@_defineProperties( params, step, metadata )
-
+		
 		action = @_createAction( "Created #{this.constructor.name}:#{this.name}")
-		@_tree.setRoot( new Model.Node(action, null) )
+		@tree.setRoot( new Model.Node(action, null) )
 					
-		@_bind( 'module.set.property', @, @onActionDo )
+		@_bind( 'module.property.changed', @, @onActionDo )
 		@_bind( 'module.set.compound', @, @onActionDo )
 		@_trigger( 'module.creation', @, [ @creation, @id ] )	
 		
@@ -81,6 +88,9 @@ class Model.Module extends Helper.Mixable
 			configurable: false
 			enumerable: false
 		)
+		
+	#
+	#
 	_defineDynamicProperties: ( params ) ->
 		@_propertiesFromParams(  
 			_( params ).defaults( {
@@ -88,7 +98,7 @@ class Model.Module extends Helper.Mixable
 				creation: Date.now()
 				starts: {}
 			} ),
-			'module.set.property'
+			'module.property.changed'
 		)
 		return this
 		
@@ -100,7 +110,7 @@ class Model.Module extends Helper.Mixable
 	onActionDo: ( caller, action ) =>
 		if caller is @
 			@addUndoableEvent( action )
-		
+
 	# Extracts id data from id
 	#
 	# @param id [Object,Number,String] id containing id data
@@ -160,13 +170,14 @@ class Model.Module extends Helper.Mixable
 	# @return [self] for chaining
 	#
 	setCompound: ( compound, value ) ->
+		return this if  @starts[ compound ] is value
 		
 		todo = _( ( compound, value ) -> @starts[ compound ] = value ).bind( @, compound, value )
 		undo = _( ( compound, value ) -> @starts[ compound ] = value ).bind( @, compound, @starts[ compound ] )
 		
 		action = new Model.Action( 
 			@, todo, undo, 
-			"Change #{compound} from #{ @starts[ compound ] } to #{value}" 
+			"Change initial value for #{@[compound] ? compound} from #{ @starts[ compound ] } to #{value}" 
 		)
 		action.do()
 		
@@ -200,6 +211,35 @@ class Model.Module extends Helper.Mixable
 	#
 	setProduct: ( product, value ) ->
 		return @setCompound( product, value )
+
+	# Returns a module's full type string
+	#
+	# @return [String] the type string
+	#
+	getFullType: ( direction = @direction, type = @type, placement = @placement ) ->
+		switch @constructor.name
+			when 'Transporter'
+				res = 'Transporter'
+				if direction is Model.Transporter.Inward
+					res += '-inward'
+				else if direction is Model.Transporter.Outward
+					res += '-outward'
+			when 'Metabolite'
+				res = 'Metabolite'
+
+				if type is Model.Metabolite.Substrate
+					res += '-substrate'
+				else if type is Model.Metabolite.Product
+					res += '-product'
+
+				if placement is Model.Metabolite.Inside
+					res += '-inside'
+				else if placement is Model.Metabolite.Outside
+					res += '-outside'
+			else
+				res = @constructor.name
+
+		return res
 		
 	# Runs the step function in the correct context
 	# 
@@ -350,9 +390,11 @@ class Model.Module extends Helper.Mixable
 			params.push
 				key: key
 				value: value
-				
+			
 		module_parameters_data =
 			module_parameters: params
+			module_instance:
+				amount: @amount
 			
 		promise = $.ajax( @url, { data: module_parameters_data, type: 'PUT' } )
 		
@@ -483,6 +525,7 @@ class Model.Module extends Helper.Mixable
 		
 		serialized = JSON.parse( serialized ) if _( serialized ).isString()
 		serialized.parameters.name = serialized.parameters.name ? serialized.name
+		serialized.parameters.amount = serialized.parameters.amount ? serialized.amount
 		fn = ( window || @ )["Model"]
 		return new fn[ serialized.type ]( serialized.parameters ) unless serialized.type is "Module"
 		

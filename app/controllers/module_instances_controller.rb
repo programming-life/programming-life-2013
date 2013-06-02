@@ -45,7 +45,7 @@ class ModuleInstancesController < ApplicationController
 		@module_values = @module_instance.module_values
 		@module_hash = Hash[ ( @module_parameters.map { |p| p.key } ).zip( 
 			@module_parameters.map { |p| 
-					( found = ( @module_values.select{ |v| v.module_parameter == p } ).first ).nil? ? nil : ActiveSupport::JSON.decode(found.value)
+					( found = ( @module_values.select{ |v| v.module_parameter == p } ).first ).nil? ? nil : found.value.nil? ? "" : JSON.parse( "[#{found.value}]" )[0]
 				} 
 			)
 		]
@@ -97,7 +97,7 @@ class ModuleInstancesController < ApplicationController
 		@module_values = @module_instance.module_values
 		@module_hash = Hash[ ( @module_parameters.map { |p| p.key } ).zip( 
 			@module_parameters.map { |p| 
-					( found = ( @module_values.select{ |v| v.module_parameter == p } ).first ).nil? ? nil : ActiveSupport::JSON.decode(found.value)
+					( found = ( @module_values.select{ |v| v.module_parameter == p } ).first ).nil? ? nil : found.value.nil? ? "" : JSON.parse( "[#{found.value}]" )[0]
 				} 
 			)
 		]
@@ -128,10 +128,11 @@ class ModuleInstancesController < ApplicationController
 		
 			if params.has_key?( :module_parameters )
 				parameter_update( params[:module_parameters] )
-				format.json { render json: params[:module_parameters] }
-			elsif @module_instance.update_attributes(params[:module_instance])
+			end
+			
+			if @module_instance.update_attributes(params[:module_instance])
 				format.html { redirect_to @module_instance, notice: 'Module instance was successfully updated.' }
-				format.json { head :no_content }
+				format.json { render json: @module_instance }
 			else
 				format.html { render action: "edit" }
 				format.json { render json: @module_instance.errors, status: :unprocessable_entity }
