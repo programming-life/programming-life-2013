@@ -1,4 +1,3 @@
-require 'rubygems'
 require 'test_helper'
 require 'selenium-webdriver'
 
@@ -21,26 +20,5 @@ class CellsViewTests < ActionDispatch::IntegrationTest
 		url = @driver.current_url
 		assert_equal url, "http://life.jstfy.com/cells/new"
 	end
-
-	# test "navigate to show-view" do
-	# 	button = @driver.find_element(:class, "icon-search")
-	# 	button.click
-	# 	url = @driver.current_url
-	# 	assert_equal url, "http://life.jstfy.com/cells/" + 
-	# end
-
-	# test "navigate to edit view" do 
-	# 	button = @driver.find_element(:class, "icon-pencil")
-	# 	button.click
-	# 	url = @driver.current_url
-	# 	assert_equal url, "http://life.jstfy.com/cells/1/edit"
-	# end
-
-	# test "navigate to generate-report view" do 
-	# 	button = @driver.find_element(:class, "icon-list-alt")
-	# 	button.click
-	# 	url = @driver.current_url
-	# 	assert_equal url, "http://life.jstfy.com/reports/new"
-	# end
 
 end

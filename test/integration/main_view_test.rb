@@ -1,4 +1,3 @@
-require 'rubygems'
 require 'test_helper'
 require 'selenium-webdriver'
 
