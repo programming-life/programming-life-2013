@@ -2,7 +2,7 @@
 <html>
   <head>
   <meta charset='UTF-8'>
-  <title>CoffeeScript API Documentation</title>
+  <title>Broyologramming Life API Documentation</title>
   <link rel='stylesheet' href='../../assets/codo.css' type='text/css'>
   <script src='../../assets/codo.js'></script>
   <script src='../../assets/search_data.js'></script>
@@ -28,6 +28,7 @@
     <div id='search'>
       <a id='class_list_link' href='../../class_list.html'>Classes</a>
       <a id='mixin_list_link' href='../../mixin_list.html'>Mixins</a>
+      <a id='file_list_link' href='../../file_list.html'>Files</a>
       <a id='method_list_link' href='../../method_list.html'>Methods</a>
       <a id='extra_list_link' href='../../extra_list.html'>Extras</a>
     </div>
@@ -136,6 +137,7 @@
 </div>
       <h2>Direct Known Subclasses</h2>
       <p class='children'>
+                <a href='../../classes/View/CellNotification.html'>View.CellNotification</a>,
         <a href='../../classes/View/ModuleNotification.html'>View.ModuleNotification</a>
       </p>
       <h2>Class Method Summary</h2>
@@ -156,12 +158,12 @@
   <li>
     <span class='signature'>
       <a href='#constructor-instance'>
-        - (void) <strong>constructor</strong>(parent, model)
+        - (void) <strong>constructor</strong>(parent, module)
       </a>
     </span>
     <span class='constructor note title'>Constructor</span>
     <span class='desc'>
-      Constructs a new ModuleProperties view.
+      Constructs a new Notifications view.
     </span>
   </li>
   <li>
@@ -176,6 +178,16 @@
   </li>
   <li>
     <span class='signature'>
+      <a href='#show-instance'>
+        - (void) <strong>show</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
       <a href='#hide-instance'>
         - (void) <strong>hide</strong>()
       </a>
@@ -186,32 +198,12 @@
   </li>
   <li>
     <span class='signature'>
-      <a href='#_createHeader-instance'>
-        - (void) <strong>_createHeader</strong>()
-      </a>
-    </span>
-    <span class='desc'>
-      Nullifies the header
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
       <a href='#_createBody-instance'>
         - (jQuery.Elem) <strong>_createBody</strong>()
       </a>
     </span>
     <span class='desc'>
       Creates the body of the message
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#_createFooter-instance'>
-        - (void) <strong>_createFooter</strong>()
-      </a>
-    </span>
-    <span class='desc'>
-      Nullifies the footer
     </span>
   </li>
 </ul>
@@ -233,7 +225,8 @@
                 <a href='../../classes/View/HTMLPopOver.html#_createFooter-instance'>#_createFooter</a>,
                 <a href='../../classes/View/HTMLPopOver.html#setPosition-instance'>#setPosition</a>,
                 <a href='../../classes/View/HTMLPopOver.html#_setSelected-instance'>#_setSelected</a>,
-        <a href='../../classes/View/HTMLPopOver.html#_setHovered-instance'>#_setHovered</a>
+                <a href='../../classes/View/HTMLPopOver.html#_setHovered-instance'>#_setHovered</a>,
+        <a href='../../classes/View/HTMLPopOver.html#onViewPositioned-instance'>#onViewPositioned</a>
       </p>
       <h3 class='inherited'>
         Methods inherited from
@@ -297,10 +290,10 @@
       <div class='methods'>
   <div class='method_details'>
     <p class='signature' id='constructor-instance'>
-      - (void) <strong>constructor</strong>(parent, model)
+      - (void) <strong>constructor</strong>(parent, module)
     </p>
     <div class='docstring'>
-  <p>Constructs a new ModuleProperties view.</p>
+  <p>Constructs a new Notifications view.</p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
@@ -389,20 +382,17 @@
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='hide-instance'>
-      - (void) <strong>hide</strong>()
+    <p class='signature' id='show-instance'>
+      - (void) <strong>show</strong>()
     </p>
     <div class='tags'>
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='_createHeader-instance'>
-      - (void) <strong>_createHeader</strong>()
+    <p class='signature' id='hide-instance'>
+      - (void) <strong>hide</strong>()
     </p>
-    <div class='docstring'>
-  <p>Nullifies the header</p>
-</div>
-<div class='tags'>
+    <div class='tags'>
 </div>
   </div>
   <div class='method_details'>
@@ -424,21 +414,11 @@
   </ul>
 </div>
   </div>
-  <div class='method_details'>
-    <p class='signature' id='_createFooter-instance'>
-      - (void) <strong>_createFooter</strong>()
-    </p>
-    <div class='docstring'>
-  <p>Nullifies the footer</p>
-</div>
-<div class='tags'>
-</div>
-  </div>
 </div>
     </div>
     <div id='footer'>
   Generated on
-  Sun May 19 2013 15:38:42 GMT+0200 (W. Europe Daylight Time)
+  Sun Jun 02 2013 15:47:57 GMT+0200 (W. Europe Daylight Time)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

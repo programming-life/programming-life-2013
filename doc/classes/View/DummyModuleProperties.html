@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset='UTF-8'>
+  <title>Broyologramming Life API Documentation</title>
+  <link rel='stylesheet' href='../../assets/codo.css' type='text/css'>
+  <script src='../../assets/codo.js'></script>
+  <script src='../../assets/search_data.js'></script>
+</head>
+  <body>
+    <div id='base' data-path='../../'></div>
+<div id='header'>
+  <div id='menu'>
+    <a href='../../README.md.html' title='Programming-life'>Programming-life</a>
+    &raquo;
+    <a href='../../class_index.html' title='Index'>Index</a>
+    &raquo;
+    <span class='title'>View</span>
+    &raquo;
+    <span class='title'>DummyModuleProperties</span>
+    <nav>
+      <ul>
+        <li class='noframes'>
+          (<a class='noframes' href='#'>no frames</a>)
+        </li>
+      </ul>
+    </nav>
+    <div id='search'>
+      <a id='class_list_link' href='../../class_list.html'>Classes</a>
+      <a id='mixin_list_link' href='../../mixin_list.html'>Mixins</a>
+      <a id='file_list_link' href='../../file_list.html'>Files</a>
+      <a id='method_list_link' href='../../method_list.html'>Methods</a>
+      <a id='extra_list_link' href='../../extra_list.html'>Extras</a>
+    </div>
+  </div>
+  <iframe id='search_frame'></iframe>
+  <div id='fuzzySearch'>
+    <input type='text'>
+    <ol></ol>
+  </div>
+  <div id='help'>
+    <p>
+      Quickly fuzzy find classes, mixins, methods, file:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-T</span>
+        Open fuzzy finder dialog
+      </li>
+    </ul>
+    <p>
+      In frame mode you can toggle the list naviation frame on the left side:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-L</span>
+        Toggle list view
+      </li>
+    </ul>
+    <p>
+      You can focus a list in frame mode or toggle a tab in frameless mode:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-C</span>
+        Class list
+      </li>
+      <li>
+        <span>Ctrl-I</span>
+        Mixin list
+      </li>
+      <li>
+        <span>Ctrl-F</span>
+        File list
+      </li>
+      <li>
+        <span>Ctrl-M</span>
+        Method list
+      </li>
+      <li>
+        <span>Ctrl-E</span>
+        Extras list
+      </li>
+    </ul>
+    <p>
+      You can focus and blur the search input:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-S</span>
+        Focus search input
+      </li>
+      <li>
+        <span>Esc</span>
+        Blur search input
+      </li>
+    </ul>
+    <p>
+      In frameless mode you can close the list tab:
+    </p>
+    <ul>
+      <li>
+        <span>Esc</span>
+        Close list tab
+      </li>
+    </ul>
+  </div>
+</div>
+    <div id='content'>
+      <h1>
+        Class:
+        View.DummyModuleProperties
+      </h1>
+      <table class='box'>
+        <tr>
+          <td>Defined in:</td>
+          <td>app&#47;assets&#47;javascripts&#47;views&#47;popover.module.dummy.js.coffee</td>
+        </tr>
+        <tr>
+          <td>Inherits:</td>
+          <td>
+            <a href='../../classes/View/ModuleProperties.html'>View.ModuleProperties</a>
+          </td>
+        </tr>
+        <tr>
+          <td>Concerns:</td>
+          <td>
+            <a href='../../mixins/Mixin/EventBindings.html'>Mixin.EventBindings</a>
+          </td>
+        </tr>
+      </table>
+      <h2>Overview</h2>
+      <div class='docstring'>
+  <p>Displays the properties of a dummy module in a neat HTML popover</p>
+</div>
+<div class='tags'>
+</div>
+      <h2>Instance Method Summary</h2>
+      <ul class='summary'>
+  <li>
+    <span class='signature'>
+      <a href='#constructor-instance'>
+        - (void) <strong>constructor</strong>(parent, _cellView, _cell, modulector, params = {})
+      </a>
+    </span>
+    <span class='constructor note title'>Constructor</span>
+    <span class='desc'>
+      Constructs a new DummyModuleProperties view.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#getFormId-instance'>
+        - (void) <strong>getFormId</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Gets the id for this popover
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#getInputId-instance'>
+        - (void) <strong>getInputId</strong>(key)
+      </a>
+    </span>
+    <span class='desc'>
+      Gets the id for an input with a certain key
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_createHeader-instance'>
+        - (Array&lt;jQuery.Elem&gt;) <strong>_createHeader</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Create the popover header
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_createFooter-instance'>
+        - (Array&lt;jQuery.Elem&gt;) <strong>_createFooter</strong>(removeText = '<i class="icon-trash icon-white"></i>', saveText = '<i class=" icon-ok icon-white"></i> Create')
+      </a>
+    </span>
+    <span class='desc'>
+      Create footer content and append to footer
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_drawName-instance'>
+        - (void) <strong>_drawName</strong>(id, key, value)
+      </a>
+    </span>
+    <span class='desc'>
+      Draws the input for a parameter
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_drawProperty-instance'>
+        - (jQuery.elem) <strong>_drawProperty</strong>(key, type, params = {})
+      </a>
+    </span>
+    <span class='desc'>
+      Draws a certain property
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_getModuleProperties-instance'>
+        - (void) <strong>_getModuleProperties</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Returns the properties of our module to be
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_close-instance'>
+        - (void) <strong>_close</strong>()
+      </a>
+    </span>
+    <span class='bound note title'>Bound</span>
+    <span class='desc'>
+      Closes the module
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_save-instance'>
+        - (void) <strong>_save</strong>()
+      </a>
+    </span>
+    <span class='bound note title'>Bound</span>
+    <span class='desc'>
+      Saves all changed properties to the module.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_bindOnSelectableChange-instance'>
+        - (void) <strong>_bindOnSelectableChange</strong>(key, selectable)
+      </a>
+    </span>
+    <span class='desc'>
+      Binds an on change event to a selectable input that sets the key
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#onModuleCreationStarted-instance'>
+        - (void) <strong>onModuleCreationStarted</strong>(dummy)
+      </a>
+    </span>
+    <span class='desc'>
+      Will be called when the creation process of a module has started
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#onModuleCreationAborted-instance'>
+        - (void) <strong>onModuleCreationAborted</strong>(dummy)
+      </a>
+    </span>
+    <span class='desc'>
+      Will be called when the creation process of a module has aborted
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#onModuleCreationFinished-instance'>
+        - (void) <strong>onModuleCreationFinished</strong>(dummy)
+      </a>
+    </span>
+    <span class='desc'>
+      Will be called when the creation process of a module has finished
+    </span>
+  </li>
+</ul>
+      <h2>
+        <small>Inherited Method Summary</small>
+      </h2>
+      <h3 class='inherited'>
+        Methods inherited from
+        <a href='../../classes/View/ModuleProperties.html'>View.ModuleProperties</a>
+      </h3>
+      <p class='inherited'>
+                <a href='../../classes/View/ModuleProperties.html#constructor-instance'>#constructor</a>,
+                <a href='../../classes/View/ModuleProperties.html#getFormId-instance'>#getFormId</a>,
+                <a href='../../classes/View/ModuleProperties.html#getInputId-instance'>#getInputId</a>,
+                <a href='../../classes/View/ModuleProperties.html#_createHeader-instance'>#_createHeader</a>,
+                <a href='../../classes/View/ModuleProperties.html#_createBody-instance'>#_createBody</a>,
+                <a href='../../classes/View/ModuleProperties.html#_createFooter-instance'>#_createFooter</a>,
+                <a href='../../classes/View/ModuleProperties.html#_drawProperty-instance'>#_drawProperty</a>,
+                <a href='../../classes/View/ModuleProperties.html#_drawForm-instance'>#_drawForm</a>,
+                <a href='../../classes/View/ModuleProperties.html#_drawInput-instance'>#_drawInput</a>,
+                <a href='../../classes/View/ModuleProperties.html#_drawName-instance'>#_drawName</a>,
+                <a href='../../classes/View/ModuleProperties.html#_drawParameter-instance'>#_drawParameter</a>,
+                <a href='../../classes/View/ModuleProperties.html#_drawMetabolite-instance'>#_drawMetabolite</a>,
+                <a href='../../classes/View/ModuleProperties.html#_drawDNA-instance'>#_drawDNA</a>,
+                <a href='../../classes/View/ModuleProperties.html#_drawCompound-instance'>#_drawCompound</a>,
+                <a href='../../classes/View/ModuleProperties.html#_drawEnumeration-instance'>#_drawEnumeration</a>,
+                <a href='../../classes/View/ModuleProperties.html#_bindOnChange-instance'>#_bindOnChange</a>,
+                <a href='../../classes/View/ModuleProperties.html#_bindOnSelectableChange-instance'>#_bindOnSelectableChange</a>,
+                <a href='../../classes/View/ModuleProperties.html#_drawSelectionFor-instance'>#_drawSelectionFor</a>,
+                <a href='../../classes/View/ModuleProperties.html#_drawSelectable-instance'>#_drawSelectable</a>,
+                <a href='../../classes/View/ModuleProperties.html#_redrawSelectable-instance'>#_redrawSelectable</a>,
+                <a href='../../classes/View/ModuleProperties.html#_setSelectablesVisibility-instance'>#_setSelectablesVisibility</a>,
+                <a href='../../classes/View/ModuleProperties.html#_getThisForm-instance'>#_getThisForm</a>,
+                <a href='../../classes/View/ModuleProperties.html#_setSelected-instance'>#_setSelected</a>,
+                <a href='../../classes/View/ModuleProperties.html#_getModuleProperties-instance'>#_getModuleProperties</a>,
+                <a href='../../classes/View/ModuleProperties.html#_close-instance'>#_close</a>,
+                <a href='../../classes/View/ModuleProperties.html#_save-instance'>#_save</a>,
+                <a href='../../classes/View/ModuleProperties.html#_remove-instance'>#_remove</a>,
+                <a href='../../classes/View/ModuleProperties.html#onCompoundsChanged-instance'>#onCompoundsChanged</a>,
+                <a href='../../classes/View/ModuleProperties.html#onMetabolitesChanged-instance'>#onMetabolitesChanged</a>,
+                <a href='../../classes/View/ModuleProperties.html#onModuleDrawn-instance'>#onModuleDrawn</a>,
+                <a href='../../classes/View/ModuleProperties.html#onModuleSelected-instance'>#onModuleSelected</a>,
+                <a href='../../classes/View/ModuleProperties.html#onModuleHovered-instance'>#onModuleHovered</a>,
+                <a href='../../classes/View/ModuleProperties.html#onModuleInvalidated-instance'>#onModuleInvalidated</a>,
+        <a href='../../classes/View/ModuleProperties.html#onModuleCreationStarted-instance'>#onModuleCreationStarted</a>
+      </p>
+      <h3 class='inherited'>
+        Methods inherited from
+        <a href='../../classes/View/HTMLPopOver.html'>View.HTMLPopOver</a>
+      </h3>
+      <p class='inherited'>
+                <a href='../../classes/View/HTMLPopOver.html#constructor-instance'>#constructor</a>,
+                <a href='../../classes/View/HTMLPopOver.html#_create-instance'>#_create</a>,
+                <a href='../../classes/View/HTMLPopOver.html#kill-instance'>#kill</a>,
+                <a href='../../classes/View/HTMLPopOver.html#clear-instance'>#clear</a>,
+                <a href='../../classes/View/HTMLPopOver.html#draw-instance'>#draw</a>,
+                <a href='../../classes/View/HTMLPopOver.html#_createHeader-instance'>#_createHeader</a>,
+                <a href='../../classes/View/HTMLPopOver.html#_createBody-instance'>#_createBody</a>,
+                <a href='../../classes/View/HTMLPopOver.html#_createFooter-instance'>#_createFooter</a>,
+                <a href='../../classes/View/HTMLPopOver.html#setPosition-instance'>#setPosition</a>,
+                <a href='../../classes/View/HTMLPopOver.html#_setSelected-instance'>#_setSelected</a>,
+                <a href='../../classes/View/HTMLPopOver.html#_setHovered-instance'>#_setHovered</a>,
+        <a href='../../classes/View/HTMLPopOver.html#onViewPositioned-instance'>#onViewPositioned</a>
+      </p>
+      <h3 class='inherited'>
+        Methods inherited from
+        <a href='../../classes/Helper/Mixable.html'>Helper.Mixable</a>
+      </h3>
+      <p class='inherited'>
+                <a href='../../classes/Helper/Mixable.html#extend-class'>.extend</a>,
+                <a href='../../classes/Helper/Mixable.html#include-class'>.include</a>,
+        <a href='../../classes/Helper/Mixable.html#concern-class'>.concern</a>
+      </p>
+      <h2>
+        <small>Concern Method Summary</small>
+      </h2>
+      <h3 class='included'>
+        Methods mixed in from
+        <a href='../../mixins/Mixin/EventBindings.html'>Mixin.EventBindings</a>
+      </h3>
+      <p class='included'>
+                <a href='../../mixins/Mixin/EventBindings.html#_allowEventBindings-instance'>#_allowEventBindings</a>,
+                <a href='../../mixins/Mixin/EventBindings.html#_unbindAll-instance'>#_unbindAll</a>,
+                <a href='../../mixins/Mixin/EventBindings.html#_bind-instance'>#_bind</a>,
+                <a href='../../mixins/Mixin/EventBindings.html#_unbind-instance'>#_unbind</a>,
+                <a href='../../mixins/Mixin/EventBindings.html#_trigger-instance'>#_trigger</a>,
+                <a href='../../mixins/Mixin/EventBindings.html#_onNotificate-instance'>#_onNotificate</a>,
+        <a href='../../mixins/Mixin/EventBindings.html#_notificate-instance'>#_notificate</a>
+      </p>
+      <h2>Constructor Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='constructor-instance'>
+      - (void) <strong>constructor</strong>(parent, _cellView, _cell, modulector, params = {})
+    </p>
+    <div class='docstring'>
+  <p>Constructs a new DummyModuleProperties view.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>parent</span>
+      <span class='type'>
+        (<tt><a href='../../classes/View/Module.html'>View.Module</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the accompanying module view</span>
+    </li>
+    <li>
+      <span class='name'>cellView</span>
+      <span class='type'>
+        (<tt><a href='../../classes/View/Cell.html'>View.Cell</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the accompanying cell view</span>
+    </li>
+    <li>
+      <span class='name'>cell</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Model/Cell.html'>Model.Cell</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the parent cell of the module</span>
+    </li>
+    <li>
+      <span class='name'>modulector</span>
+      <span class='type'>
+        (<tt>Function</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the constructor for the dummy module</span>
+    </li>
+    <li>
+      <span class='name'>params</span>
+      <span class='type'>
+        (<tt>Object</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>options</span>
+    </li>
+  </ul>
+</div>
+  </div>
+</div>
+      <h2>Instance Method Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='getFormId-instance'>
+      - (void) <strong>getFormId</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Gets the id for this popover</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='getInputId-instance'>
+      - (void) <strong>getInputId</strong>(key)
+    </p>
+    <div class='docstring'>
+  <p>Gets the id for an input with a certain key</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>key</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the key for which to get the id</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_createHeader-instance'>
+      - (Array&lt;jQuery.Elem&gt;) <strong>_createHeader</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Create the popover header</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Array&lt;jQuery.Elem&gt;</tt>)
+      &mdash;
+      <span class='desc'>the header and the button element</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_createFooter-instance'>
+      - (Array&lt;jQuery.Elem&gt;) <strong>_createFooter</strong>(removeText = '<i class="icon-trash icon-white"></i>', saveText = '<i class=" icon-ok icon-white"></i> Create')
+    </p>
+    <div class='docstring'>
+  <p>Create footer content and append to footer</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>onclick</span>
+      <span class='type'>
+        (<tt>Function</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the function to yield on click</span>
+    </li>
+    <li>
+      <span class='name'>saveText</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the text on the save button</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Array&lt;jQuery.Elem&gt;</tt>)
+      &mdash;
+      <span class='desc'>the footer and the button element</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_drawName-instance'>
+      - (void) <strong>_drawName</strong>(id, key, value)
+    </p>
+    <div class='docstring'>
+  <p>Draws the input for a parameter</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>id</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the form id</span>
+    </li>
+    <li>
+      <span class='name'>key</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>property to set</span>
+    </li>
+    <li>
+      <span class='name'>value</span>
+      <span class='type'>
+        (<tt>any</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the current value</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_drawProperty-instance'>
+      - (jQuery.elem) <strong>_drawProperty</strong>(key, type, params = {})
+    </p>
+    <div class='docstring'>
+  <p>Draws a certain property</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>key</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>property</span>
+    </li>
+    <li>
+      <span class='name'>type</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>property type</span>
+    </li>
+    <li>
+      <span class='name'>params</span>
+      <span class='type'>
+        (<tt>Object</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>additional parameters</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>jQuery.elem</tt>)
+      &mdash;
+      <span class='desc'>elements</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_getModuleProperties-instance'>
+      - (void) <strong>_getModuleProperties</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Returns the properties of our module to be</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_close-instance'>
+      - (void) <strong>_close</strong>()
+      (bound)
+    </p>
+    <div class='docstring'>
+  <p>Closes the module</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_save-instance'>
+      - (void) <strong>_save</strong>()
+      (bound)
+    </p>
+    <div class='docstring'>
+  <p>Saves all changed properties to the module.</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_bindOnSelectableChange-instance'>
+      - (void) <strong>_bindOnSelectableChange</strong>(key, selectable)
+    </p>
+    <div class='docstring'>
+  <p>Binds an on change event to a selectable input that sets the key</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>key</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>property to set</span>
+    </li>
+    <li>
+      <span class='name'>selectable</span>
+      <span class='type'>
+        (<tt>jQuery.Elem</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the selectable to set it on</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='onModuleCreationStarted-instance'>
+      - (void) <strong>onModuleCreationStarted</strong>(dummy)
+    </p>
+    <div class='docstring'>
+  <p>Will be called when the creation process of a module has started</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>dummy</span>
+      <span class='type'>
+        (<tt>DummyModule</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the dummy module for which to start the creation</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='onModuleCreationAborted-instance'>
+      - (void) <strong>onModuleCreationAborted</strong>(dummy)
+    </p>
+    <div class='docstring'>
+  <p>Will be called when the creation process of a module has aborted</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>dummy</span>
+      <span class='type'>
+        (<tt>DummyModule</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the dummy module for which to abort the creation</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='onModuleCreationFinished-instance'>
+      - (void) <strong>onModuleCreationFinished</strong>(dummy)
+    </p>
+    <div class='docstring'>
+  <p>Will be called when the creation process of a module has finished</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>dummy</span>
+      <span class='type'>
+        (<tt>DummyModule</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the dummy module for which to finish the creation</span>
+    </li>
+  </ul>
+</div>
+  </div>
+</div>
+    </div>
+    <div id='footer'>
+  Generated on
+  Sun Jun 02 2013 15:47:57 GMT+0200 (W. Europe Daylight Time)
+  by
+  <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
+  v1.5.6
+  (Node.js v0.10.4).
+  &#10034;
+  Press Ctrl-h to see the keyboard shortcuts
+  &#10034;
+  <a href='http://twitter.com/#!/netzpirat'>@netzpirat</a>
+  &#10034;
+  <a href='https://mksoft.ch'>mksoft.ch</a>
+</div>
+  </body>
+</html>

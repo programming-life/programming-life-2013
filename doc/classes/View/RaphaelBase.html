@@ -2,7 +2,7 @@
 <html>
   <head>
   <meta charset='UTF-8'>
-  <title>CoffeeScript API Documentation</title>
+  <title>Broyologramming Life API Documentation</title>
   <link rel='stylesheet' href='../../assets/codo.css' type='text/css'>
   <script src='../../assets/codo.js'></script>
   <script src='../../assets/search_data.js'></script>
@@ -28,6 +28,7 @@
     <div id='search'>
       <a id='class_list_link' href='../../class_list.html'>Classes</a>
       <a id='mixin_list_link' href='../../mixin_list.html'>Mixins</a>
+      <a id='file_list_link' href='../../file_list.html'>Files</a>
       <a id='method_list_link' href='../../method_list.html'>Methods</a>
       <a id='extra_list_link' href='../../extra_list.html'>Extras</a>
     </div>
@@ -118,7 +119,7 @@
         <tr>
           <td>Inherits:</td>
           <td>
-            <a href='../../classes/Helper/Mixable.html'>Helper.Mixable</a>
+            <a href='../../classes/View/Collection.html'>View.Collection</a>
           </td>
         </tr>
       </table>
@@ -133,23 +134,43 @@
                 <a href='../../classes/View/Cell.html'>View.Cell</a>,
                 <a href='../../classes/View/Graph.html'>View.Graph</a>,
                 <a href='../../classes/View/Main.html'>View.Main</a>,
+                <a href='../../classes/View/DummyModule.html'>View.DummyModule</a>,
                 <a href='../../classes/View/Module.html'>View.Module</a>,
-                <a href='../../classes/View/Node.html'>View.Node</a>,
-                <a href='../../classes/View/Pane.html'>View.Pane</a>,
-                <a href='../../classes/View/Play.html'>View.Play</a>,
-        <a href='../../classes/View/Tree.html'>View.Tree</a>
+                <a href='../../classes/View/Report.html'>View.Report</a>,
+        <a href='../../classes/View/Spline.html'>View.Spline</a>
       </p>
       <h2>Instance Method Summary</h2>
       <ul class='summary'>
   <li>
     <span class='signature'>
       <a href='#constructor-instance'>
-        - (void) <strong>constructor</strong>(_paper)
+        - (void) <strong>constructor</strong>(_paper, _parent = null)
       </a>
     </span>
     <span class='constructor note title'>Constructor</span>
     <span class='desc'>
       Constructs a new Base view
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_catcher-instance'>
+        - (void) <strong>_catcher</strong>(e)
+      </a>
+    </span>
+    <span class='bound note title'>Bound</span>
+    <span class='desc'>
+      Catcher function for Mixin.Catcher that will notificate any thrown Error on catchable methods
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#getBBox-instance'>
+        - (Object) <strong>getBBox</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Gets the Bounding Box for this view
     </span>
   </li>
   <li>
@@ -160,6 +181,46 @@
     </span>
     <span class='desc'>
       Clear the contents of this view and it&#39;s children
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#kill-instance'>
+        - (void) <strong>kill</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Kills this view
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#setPosition-instance'>
+        - (void) <strong>setPosition</strong>(animate = true)
+      </a>
+    </span>
+    <span class='desc'>
+      Sets the position of this view according to its parent&#39;s instructions
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#moveTo-instance'>
+        - (void) <strong>moveTo</strong>(x, y, animate = true)
+      </a>
+    </span>
+    <span class='desc'>
+      Moves the view to a new position
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#move-instance'>
+        - (void) <strong>move</strong>(dx, dy, animate = true, moveViews = true)
+      </a>
+    </span>
+    <span class='desc'>
+      Moves the view to a new position
     </span>
   </li>
   <li>
@@ -184,48 +245,31 @@
   </li>
   <li>
     <span class='signature'>
-      <a href='#addView-instance'>
-        - (void) <strong>addView</strong>(view)
+      <a href='#getAbsoluteCoords-instance'>
+        - ([float, float) <strong>getAbsoluteCoords</strong>(x, y)
       </a>
     </span>
     <span class='desc'>
-      Add a view to draw in the container
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#removeView-instance'>
-        - (void) <strong>removeView</strong>()
-      </a>
-    </span>
-    <span class='desc'>
-      Removes a view from the container
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#resize-instance'>
-        - (void) <strong>resize</strong>(scale = @_scale)
-      </a>
-    </span>
-    <span class='desc'>
-      Resize this view and it&#39;s children
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#kill-instance'>
-        - (void) <strong>kill</strong>()
-      </a>
-    </span>
-    <span class='desc'>
-      Kill this view and it&#39;s children, removing and unsetting all references from this view and it&#39;s children
+      Returns the absolute (document) coordinates of a point within the paper
     </span>
   </li>
 </ul>
       <h2>
         <small>Inherited Method Summary</small>
       </h2>
+      <h3 class='inherited'>
+        Methods inherited from
+        <a href='../../classes/View/Collection.html'>View.Collection</a>
+      </h3>
+      <p class='inherited'>
+                <a href='../../classes/View/Collection.html#constructor-instance'>#constructor</a>,
+                <a href='../../classes/View/Collection.html#clear-instance'>#clear</a>,
+                <a href='../../classes/View/Collection.html#kill-instance'>#kill</a>,
+                <a href='../../classes/View/Collection.html#add-instance'>#add</a>,
+                <a href='../../classes/View/Collection.html#remove-instance'>#remove</a>,
+                <a href='../../classes/View/Collection.html#draw-instance'>#draw</a>,
+        <a href='../../classes/View/Collection.html#redraw-instance'>#redraw</a>
+      </p>
       <h3 class='inherited'>
         Methods inherited from
         <a href='../../classes/Helper/Mixable.html'>Helper.Mixable</a>
@@ -239,7 +283,7 @@
       <div class='methods'>
   <div class='method_details'>
     <p class='signature' id='constructor-instance'>
-      - (void) <strong>constructor</strong>(_paper)
+      - (void) <strong>constructor</strong>(_paper, _parent = null)
     </p>
     <div class='docstring'>
   <p>Constructs a new Base view</p>
@@ -248,7 +292,7 @@
   <h3>Parameters:</h3>
   <ul class='param'>
     <li>
-      <span class='name'>paper</span>
+      <span class='name'>_paper</span>
       <span class='type'>
         (<tt>Object</tt>)
       </span>
@@ -262,6 +306,47 @@
       <h2>Instance Method Details</h2>
       <div class='methods'>
   <div class='method_details'>
+    <p class='signature' id='_catcher-instance'>
+      - (void) <strong>_catcher</strong>(e)
+      (bound)
+    </p>
+    <div class='docstring'>
+  <p>Catcher function for Mixin.Catcher that will notificate any thrown Error on catchable methods</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>e</span>
+      <span class='type'>
+        (<tt>Error</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the error to notificate</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='getBBox-instance'>
+      - (Object) <strong>getBBox</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Gets the Bounding Box for this view</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Object</tt>)
+      &mdash;
+      <span class='desc'>the bounding box</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
     <p class='signature' id='clear-instance'>
       - (void) <strong>clear</strong>()
     </p>
@@ -269,6 +354,111 @@
   <p>Clear the contents of this view and it&#39;s children</p>
 </div>
 <div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='kill-instance'>
+      - (void) <strong>kill</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Kills this view </p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='setPosition-instance'>
+      - (void) <strong>setPosition</strong>(animate = true)
+    </p>
+    <div class='docstring'>
+  <p>Sets the position of this view according to its parent&#39;s instructions</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>animate</span>
+      <span class='type'>
+        (<tt>Boolean</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>wether or not to animate the move</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='moveTo-instance'>
+      - (void) <strong>moveTo</strong>(x, y, animate = true)
+    </p>
+    <div class='docstring'>
+  <p>Moves the view to a new position</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>x</span>
+      <span class='type'>
+        (<tt>float</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the x coordinate to which to move</span>
+    </li>
+    <li>
+      <span class='name'>y</span>
+      <span class='type'>
+        (<tt>float</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the y coordinate to which to move</span>
+    </li>
+    <li>
+      <span class='name'>animate</span>
+      <span class='type'>
+        (<tt>Boolean</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>wether or not to animate the move</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='move-instance'>
+      - (void) <strong>move</strong>(dx, dy, animate = true, moveViews = true)
+    </p>
+    <div class='docstring'>
+  <p>Moves the view to a new position</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>dx</span>
+      <span class='type'>
+        (<tt>float</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the amount to move in the x direction</span>
+    </li>
+    <li>
+      <span class='name'>dy</span>
+      <span class='type'>
+        (<tt>float</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the amount to move in the y direction</span>
+    </li>
+    <li>
+      <span class='name'>animate</span>
+      <span class='type'>
+        (<tt>Boolean</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>wether or not to animate the move</span>
+    </li>
+  </ul>
 </div>
   </div>
   <div class='method_details'>
@@ -311,83 +501,44 @@
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='addView-instance'>
-      - (void) <strong>addView</strong>(view)
+    <p class='signature' id='getAbsoluteCoords-instance'>
+      - ([float, float) <strong>getAbsoluteCoords</strong>(x, y)
     </p>
     <div class='docstring'>
-  <p>Add a view to draw in the container</p>
+  <p>Returns the absolute (document) coordinates of a point within the paper</p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
   <ul class='param'>
     <li>
-      <span class='name'>view</span>
+      <span class='name'>x</span>
       <span class='type'>
-        (<tt>View.Base</tt>)
+        (<tt>float</tt>)
       </span>
       &mdash;
-      <span class='desc'>The view to draw</span>
+      <span class='desc'>the x position of the paper point</span>
     </li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='removeView-instance'>
-      - (void) <strong>removeView</strong>()
-    </p>
-    <div class='docstring'>
-  <p>Removes a view from the container</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
     <li>
-      <span class='name'>The</span>
+      <span class='name'>y</span>
       <span class='type'>
-        (<tt>View.Base</tt>)
+        (<tt>float</tt>)
       </span>
       &mdash;
-      <span class='desc'>view to remove</span>
+      <span class='desc'>the y position of the paper point</span>
     </li>
   </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='resize-instance'>
-      - (void) <strong>resize</strong>(scale = @_scale)
-    </p>
-    <div class='docstring'>
-  <p>Resize this view and it&#39;s children</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
+  <h3>Returns:</h3>
+  <ul class='return'>
     <li>
-      <span class='name'>scale</span>
-      <span class='type'>
-        (<tt>Float</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>The scale of the view</span>
-    </li>
+      <span class='type'></span><tt>[float, float</tt></li>
   </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='kill-instance'>
-      - (void) <strong>kill</strong>()
-    </p>
-    <div class='docstring'>
-  <p>Kill this view and it&#39;s children, removing and unsetting all references from this view and it&#39;s children</p>
-</div>
-<div class='tags'>
 </div>
   </div>
 </div>
     </div>
     <div id='footer'>
   Generated on
-  Sun May 19 2013 15:38:42 GMT+0200 (W. Europe Daylight Time)
+  Sun Jun 02 2013 15:47:57 GMT+0200 (W. Europe Daylight Time)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

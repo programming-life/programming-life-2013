@@ -2,7 +2,7 @@
 <html>
   <head>
   <meta charset='UTF-8'>
-  <title>CoffeeScript API Documentation</title>
+  <title>Broyologramming Life API Documentation</title>
   <link rel='stylesheet' href='../../assets/codo.css' type='text/css'>
   <script src='../../assets/codo.js'></script>
   <script src='../../assets/search_data.js'></script>
@@ -28,6 +28,7 @@
     <div id='search'>
       <a id='class_list_link' href='../../class_list.html'>Classes</a>
       <a id='mixin_list_link' href='../../mixin_list.html'>Mixins</a>
+      <a id='file_list_link' href='../../file_list.html'>Files</a>
       <a id='method_list_link' href='../../method_list.html'>Methods</a>
       <a id='extra_list_link' href='../../extra_list.html'>Extras</a>
     </div>
@@ -113,18 +114,12 @@
       <table class='box'>
         <tr>
           <td>Defined in:</td>
-          <td>app&#47;assets&#47;javascripts&#47;views&#47;raphael.module.dummy.coffee</td>
+          <td>app&#47;assets&#47;javascripts&#47;views&#47;raphael.module.dummy.js.coffee</td>
         </tr>
         <tr>
           <td>Inherits:</td>
           <td>
-            <a href='../../classes/View/Module.html'>View.Module</a>
-          </td>
-        </tr>
-        <tr>
-          <td>Concerns:</td>
-          <td>
-            <a href='../../mixins/Mixin/EventBindings.html'>Mixin.EventBindings</a>
+            <a href='../../classes/View/RaphaelBase.html'>View.RaphaelBase</a>
           </td>
         </tr>
       </table>
@@ -140,7 +135,7 @@ It also allows for interaction adding this potential module to a cell.</p>
   <li>
     <span class='signature'>
       <a href='#constructor-instance'>
-        - (void) <strong>constructor</strong>(paper, parent, cell, module, params = {})
+        - (void) <strong>constructor</strong>(paper, parent, _cell, _modulector, _number, _params = {})
       </a>
     </span>
     <span class='constructor note title'>Constructor</span>
@@ -150,29 +145,168 @@ It also allows for interaction adding this potential module to a cell.</p>
   </li>
   <li>
     <span class='signature'>
-      <a href='#onModuleSelected-instance'>
-        - (void) <strong>onModuleSelected</strong>(module, selected)
+      <a href='#onModuleCreationStarted-instance'>
+        - (void) <strong>onModuleCreationStarted</strong>(dummy)
       </a>
     </span>
-    <span class='bound note title'>Bound</span>
     <span class='desc'>
-      Runs if module is selected
+      Gets called when a module creation has started
     </span>
   </li>
   <li>
     <span class='signature'>
-      <a href='#onActivate-instance'>
-        - (void) <strong>onActivate</strong>()
+      <a href='#onModuleCreationAborted-instance'>
+        - (void) <strong>onModuleCreationAborted</strong>(dummy)
       </a>
     </span>
     <span class='desc'>
-      Activate button action
+      Gets called when a module creation was aborted
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#onModulePropertiesChange-instance'>
+        - (void) <strong>onModulePropertiesChange</strong>(source, key, value)
+      </a>
+    </span>
+    <span class='desc'>
+      
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#onModuleAdd-instance'>
+        - (void) <strong>onModuleAdd</strong>(cell, module)
+      </a>
+    </span>
+    <span class='desc'>
+      On Module Added to the Cell
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#onModuleRemove-instance'>
+        - (void) <strong>onModuleRemove</strong>(cell, module)
+      </a>
+    </span>
+    <span class='desc'>
+      On Module Removed from the Cell
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#getFullType-instance'>
+        - (void) <strong>getFullType</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#getBBox-instance'>
+        - (Object) <strong>getBBox</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Returns the bounding box of this view
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#getPoint-instance'>
+        - ([float, float) <strong>getPoint</strong>(location)
+      </a>
+    </span>
+    <span class='desc'>
+      Returns the coordinates of either the entrance or exit of this view
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#getAbsolutePoint-instance'>
+        - (void) <strong>getAbsolutePoint</strong>(location)
+      </a>
+    </span>
+    <span class='desc'>
+      
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#draw-instance'>
+        - (void) <strong>draw</strong>(x = null, y = null)
+      </a>
+    </span>
+    <span class='desc'>
+      Draws this view
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#hide-instance'>
+        - (void) <strong>hide</strong>(animate = true)
+      </a>
+    </span>
+    <span class='desc'>
+      Hides this view
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#show-instance'>
+        - (void) <strong>show</strong>(animate = true)
+      </a>
+    </span>
+    <span class='desc'>
+      Shows this view
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#kill-instance'>
+        - (void) <strong>kill</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Kills this view
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_setSelected-instance'>
+        - (void) <strong>_setSelected</strong>(selected)
+      </a>
+    </span>
+    <span class='desc'>
+      Sets wether or not the module is selected
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_setHovered-instance'>
+        - (void) <strong>_setHovered</strong>(hovered)
+      </a>
+    </span>
+    <span class='desc'>
+      Sets wether or not the module is hovered
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#drawBox-instance'>
+        - (Raphael) <strong>drawBox</strong>(elem)
+      </a>
+    </span>
+    <span class='desc'>
+      Draws the box
     </span>
   </li>
   <li>
     <span class='signature'>
       <a href='#drawContents-instance'>
-        - (Raphael) <strong>drawContents</strong>(x, y, scale, padding, big)
+        - (Raphael) <strong>drawContents</strong>()
       </a>
     </span>
     <span class='desc'>
@@ -181,12 +315,22 @@ It also allows for interaction adding this potential module to a cell.</p>
   </li>
   <li>
     <span class='signature'>
-      <a href='#drawBox-instance'>
-        - (Raphael) <strong>drawBox</strong>(elem, scale)
+      <a href='#drawHitbox-instance'>
+        - (Raphael) <strong>drawHitbox</strong>(elem)
       </a>
     </span>
     <span class='desc'>
-      Draws the box
+      Draws this view hitbox
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#onModuleSelected-instance'>
+        - (void) <strong>onModuleSelected</strong>(module, selected)
+      </a>
+    </span>
+    <span class='desc'>
+      Gets called when a module view selected.
     </span>
   </li>
 </ul>
@@ -195,44 +339,33 @@ It also allows for interaction adding this potential module to a cell.</p>
       </h2>
       <h3 class='inherited'>
         Methods inherited from
-        <a href='../../classes/View/Module.html'>View.Module</a>
-      </h3>
-      <p class='inherited'>
-                <a href='../../classes/View/Module.html#constructor-instance'>#constructor</a>,
-                <a href='../../classes/View/Module.html#hashCode-instance'>#hashCode</a>,
-                <a href='../../classes/View/Module.html#hashColor-instance'>#hashColor</a>,
-                <a href='../../classes/View/Module.html#numToColor-instance'>#numToColor</a>,
-                <a href='../../classes/View/Module.html#onModuleInvalidated-instance'>#onModuleInvalidated</a>,
-                <a href='../../classes/View/Module.html#onModuleSelected-instance'>#onModuleSelected</a>,
-                <a href='../../classes/View/Module.html#onModuleHovered-instance'>#onModuleHovered</a>,
-                <a href='../../classes/View/Module.html#onPaperResize-instance'>#onPaperResize</a>,
-                <a href='../../classes/View/Module.html#clear-instance'>#clear</a>,
-                <a href='../../classes/View/Module.html#kill-instance'>#kill</a>,
-                <a href='../../classes/View/Module.html#getBBox-instance'>#getBBox</a>,
-                <a href='../../classes/View/Module.html#getPoint-instance'>#getPoint</a>,
-                <a href='../../classes/View/Module.html#_getSplineDirection-instance'>#_getSplineDirection</a>,
-                <a href='../../classes/View/Module.html#redraw-instance'>#redraw</a>,
-                <a href='../../classes/View/Module.html#draw-instance'>#draw</a>,
-                <a href='../../classes/View/Module.html#drawContents-instance'>#drawContents</a>,
-                <a href='../../classes/View/Module.html#drawBox-instance'>#drawBox</a>,
-                <a href='../../classes/View/Module.html#drawSpline-instance'>#drawSpline</a>,
-                <a href='../../classes/View/Module.html#drawShadow-instance'>#drawShadow</a>,
-                <a href='../../classes/View/Module.html#drawHitbox-instance'>#drawHitbox</a>,
-        <a href='../../classes/View/Module.html#drawComponent-instance'>#drawComponent</a>
-      </p>
-      <h3 class='inherited'>
-        Methods inherited from
         <a href='../../classes/View/RaphaelBase.html'>View.RaphaelBase</a>
       </h3>
       <p class='inherited'>
                 <a href='../../classes/View/RaphaelBase.html#constructor-instance'>#constructor</a>,
+                <a href='../../classes/View/RaphaelBase.html#_catcher-instance'>#_catcher</a>,
+                <a href='../../classes/View/RaphaelBase.html#getBBox-instance'>#getBBox</a>,
                 <a href='../../classes/View/RaphaelBase.html#clear-instance'>#clear</a>,
+                <a href='../../classes/View/RaphaelBase.html#kill-instance'>#kill</a>,
+                <a href='../../classes/View/RaphaelBase.html#setPosition-instance'>#setPosition</a>,
+                <a href='../../classes/View/RaphaelBase.html#moveTo-instance'>#moveTo</a>,
+                <a href='../../classes/View/RaphaelBase.html#move-instance'>#move</a>,
                 <a href='../../classes/View/RaphaelBase.html#draw-instance'>#draw</a>,
                 <a href='../../classes/View/RaphaelBase.html#redraw-instance'>#redraw</a>,
-                <a href='../../classes/View/RaphaelBase.html#addView-instance'>#addView</a>,
-                <a href='../../classes/View/RaphaelBase.html#removeView-instance'>#removeView</a>,
-                <a href='../../classes/View/RaphaelBase.html#resize-instance'>#resize</a>,
-        <a href='../../classes/View/RaphaelBase.html#kill-instance'>#kill</a>
+        <a href='../../classes/View/RaphaelBase.html#getAbsoluteCoords-instance'>#getAbsoluteCoords</a>
+      </p>
+      <h3 class='inherited'>
+        Methods inherited from
+        <a href='../../classes/View/Collection.html'>View.Collection</a>
+      </h3>
+      <p class='inherited'>
+                <a href='../../classes/View/Collection.html#constructor-instance'>#constructor</a>,
+                <a href='../../classes/View/Collection.html#clear-instance'>#clear</a>,
+                <a href='../../classes/View/Collection.html#kill-instance'>#kill</a>,
+                <a href='../../classes/View/Collection.html#add-instance'>#add</a>,
+                <a href='../../classes/View/Collection.html#remove-instance'>#remove</a>,
+                <a href='../../classes/View/Collection.html#draw-instance'>#draw</a>,
+        <a href='../../classes/View/Collection.html#redraw-instance'>#redraw</a>
       </p>
       <h3 class='inherited'>
         Methods inherited from
@@ -243,27 +376,11 @@ It also allows for interaction adding this potential module to a cell.</p>
                 <a href='../../classes/Helper/Mixable.html#include-class'>.include</a>,
         <a href='../../classes/Helper/Mixable.html#concern-class'>.concern</a>
       </p>
-      <h2>
-        <small>Concern Method Summary</small>
-      </h2>
-      <h3 class='included'>
-        Methods mixed in from
-        <a href='../../mixins/Mixin/EventBindings.html'>Mixin.EventBindings</a>
-      </h3>
-      <p class='included'>
-                <a href='../../mixins/Mixin/EventBindings.html#_allowEventBindings-instance'>#_allowEventBindings</a>,
-                <a href='../../mixins/Mixin/EventBindings.html#_unbindAll-instance'>#_unbindAll</a>,
-                <a href='../../mixins/Mixin/EventBindings.html#_bind-instance'>#_bind</a>,
-                <a href='../../mixins/Mixin/EventBindings.html#_unbind-instance'>#_unbind</a>,
-                <a href='../../mixins/Mixin/EventBindings.html#_trigger-instance'>#_trigger</a>,
-                <a href='../../mixins/Mixin/EventBindings.html#_onNotificate-instance'>#_onNotificate</a>,
-        <a href='../../mixins/Mixin/EventBindings.html#_notificate-instance'>#_notificate</a>
-      </p>
       <h2>Constructor Details</h2>
       <div class='methods'>
   <div class='method_details'>
     <p class='signature' id='constructor-instance'>
-      - (void) <strong>constructor</strong>(paper, parent, cell, module, params = {})
+      - (void) <strong>constructor</strong>(paper, parent, _cell, _modulector, _number, _params = {})
     </p>
     <div class='docstring'>
   <p>Creates a new module view</p>
@@ -280,23 +397,39 @@ It also allows for interaction adding this potential module to a cell.</p>
       <span class='desc'>the raphael paper</span>
     </li>
     <li>
-      <span class='name'>cell</span>
+      <span class='name'>_parent</span>
+      <span class='type'>
+        (<tt><a href='../../classes/View/Cell.html'>View.Cell</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the cell view this dummy belongs to</span>
+    </li>
+    <li>
+      <span class='name'>_cell</span>
       <span class='type'>
         (<tt><a href='../../classes/Model/Cell.html'>Model.Cell</a></tt>)
       </span>
       &mdash;
-      <span class='desc'>the cell to show</span>
+      <span class='desc'>the cell model displayed in the parent</span>
     </li>
     <li>
-      <span class='name'>module</span>
+      <span class='name'>_modulector</span>
       <span class='type'>
-        (<tt><a href='../../classes/Model/Module.html'>Model.Module</a></tt>)
+        (<tt>Function</tt>)
       </span>
       &mdash;
-      <span class='desc'>the module to show</span>
+      <span class='desc'>the module constructor</span>
     </li>
     <li>
-      <span class='name'>params</span>
+      <span class='name'>_number</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the number of instances allowed [ -1 is unlimted, 0 is none ]</span>
+    </li>
+    <li>
+      <span class='name'>_params</span>
       <span class='type'>
         (<tt>Object</tt>)
       </span>
@@ -310,48 +443,286 @@ It also allows for interaction adding this potential module to a cell.</p>
       <h2>Instance Method Details</h2>
       <div class='methods'>
   <div class='method_details'>
-    <p class='signature' id='onModuleSelected-instance'>
-      - (void) <strong>onModuleSelected</strong>(module, selected)
-      (bound)
+    <p class='signature' id='onModuleCreationStarted-instance'>
+      - (void) <strong>onModuleCreationStarted</strong>(dummy)
     </p>
     <div class='docstring'>
-  <p>Runs if module is selected</p>
+  <p>Gets called when a module creation has started</p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
   <ul class='param'>
+    <li>
+      <span class='name'>dummy</span>
+      <span class='type'>
+        (<tt><a href='../../classes/View/DummyModule.html'>View.DummyModule</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the dummy for which the module creation has started</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='onModuleCreationAborted-instance'>
+      - (void) <strong>onModuleCreationAborted</strong>(dummy)
+    </p>
+    <div class='docstring'>
+  <p>Gets called when a module creation was aborted</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>dummy</span>
+      <span class='type'>
+        (<tt><a href='../../classes/View/DummyModule.html'>View.DummyModule</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the dummy for which the module creation was aborted</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='onModulePropertiesChange-instance'>
+      - (void) <strong>onModulePropertiesChange</strong>(source, key, value)
+    </p>
+    <div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='onModuleAdd-instance'>
+      - (void) <strong>onModuleAdd</strong>(cell, module)
+    </p>
+    <div class='docstring'>
+  <p>On Module Added to the Cell</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>cell</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Model/Cell.html'>Model.Cell</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the cell added to</span>
+    </li>
     <li>
       <span class='name'>module</span>
       <span class='type'>
         (<tt><a href='../../classes/Model/Module.html'>Model.Module</a></tt>)
       </span>
       &mdash;
-      <span class='desc'>the module selected/deslected</span>
-    </li>
-    <li>
-      <span class='name'>selected</span>
-      <span class='type'>
-        (<tt>Mixed</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>selected state</span>
+      <span class='desc'>the module added</span>
     </li>
   </ul>
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='onActivate-instance'>
-      - (void) <strong>onActivate</strong>()
+    <p class='signature' id='onModuleRemove-instance'>
+      - (void) <strong>onModuleRemove</strong>(cell, module)
     </p>
     <div class='docstring'>
-  <p>Activate button action</p>
+  <p>On Module Removed from the Cell</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>cell</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Model/Cell.html'>Model.Cell</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the cell removed from</span>
+    </li>
+    <li>
+      <span class='name'>module</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Model/Module.html'>Model.Module</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the module removed</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='getFullType-instance'>
+      - (void) <strong>getFullType</strong>()
+    </p>
+    <div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='getBBox-instance'>
+      - (Object) <strong>getBBox</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Returns the bounding box of this view</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Object</tt>)
+      &mdash;
+      <span class='desc'>a bounding box object with coordinates</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='getPoint-instance'>
+      - ([float, float) <strong>getPoint</strong>(location)
+    </p>
+    <div class='docstring'>
+  <p>Returns the coordinates of either the entrance or exit of this view</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>location</span>
+      <span class='type'>
+        (<tt>View.Module.Location</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the location (entrance or exit)</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span><tt>[float, float</tt></li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='getAbsolutePoint-instance'>
+      - (void) <strong>getAbsolutePoint</strong>(location)
+    </p>
+    <div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='draw-instance'>
+      - (void) <strong>draw</strong>(x = null, y = null)
+    </p>
+    <div class='docstring'>
+  <p>Draws this view</p>
 </div>
 <div class='tags'>
 </div>
   </div>
   <div class='method_details'>
+    <p class='signature' id='hide-instance'>
+      - (void) <strong>hide</strong>(animate = true)
+    </p>
+    <div class='docstring'>
+  <p>Hides this view</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='show-instance'>
+      - (void) <strong>show</strong>(animate = true)
+    </p>
+    <div class='docstring'>
+  <p>Shows this view</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='kill-instance'>
+      - (void) <strong>kill</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Kills this view</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_setSelected-instance'>
+      - (void) <strong>_setSelected</strong>(selected)
+    </p>
+    <div class='docstring'>
+  <p>Sets wether or not the module is selected</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>selected</span>
+      <span class='type'>
+        (<tt>Boolean</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>selection state</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_setHovered-instance'>
+      - (void) <strong>_setHovered</strong>(hovered)
+    </p>
+    <div class='docstring'>
+  <p>Sets wether or not the module is hovered</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>hovered</span>
+      <span class='type'>
+        (<tt>Boolean</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>hover state</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='drawBox-instance'>
+      - (Raphael) <strong>drawBox</strong>(elem)
+    </p>
+    <div class='docstring'>
+  <p>Draws the box</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>elem</span>
+      <span class='type'>
+        (<tt>Raphael</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>element to draw for</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Raphael</tt>)
+      &mdash;
+      <span class='desc'>the contents</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
     <p class='signature' id='drawContents-instance'>
-      - (Raphael) <strong>drawContents</strong>(x, y, scale, padding, big)
+      - (Raphael) <strong>drawContents</strong>()
     </p>
     <div class='docstring'>
   <p>Draws contents</p>
@@ -375,21 +746,35 @@ It also allows for interaction adding this potential module to a cell.</p>
       &mdash;
       <span class='desc'>y position</span>
     </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
     <li>
-      <span class='name'>scale</span>
-      <span class='type'>
-        (<tt>Integer</tt>)
-      </span>
+      <span class='type'></span>
+      (<tt>Raphael</tt>)
       &mdash;
-      <span class='desc'>box scale</span>
+      <span class='desc'>the contents</span>
     </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='drawHitbox-instance'>
+      - (Raphael) <strong>drawHitbox</strong>(elem)
+    </p>
+    <div class='docstring'>
+  <p>Draws this view hitbox</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
     <li>
-      <span class='name'>big</span>
+      <span class='name'>elem</span>
       <span class='type'>
-        (<tt>Boolean</tt>)
+        (<tt>Raphael</tt>)
       </span>
       &mdash;
-      <span class='desc'>box is selected or hovered</span>
+      <span class='desc'>element to draw for</span>
     </li>
   </ul>
   <h3>Returns:</h3>
@@ -404,39 +789,30 @@ It also allows for interaction adding this potential module to a cell.</p>
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='drawBox-instance'>
-      - (Raphael) <strong>drawBox</strong>(elem, scale)
+    <p class='signature' id='onModuleSelected-instance'>
+      - (void) <strong>onModuleSelected</strong>(module, selected)
     </p>
     <div class='docstring'>
-  <p>Draws the box</p>
+  <p>Gets called when a module view selected.</p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
   <ul class='param'>
     <li>
-      <span class='name'>elem</span>
+      <span class='name'>module</span>
       <span class='type'>
-        (<tt>Raphael</tt>)
+        (<tt>Module</tt>)
       </span>
       &mdash;
-      <span class='desc'>element to draw for</span>
+      <span class='desc'>the module that is being selected</span>
     </li>
     <li>
-      <span class='name'>scale</span>
+      <span class='name'>selected</span>
       <span class='type'>
-        (<tt>Integer</tt>)
+        (<tt>Boolean</tt>)
       </span>
       &mdash;
-      <span class='desc'>the scale</span>
-    </li>
-  </ul>
-  <h3>Returns:</h3>
-  <ul class='return'>
-    <li>
-      <span class='type'></span>
-      (<tt>Raphael</tt>)
-      &mdash;
-      <span class='desc'>the box raphael</span>
+      <span class='desc'>the selection state of the module</span>
     </li>
   </ul>
 </div>
@@ -445,7 +821,7 @@ It also allows for interaction adding this potential module to a cell.</p>
     </div>
     <div id='footer'>
   Generated on
-  Sun May 19 2013 15:38:42 GMT+0200 (W. Europe Daylight Time)
+  Sun Jun 02 2013 15:47:57 GMT+0200 (W. Europe Daylight Time)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

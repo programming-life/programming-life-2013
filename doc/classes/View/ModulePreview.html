@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset='UTF-8'>
+  <title>Broyologramming Life API Documentation</title>
+  <link rel='stylesheet' href='../../assets/codo.css' type='text/css'>
+  <script src='../../assets/codo.js'></script>
+  <script src='../../assets/search_data.js'></script>
+</head>
+  <body>
+    <div id='base' data-path='../../'></div>
+<div id='header'>
+  <div id='menu'>
+    <a href='../../README.md.html' title='Programming-life'>Programming-life</a>
+    &raquo;
+    <a href='../../class_index.html' title='Index'>Index</a>
+    &raquo;
+    <span class='title'>View</span>
+    &raquo;
+    <span class='title'>ModulePreview</span>
+    <nav>
+      <ul>
+        <li class='noframes'>
+          (<a class='noframes' href='#'>no frames</a>)
+        </li>
+      </ul>
+    </nav>
+    <div id='search'>
+      <a id='class_list_link' href='../../class_list.html'>Classes</a>
+      <a id='mixin_list_link' href='../../mixin_list.html'>Mixins</a>
+      <a id='file_list_link' href='../../file_list.html'>Files</a>
+      <a id='method_list_link' href='../../method_list.html'>Methods</a>
+      <a id='extra_list_link' href='../../extra_list.html'>Extras</a>
+    </div>
+  </div>
+  <iframe id='search_frame'></iframe>
+  <div id='fuzzySearch'>
+    <input type='text'>
+    <ol></ol>
+  </div>
+  <div id='help'>
+    <p>
+      Quickly fuzzy find classes, mixins, methods, file:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-T</span>
+        Open fuzzy finder dialog
+      </li>
+    </ul>
+    <p>
+      In frame mode you can toggle the list naviation frame on the left side:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-L</span>
+        Toggle list view
+      </li>
+    </ul>
+    <p>
+      You can focus a list in frame mode or toggle a tab in frameless mode:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-C</span>
+        Class list
+      </li>
+      <li>
+        <span>Ctrl-I</span>
+        Mixin list
+      </li>
+      <li>
+        <span>Ctrl-F</span>
+        File list
+      </li>
+      <li>
+        <span>Ctrl-M</span>
+        Method list
+      </li>
+      <li>
+        <span>Ctrl-E</span>
+        Extras list
+      </li>
+    </ul>
+    <p>
+      You can focus and blur the search input:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-S</span>
+        Focus search input
+      </li>
+      <li>
+        <span>Esc</span>
+        Blur search input
+      </li>
+    </ul>
+    <p>
+      In frameless mode you can close the list tab:
+    </p>
+    <ul>
+      <li>
+        <span>Esc</span>
+        Close list tab
+      </li>
+    </ul>
+  </div>
+</div>
+    <div id='content'>
+      <h1>
+        Class:
+        View.ModulePreview
+      </h1>
+      <table class='box'>
+        <tr>
+          <td>Defined in:</td>
+          <td>app&#47;assets&#47;javascripts&#47;views&#47;raphael.module.preview.js.coffee</td>
+        </tr>
+        <tr>
+          <td>Inherits:</td>
+          <td>
+            <a href='../../classes/View/Module.html'>View.Module</a>
+          </td>
+        </tr>
+      </table>
+      <h2>Overview</h2>
+      <div class='docstring'>
+  <p>A view class to display preview for a module</p>
+</div>
+<div class='tags'>
+</div>
+      <h2>Instance Method Summary</h2>
+      <ul class='summary'>
+  <li>
+    <span class='signature'>
+      <a href='#constructor-instance'>
+        - (void) <strong>constructor</strong>(paper, parent, _cell, model)
+      </a>
+    </span>
+    <span class='constructor note title'>Constructor</span>
+    <span class='desc'>
+      Creates a new module view
+    </span>
+  </li>
+</ul>
+      <h2>
+        <small>Inherited Method Summary</small>
+      </h2>
+      <h3 class='inherited'>
+        Methods inherited from
+        <a href='../../classes/View/Module.html'>View.Module</a>
+      </h3>
+      <p class='inherited'>
+                <a href='../../classes/View/Module.html#constructor-instance'>#constructor</a>,
+                <a href='../../classes/View/Module.html#addInteraction-instance'>#addInteraction</a>,
+                <a href='../../classes/View/Module.html#onNotificate-instance'>#onNotificate</a>,
+                <a href='../../classes/View/Module.html#addBindings-instance'>#addBindings</a>,
+                <a href='../../classes/View/Module.html#addHitBoxInteraction-instance'>#addHitBoxInteraction</a>,
+                <a href='../../classes/View/Module.html#hashCode-instance'>#hashCode</a>,
+                <a href='../../classes/View/Module.html#hashColor-instance'>#hashColor</a>,
+                <a href='../../classes/View/Module.html#numToColor-instance'>#numToColor</a>,
+                <a href='../../classes/View/Module.html#_setSelected-instance'>#_setSelected</a>,
+                <a href='../../classes/View/Module.html#_setHovered-instance'>#_setHovered</a>,
+                <a href='../../classes/View/Module.html#getFullType-instance'>#getFullType</a>,
+                <a href='../../classes/View/Module.html#kill-instance'>#kill</a>,
+                <a href='../../classes/View/Module.html#getBBox-instance'>#getBBox</a>,
+                <a href='../../classes/View/Module.html#getPoint-instance'>#getPoint</a>,
+                <a href='../../classes/View/Module.html#getAbsolutePoint-instance'>#getAbsolutePoint</a>,
+                <a href='../../classes/View/Module.html#_getSplineDirection-instance'>#_getSplineDirection</a>,
+                <a href='../../classes/View/Module.html#redraw-instance'>#redraw</a>,
+                <a href='../../classes/View/Module.html#draw-instance'>#draw</a>,
+                <a href='../../classes/View/Module.html#drawContents-instance'>#drawContents</a>,
+                <a href='../../classes/View/Module.html#drawMetaContents-instance'>#drawMetaContents</a>,
+                <a href='../../classes/View/Module.html#drawAsBasic-instance'>#drawAsBasic</a>,
+                <a href='../../classes/View/Module.html#drawAsTransporter-instance'>#drawAsTransporter</a>,
+                <a href='../../classes/View/Module.html#drawAsMetabolite-instance'>#drawAsMetabolite</a>,
+                <a href='../../classes/View/Module.html#drawAsMetabolism-instance'>#drawAsMetabolism</a>,
+                <a href='../../classes/View/Module.html#drawProtein-instance'>#drawProtein</a>,
+                <a href='../../classes/View/Module.html#drawAsDNA-instance'>#drawAsDNA</a>,
+                <a href='../../classes/View/Module.html#drawAsLipid-instance'>#drawAsLipid</a>,
+                <a href='../../classes/View/Module.html#drawAsCellGrowth-instance'>#drawAsCellGrowth</a>,
+                <a href='../../classes/View/Module.html#drawBox-instance'>#drawBox</a>,
+                <a href='../../classes/View/Module.html#createSplines-instance'>#createSplines</a>,
+                <a href='../../classes/View/Module.html#drawShadow-instance'>#drawShadow</a>,
+                <a href='../../classes/View/Module.html#drawHitbox-instance'>#drawHitbox</a>,
+                <a href='../../classes/View/Module.html#drawComponent-instance'>#drawComponent</a>,
+                <a href='../../classes/View/Module.html#_createSpline-instance'>#_createSpline</a>,
+                <a href='../../classes/View/Module.html#onModuleInvalidated-instance'>#onModuleInvalidated</a>,
+                <a href='../../classes/View/Module.html#onModuleSelected-instance'>#onModuleSelected</a>,
+                <a href='../../classes/View/Module.html#onModuleHovered-instance'>#onModuleHovered</a>,
+                <a href='../../classes/View/Module.html#onModuleAdded-instance'>#onModuleAdded</a>,
+                <a href='../../classes/View/Module.html#onModuleRemoved-instance'>#onModuleRemoved</a>,
+                <a href='../../classes/View/Module.html#onMetaboliteAdded-instance'>#onMetaboliteAdded</a>,
+        <a href='../../classes/View/Module.html#onMetaboliteRemoved-instance'>#onMetaboliteRemoved</a>
+      </p>
+      <h3 class='inherited'>
+        Methods inherited from
+        <a href='../../classes/View/RaphaelBase.html'>View.RaphaelBase</a>
+      </h3>
+      <p class='inherited'>
+                <a href='../../classes/View/RaphaelBase.html#constructor-instance'>#constructor</a>,
+                <a href='../../classes/View/RaphaelBase.html#_catcher-instance'>#_catcher</a>,
+                <a href='../../classes/View/RaphaelBase.html#getBBox-instance'>#getBBox</a>,
+                <a href='../../classes/View/RaphaelBase.html#clear-instance'>#clear</a>,
+                <a href='../../classes/View/RaphaelBase.html#kill-instance'>#kill</a>,
+                <a href='../../classes/View/RaphaelBase.html#setPosition-instance'>#setPosition</a>,
+                <a href='../../classes/View/RaphaelBase.html#moveTo-instance'>#moveTo</a>,
+                <a href='../../classes/View/RaphaelBase.html#move-instance'>#move</a>,
+                <a href='../../classes/View/RaphaelBase.html#draw-instance'>#draw</a>,
+                <a href='../../classes/View/RaphaelBase.html#redraw-instance'>#redraw</a>,
+        <a href='../../classes/View/RaphaelBase.html#getAbsoluteCoords-instance'>#getAbsoluteCoords</a>
+      </p>
+      <h3 class='inherited'>
+        Methods inherited from
+        <a href='../../classes/View/Collection.html'>View.Collection</a>
+      </h3>
+      <p class='inherited'>
+                <a href='../../classes/View/Collection.html#constructor-instance'>#constructor</a>,
+                <a href='../../classes/View/Collection.html#clear-instance'>#clear</a>,
+                <a href='../../classes/View/Collection.html#kill-instance'>#kill</a>,
+                <a href='../../classes/View/Collection.html#add-instance'>#add</a>,
+                <a href='../../classes/View/Collection.html#remove-instance'>#remove</a>,
+                <a href='../../classes/View/Collection.html#draw-instance'>#draw</a>,
+        <a href='../../classes/View/Collection.html#redraw-instance'>#redraw</a>
+      </p>
+      <h3 class='inherited'>
+        Methods inherited from
+        <a href='../../classes/Helper/Mixable.html'>Helper.Mixable</a>
+      </h3>
+      <p class='inherited'>
+                <a href='../../classes/Helper/Mixable.html#extend-class'>.extend</a>,
+                <a href='../../classes/Helper/Mixable.html#include-class'>.include</a>,
+        <a href='../../classes/Helper/Mixable.html#concern-class'>.concern</a>
+      </p>
+      <h2>Constructor Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='constructor-instance'>
+      - (void) <strong>constructor</strong>(paper, parent, _cell, model)
+    </p>
+    <div class='docstring'>
+  <p>Creates a new module view</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>paper</span>
+      <span class='type'>
+        (<tt>Raphael.Paper</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the raphael paper</span>
+    </li>
+    <li>
+      <span class='name'>module</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Model/Module.html'>Model.Module</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the module to show</span>
+    </li>
+  </ul>
+</div>
+  </div>
+</div>
+    </div>
+    <div id='footer'>
+  Generated on
+  Sun Jun 02 2013 15:47:57 GMT+0200 (W. Europe Daylight Time)
+  by
+  <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
+  v1.5.6
+  (Node.js v0.10.4).
+  &#10034;
+  Press Ctrl-h to see the keyboard shortcuts
+  &#10034;
+  <a href='http://twitter.com/#!/netzpirat'>@netzpirat</a>
+  &#10034;
+  <a href='https://mksoft.ch'>mksoft.ch</a>
+</div>
+  </body>
+</html>

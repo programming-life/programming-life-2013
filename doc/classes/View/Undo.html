@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset='UTF-8'>
+  <title>Broyologramming Life API Documentation</title>
+  <link rel='stylesheet' href='../../assets/codo.css' type='text/css'>
+  <script src='../../assets/codo.js'></script>
+  <script src='../../assets/search_data.js'></script>
+</head>
+  <body>
+    <div id='base' data-path='../../'></div>
+<div id='header'>
+  <div id='menu'>
+    <a href='../../README.md.html' title='Programming-life'>Programming-life</a>
+    &raquo;
+    <a href='../../class_index.html' title='Index'>Index</a>
+    &raquo;
+    <span class='title'>View</span>
+    &raquo;
+    <span class='title'>Undo</span>
+    <nav>
+      <ul>
+        <li class='noframes'>
+          (<a class='noframes' href='#'>no frames</a>)
+        </li>
+      </ul>
+    </nav>
+    <div id='search'>
+      <a id='class_list_link' href='../../class_list.html'>Classes</a>
+      <a id='mixin_list_link' href='../../mixin_list.html'>Mixins</a>
+      <a id='file_list_link' href='../../file_list.html'>Files</a>
+      <a id='method_list_link' href='../../method_list.html'>Methods</a>
+      <a id='extra_list_link' href='../../extra_list.html'>Extras</a>
+    </div>
+  </div>
+  <iframe id='search_frame'></iframe>
+  <div id='fuzzySearch'>
+    <input type='text'>
+    <ol></ol>
+  </div>
+  <div id='help'>
+    <p>
+      Quickly fuzzy find classes, mixins, methods, file:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-T</span>
+        Open fuzzy finder dialog
+      </li>
+    </ul>
+    <p>
+      In frame mode you can toggle the list naviation frame on the left side:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-L</span>
+        Toggle list view
+      </li>
+    </ul>
+    <p>
+      You can focus a list in frame mode or toggle a tab in frameless mode:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-C</span>
+        Class list
+      </li>
+      <li>
+        <span>Ctrl-I</span>
+        Mixin list
+      </li>
+      <li>
+        <span>Ctrl-F</span>
+        File list
+      </li>
+      <li>
+        <span>Ctrl-M</span>
+        Method list
+      </li>
+      <li>
+        <span>Ctrl-E</span>
+        Extras list
+      </li>
+    </ul>
+    <p>
+      You can focus and blur the search input:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-S</span>
+        Focus search input
+      </li>
+      <li>
+        <span>Esc</span>
+        Blur search input
+      </li>
+    </ul>
+    <p>
+      In frameless mode you can close the list tab:
+    </p>
+    <ul>
+      <li>
+        <span>Esc</span>
+        Close list tab
+      </li>
+    </ul>
+  </div>
+</div>
+    <div id='content'>
+      <h1>
+        Class:
+        View.Undo
+      </h1>
+      <table class='box'>
+        <tr>
+          <td>Defined in:</td>
+          <td>app&#47;assets&#47;javascripts&#47;views&#47;undo.js.coffee</td>
+        </tr>
+        <tr>
+          <td>Inherits:</td>
+          <td>
+            <a href='../../classes/Helper/Mixable.html'>Helper.Mixable</a>
+          </td>
+        </tr>
+      </table>
+      <h2>Overview</h2>
+      <div class='docstring'>
+  <p>View for undo functionality</p>
+</div>
+<div class='tags'>
+</div>
+      <h2>Instance Method Summary</h2>
+      <ul class='summary'>
+  <li>
+    <span class='signature'>
+      <a href='#constructor-instance'>
+        - (void) <strong>constructor</strong>(_tree)
+      </a>
+    </span>
+    <span class='constructor note title'>Constructor</span>
+    <span class='desc'>
+      Creates a new instance of this view
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#clear-instance'>
+        - (void) <strong>clear</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Clears this view
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#kill-instance'>
+        - (void) <strong>kill</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Removes this view
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#draw-instance'>
+        - (jQuery) <strong>draw</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Draws this view
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_drawContents-instance'>
+        - (void) <strong>_drawContents</strong>(container = @_elem)
+      </a>
+    </span>
+    <span class='desc'>
+      Draws the actual undo tree into container
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_getTreeView-instance'>
+        - (void) <strong>_getTreeView</strong>(node)
+      </a>
+    </span>
+    <span class='desc'>
+      Gets the view for the node
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_getNodeView-instance'>
+        - (jQuery) <strong>_getNodeView</strong>(node)
+      </a>
+    </span>
+    <span class='desc'>
+      Returns a jQuery element that represents the given node.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_showButtons-instance'>
+        - (void) <strong>_showButtons</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Shows the buttons
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_hideButtons-instance'>
+        - (void) <strong>_hideButtons</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Hides the buttons
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_onNodeAdd-instance'>
+        - (void) <strong>_onNodeAdd</strong>(tree, node)
+      </a>
+    </span>
+    <span class='desc'>
+      Is called when a node is added to the tree
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_onNodeRemove-instance'>
+        - (void) <strong>_onNodeRemove</strong>(tree, node)
+      </a>
+    </span>
+    <span class='desc'>
+      Is called when a node is removed from the tree
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_onNodeSelect-instance'>
+        - (void) <strong>_onNodeSelect</strong>(tree, node)
+      </a>
+    </span>
+    <span class='desc'>
+      Is called when a node is selected
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_selectNode-instance'>
+        - (void) <strong>_selectNode</strong>(node)
+      </a>
+    </span>
+    <span class='desc'>
+      Mark a node in the list as selected
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_scrollToBottom-instance'>
+        - (void) <strong>_scrollToBottom</strong>(animate = true)
+      </a>
+    </span>
+    <span class='desc'>
+      Scroll the undo list to the bottom
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_branchLeft-instance'>
+        - (void) <strong>_branchLeft</strong>()
+      </a>
+    </span>
+    <span class='bound note title'>Bound</span>
+    <span class='desc'>
+      Move one branch to the left
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_branchRight-instance'>
+        - (void) <strong>_branchRight</strong>()
+      </a>
+    </span>
+    <span class='bound note title'>Bound</span>
+    <span class='desc'>
+      Move one branch to the right
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_branch-instance'>
+        - (void) <strong>_branch</strong>(direction)
+      </a>
+    </span>
+    <span class='desc'>
+      Move one branch to either direction
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#setTree-instance'>
+        - (void) <strong>setTree</strong>(tree)
+      </a>
+    </span>
+    <span class='desc'>
+      Sets the tree of the view
+    </span>
+  </li>
+</ul>
+      <h2>
+        <small>Inherited Method Summary</small>
+      </h2>
+      <h3 class='inherited'>
+        Methods inherited from
+        <a href='../../classes/Helper/Mixable.html'>Helper.Mixable</a>
+      </h3>
+      <p class='inherited'>
+                <a href='../../classes/Helper/Mixable.html#extend-class'>.extend</a>,
+                <a href='../../classes/Helper/Mixable.html#include-class'>.include</a>,
+        <a href='../../classes/Helper/Mixable.html#concern-class'>.concern</a>
+      </p>
+      <h2>Constructor Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='constructor-instance'>
+      - (void) <strong>constructor</strong>(_tree)
+    </p>
+    <div class='docstring'>
+  <p>Creates a new instance of this view</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>tree</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Model/UndoTree.html'>Model.UndoTree</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The UndoTree to visualize</span>
+    </li>
+  </ul>
+</div>
+  </div>
+</div>
+      <h2>Instance Method Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='clear-instance'>
+      - (void) <strong>clear</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Clears this view</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='kill-instance'>
+      - (void) <strong>kill</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Removes this view</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='draw-instance'>
+      - (jQuery) <strong>draw</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Draws this view</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>jQuery</tt>)
+      &mdash;
+      <span class='desc'>the drawn element</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_drawContents-instance'>
+      - (void) <strong>_drawContents</strong>(container = @_elem)
+    </p>
+    <div class='docstring'>
+  <p>Draws the actual undo tree into container</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>container</span>
+      <span class='type'>
+        (<tt>jQuery</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the container in which to draw the contents</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_getTreeView-instance'>
+      - (void) <strong>_getTreeView</strong>(node)
+    </p>
+    <div class='docstring'>
+  <p>Gets the view for the node</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>node</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Model/Node.html'>Model.Node</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The node to get the view for</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_getNodeView-instance'>
+      - (jQuery) <strong>_getNodeView</strong>(node)
+    </p>
+    <div class='docstring'>
+  <p>Returns a jQuery element that represents the given node. Will also
+push this element into an object for future reference.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>node</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Model/Node.html'>Model.Node</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the node to draw</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>jQuery</tt>)
+      &mdash;
+      <span class='desc'>the drawn jQuery element</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_showButtons-instance'>
+      - (void) <strong>_showButtons</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Shows the buttons</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_hideButtons-instance'>
+      - (void) <strong>_hideButtons</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Hides the buttons</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_onNodeAdd-instance'>
+      - (void) <strong>_onNodeAdd</strong>(tree, node)
+    </p>
+    <div class='docstring'>
+  <p>Is called when a node is added to the tree</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>tree</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Model/Tree.html'>Model.Tree</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The tree the node was added to</span>
+    </li>
+    <li>
+      <span class='name'>node</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Model/Node.html'>Model.Node</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The node that was added</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_onNodeRemove-instance'>
+      - (void) <strong>_onNodeRemove</strong>(tree, node)
+    </p>
+    <div class='docstring'>
+  <p>Is called when a node is removed from the tree</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>tree</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Model/Tree.html'>Model.Tree</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The tree the node was removed from</span>
+    </li>
+    <li>
+      <span class='name'>node</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Model/Node.html'>Model.Node</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The node that was removed</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_onNodeSelect-instance'>
+      - (void) <strong>_onNodeSelect</strong>(tree, node)
+    </p>
+    <div class='docstring'>
+  <p>Is called when a node is selected</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>tree</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Model/Tree.html'>Model.Tree</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The tree in which the node was selected</span>
+    </li>
+    <li>
+      <span class='name'>node</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Model/Node.html'>Model.Node</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The node that was selected</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_selectNode-instance'>
+      - (void) <strong>_selectNode</strong>(node)
+    </p>
+    <div class='docstring'>
+  <p>Mark a node in the list as selected</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>node</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Model/Node.html'>Model.Node</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the node to mark</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_scrollToBottom-instance'>
+      - (void) <strong>_scrollToBottom</strong>(animate = true)
+    </p>
+    <div class='docstring'>
+  <p>Scroll the undo list to the bottom</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>animate</span>
+      <span class='type'>
+        (<tt>Boolean</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>wether or not to animate the scroll</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_branchLeft-instance'>
+      - (void) <strong>_branchLeft</strong>()
+      (bound)
+    </p>
+    <div class='docstring'>
+  <p>Move one branch to the left</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_branchRight-instance'>
+      - (void) <strong>_branchRight</strong>()
+      (bound)
+    </p>
+    <div class='docstring'>
+  <p>Move one branch to the right</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_branch-instance'>
+      - (void) <strong>_branch</strong>(direction)
+    </p>
+    <div class='docstring'>
+  <p>Move one branch to either direction</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>direction</span>
+      <span class='type'>
+        (<tt>int</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the direction (-1 or 1) in which to move</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='setTree-instance'>
+      - (void) <strong>setTree</strong>(tree)
+    </p>
+    <div class='docstring'>
+  <p>Sets the tree of the view</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>tree</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Model/UndoTree.html'>Model.UndoTree</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The tree to view</span>
+    </li>
+  </ul>
+</div>
+  </div>
+</div>
+    </div>
+    <div id='footer'>
+  Generated on
+  Sun Jun 02 2013 15:47:57 GMT+0200 (W. Europe Daylight Time)
+  by
+  <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
+  v1.5.6
+  (Node.js v0.10.4).
+  &#10034;
+  Press Ctrl-h to see the keyboard shortcuts
+  &#10034;
+  <a href='http://twitter.com/#!/netzpirat'>@netzpirat</a>
+  &#10034;
+  <a href='https://mksoft.ch'>mksoft.ch</a>
+</div>
+  </body>
+</html>

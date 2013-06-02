@@ -2,7 +2,7 @@
 <html>
   <head>
   <meta charset='UTF-8'>
-  <title>CoffeeScript API Documentation</title>
+  <title>Broyologramming Life API Documentation</title>
   <link rel='stylesheet' href='../../assets/codo.css' type='text/css'>
   <script src='../../assets/codo.js'></script>
   <script src='../../assets/search_data.js'></script>
@@ -28,6 +28,7 @@
     <div id='search'>
       <a id='class_list_link' href='../../class_list.html'>Classes</a>
       <a id='mixin_list_link' href='../../mixin_list.html'>Mixins</a>
+      <a id='file_list_link' href='../../file_list.html'>Files</a>
       <a id='method_list_link' href='../../method_list.html'>Methods</a>
       <a id='extra_list_link' href='../../extra_list.html'>Extras</a>
     </div>
@@ -115,6 +116,12 @@
           <td>Defined in:</td>
           <td>app&#47;assets&#47;javascripts&#47;models&#47;tree.js.coffee</td>
         </tr>
+        <tr>
+          <td>Inherits:</td>
+          <td>
+            <a href='../../classes/Helper/Mixable.html'>Helper.Mixable</a>
+          </td>
+        </tr>
       </table>
       <h2>Overview</h2>
       <div class='docstring'>
@@ -131,7 +138,7 @@
   <li>
     <span class='signature'>
       <a href='#constructor-instance'>
-        - (void) <strong>constructor</strong>(root = new Model.Node(null, null))
+        - (void) <strong>constructor</strong>(root = new Model.Node())
       </a>
     </span>
     <span class='constructor note title'>Constructor</span>
@@ -152,7 +159,7 @@
   <li>
     <span class='signature'>
       <a href='#add-instance'>
-        - (Node) <strong>add</strong>(object, parent = @_current)
+        - (Node) <strong>add</strong>(object, parent = @current)
       </a>
     </span>
     <span class='desc'>
@@ -162,7 +169,7 @@
   <li>
     <span class='signature'>
       <a href='#addNode-instance'>
-        - (void) <strong>addNode</strong>(node, parent = @_current)
+        - (void) <strong>addNode</strong>(node, parent = @current)
       </a>
     </span>
     <span class='desc'>
@@ -172,7 +179,7 @@
   <li>
     <span class='signature'>
       <a href='#find-instance'>
-        - (Node) <strong>find</strong>(object, start = @_root)
+        - (Node) <strong>find</strong>(object, start = @root)
       </a>
     </span>
     <span class='desc'>
@@ -192,7 +199,7 @@
   <li>
     <span class='signature'>
       <a href='#breadthfirst-instance'>
-        - (Array) <strong>breadthfirst</strong>(start = @_root)
+        - (Array) <strong>breadthfirst</strong>(start = @root)
       </a>
     </span>
     <span class='desc'>
@@ -202,19 +209,41 @@
   <li>
     <span class='signature'>
       <a href='#depthfirst-instance'>
-        - (Array) <strong>depthfirst</strong>(start = @_root)
+        - (Array) <strong>depthfirst</strong>(start = @root)
       </a>
     </span>
     <span class='desc'>
       Returns a depthfirst itarator array for the tree
     </span>
   </li>
+  <li>
+    <span class='signature'>
+      <a href='#switchBranch-instance'>
+        - (void) <strong>switchBranch</strong>(node)
+      </a>
+    </span>
+    <span class='desc'>
+      Switches the branch of the tree to contain the node @retun [Model.Node] The old branch
+    </span>
+  </li>
 </ul>
+      <h2>
+        <small>Inherited Method Summary</small>
+      </h2>
+      <h3 class='inherited'>
+        Methods inherited from
+        <a href='../../classes/Helper/Mixable.html'>Helper.Mixable</a>
+      </h3>
+      <p class='inherited'>
+                <a href='../../classes/Helper/Mixable.html#extend-class'>.extend</a>,
+                <a href='../../classes/Helper/Mixable.html#include-class'>.include</a>,
+        <a href='../../classes/Helper/Mixable.html#concern-class'>.concern</a>
+      </p>
       <h2>Constructor Details</h2>
       <div class='methods'>
   <div class='method_details'>
     <p class='signature' id='constructor-instance'>
-      - (void) <strong>constructor</strong>(root = new Model.Node(null, null))
+      - (void) <strong>constructor</strong>(root = new Model.Node())
     </p>
     <div class='docstring'>
   <p>Constructor for tree</p>
@@ -259,7 +288,7 @@
   </div>
   <div class='method_details'>
     <p class='signature' id='add-instance'>
-      - (Node) <strong>add</strong>(object, parent = @_current)
+      - (Node) <strong>add</strong>(object, parent = @current)
     </p>
     <div class='docstring'>
   <p>Add an object to the tree</p>
@@ -297,7 +326,7 @@
   </div>
   <div class='method_details'>
     <p class='signature' id='addNode-instance'>
-      - (void) <strong>addNode</strong>(node, parent = @_current)
+      - (void) <strong>addNode</strong>(node, parent = @current)
     </p>
     <div class='docstring'>
   <p>Add a node to the tree</p>
@@ -326,7 +355,7 @@
   </div>
   <div class='method_details'>
     <p class='signature' id='find-instance'>
-      - (Node) <strong>find</strong>(object, start = @_root)
+      - (Node) <strong>find</strong>(object, start = @root)
     </p>
     <div class='docstring'>
   <p>Find an objects location in the tree</p>
@@ -383,7 +412,7 @@
   </div>
   <div class='method_details'>
     <p class='signature' id='breadthfirst-instance'>
-      - (Array) <strong>breadthfirst</strong>(start = @_root)
+      - (Array) <strong>breadthfirst</strong>(start = @root)
     </p>
     <div class='docstring'>
   <p>Returns a breadthfirst itarator array for the tree</p>
@@ -413,7 +442,7 @@
   </div>
   <div class='method_details'>
     <p class='signature' id='depthfirst-instance'>
-      - (Array) <strong>depthfirst</strong>(start = @_root)
+      - (Array) <strong>depthfirst</strong>(start = @root)
     </p>
     <div class='docstring'>
   <p>Returns a depthfirst itarator array for the tree</p>
@@ -441,11 +470,32 @@
   </ul>
 </div>
   </div>
+  <div class='method_details'>
+    <p class='signature' id='switchBranch-instance'>
+      - (void) <strong>switchBranch</strong>(node)
+    </p>
+    <div class='docstring'>
+  <p>Switches the branch of the tree to contain the node</p><p>@retun [Model.Node] The old branch</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>node</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Model/Node.html'>Model.Node</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The node to switch the branch to</span>
+    </li>
+  </ul>
+</div>
+  </div>
 </div>
     </div>
     <div id='footer'>
   Generated on
-  Sun May 19 2013 15:38:42 GMT+0200 (W. Europe Daylight Time)
+  Sun Jun 02 2013 15:47:57 GMT+0200 (W. Europe Daylight Time)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

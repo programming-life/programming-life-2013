@@ -17,7 +17,7 @@
     &raquo;
     <span class='title'>View</span>
     &raquo;
-    <span class='title'>HTMLPopOver</span>
+    <span class='title'>HTMLModal</span>
     <nav>
       <ul>
         <li class='noframes'>
@@ -109,12 +109,12 @@
     <div id='content'>
       <h1>
         Class:
-        View.HTMLPopOver
+        View.HTMLModal
       </h1>
       <table class='box'>
         <tr>
           <td>Defined in:</td>
-          <td>app&#47;assets&#47;javascripts&#47;views&#47;popover._.js.coffee</td>
+          <td>app&#47;assets&#47;javascripts&#47;views&#47;modal._.js.coffee</td>
         </tr>
         <tr>
           <td>Inherits:</td>
@@ -131,36 +131,106 @@
       </table>
       <h2>Overview</h2>
       <div class='docstring'>
-  <p>Provides an HTML Popover</p>
+  <p>Provides an HTML Modal</p>
 </div>
 <div class='tags'>
 </div>
       <h2>Direct Known Subclasses</h2>
       <p class='children'>
-                <a href='../../classes/View/ModuleProperties.html'>View.ModuleProperties</a>,
-        <a href='../../classes/View/Notification.html'>View.Notification</a>
+                <a href='../../classes/View/ConfirmModal.html'>View.ConfirmModal</a>,
+        <a href='../../classes/View/LoadModal.html'>View.LoadModal</a>
       </p>
       <h2>Instance Method Summary</h2>
       <ul class='summary'>
   <li>
     <span class='signature'>
       <a href='#constructor-instance'>
-        - (void) <strong>constructor</strong>(_parent, title = '', classname = '', placement = 'bottom')
+        - (void) <strong>constructor</strong>(_header, _contents, id, classname)
       </a>
     </span>
     <span class='constructor note title'>Constructor</span>
     <span class='desc'>
-      Constructs a new HTML Popover view.
+      Constructs a new Modal view.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#show-instance'>
+        - (void) <strong>show</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Shows the modal
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#hide-instance'>
+        - (void) <strong>hide</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Hides the modal
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#toggle-instance'>
+        - (void) <strong>toggle</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Toggles the modal
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#onClose-instance'>
+        - (void) <strong>onClose</strong>(context, action)
+      </a>
+    </span>
+    <span class='desc'>
+      Binds function on close (before transition)
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#offClose-instance'>
+        - (void) <strong>offClose</strong>(context, action)
+      </a>
+    </span>
+    <span class='desc'>
+      Unbinds function on close (before transition)
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#onClosed-instance'>
+        - (void) <strong>onClosed</strong>(context, action)
+      </a>
+    </span>
+    <span class='desc'>
+      Binds function on closed (after transition)
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#offClosed-instance'>
+        - (void) <strong>offClosed</strong>(context, action)
+      </a>
+    </span>
+    <span class='desc'>
+      Unbinds function on closed (after transition)
     </span>
   </li>
   <li>
     <span class='signature'>
       <a href='#_create-instance'>
-        - (jQuery.Elem) <strong>_create</strong>(classname)
+        - (jQuery.Elem) <strong>_create</strong>(classname = '')
       </a>
     </span>
     <span class='desc'>
-      Creates the popover element
+      Creates the modal element
     </span>
   </li>
   <li>
@@ -170,7 +240,7 @@
       </a>
     </span>
     <span class='desc'>
-      Kills the popover
+      Kills the modal
     </span>
   </li>
   <li>
@@ -180,7 +250,7 @@
       </a>
     </span>
     <span class='desc'>
-      Removes the properties&#39; popover from the body
+      Removes the properties&#39; modal from the body
     </span>
   </li>
   <li>
@@ -190,7 +260,7 @@
       </a>
     </span>
     <span class='desc'>
-      Draws the properties popover
+      Draws the modal
     </span>
   </li>
   <li>
@@ -200,7 +270,7 @@
       </a>
     </span>
     <span class='desc'>
-      Nullifies the header
+      Create the modal header
     </span>
   </li>
   <li>
@@ -210,7 +280,7 @@
       </a>
     </span>
     <span class='desc'>
-      Create the popover body
+      Create the modal body
     </span>
   </li>
   <li>
@@ -220,47 +290,7 @@
       </a>
     </span>
     <span class='desc'>
-      Nullifies the footer
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#setPosition-instance'>
-        - (void) <strong>setPosition</strong>()
-      </a>
-    </span>
-    <span class='desc'>
-      Sets the position of the popover so the arrow points straight at the model view
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#_setSelected-instance'>
-        - (void) <strong>_setSelected</strong>(selected)
-      </a>
-    </span>
-    <span class='desc'>
-      Sets wether or not the module is selected
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#_setHovered-instance'>
-        - (void) <strong>_setHovered</strong>(hovered)
-      </a>
-    </span>
-    <span class='desc'>
-      Sets wether or not the module is hovered
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#onViewPositioned-instance'>
-        - (void) <strong>onViewPositioned</strong>(view)
-      </a>
-    </span>
-    <span class='desc'>
-      
+      Create the modal footer
     </span>
   </li>
 </ul>
@@ -296,29 +326,37 @@
       <div class='methods'>
   <div class='method_details'>
     <p class='signature' id='constructor-instance'>
-      - (void) <strong>constructor</strong>(_parent, title = '', classname = '', placement = 'bottom')
+      - (void) <strong>constructor</strong>(_header, _contents, id, classname)
     </p>
     <div class='docstring'>
-  <p>Constructs a new HTML Popover view.</p>
+  <p>Constructs a new Modal view.</p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
   <ul class='param'>
     <li>
-      <span class='name'>parent</span>
-      <span class='type'>
-        (<tt>Raphael</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>parent to hook on</span>
-    </li>
-    <li>
-      <span class='name'>title</span>
+      <span class='name'>_header</span>
       <span class='type'>
         (<tt>String</tt>)
       </span>
       &mdash;
-      <span class='desc'>the title</span>
+      <span class='desc'>the header text</span>
+    </li>
+    <li>
+      <span class='name'>_contents</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the contents text</span>
+    </li>
+    <li>
+      <span class='name'>id</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the id</span>
     </li>
     <li>
       <span class='name'>classname</span>
@@ -326,15 +364,7 @@
         (<tt>String</tt>)
       </span>
       &mdash;
-      <span class='desc'>the classname</span>
-    </li>
-    <li>
-      <span class='name'>placement</span>
-      <span class='type'>
-        (<tt>String</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the placement</span>
+      <span class='desc'>additiona classname(s)</span>
     </li>
   </ul>
 </div>
@@ -343,11 +373,81 @@
       <h2>Instance Method Details</h2>
       <div class='methods'>
   <div class='method_details'>
-    <p class='signature' id='_create-instance'>
-      - (jQuery.Elem) <strong>_create</strong>(classname)
+    <p class='signature' id='show-instance'>
+      - (void) <strong>show</strong>()
     </p>
     <div class='docstring'>
-  <p>Creates the popover element</p>
+  <p>Shows the modal</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='hide-instance'>
+      - (void) <strong>hide</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Hides the modal</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='toggle-instance'>
+      - (void) <strong>toggle</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Toggles the modal</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='onClose-instance'>
+      - (void) <strong>onClose</strong>(context, action)
+    </p>
+    <div class='docstring'>
+  <p>Binds function on close (before transition)</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='offClose-instance'>
+      - (void) <strong>offClose</strong>(context, action)
+    </p>
+    <div class='docstring'>
+  <p>Unbinds function on close (before transition)</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='onClosed-instance'>
+      - (void) <strong>onClosed</strong>(context, action)
+    </p>
+    <div class='docstring'>
+  <p>Binds function on closed (after transition)</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='offClosed-instance'>
+      - (void) <strong>offClosed</strong>(context, action)
+    </p>
+    <div class='docstring'>
+  <p>Unbinds function on closed (after transition) </p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_create-instance'>
+      - (jQuery.Elem) <strong>_create</strong>(classname = '')
+    </p>
+    <div class='docstring'>
+  <p>Creates the modal element</p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
@@ -367,7 +467,7 @@
       <span class='type'></span>
       (<tt>jQuery.Elem</tt>)
       &mdash;
-      <span class='desc'>the popover element</span>
+      <span class='desc'>the modal element</span>
     </li>
   </ul>
 </div>
@@ -377,7 +477,7 @@
       - (void) <strong>kill</strong>()
     </p>
     <div class='docstring'>
-  <p>Kills the popover</p>
+  <p>Kills the modal</p>
 </div>
 <div class='tags'>
 </div>
@@ -387,7 +487,7 @@
       - (void) <strong>clear</strong>()
     </p>
     <div class='docstring'>
-  <p>Removes the properties&#39; popover from the body</p>
+  <p>Removes the properties&#39; modal from the body</p>
 </div>
 <div class='tags'>
 </div>
@@ -397,7 +497,7 @@
       - (void) <strong>draw</strong>()
     </p>
     <div class='docstring'>
-  <p>Draws the properties popover</p>
+  <p>Draws the modal</p>
 </div>
 <div class='tags'>
 </div>
@@ -407,7 +507,7 @@
       - (void) <strong>_createHeader</strong>()
     </p>
     <div class='docstring'>
-  <p>Nullifies the header</p>
+  <p>Create the modal header</p>
 </div>
 <div class='tags'>
 </div>
@@ -417,7 +517,7 @@
       - (jQuery.Elem) <strong>_createBody</strong>()
     </p>
     <div class='docstring'>
-  <p>Create the popover body</p>
+  <p>Create the modal body</p>
 </div>
 <div class='tags'>
   <h3>Returns:</h3>
@@ -436,68 +536,9 @@
       - (void) <strong>_createFooter</strong>()
     </p>
     <div class='docstring'>
-  <p>Nullifies the footer</p>
+  <p>Create the modal footer</p>
 </div>
 <div class='tags'>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='setPosition-instance'>
-      - (void) <strong>setPosition</strong>()
-    </p>
-    <div class='docstring'>
-  <p>Sets the position of the popover so the arrow points straight at the model view</p>
-</div>
-<div class='tags'>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='_setSelected-instance'>
-      - (void) <strong>_setSelected</strong>(selected)
-    </p>
-    <div class='docstring'>
-  <p>Sets wether or not the module is selected</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>selected</span>
-      <span class='type'>
-        (<tt>Boolean</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>selection state</span>
-    </li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='_setHovered-instance'>
-      - (void) <strong>_setHovered</strong>(hovered)
-    </p>
-    <div class='docstring'>
-  <p>Sets wether or not the module is hovered</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>hovered</span>
-      <span class='type'>
-        (<tt>Boolean</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>hover state</span>
-    </li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='onViewPositioned-instance'>
-      - (void) <strong>onViewPositioned</strong>(view)
-    </p>
-    <div class='tags'>
 </div>
   </div>
 </div>

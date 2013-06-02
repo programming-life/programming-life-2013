@@ -117,8 +117,8 @@ Mixin.DynamicProperties =
 				
 		# Defines a non enurable property with a value
 		#
-		# @param params key [String] key to define for
-		# @param params value [any] value of the property
+		# @param key [String] key to define for
+		# @param value [any] value of the property
 		#
 		_nonEnumerableValue: ( key, value ) ->
 			
@@ -132,8 +132,8 @@ Mixin.DynamicProperties =
 			
 		# Defines Properties from param
 		#
-		# @param params key [String] key to define for
-		# @param params value [any] value of the property
+		# @param key [String] key to define for
+		# @param value [any] value of the property
 		#
 		_nonEnumerableGetter: ( key, getter ) ->
 
