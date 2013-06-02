@@ -1,15 +1,66 @@
+###
+Deferred version of the ODEsolver by numericjs
+27-05-2013 Derk-Jan Karrenbeld 
+###
+
+# Defers a function
+#
+# @param func [Function] the function to defer
+# @param args... [any] the arguments to push
+# @return [Integer] the timer id
+#
 numeric.defer = ( func, args... ) ->
 	return setTimeout( ( () -> func.apply( undefined, args ) ), 1)
 
-numeric.asynccancel = () ->
-		running = on
-		result = 
-			cancel: () => running = off
-		Object.defineProperty( result, 'cancelled',
-			get: -> not running
-		)
-		return result
+
+# Cancel token class provides metadata for async operations
+#	
+class CancelToken
 	
+	# Creates a new token
+	#
+	constructor: () ->
+		@_running = on
+		@_bindings = []
+		
+		Object.defineProperty( @, 'cancelled',
+			get: -> not @_running
+		)
+		
+	# Runs on cancellation
+	#
+	# @param func [Function] the function to run
+	# @param context [Context] the context of the function
+	#
+	on: ( func, context = @ ) ->
+		@_bindings.push [ func, context ]
+		return this
+	
+	# Cancels the token
+	#
+	cancel: () -> 
+		@_running = off
+		binding[0].call( binding[1] ) for binding in @_bindings
+		return this
+	
+# Creates a cancellation token
+#
+# @return [CancelToken] the token 
+#
+numeric.asynccancel = () -> return new CancelToken()
+	
+# Runs the ODE solver deffered
+#
+# @param x0 [Integer] t0, the start time
+# @param x1 [Integer] tn, the end time
+# @param y0 [Integer, Array<Integer>] the start value(s)
+# @param f [Function] the step function (ODE)
+# @param tol [Integer] the tolerance for step size (stiffness)
+# @param maxit [Integer] the maximum number of iterations
+# @param event [Function] the event that stops the ODE solver when going from negative to positive
+# @param token [CancelToken] the token to cancel the event
+# @return [Dopri] the results
+#
 numeric.asyncdopri = 
 	( x0, x1, y0, f, tol = 1e-6, maxit = 1000, event, token = numeric.asynccancel() ) ->
     
