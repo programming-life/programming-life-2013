@@ -6,12 +6,8 @@ class View.Report extends View.RaphaelBase
 	# 	
 	constructor: ( container = "#paper", @_target = container ) ->
 		super( Raphael( $(container)[0], 900, 567 ) )
-		
-		Object.defineProperty( @, 'paper'
-			get: () -> return @_paper 
-		)
-		
-		@_paper.setViewBox(-750, -500, 1500, 1000)
+
+		@paper.setViewBox(-750, -500, 1500, 1000)
 		
 		$( window ).on( 'resize', => _( @resize() ).debounce( 100 ) )
 		@resize()

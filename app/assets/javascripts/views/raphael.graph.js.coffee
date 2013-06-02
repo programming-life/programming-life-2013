@@ -81,7 +81,7 @@ class View.Graph extends View.RaphaelBase
 		options = _( @options ).clone( true )
 		options.colors = _( options.colors ).last( xValues.length )
 		
-		@_chart = @_paper.linechart( Graph.AXISPADDING, 0, 
+		@_chart = @paper.linechart( Graph.AXISPADDING, 0, 
 			@_width, @_height,
 			_( xValues ).clone( true ), _( yValues ).clone( true ), options )
 		return this
@@ -90,7 +90,7 @@ class View.Graph extends View.RaphaelBase
 	#	unless @_drawn
 	#		@_chart.hoverColumn ( event ) =>
 	#			unless @_parent._running
-	#				@_parent._drawRedLines( event.x - @_paper.canvas.offsetLeft )
+	#				@_parent._drawRedLines( event.x - @paper.canvas.offsetLeft )
 	#	@_drawn = on
 	
 	# Move the viewbox of the chart
@@ -105,7 +105,7 @@ class View.Graph extends View.RaphaelBase
 	# @param x [Integer] The x to move to
 	# @param time [Integer] The timespan to animate over
 	play: ( x = @_width, time = 500 ) ->
-		@_paper.animateViewBox(x, 0, @_width, @_height, time)
+		@paper.animateViewBox(x, 0, @_width, @_height, time)
 
 	# Draws the title
 	#
@@ -122,15 +122,15 @@ class View.Graph extends View.RaphaelBase
 	#
 	drawRedLine: ( x ) ->
 		unless @_line?	
-			@_line = @_paper
+			@_line = @paper
 				.path( [ 'M', 0 + x,0, 'V', @_height ] )
 				.attr
 					stroke : '#F00'
 				.toFront()
-			@_line.x = x + @_paper.canvas.offsetLeft
+			@_line.x = x + @paper.canvas.offsetLeft
 			@_line.toFront()
 		else
-			translation = (x + @_paper.canvas.offsetLeft - @_line.x)
+			translation = (x + @paper.canvas.offsetLeft - @_line.x)
 			@_line.x = @_line.x + translation
 			@_line.translate( translation )
 			@_line.toFront()
