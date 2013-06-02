@@ -186,7 +186,6 @@ docs\deliverables\~$*
 *.aux
 *.out
 *.toc
-*.pdf
 *.synctex.gz
 
 /coverage
