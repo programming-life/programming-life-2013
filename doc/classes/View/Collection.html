@@ -15,9 +15,9 @@
     &raquo;
     <a href='../../class_index.html' title='Index'>Index</a>
     &raquo;
-    <span class='title'>Helper</span>
+    <span class='title'>View</span>
     &raquo;
-    <span class='title'>Mixable</span>
+    <span class='title'>Collection</span>
     <nav>
       <ul>
         <li class='noframes'>
@@ -109,123 +109,205 @@
     <div id='content'>
       <h1>
         Class:
-        Helper.Mixable
+        View.Collection
       </h1>
       <table class='box'>
         <tr>
           <td>Defined in:</td>
-          <td>app&#47;assets&#47;javascripts&#47;helpers&#47;mixin._.js.coffee</td>
+          <td>app&#47;assets&#47;javascripts&#47;views&#47;collection._.js.coffee</td>
+        </tr>
+        <tr>
+          <td>Inherits:</td>
+          <td>
+            <a href='../../classes/Helper/Mixable.html'>Helper.Mixable</a>
+          </td>
         </tr>
       </table>
       <h2>Direct Known Subclasses</h2>
       <p class='children'>
-                <a href='../../classes/Controller/Base.html'>Controller.Base</a>,
-                <a href='../../classes/Model/Cell.html'>Model.Cell</a>,
-                <a href='../../classes/Model/Module.html'>Model.Module</a>,
-                <a href='../../classes/Model/Node.html'>Model.Node</a>,
-                <a href='../../classes/Model/Tree.html'>Model.Tree</a>,
-                <a href='../../classes/View/Collection.html'>View.Collection</a>,
-                <a href='../../classes/View/HTMLModal.html'>View.HTMLModal</a>,
-                <a href='../../classes/View/Pane.html'>View.Pane</a>,
-                <a href='../../classes/View/HTMLPopOver.html'>View.HTMLPopOver</a>,
-        <a href='../../classes/View/Undo.html'>View.Undo</a>
+        <a href='../../classes/View/RaphaelBase.html'>View.RaphaelBase</a>
       </p>
-      <h2>Class Method Summary</h2>
+      <h2>Instance Method Summary</h2>
       <ul class='summary'>
   <li>
     <span class='signature'>
-      <a href='#extend-class'>
-        + (void) <strong>extend</strong>(classmixins...)
+      <a href='#constructor-instance'>
+        - (void) <strong>constructor</strong>()
       </a>
     </span>
+    <span class='constructor note title'>Constructor</span>
     <span class='desc'>
-      Extends a class by adding the properties of the mixins to the class
+      Creates a collection of views
     </span>
   </li>
   <li>
     <span class='signature'>
-      <a href='#include-class'>
-        + (void) <strong>include</strong>(instancemixins...)
+      <a href='#clear-instance'>
+        - (void) <strong>clear</strong>()
       </a>
     </span>
     <span class='desc'>
-      Includes mixins to a class by adding the properties to the Prototype
+      Clears the collection
     </span>
   </li>
   <li>
     <span class='signature'>
-      <a href='#concern-class'>
-        + (void) <strong>concern</strong>(concerns...)
+      <a href='#kill-instance'>
+        - (void) <strong>kill</strong>()
       </a>
     </span>
     <span class='desc'>
-      Concerns automagically include and extend a class
+      Kills the collection
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#add-instance'>
+        - (void) <strong>add</strong>(view, draw = true)
+      </a>
+    </span>
+    <span class='desc'>
+      Add a view to draw
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#remove-instance'>
+        - (void) <strong>remove</strong>(view)
+      </a>
+    </span>
+    <span class='desc'>
+      Removes the view
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#draw-instance'>
+        - (void) <strong>draw</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Draw ths collection
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#redraw-instance'>
+        - (void) <strong>redraw</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Redraws this collection
     </span>
   </li>
 </ul>
-      <h2>Class Method Details</h2>
+      <h2>
+        <small>Inherited Method Summary</small>
+      </h2>
+      <h3 class='inherited'>
+        Methods inherited from
+        <a href='../../classes/Helper/Mixable.html'>Helper.Mixable</a>
+      </h3>
+      <p class='inherited'>
+                <a href='../../classes/Helper/Mixable.html#extend-class'>.extend</a>,
+                <a href='../../classes/Helper/Mixable.html#include-class'>.include</a>,
+        <a href='../../classes/Helper/Mixable.html#concern-class'>.concern</a>
+      </p>
+      <h2>Constructor Details</h2>
       <div class='methods'>
   <div class='method_details'>
-    <p class='signature' id='extend-class'>
-      + (void) <strong>extend</strong>(classmixins...)
+    <p class='signature' id='constructor-instance'>
+      - (void) <strong>constructor</strong>()
     </p>
     <div class='docstring'>
-  <p>Extends a class by adding the properties of the mixins to the class</p>
+  <p>Creates a collection of views</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+</div>
+      <h2>Instance Method Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='clear-instance'>
+      - (void) <strong>clear</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Clears the collection</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='kill-instance'>
+      - (void) <strong>kill</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Kills the collection</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='add-instance'>
+      - (void) <strong>add</strong>(view, draw = true)
+    </p>
+    <div class='docstring'>
+  <p>Add a view to draw</p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
   <ul class='param'>
     <li>
-      <span class='name'>classmixins</span>
+      <span class='name'>view</span>
       <span class='type'>
-        (<tt>Object*</tt>)
+        (<tt>View.*</tt>)
       </span>
       &mdash;
-      <span class='desc'>the mixins to add</span>
+      <span class='desc'>the view to add</span>
     </li>
   </ul>
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='include-class'>
-      + (void) <strong>include</strong>(instancemixins...)
+    <p class='signature' id='remove-instance'>
+      - (void) <strong>remove</strong>(view)
     </p>
     <div class='docstring'>
-  <p>Includes mixins to a class by adding the properties to the Prototype</p>
+  <p>Removes the view</p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
   <ul class='param'>
     <li>
-      <span class='name'>instancemixins</span>
+      <span class='name'>view</span>
       <span class='type'>
-        (<tt>Object*</tt>)
+        (<tt>View.*</tt>)
       </span>
       &mdash;
-      <span class='desc'>the mixins to add</span>
+      <span class='desc'>the view to remove</span>
     </li>
   </ul>
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='concern-class'>
-      + (void) <strong>concern</strong>(concerns...)
+    <p class='signature' id='draw-instance'>
+      - (void) <strong>draw</strong>()
     </p>
     <div class='docstring'>
-  <p>Concerns automagically include and extend a class</p>
+  <p>Draw ths collection</p>
 </div>
 <div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>concerns</span>
-      <span class='type'>
-        (<tt>Object*</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the mixins to add</span>
-    </li>
-  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='redraw-instance'>
+      - (void) <strong>redraw</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Redraws this collection</p>
+</div>
+<div class='tags'>
 </div>
   </div>
 </div>

@@ -17,7 +17,7 @@
     &raquo;
     <span class='title'>View</span>
     &raquo;
-    <span class='title'>ModuleNotification</span>
+    <span class='title'>CellNotification</span>
     <nav>
       <ul>
         <li class='noframes'>
@@ -109,12 +109,12 @@
     <div id='content'>
       <h1>
         Class:
-        View.ModuleNotification
+        View.CellNotification
       </h1>
       <table class='box'>
         <tr>
           <td>Defined in:</td>
-          <td>app&#47;assets&#47;javascripts&#47;views&#47;popover.notification.module.js.coffee</td>
+          <td>app&#47;assets&#47;javascripts&#47;views&#47;popover.notification.cell.js.coffee</td>
         </tr>
         <tr>
           <td>Inherits:</td>
@@ -140,12 +140,12 @@
   <li>
     <span class='signature'>
       <a href='#constructor-instance'>
-        - (void) <strong>constructor</strong>(parent, cellView, cell, module, params = {})
+        - (void) <strong>constructor</strong>(parent, cell, params = {})
       </a>
     </span>
     <span class='constructor note title'>Constructor</span>
     <span class='desc'>
-      Constructs a new ModuleProperties view.
+      Constructs a new CellNotification view.
     </span>
   </li>
   <li>
@@ -221,32 +221,16 @@
       <div class='methods'>
   <div class='method_details'>
     <p class='signature' id='constructor-instance'>
-      - (void) <strong>constructor</strong>(parent, cellView, cell, module, params = {})
+      - (void) <strong>constructor</strong>(parent, cell, params = {})
     </p>
     <div class='docstring'>
-  <p>Constructs a new ModuleProperties view.</p>
+  <p>Constructs a new CellNotification view.</p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
   <ul class='param'>
     <li>
       <span class='name'>parent</span>
-      <span class='type'>
-        (<tt><a href='../../classes/View/Module.html'>View.Module</a></tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the accompanying module view</span>
-    </li>
-    <li>
-      <span class='name'>module</span>
-      <span class='type'>
-        (<tt><a href='../../classes/Model/Module.html'>Model.Module</a></tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the module for which to display its notifications</span>
-    </li>
-    <li>
-      <span class='name'>cellView</span>
       <span class='type'>
         (<tt><a href='../../classes/View/Cell.html'>View.Cell</a></tt>)
       </span>
@@ -259,7 +243,7 @@
         (<tt><a href='../../classes/Model/Cell.html'>Model.Cell</a></tt>)
       </span>
       &mdash;
-      <span class='desc'>the parent cell of the module</span>
+      <span class='desc'>the cell for which to display its notifications</span>
     </li>
     <li>
       <span class='name'>params</span>

@@ -17,7 +17,7 @@
     &raquo;
     <span class='title'>Controller</span>
     &raquo;
-    <span class='title'>Main</span>
+    <span class='title'>Cell</span>
     <nav>
       <ul>
         <li class='noframes'>
@@ -109,12 +109,12 @@
     <div id='content'>
       <h1>
         Class:
-        Controller.Main
+        Controller.Cell
       </h1>
       <table class='box'>
         <tr>
           <td>Defined in:</td>
-          <td>app&#47;assets&#47;javascripts&#47;controllers&#47;main.js.coffee</td>
+          <td>app&#47;assets&#47;javascripts&#47;controllers&#47;cell.js.coffee</td>
         </tr>
         <tr>
           <td>Inherits:</td>
@@ -131,31 +131,42 @@
       </table>
       <h2>Overview</h2>
       <div class='docstring'>
-  <p>The controller for the Main action and view</p>
+  <p>The controller for the Cell view</p>
 </div>
 <div class='tags'>
 </div>
+      <h2>Constant Summary</h2>
+      <dl class='constants'>
+        <dt id='MAX_ITERATIONS-constant'>
+          MAX_ITERATIONS
+          =
+          <div class='tags'>
+</div>
+        </dt>
+        <dd>
+          <pre><code class='coffee'>100</code></pre>
+        </dd>
+        <dt id='SIGNIFICANCE-constant'>
+          SIGNIFICANCE
+          =
+          <div class='tags'>
+</div>
+        </dt>
+        <dd>
+          <pre><code class='coffee'>1e-15</code></pre>
+        </dd>
+      </dl>
       <h2>Instance Method Summary</h2>
       <ul class='summary'>
   <li>
     <span class='signature'>
       <a href='#constructor-instance'>
-        - (void) <strong>constructor</strong>(container, view)
+        - (void) <strong>constructor</strong>()
       </a>
     </span>
     <span class='constructor note title'>Constructor</span>
     <span class='desc'>
-      Creates a new instance of Main
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#_createChildren-instance'>
-        - (void) <strong>_createChildren</strong>()
-      </a>
-    </span>
-    <span class='desc'>
-      Creates children
+      Creates a new instance of Cell Creates the cell view from parameters @param parent [View.<em>] the parent view @param model [Model.</em>] the model Sets the cell view @param view [View.Cell] the view
     </span>
   </li>
   <li>
@@ -165,7 +176,7 @@
       </a>
     </span>
     <span class='desc'>
-      Creates bindings
+      Create event bindings
     </span>
   </li>
   <li>
@@ -175,129 +186,77 @@
       </a>
     </span>
     <span class='desc'>
-      Loads a new cell into the main view
+      Loads a new cell into the view
     </span>
   </li>
   <li>
     <span class='signature'>
       <a href='#save-instance'>
-        - (jQuery.Promise) <strong>save</strong>()
+        - (jQuery.Promise) <strong>save</strong>(name)
       </a>
     </span>
     <span class='desc'>
-      Saves the main view cell
+      Saves the cell view model
     </span>
   </li>
   <li>
     <span class='signature'>
-      <a href='#_getCellNameActionField-instance'>
-        - (String) <strong>_getCellNameActionField</strong>()
+      <a href='#solveTheSystem-instance'>
+        - (Object) <strong>solveTheSystem</strong>(from, to, base_values = [], token = numeric.asynccancel(), dt = 1, interpolate = false)
       </a>
     </span>
     <span class='desc'>
-      Gets the cell name from the action field
+      Get the simulation data from the cell
     </span>
   </li>
   <li>
     <span class='signature'>
-      <a href='#_setCellNameActionField-instance'>
-        - (self) <strong>_setCellNameActionField</strong>(name)
+      <a href='#setSimulationState-instance'>
+        - ( [ token, promise ) <strong>setSimulationState</strong>(startSimulateFlag, callback, t, iterations, dt)
       </a>
     </span>
     <span class='desc'>
-      Sets the cell name to the action field
+      Sets the simulation state
     </span>
   </li>
   <li>
     <span class='signature'>
-      <a href='#_getProgressBar-instance'>
-        - (void) <strong>_getProgressBar</strong>()
+      <a href='#startSimulation-instance'>
+        - (void) <strong>startSimulation</strong>(t = 20, iterations = Cell.MAX_ITERATIONS, callback, dt = 0.001)
       </a>
     </span>
     <span class='desc'>
-      Gets the progress bar
+      Starts the simulation
     </span>
   </li>
   <li>
     <span class='signature'>
-      <a href='#_setProgressBar-instance'>
-        - (void) <strong>_setProgressBar</strong>(value)
+      <a href='#_step-instance'>
+        - (Array&lt;Float&gt;) <strong>_step</strong>(dt, callback, from, to, base_values)
       </a>
     </span>
-    <span class='bound note title'>Bound</span>
     <span class='desc'>
-      Sets the progress bar
+      Steps the simulation
     </span>
   </li>
   <li>
     <span class='signature'>
-      <a href='#onAction-instance'>
-        - (void) <strong>onAction</strong>(event)
+      <a href='#_simulate-instance'>
+        - (void) <strong>_simulate</strong>(step, t, iterations)
       </a>
     </span>
-    <span class='bound note title'>Bound</span>
     <span class='desc'>
-      Runs on an action (click)
+      Simulation handler Actually loops the simulation.
     </span>
   </li>
   <li>
     <span class='signature'>
-      <a href='#onSave-instance'>
-        - (void) <strong>onSave</strong>(target, enable, success, error)
+      <a href='#stopSimulation-instance'>
+        - (void) <strong>stopSimulation</strong>()
       </a>
     </span>
     <span class='desc'>
-      On Save Button clicked
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#onLoad-instance'>
-        - (void) <strong>onLoad</strong>(target, enable, success, error)
-      </a>
-    </span>
-    <span class='desc'>
-      On Load Button clicked
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#onReport-instance'>
-        - (void) <strong>onReport</strong>(target, enable, success, error)
-      </a>
-    </span>
-    <span class='desc'>
-      On Report Button clicked
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#onReset-instance'>
-        - (void) <strong>onReset</strong>(target, enable, success, error)
-      </a>
-    </span>
-    <span class='desc'>
-      On Reset Button clicked
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#onSimulate-instance'>
-        - (void) <strong>onSimulate</strong>(target, enable, success, error)
-      </a>
-    </span>
-    <span class='desc'>
-      On Simulate Button clicked
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#addTimeMachine-instance'>
-        - (void) <strong>addTimeMachine</strong>(cell, tm)
-      </a>
-    </span>
-    <span class='desc'>
-      Adds a timemachine to the list of timemachines this timemachine can control
+      Stops the simulation
     </span>
   </li>
 </ul>
@@ -345,29 +304,24 @@
       <div class='methods'>
   <div class='method_details'>
     <p class='signature' id='constructor-instance'>
-      - (void) <strong>constructor</strong>(container, view)
+      - (void) <strong>constructor</strong>()
     </p>
     <div class='docstring'>
-  <p>Creates a new instance of Main</p>
+  <p>Creates a new instance of Cell</p><p>Creates the cell view from parameters
+    @param parent [View.<em>] the parent view
+    @param model [Model.</em>] the model</p><p> Sets the cell view
+ @param view [View.Cell] the view</p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
   <ul class='param'>
     <li>
-      <span class='name'>container</span>
+      <span class='name'>paper</span>
       <span class='type'>
-        (<tt>String, Object</tt>)
+        (<tt>Rapahel</tt>)
       </span>
       &mdash;
-      <span class='desc'>A string with an id or a DOM node to serve as a container for the view</span>
-    </li>
-    <li>
-      <span class='name'>view</span>
-      <span class='type'>
-        (<tt><a href='../../classes/View/Main.html'>View.Main</a></tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the view for this controller</span>
+      <span class='desc'>the paper</span>
     </li>
   </ul>
 </div>
@@ -376,21 +330,11 @@
       <h2>Instance Method Details</h2>
       <div class='methods'>
   <div class='method_details'>
-    <p class='signature' id='_createChildren-instance'>
-      - (void) <strong>_createChildren</strong>()
-    </p>
-    <div class='docstring'>
-  <p>Creates children</p>
-</div>
-<div class='tags'>
-</div>
-  </div>
-  <div class='method_details'>
     <p class='signature' id='_createBindings-instance'>
       - (void) <strong>_createBindings</strong>()
     </p>
     <div class='docstring'>
-  <p>Creates bindings</p>
+  <p>Create event bindings</p>
 </div>
 <div class='tags'>
 </div>
@@ -400,7 +344,7 @@
       - (jQuery.Promise) <strong>load</strong>(cell_id, callback)
     </p>
     <div class='docstring'>
-  <p>Loads a new cell into the main view</p>
+  <p>Loads a new cell into the view</p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
@@ -435,10 +379,10 @@
   </div>
   <div class='method_details'>
     <p class='signature' id='save-instance'>
-      - (jQuery.Promise) <strong>save</strong>()
+      - (jQuery.Promise) <strong>save</strong>(name)
     </p>
     <div class='docstring'>
-  <p>Saves the main view cell</p>
+  <p>Saves the cell view model</p>
 </div>
 <div class='tags'>
   <h3>Returns:</h3>
@@ -453,368 +397,243 @@
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='_getCellNameActionField-instance'>
-      - (String) <strong>_getCellNameActionField</strong>()
+    <p class='signature' id='solveTheSystem-instance'>
+      - (Object) <strong>solveTheSystem</strong>(from, to, base_values = [], token = numeric.asynccancel(), dt = 1, interpolate = false)
     </p>
     <div class='docstring'>
-  <p>Gets the cell name from the action field</p>
-</div>
-<div class='tags'>
-  <h3>Returns:</h3>
-  <ul class='return'>
-    <li>
-      <span class='type'></span>
-      (<tt>String</tt>)
-      &mdash;
-      <span class='desc'>the cell name</span>
-    </li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='_setCellNameActionField-instance'>
-      - (self) <strong>_setCellNameActionField</strong>(name)
-    </p>
-    <div class='docstring'>
-  <p>Sets the cell name to the action field</p>
+  <p>Get the simulation data from the cell</p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
   <ul class='param'>
     <li>
-      <span class='name'>name</span>
-      <span class='type'>
-        (<tt>String</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the name</span>
-    </li>
-  </ul>
-  <h3>Returns:</h3>
-  <ul class='return'>
-    <li>
-      <span class='type'></span>
-      (<tt>self</tt>)
-      &mdash;
-      <span class='desc'>chainable self</span>
-    </li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='_getProgressBar-instance'>
-      - (void) <strong>_getProgressBar</strong>()
-    </p>
-    <div class='docstring'>
-  <p>Gets the progress bar</p>
-</div>
-<div class='tags'>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='_setProgressBar-instance'>
-      - (void) <strong>_setProgressBar</strong>(value)
-      (bound)
-    </p>
-    <div class='docstring'>
-  <p>Sets the progress bar</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>value</span>
+      <span class='name'>duration</span>
       <span class='type'>
         (<tt>Integer</tt>)
       </span>
       &mdash;
-      <span class='desc'>the current value</span>
+      <span class='desc'>The duration of the simulation</span>
+    </li>
+    <li>
+      <span class='name'>dt</span>
+      <span class='type'>
+        (<tt>Float</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The timestep for the graphs</span>
+    </li>
+    <li>
+      <span class='name'>base_values</span>
+      <span class='type'>
+        (<tt>Array</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>continuation values</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Object</tt>)
+      &mdash;
+      <span class='desc'>Object with data such as An array of datapoints</span>
     </li>
   </ul>
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='onAction-instance'>
-      - (void) <strong>onAction</strong>(event)
-      (bound)
+    <p class='signature' id='setSimulationState-instance'>
+      - ( [ token, promise ) <strong>setSimulationState</strong>(startSimulateFlag, callback, t, iterations, dt)
     </p>
     <div class='docstring'>
-  <p>Runs on an action (click)</p>
+  <p>Sets the simulation state</p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
   <ul class='param'>
     <li>
-      <span class='name'>event</span>
+      <span class='name'>startSimulateFlag</span>
       <span class='type'>
-        (<tt>jQuery.Event</tt>)
+        (<tt>Boolean</tt>)
       </span>
       &mdash;
-      <span class='desc'>the event</span>
+      <span class='desc'>flag to start the simulation</span>
+    </li>
+    <li>
+      <span class='name'>callback</span>
+      <span class='type'>
+        (<tt>Function</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the callback function after each iteration</span>
+    </li>
+    <li>
+      <span class='name'>t</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>duration of each step call</span>
+    </li>
+    <li>
+      <span class='name'>iterations</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>maximum t to run</span>
+    </li>
+    <li>
+      <span class='name'>dt</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>graph dt</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>[ token, promise</tt>)
+      &mdash;
+      <span class='desc'>] tuple</span>
     </li>
   </ul>
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='onSave-instance'>
-      - (void) <strong>onSave</strong>(target, enable, success, error)
+    <p class='signature' id='startSimulation-instance'>
+      - (void) <strong>startSimulation</strong>(t = 20, iterations = Cell.MAX_ITERATIONS, callback, dt = 0.001)
     </p>
     <div class='docstring'>
-  <p>On Save Button clicked</p>
+  <p>Starts the simulation</p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
   <ul class='param'>
     <li>
-      <span class='name'>target</span>
+      <span class='name'>t</span>
       <span class='type'>
-        (<tt>jQuery.Elem</tt>)
+        (<tt>Integer</tt>)
       </span>
       &mdash;
-      <span class='desc'>target element</span>
+      <span class='desc'>duration of each step call</span>
     </li>
     <li>
-      <span class='name'>enable</span>
+      <span class='name'>iterations</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>maximum t to run</span>
+    </li>
+    <li>
+      <span class='name'>callback</span>
       <span class='type'>
         (<tt>Function</tt>)
       </span>
       &mdash;
-      <span class='desc'>function to re-enable buttons</span>
+      <span class='desc'>the callback function after each iteration</span>
     </li>
     <li>
-      <span class='name'>succes</span>
+      <span class='name'>dt</span>
       <span class='type'>
-        (<tt>Function</tt>)
+        (<tt>Integer</tt>)
       </span>
       &mdash;
-      <span class='desc'>function to run on success</span>
-    </li>
-    <li>
-      <span class='name'>error</span>
-      <span class='type'>
-        (<tt>Function</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>function to run on error</span>
+      <span class='desc'>graph dt</span>
     </li>
   </ul>
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='onLoad-instance'>
-      - (void) <strong>onLoad</strong>(target, enable, success, error)
-    </p>
-    <div class='docstring'>
-  <p>On Load Button clicked</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>target</span>
-      <span class='type'>
-        (<tt>jQuery.Elem</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>target element</span>
-    </li>
-    <li>
-      <span class='name'>enable</span>
-      <span class='type'>
-        (<tt>Function</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>function to re-enable buttons</span>
-    </li>
-    <li>
-      <span class='name'>succes</span>
-      <span class='type'>
-        (<tt>Function</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>function to run on success</span>
-    </li>
-    <li>
-      <span class='name'>error</span>
-      <span class='type'>
-        (<tt>Function</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>function to run on error</span>
-    </li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='onReport-instance'>
-      - (void) <strong>onReport</strong>(target, enable, success, error)
-    </p>
-    <div class='docstring'>
-  <p>On Report Button clicked</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>target</span>
-      <span class='type'>
-        (<tt>jQuery.Elem</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>target element</span>
-    </li>
-    <li>
-      <span class='name'>enable</span>
-      <span class='type'>
-        (<tt>Function</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>function to re-enable buttons</span>
-    </li>
-    <li>
-      <span class='name'>succes</span>
-      <span class='type'>
-        (<tt>Function</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>function to run on success</span>
-    </li>
-    <li>
-      <span class='name'>error</span>
-      <span class='type'>
-        (<tt>Function</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>function to run on error</span>
-    </li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='onReset-instance'>
-      - (void) <strong>onReset</strong>(target, enable, success, error)
+    <p class='signature' id='_step-instance'>
+      - (Array&lt;Float&gt;) <strong>_step</strong>(dt, callback, from, to, base_values)
     </p>
     <div class='docstring'>
   <div class='note todo'>
     <strong>TODO:</strong>
-    action should be more dynamic for child controllers and views
+    view.drawGraphs should be extracted
   </div>
-  <p>On Reset Button clicked</p>
+  <p>Steps the simulation</p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
   <ul class='param'>
     <li>
-      <span class='name'>target</span>
+      <span class='name'>t</span>
       <span class='type'>
-        (<tt>jQuery.Elem</tt>)
+        (<tt>Integer</tt>)
       </span>
       &mdash;
-      <span class='desc'>target element</span>
+      <span class='desc'>the duration of this step</span>
     </li>
     <li>
-      <span class='name'>enable</span>
+      <span class='name'>dt</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the dt of the graphs</span>
+    </li>
+    <li>
+      <span class='name'>callback</span>
       <span class='type'>
         (<tt>Function</tt>)
       </span>
       &mdash;
-      <span class='desc'>function to re-enable buttons</span>
+      <span class='desc'>the callback after each iteration</span>
     </li>
     <li>
-      <span class='name'>succes</span>
+      <span class='name'>base_values</span>
       <span class='type'>
-        (<tt>Function</tt>)
+        (<tt>Array&lt;Float&gt;</tt>)
       </span>
       &mdash;
-      <span class='desc'>function to run on success</span>
+      <span class='desc'>the previous values</span>
     </li>
     <li>
-      <span class='name'>error</span>
+      <span class='name'>max</span>
       <span class='type'>
-        (<tt>Function</tt>)
+        (<tt>Integer</tt>)
       </span>
       &mdash;
-      <span class='desc'>function to run on error</span>
+      <span class='desc'>max t</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Array&lt;Float&gt;</tt>)
+      &mdash;
+      <span class='desc'>the new values</span>
     </li>
   </ul>
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='onSimulate-instance'>
-      - (void) <strong>onSimulate</strong>(target, enable, success, error)
+    <p class='signature' id='_simulate-instance'>
+      - (void) <strong>_simulate</strong>(step, t, iterations)
     </p>
     <div class='docstring'>
-  <div class='note todo'>
-    <strong>TODO:</strong>
-    hack remove
-  </div>
-  <p>On Simulate Button clicked</p>
+  <p>Simulation handler</p><p>Actually loops the simulation. Expects step to be a throttled function
+and gracefully defers execution of this step function. </p>
 </div>
 <div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>target</span>
-      <span class='type'>
-        (<tt>jQuery.Elem</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>target element</span>
-    </li>
-    <li>
-      <span class='name'>enable</span>
-      <span class='type'>
-        (<tt>Function</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>function to re-enable buttons</span>
-    </li>
-    <li>
-      <span class='name'>succes</span>
-      <span class='type'>
-        (<tt>Function</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>function to run on success</span>
-    </li>
-    <li>
-      <span class='name'>error</span>
-      <span class='type'>
-        (<tt>Function</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>function to run on error</span>
-    </li>
-  </ul>
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='addTimeMachine-instance'>
-      - (void) <strong>addTimeMachine</strong>(cell, tm)
+    <p class='signature' id='stopSimulation-instance'>
+      - (void) <strong>stopSimulation</strong>()
     </p>
     <div class='docstring'>
-  <p>Adds a timemachine to the list of timemachines this timemachine can control</p>
+  <p>Stops the simulation</p>
 </div>
 <div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>cell</span>
-      <span class='type'>
-        (<tt><a href='../../classes/Model/Cell.html'>Model.Cell</a></tt>)
-      </span>
-      &mdash;
-      <span class='desc'>The source of the event</span>
-    </li>
-    <li>
-      <span class='name'>tm</span>
-      <span class='type'>
-        (<tt>Mixin.TimeMachine</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>The object containing the timemachine</span>
-    </li>
-  </ul>
 </div>
   </div>
 </div>

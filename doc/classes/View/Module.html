@@ -2,7 +2,7 @@
 <html>
   <head>
   <meta charset='UTF-8'>
-  <title>CoffeeScript API Documentation</title>
+  <title>Broyologramming Life API Documentation</title>
   <link rel='stylesheet' href='../../assets/codo.css' type='text/css'>
   <script src='../../assets/codo.js'></script>
   <script src='../../assets/search_data.js'></script>
@@ -28,6 +28,7 @@
     <div id='search'>
       <a id='class_list_link' href='../../class_list.html'>Classes</a>
       <a id='mixin_list_link' href='../../mixin_list.html'>Mixins</a>
+      <a id='file_list_link' href='../../file_list.html'>Files</a>
       <a id='method_list_link' href='../../method_list.html'>Methods</a>
       <a id='extra_list_link' href='../../extra_list.html'>Extras</a>
     </div>
@@ -121,12 +122,6 @@
             <a href='../../classes/View/RaphaelBase.html'>View.RaphaelBase</a>
           </td>
         </tr>
-        <tr>
-          <td>Concerns:</td>
-          <td>
-            <a href='../../mixins/Mixin/EventBindings.html'>Mixin.EventBindings</a>
-          </td>
-        </tr>
       </table>
       <h2>Overview</h2>
       <div class='docstring'>
@@ -136,14 +131,14 @@
 </div>
       <h2>Direct Known Subclasses</h2>
       <p class='children'>
-        <a href='../../classes/View/DummyModule.html'>View.DummyModule</a>
+        <a href='../../classes/View/ModulePreview.html'>View.ModulePreview</a>
       </p>
       <h2>Instance Method Summary</h2>
       <ul class='summary'>
   <li>
     <span class='signature'>
       <a href='#constructor-instance'>
-        - (void) <strong>constructor</strong>(paper, parent, cell, module, params = {})
+        - (void) <strong>constructor</strong>(paper, parent, _cell, model, _interaction = true)
       </a>
     </span>
     <span class='constructor note title'>Constructor</span>
@@ -153,8 +148,48 @@
   </li>
   <li>
     <span class='signature'>
+      <a href='#addInteraction-instance'>
+        - (void) <strong>addInteraction</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Adds interaction to the module ( popovers )
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#onNotificate-instance'>
+        - (void) <strong>onNotificate</strong>(context, source, identifier, type, message, args)
+      </a>
+    </span>
+    <span class='desc'>
+      Forwards any notification from the model
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#addBindings-instance'>
+        - (void) <strong>addBindings</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Adds bindings to the module (non-interaction)
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#addHitBoxInteraction-instance'>
+        - (void) <strong>addHitBoxInteraction</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Adds hitbox interaction (click, mouseout, mouseover)
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
       <a href='#hashCode-instance'>
-        - (Integer) <strong>hashCode</strong>(hashee = @name)
+        - (Integer) <strong>hashCode</strong>(hashee = @_name)
       </a>
     </span>
     <span class='desc'>
@@ -164,7 +199,7 @@
   <li>
     <span class='signature'>
       <a href='#hashColor-instance'>
-        - (String) <strong>hashColor</strong>(hashee = @name)
+        - (String) <strong>hashColor</strong>(hashee = @_name)
       </a>
     </span>
     <span class='desc'>
@@ -183,56 +218,32 @@
   </li>
   <li>
     <span class='signature'>
-      <a href='#onModuleInvalidated-instance'>
-        - (void) <strong>onModuleInvalidated</strong>(module, params...)
+      <a href='#_setSelected-instance'>
+        - (void) <strong>_setSelected</strong>(selected)
       </a>
     </span>
-    <span class='bound note title'>Bound</span>
     <span class='desc'>
-      Runs if module is invalidated
+      Sets wether or not the module is selected
     </span>
   </li>
   <li>
     <span class='signature'>
-      <a href='#onModuleSelected-instance'>
-        - (void) <strong>onModuleSelected</strong>(module, selected)
+      <a href='#_setHovered-instance'>
+        - (void) <strong>_setHovered</strong>(hovered)
       </a>
     </span>
-    <span class='bound note title'>Bound</span>
     <span class='desc'>
-      Runs if module is selected
+      Sets wether or not the module is hovered
     </span>
   </li>
   <li>
     <span class='signature'>
-      <a href='#onModuleHovered-instance'>
-        - (void) <strong>onModuleHovered</strong>(module, hovered)
-      </a>
-    </span>
-    <span class='bound note title'>Bound</span>
-    <span class='desc'>
-      Runs if module is hovered
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#onPaperResize-instance'>
-        - (void) <strong>onPaperResize</strong>()
-      </a>
-    </span>
-    <span class='bound note title'>Bound</span>
-    <span class='desc'>
-      Runs if paper is resized
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#clear-instance'>
-        - (self) <strong>clear</strong>()
+      <a href='#getFullType-instance'>
+        - (String) <strong>getFullType</strong>()
       </a>
     </span>
     <span class='desc'>
-      Clears the module view
+      Returns the full type of this view&#39;s module.
     </span>
   </li>
   <li>
@@ -248,31 +259,41 @@
   <li>
     <span class='signature'>
       <a href='#getBBox-instance'>
-        - (void) <strong>getBBox</strong>()
+        - (Object) <strong>getBBox</strong>()
       </a>
     </span>
     <span class='desc'>
-      
+      Returns the bounding box of this view
     </span>
   </li>
   <li>
     <span class='signature'>
       <a href='#getPoint-instance'>
-        - (void) <strong>getPoint</strong>(location)
+        - ([float, float) <strong>getPoint</strong>(location)
       </a>
     </span>
     <span class='desc'>
-      
+      Returns the coordinates of either the entrance or exit of this view
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#getAbsolutePoint-instance'>
+        - ([float, float) <strong>getAbsolutePoint</strong>(location)
+      </a>
+    </span>
+    <span class='desc'>
+      Returns the absolute coordinates of a location
     </span>
   </li>
   <li>
     <span class='signature'>
       <a href='#_getSplineDirection-instance'>
-        - (void) <strong>_getSplineDirection</strong>(metabolitePlacement)
+        - (View.Module.Direction) <strong>_getSplineDirection</strong>(metabolitePlacement)
       </a>
     </span>
     <span class='desc'>
-      
+      Returns the direction in which a spline should be drawn wrt a metabolite
     </span>
   </li>
   <li>
@@ -288,7 +309,7 @@
   <li>
     <span class='signature'>
       <a href='#draw-instance'>
-        - (void) <strong>draw</strong>(x, y, scale)
+        - (void) <strong>draw</strong>(x = null, y = null)
       </a>
     </span>
     <span class='desc'>
@@ -298,17 +319,107 @@
   <li>
     <span class='signature'>
       <a href='#drawContents-instance'>
-        - (Raphael) <strong>drawContents</strong>(x, y, scale, padding, big)
+        - (Raphael.Set) <strong>drawContents</strong>()
       </a>
     </span>
     <span class='desc'>
-      Draws contents
+      Draws the contents (module)
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#drawMetaContents-instance'>
+        - (Raphael.Set) <strong>drawMetaContents</strong>(contents)
+      </a>
+    </span>
+    <span class='desc'>
+      Draws the meta contents ( shadow, hitbox ...
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#drawAsBasic-instance'>
+        - (Array&lt;Raphael&gt;) <strong>drawAsBasic</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Draws this view with basic visualisation
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#drawAsTransporter-instance'>
+        - (Array&lt;Raphael&gt;) <strong>drawAsTransporter</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Draws this view as a transporter
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#drawAsMetabolite-instance'>
+        - (Array&lt;Raphael&gt;) <strong>drawAsMetabolite</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Draws this view as a metabolite
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#drawAsMetabolism-instance'>
+        - (Array&lt;Raphael&gt;) <strong>drawAsMetabolism</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Draws this view as a metabolism
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#drawProtein-instance'>
+        - (Array&lt;Raphael&gt;) <strong>drawProtein</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Draws this view as a protein
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#drawAsDNA-instance'>
+        - (Array&lt;Raphael&gt;) <strong>drawAsDNA</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Draws this view as a DNA
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#drawAsLipid-instance'>
+        - (Array&lt;Raphael&gt;) <strong>drawAsLipid</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Draws this view as a Lipid
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#drawAsCellGrowth-instance'>
+        - (Array&lt;Raphael&gt;) <strong>drawAsCellGrowth</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Draws this view as a cell growth
     </span>
   </li>
   <li>
     <span class='signature'>
       <a href='#drawBox-instance'>
-        - (Raphael) <strong>drawBox</strong>(elem, scale)
+        - (Raphael) <strong>drawBox</strong>(elem)
       </a>
     </span>
     <span class='desc'>
@@ -317,18 +428,18 @@
   </li>
   <li>
     <span class='signature'>
-      <a href='#drawSpline-instance'>
-        - (Raphael) <strong>drawSpline</strong>(direction, target)
+      <a href='#createSplines-instance'>
+        - (void) <strong>createSplines</strong>()
       </a>
     </span>
     <span class='desc'>
-      Draws a spline from between two points
+      Creates splines for this module
     </span>
   </li>
   <li>
     <span class='signature'>
       <a href='#drawShadow-instance'>
-        - (Raphael) <strong>drawShadow</strong>(elem, scale)
+        - (Raphael) <strong>drawShadow</strong>(elem)
       </a>
     </span>
     <span class='desc'>
@@ -338,7 +449,7 @@
   <li>
     <span class='signature'>
       <a href='#drawHitbox-instance'>
-        - (Raphael) <strong>drawHitbox</strong>(elem, scale)
+        - (Raphael) <strong>drawHitbox</strong>(elem)
       </a>
     </span>
     <span class='desc'>
@@ -348,11 +459,92 @@
   <li>
     <span class='signature'>
       <a href='#drawComponent-instance'>
-        - (Array&lt;Object&gt;) <strong>drawComponent</strong>(module, component, x, y, scale, params = {})
+        - (Array&lt;Object&gt;) <strong>drawComponent</strong>(module, component, x, y, params = {})
       </a>
     </span>
     <span class='desc'>
       Draw a component
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_createSpline-instance'>
+        - (View.Spline) <strong>_createSpline</strong>(orig, dest)
+      </a>
+    </span>
+    <span class='desc'>
+      Creates a new spline
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#onModuleInvalidated-instance'>
+        - (void) <strong>onModuleInvalidated</strong>(module)
+      </a>
+    </span>
+    <span class='bound note title'>Bound</span>
+    <span class='desc'>
+      Runs if module is invalidated
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#onModuleSelected-instance'>
+        - (void) <strong>onModuleSelected</strong>(module, selected)
+      </a>
+    </span>
+    <span class='desc'>
+      Gets called when a module view selected.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#onModuleHovered-instance'>
+        - (void) <strong>onModuleHovered</strong>(module, hovered)
+      </a>
+    </span>
+    <span class='desc'>
+      Gets called when a module view hovered.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#onModuleAdded-instance'>
+        - (void) <strong>onModuleAdded</strong>(cell, module)
+      </a>
+    </span>
+    <span class='desc'>
+      Gets called when a module is added to a cell
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#onModuleRemoved-instance'>
+        - (void) <strong>onModuleRemoved</strong>(cell, module)
+      </a>
+    </span>
+    <span class='desc'>
+      Gets called when a module is removed from a cell
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#onMetaboliteAdded-instance'>
+        - (void) <strong>onMetaboliteAdded</strong>(cell, metabolite)
+      </a>
+    </span>
+    <span class='desc'>
+      Gets called when a metabolite is added to a cell
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#onMetaboliteRemoved-instance'>
+        - (void) <strong>onMetaboliteRemoved</strong>(cell, metabolite)
+      </a>
+    </span>
+    <span class='desc'>
+      Gets called when a metabolite is removed from a cell
     </span>
   </li>
 </ul>
@@ -365,13 +557,29 @@
       </h3>
       <p class='inherited'>
                 <a href='../../classes/View/RaphaelBase.html#constructor-instance'>#constructor</a>,
+                <a href='../../classes/View/RaphaelBase.html#_catcher-instance'>#_catcher</a>,
+                <a href='../../classes/View/RaphaelBase.html#getBBox-instance'>#getBBox</a>,
                 <a href='../../classes/View/RaphaelBase.html#clear-instance'>#clear</a>,
+                <a href='../../classes/View/RaphaelBase.html#kill-instance'>#kill</a>,
+                <a href='../../classes/View/RaphaelBase.html#setPosition-instance'>#setPosition</a>,
+                <a href='../../classes/View/RaphaelBase.html#moveTo-instance'>#moveTo</a>,
+                <a href='../../classes/View/RaphaelBase.html#move-instance'>#move</a>,
                 <a href='../../classes/View/RaphaelBase.html#draw-instance'>#draw</a>,
                 <a href='../../classes/View/RaphaelBase.html#redraw-instance'>#redraw</a>,
-                <a href='../../classes/View/RaphaelBase.html#addView-instance'>#addView</a>,
-                <a href='../../classes/View/RaphaelBase.html#removeView-instance'>#removeView</a>,
-                <a href='../../classes/View/RaphaelBase.html#resize-instance'>#resize</a>,
-        <a href='../../classes/View/RaphaelBase.html#kill-instance'>#kill</a>
+        <a href='../../classes/View/RaphaelBase.html#getAbsoluteCoords-instance'>#getAbsoluteCoords</a>
+      </p>
+      <h3 class='inherited'>
+        Methods inherited from
+        <a href='../../classes/View/Collection.html'>View.Collection</a>
+      </h3>
+      <p class='inherited'>
+                <a href='../../classes/View/Collection.html#constructor-instance'>#constructor</a>,
+                <a href='../../classes/View/Collection.html#clear-instance'>#clear</a>,
+                <a href='../../classes/View/Collection.html#kill-instance'>#kill</a>,
+                <a href='../../classes/View/Collection.html#add-instance'>#add</a>,
+                <a href='../../classes/View/Collection.html#remove-instance'>#remove</a>,
+                <a href='../../classes/View/Collection.html#draw-instance'>#draw</a>,
+        <a href='../../classes/View/Collection.html#redraw-instance'>#redraw</a>
       </p>
       <h3 class='inherited'>
         Methods inherited from
@@ -382,27 +590,11 @@
                 <a href='../../classes/Helper/Mixable.html#include-class'>.include</a>,
         <a href='../../classes/Helper/Mixable.html#concern-class'>.concern</a>
       </p>
-      <h2>
-        <small>Concern Method Summary</small>
-      </h2>
-      <h3 class='included'>
-        Methods mixed in from
-        <a href='../../mixins/Mixin/EventBindings.html'>Mixin.EventBindings</a>
-      </h3>
-      <p class='included'>
-                <a href='../../mixins/Mixin/EventBindings.html#_allowEventBindings-instance'>#_allowEventBindings</a>,
-                <a href='../../mixins/Mixin/EventBindings.html#_unbindAll-instance'>#_unbindAll</a>,
-                <a href='../../mixins/Mixin/EventBindings.html#_bind-instance'>#_bind</a>,
-                <a href='../../mixins/Mixin/EventBindings.html#_unbind-instance'>#_unbind</a>,
-                <a href='../../mixins/Mixin/EventBindings.html#_trigger-instance'>#_trigger</a>,
-                <a href='../../mixins/Mixin/EventBindings.html#_onNotificate-instance'>#_onNotificate</a>,
-        <a href='../../mixins/Mixin/EventBindings.html#_notificate-instance'>#_notificate</a>
-      </p>
       <h2>Constructor Details</h2>
       <div class='methods'>
   <div class='method_details'>
     <p class='signature' id='constructor-instance'>
-      - (void) <strong>constructor</strong>(paper, parent, cell, module, params = {})
+      - (void) <strong>constructor</strong>(paper, parent, _cell, model, _interaction = true)
     </p>
     <div class='docstring'>
   <p>Creates a new module view</p>
@@ -433,8 +625,48 @@
       <h2>Instance Method Details</h2>
       <div class='methods'>
   <div class='method_details'>
+    <p class='signature' id='addInteraction-instance'>
+      - (void) <strong>addInteraction</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Adds interaction to the module ( popovers )</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='onNotificate-instance'>
+      - (void) <strong>onNotificate</strong>(context, source, identifier, type, message, args)
+    </p>
+    <div class='docstring'>
+  <p>Forwards any notification from the model</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='addBindings-instance'>
+      - (void) <strong>addBindings</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Adds bindings to the module (non-interaction)</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='addHitBoxInteraction-instance'>
+      - (void) <strong>addHitBoxInteraction</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Adds hitbox interaction (click, mouseout, mouseover)</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
     <p class='signature' id='hashCode-instance'>
-      - (Integer) <strong>hashCode</strong>(hashee = @name)
+      - (Integer) <strong>hashCode</strong>(hashee = @_name)
     </p>
     <div class='docstring'>
   <p>Generates a hashcode based on the module name</p>
@@ -464,7 +696,7 @@
   </div>
   <div class='method_details'>
     <p class='signature' id='hashColor-instance'>
-      - (String) <strong>hashColor</strong>(hashee = @name)
+      - (String) <strong>hashColor</strong>(hashee = @_name)
     </p>
     <div class='docstring'>
   <p>Generates a colour based on the module name</p>
@@ -539,121 +771,62 @@
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='onModuleInvalidated-instance'>
-      - (void) <strong>onModuleInvalidated</strong>(module, params...)
-      (bound)
+    <p class='signature' id='_setSelected-instance'>
+      - (void) <strong>_setSelected</strong>(selected)
     </p>
     <div class='docstring'>
-  <p>Runs if module is invalidated</p>
+  <p>Sets wether or not the module is selected</p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
   <ul class='param'>
-    <li>
-      <span class='name'>module</span>
-      <span class='type'>
-        (<tt><a href='../../classes/Model/Module.html'>Model.Module</a></tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the module invalidated</span>
-    </li>
-    <li>
-      <span class='name'>params</span>
-      <span class='type'>
-        (<tt>Mixed</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>parameters pushed by event</span>
-    </li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='onModuleSelected-instance'>
-      - (void) <strong>onModuleSelected</strong>(module, selected)
-      (bound)
-    </p>
-    <div class='docstring'>
-  <p>Runs if module is selected</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>module</span>
-      <span class='type'>
-        (<tt><a href='../../classes/Model/Module.html'>Model.Module</a></tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the module selected/deslected</span>
-    </li>
     <li>
       <span class='name'>selected</span>
       <span class='type'>
-        (<tt>Mixed</tt>)
+        (<tt>Boolean</tt>)
       </span>
       &mdash;
-      <span class='desc'>selected state</span>
+      <span class='desc'>selection state</span>
     </li>
   </ul>
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='onModuleHovered-instance'>
-      - (void) <strong>onModuleHovered</strong>(module, hovered)
-      (bound)
+    <p class='signature' id='_setHovered-instance'>
+      - (void) <strong>_setHovered</strong>(hovered)
     </p>
     <div class='docstring'>
-  <p>Runs if module is hovered</p>
+  <p>Sets wether or not the module is hovered</p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
   <ul class='param'>
     <li>
-      <span class='name'>module</span>
+      <span class='name'>hovered</span>
       <span class='type'>
-        (<tt><a href='../../classes/Model/Module.html'>Model.Module</a></tt>)
+        (<tt>Boolean</tt>)
       </span>
       &mdash;
-      <span class='desc'>the module hovered/dehovered</span>
-    </li>
-    <li>
-      <span class='name'>selected</span>
-      <span class='type'>
-        (<tt>Mixed</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>hovered state</span>
+      <span class='desc'>hover state</span>
     </li>
   </ul>
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='onPaperResize-instance'>
-      - (void) <strong>onPaperResize</strong>()
-      (bound)
+    <p class='signature' id='getFullType-instance'>
+      - (String) <strong>getFullType</strong>()
     </p>
     <div class='docstring'>
-  <p>Runs if paper is resized</p>
-</div>
-<div class='tags'>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='clear-instance'>
-      - (self) <strong>clear</strong>()
-    </p>
-    <div class='docstring'>
-  <p>Clears the module view</p>
+  <p>Returns the full type of this view&#39;s module.</p>
 </div>
 <div class='tags'>
   <h3>Returns:</h3>
   <ul class='return'>
     <li>
       <span class='type'></span>
-      (<tt>self</tt>)
+      (<tt>String</tt>)
       &mdash;
-      <span class='desc'>chainable self</span>
+      <span class='desc'>the full type string</span>
     </li>
   </ul>
 </div>
@@ -679,23 +852,103 @@
   </div>
   <div class='method_details'>
     <p class='signature' id='getBBox-instance'>
-      - (void) <strong>getBBox</strong>()
+      - (Object) <strong>getBBox</strong>()
     </p>
-    <div class='tags'>
+    <div class='docstring'>
+  <p>Returns the bounding box of this view</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Object</tt>)
+      &mdash;
+      <span class='desc'>a bounding box object with coordinates</span>
+    </li>
+  </ul>
 </div>
   </div>
   <div class='method_details'>
     <p class='signature' id='getPoint-instance'>
-      - (void) <strong>getPoint</strong>(location)
+      - ([float, float) <strong>getPoint</strong>(location)
     </p>
-    <div class='tags'>
+    <div class='docstring'>
+  <p>Returns the coordinates of either the entrance or exit of this view</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>location</span>
+      <span class='type'>
+        (<tt>View.Module.Location</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the location (entrance or exit)</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span><tt>[float, float</tt></li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='getAbsolutePoint-instance'>
+      - ([float, float) <strong>getAbsolutePoint</strong>(location)
+    </p>
+    <div class='docstring'>
+  <p>Returns the absolute coordinates of a location</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>location</span>
+      <span class='type'>
+        (<tt>View.Module.Location</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the location for which to get the coordinates</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span><tt>[float, float</tt></li>
+  </ul>
 </div>
   </div>
   <div class='method_details'>
     <p class='signature' id='_getSplineDirection-instance'>
-      - (void) <strong>_getSplineDirection</strong>(metabolitePlacement)
+      - (View.Module.Direction) <strong>_getSplineDirection</strong>(metabolitePlacement)
     </p>
-    <div class='tags'>
+    <div class='docstring'>
+  <p>Returns the direction in which a spline should be drawn wrt a metabolite</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>metabolitePlacement</span>
+      <span class='type'>
+        (<tt>Placement</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the placement of the metabolite</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>View.Module.Direction</tt>)
+      &mdash;
+      <span class='desc'>the direction of the spline</span>
+    </li>
+  </ul>
 </div>
   </div>
   <div class='method_details'>
@@ -710,89 +963,209 @@
   </div>
   <div class='method_details'>
     <p class='signature' id='draw-instance'>
-      - (void) <strong>draw</strong>(x, y, scale)
+      - (void) <strong>draw</strong>(x = null, y = null)
     </p>
     <div class='docstring'>
   <p>Draws this view and thus the model</p>
 </div>
 <div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='drawContents-instance'>
+      - (Raphael.Set) <strong>drawContents</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Draws the contents (module)</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
     <li>
-      <span class='name'>x</span>
-      <span class='type'>
-        (<tt>Integer</tt>)
-      </span>
+      <span class='type'></span>
+      (<tt>Raphael.Set</tt>)
       &mdash;
-      <span class='desc'>the x position</span>
-    </li>
-    <li>
-      <span class='name'>y</span>
-      <span class='type'>
-        (<tt>Integer</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the y position</span>
-    </li>
-    <li>
-      <span class='name'>scale</span>
-      <span class='type'>
-        (<tt>Integer</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the scale</span>
+      <span class='desc'>the contents</span>
     </li>
   </ul>
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='drawContents-instance'>
-      - (Raphael) <strong>drawContents</strong>(x, y, scale, padding, big)
+    <p class='signature' id='drawMetaContents-instance'>
+      - (Raphael.Set) <strong>drawMetaContents</strong>(contents)
     </p>
     <div class='docstring'>
-  <p>Draws contents</p>
+  <p>Draws the meta contents ( shadow, hitbox ... )</p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
   <ul class='param'>
     <li>
-      <span class='name'>x</span>
+      <span class='name'>contents</span>
       <span class='type'>
-        (<tt>Integer</tt>)
+        (<tt>Raphael.Set</tt>)
       </span>
       &mdash;
-      <span class='desc'>x position</span>
-    </li>
-    <li>
-      <span class='name'>y</span>
-      <span class='type'>
-        (<tt>Integer</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>y position</span>
-    </li>
-    <li>
-      <span class='name'>scale</span>
-      <span class='type'>
-        (<tt>Integer</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>box scale</span>
-    </li>
-    <li>
-      <span class='name'>big</span>
-      <span class='type'>
-        (<tt>Boolean</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>box is selected or hovered</span>
+      <span class='desc'>the contents to draw meta on</span>
     </li>
   </ul>
   <h3>Returns:</h3>
   <ul class='return'>
     <li>
       <span class='type'></span>
-      (<tt>Raphael</tt>)
+      (<tt>Raphael.Set</tt>)
+      &mdash;
+      <span class='desc'>the metacontents</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='drawAsBasic-instance'>
+      - (Array&lt;Raphael&gt;) <strong>drawAsBasic</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Draws this view with basic visualisation</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Array&lt;Raphael&gt;</tt>)
+      &mdash;
+      <span class='desc'>the contents</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='drawAsTransporter-instance'>
+      - (Array&lt;Raphael&gt;) <strong>drawAsTransporter</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Draws this view as a transporter</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Array&lt;Raphael&gt;</tt>)
+      &mdash;
+      <span class='desc'>the contents</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='drawAsMetabolite-instance'>
+      - (Array&lt;Raphael&gt;) <strong>drawAsMetabolite</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Draws this view as a metabolite</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Array&lt;Raphael&gt;</tt>)
+      &mdash;
+      <span class='desc'>the contents</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='drawAsMetabolism-instance'>
+      - (Array&lt;Raphael&gt;) <strong>drawAsMetabolism</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Draws this view as a metabolism</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Array&lt;Raphael&gt;</tt>)
+      &mdash;
+      <span class='desc'>the contents</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='drawProtein-instance'>
+      - (Array&lt;Raphael&gt;) <strong>drawProtein</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Draws this view as a protein</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Array&lt;Raphael&gt;</tt>)
+      &mdash;
+      <span class='desc'>the contents</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='drawAsDNA-instance'>
+      - (Array&lt;Raphael&gt;) <strong>drawAsDNA</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Draws this view as a DNA</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Array&lt;Raphael&gt;</tt>)
+      &mdash;
+      <span class='desc'>the contents</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='drawAsLipid-instance'>
+      - (Array&lt;Raphael&gt;) <strong>drawAsLipid</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Draws this view as a Lipid</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Array&lt;Raphael&gt;</tt>)
+      &mdash;
+      <span class='desc'>the contents</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='drawAsCellGrowth-instance'>
+      - (Array&lt;Raphael&gt;) <strong>drawAsCellGrowth</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Draws this view as a cell growth</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Array&lt;Raphael&gt;</tt>)
       &mdash;
       <span class='desc'>the contents</span>
     </li>
@@ -801,7 +1174,7 @@
   </div>
   <div class='method_details'>
     <p class='signature' id='drawBox-instance'>
-      - (Raphael) <strong>drawBox</strong>(elem, scale)
+      - (Raphael) <strong>drawBox</strong>(elem)
     </p>
     <div class='docstring'>
   <p>Draws this view bounding box</p>
@@ -819,62 +1192,18 @@
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='drawSpline-instance'>
-      - (Raphael) <strong>drawSpline</strong>(direction, target)
+    <p class='signature' id='createSplines-instance'>
+      - (void) <strong>createSplines</strong>()
     </p>
     <div class='docstring'>
-  <p>Draws a spline from between two points</p>
+  <p>Creates splines for this module</p>
 </div>
 <div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>origX</span>
-      <span class='type'>
-        (<tt>float</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the starting x coordinate</span>
-    </li>
-    <li>
-      <span class='name'>origY</span>
-      <span class='type'>
-        (<tt>float</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the starting y coordinate</span>
-    </li>
-    <li>
-      <span class='name'>destX</span>
-      <span class='type'>
-        (<tt>float</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the terminal x coordinate</span>
-    </li>
-    <li>
-      <span class='name'>destY</span>
-      <span class='type'>
-        (<tt>float</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the terminal y coordinate</span>
-    </li>
-  </ul>
-  <h3>Returns:</h3>
-  <ul class='return'>
-    <li>
-      <span class='type'></span>
-      (<tt>Raphael</tt>)
-      &mdash;
-      <span class='desc'>the spline path</span>
-    </li>
-  </ul>
 </div>
   </div>
   <div class='method_details'>
     <p class='signature' id='drawShadow-instance'>
-      - (Raphael) <strong>drawShadow</strong>(elem, scale)
+      - (Raphael) <strong>drawShadow</strong>(elem)
     </p>
     <div class='docstring'>
   <p>Draws this view shadow</p>
@@ -890,14 +1219,6 @@
       &mdash;
       <span class='desc'>element to draw for</span>
     </li>
-    <li>
-      <span class='name'>scale</span>
-      <span class='type'>
-        (<tt>Integer</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the scale</span>
-    </li>
   </ul>
   <h3>Returns:</h3>
   <ul class='return'>
@@ -912,7 +1233,7 @@
   </div>
   <div class='method_details'>
     <p class='signature' id='drawHitbox-instance'>
-      - (Raphael) <strong>drawHitbox</strong>(elem, scale)
+      - (Raphael) <strong>drawHitbox</strong>(elem)
     </p>
     <div class='docstring'>
   <p>Draws this view hitbox</p>
@@ -928,14 +1249,6 @@
       &mdash;
       <span class='desc'>element to draw for</span>
     </li>
-    <li>
-      <span class='name'>scale</span>
-      <span class='type'>
-        (<tt>Integer</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the scale</span>
-    </li>
   </ul>
   <h3>Returns:</h3>
   <ul class='return'>
@@ -950,7 +1263,7 @@
   </div>
   <div class='method_details'>
     <p class='signature' id='drawComponent-instance'>
-      - (Array&lt;Object&gt;) <strong>drawComponent</strong>(module, component, x, y, scale, params = {})
+      - (Array&lt;Object&gt;) <strong>drawComponent</strong>(module, component, x, y, params = {})
     </p>
     <div class='docstring'>
   <p>Draw a component</p>
@@ -991,14 +1304,6 @@
       <span class='desc'>y position</span>
     </li>
     <li>
-      <span class='name'>scale</span>
-      <span class='type'>
-        (<tt>Integer</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>scale</span>
-    </li>
-    <li>
       <span class='name'>params</span>
       <span class='type'>
         (<tt>Object</tt>)
@@ -1018,11 +1323,245 @@
   </ul>
 </div>
   </div>
+  <div class='method_details'>
+    <p class='signature' id='_createSpline-instance'>
+      - (View.Spline) <strong>_createSpline</strong>(orig, dest)
+    </p>
+    <div class='docstring'>
+  <p>Creates a new spline</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>orig</span>
+      <span class='type'>
+        (<tt><a href='../../classes/View/Module.html'>View.Module</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the origin module view</span>
+    </li>
+    <li>
+      <span class='name'>dest</span>
+      <span class='type'>
+        (<tt><a href='../../classes/View/Module.html'>View.Module</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the destination module view</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt><a href='../../classes/View/Spline.html'>View.Spline</a></tt>)
+      &mdash;
+      <span class='desc'>the created spline</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='onModuleInvalidated-instance'>
+      - (void) <strong>onModuleInvalidated</strong>(module)
+      (bound)
+    </p>
+    <div class='docstring'>
+  <p>Runs if module is invalidated</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>module</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Model/Module.html'>Model.Module</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the module invalidated</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='onModuleSelected-instance'>
+      - (void) <strong>onModuleSelected</strong>(module, selected)
+    </p>
+    <div class='docstring'>
+  <p>Gets called when a module view selected.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>module</span>
+      <span class='type'>
+        (<tt>Module</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the module that is being selected</span>
+    </li>
+    <li>
+      <span class='name'>selected</span>
+      <span class='type'>
+        (<tt>Boolean</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the selection state of the module</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='onModuleHovered-instance'>
+      - (void) <strong>onModuleHovered</strong>(module, hovered)
+    </p>
+    <div class='docstring'>
+  <p>Gets called when a module view hovered.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>module</span>
+      <span class='type'>
+        (<tt>Module</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the module that is being hovered</span>
+    </li>
+    <li>
+      <span class='name'>selected</span>
+      <span class='type'>
+        (<tt>Boolean</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the hover state of the module</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='onModuleAdded-instance'>
+      - (void) <strong>onModuleAdded</strong>(cell, module)
+    </p>
+    <div class='docstring'>
+  <p>Gets called when a module is added to a cell</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>cell</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Model/Cell.html'>Model.Cell</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the cell to which the module was added</span>
+    </li>
+    <li>
+      <span class='name'>module</span>
+      <span class='type'>
+        (<tt>Module</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the module that was added</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='onModuleRemoved-instance'>
+      - (void) <strong>onModuleRemoved</strong>(cell, module)
+    </p>
+    <div class='docstring'>
+  <p>Gets called when a module is removed from a cell</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>cell</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Model/Cell.html'>Model.Cell</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the cell from which the module was removed</span>
+    </li>
+    <li>
+      <span class='name'>module</span>
+      <span class='type'>
+        (<tt>Module</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the module that was removed</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='onMetaboliteAdded-instance'>
+      - (void) <strong>onMetaboliteAdded</strong>(cell, metabolite)
+    </p>
+    <div class='docstring'>
+  <p>Gets called when a metabolite is added to a cell</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>cell</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Model/Cell.html'>Model.Cell</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the cell to which the metabolite was added</span>
+    </li>
+    <li>
+      <span class='name'>metabolite</span>
+      <span class='type'>
+        (<tt>Metabolite</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the metabolite that was added</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='onMetaboliteRemoved-instance'>
+      - (void) <strong>onMetaboliteRemoved</strong>(cell, metabolite)
+    </p>
+    <div class='docstring'>
+  <p>Gets called when a metabolite is removed from a cell</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>cell</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Model/Cell.html'>Model.Cell</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the cell from which the metabolite was removed</span>
+    </li>
+    <li>
+      <span class='name'>metabolite</span>
+      <span class='type'>
+        (<tt>Metabolite</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the metabolite that was removed</span>
+    </li>
+  </ul>
+</div>
+  </div>
 </div>
     </div>
     <div id='footer'>
   Generated on
-  Sun May 19 2013 15:38:42 GMT+0200 (W. Europe Daylight Time)
+  Sun Jun 02 2013 15:47:57 GMT+0200 (W. Europe Daylight Time)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

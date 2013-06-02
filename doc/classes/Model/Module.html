@@ -2,7 +2,7 @@
 <html>
   <head>
   <meta charset='UTF-8'>
-  <title>CoffeeScript API Documentation</title>
+  <title>Broyologramming Life API Documentation</title>
   <link rel='stylesheet' href='../../assets/codo.css' type='text/css'>
   <script src='../../assets/codo.js'></script>
   <script src='../../assets/search_data.js'></script>
@@ -28,6 +28,7 @@
     <div id='search'>
       <a id='class_list_link' href='../../class_list.html'>Classes</a>
       <a id='mixin_list_link' href='../../mixin_list.html'>Mixins</a>
+      <a id='file_list_link' href='../../file_list.html'>Files</a>
       <a id='method_list_link' href='../../method_list.html'>Methods</a>
       <a id='extra_list_link' href='../../extra_list.html'>Extras</a>
     </div>
@@ -205,7 +206,7 @@
   <li>
     <span class='signature'>
       <a href='#_defineGetters-instance'>
-        - (self) <strong>_defineGetters</strong>(step, metadata)
+        - (self) <strong>_defineGetters</strong>(params, step, metadata)
       </a>
     </span>
     <span class='desc'>
@@ -224,13 +225,23 @@
   </li>
   <li>
     <span class='signature'>
-      <a href='#onPropertySet-instance'>
-        - (void) <strong>onPropertySet</strong>(caller, action)
+      <a href='#_defineDynamicProperties-instance'>
+        - (void) <strong>_defineDynamicProperties</strong>(params)
+      </a>
+    </span>
+    <span class='desc'>
+      
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#onActionDo-instance'>
+        - (void) <strong>onActionDo</strong>(caller, action)
       </a>
     </span>
     <span class='bound note title'>Bound</span>
     <span class='desc'>
-      Triggered when a property is set
+      Triggered when an action is done
     </span>
   </li>
   <li>
@@ -325,6 +336,16 @@
   </li>
   <li>
     <span class='signature'>
+      <a href='#getFullType-instance'>
+        - (String) <strong>getFullType</strong>(direction = @direction, type = @type, placement = @placement)
+      </a>
+    </span>
+    <span class='desc'>
+      Returns a module&#39;s full type string
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
       <a href='#step-instance'>
         - (any) <strong>step</strong>(t, substrates, mu)
       </a>
@@ -335,12 +356,22 @@
   </li>
   <li>
     <span class='signature'>
-      <a href='#test-instance'>
-        - (void) <strong>test</strong>(compounds)
+      <a href='#_listify-instance'>
+        - (void) <strong>_listify</strong>(items, bind = 'and', nothing = 'nothing')
       </a>
     </span>
     <span class='desc'>
-      Test function to override by submodules
+      Listify a list
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#test-instance'>
+        - (Boolean) <strong>test</strong>(compounds, keys...)
+      </a>
+    </span>
+    <span class='desc'>
+      Test if compounds are available.
     </span>
   </li>
   <li>
@@ -444,6 +475,10 @@
         <a href='../../mixins/Mixin/DynamicProperties.html'>Mixin.DynamicProperties</a>
       </h3>
       <p class='included'>
+                <a href='../../mixins/Mixin/DynamicProperties.html#setter-instance'>#setter</a>,
+                <a href='../../mixins/Mixin/DynamicProperties.html#getter-instance'>#getter</a>,
+                <a href='../../mixins/Mixin/DynamicProperties.html#property-instance'>#property</a>,
+                <a href='../../mixins/Mixin/DynamicProperties.html#_defineProperty-instance'>#_defineProperty</a>,
                 <a href='../../mixins/Mixin/DynamicProperties.html#_propertiesFromParams-instance'>#_propertiesFromParams</a>,
                 <a href='../../mixins/Mixin/DynamicProperties.html#_nonEnumerableValue-instance'>#_nonEnumerableValue</a>,
         <a href='../../mixins/Mixin/DynamicProperties.html#_nonEnumerableGetter-instance'>#_nonEnumerableGetter</a>
@@ -468,7 +503,6 @@
       <p class='included'>
                 <a href='../../mixins/Mixin/TimeMachine.html#_allowTimeMachine-instance'>#_allowTimeMachine</a>,
                 <a href='../../mixins/Mixin/TimeMachine.html#addUndoableEvent-instance'>#addUndoableEvent</a>,
-                <a href='../../mixins/Mixin/TimeMachine.html#addUndoableEventToSub-instance'>#addUndoableEventToSub</a>,
                 <a href='../../mixins/Mixin/TimeMachine.html#undo-instance'>#undo</a>,
                 <a href='../../mixins/Mixin/TimeMachine.html#redo-instance'>#redo</a>,
         <a href='../../mixins/Mixin/TimeMachine.html#_createAction-instance'>#_createAction</a>
@@ -632,7 +666,7 @@
   </div>
   <div class='method_details'>
     <p class='signature' id='_defineGetters-instance'>
-      - (self) <strong>_defineGetters</strong>(step, metadata)
+      - (self) <strong>_defineGetters</strong>(params, step, metadata)
     </p>
     <div class='docstring'>
   <p>Defines the getters</p>
@@ -669,12 +703,19 @@
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='onPropertySet-instance'>
-      - (void) <strong>onPropertySet</strong>(caller, action)
+    <p class='signature' id='_defineDynamicProperties-instance'>
+      - (void) <strong>_defineDynamicProperties</strong>(params)
+    </p>
+    <div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='onActionDo-instance'>
+      - (void) <strong>onActionDo</strong>(caller, action)
       (bound)
     </p>
     <div class='docstring'>
-  <p>Triggered when a property is set</p>
+  <p>Triggered when an action is done</p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
@@ -990,6 +1031,25 @@
 </div>
   </div>
   <div class='method_details'>
+    <p class='signature' id='getFullType-instance'>
+      - (String) <strong>getFullType</strong>(direction = @direction, type = @type, placement = @placement)
+    </p>
+    <div class='docstring'>
+  <p>Returns a module&#39;s full type string</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>String</tt>)
+      &mdash;
+      <span class='desc'>the type string</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
     <p class='signature' id='step-instance'>
       - (any) <strong>step</strong>(t, substrates, mu)
     </p>
@@ -1028,11 +1088,25 @@
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='test-instance'>
-      - (void) <strong>test</strong>(compounds)
+    <p class='signature' id='_listify-instance'>
+      - (void) <strong>_listify</strong>(items, bind = 'and', nothing = 'nothing')
     </p>
     <div class='docstring'>
-  <p>Test function to override by submodules</p>
+  <div class='note todo'>
+    <strong>TODO:</strong>
+    make this a helper function
+  </div>
+  <p>Listify a list</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='test-instance'>
+      - (Boolean) <strong>test</strong>(compounds, keys...)
+    </p>
+    <div class='docstring'>
+  <p>Test if compounds are available. Automatically maps keys to actual properties.</p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
@@ -1044,6 +1118,23 @@
       </span>
       &mdash;
       <span class='desc'>the available subs</span>
+    </li>
+    <li>
+      <span class='name'>keys...</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>comma delimited list of keys that should be mapped to tests</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Boolean</tt>)
+      &mdash;
+      <span class='desc'>true if all are available</span>
     </li>
   </ul>
 </div>
@@ -1319,7 +1410,7 @@
     </div>
     <div id='footer'>
   Generated on
-  Sun May 19 2013 15:38:42 GMT+0200 (W. Europe Daylight Time)
+  Sun Jun 02 2013 15:47:57 GMT+0200 (W. Europe Daylight Time)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

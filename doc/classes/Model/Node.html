@@ -2,7 +2,7 @@
 <html>
   <head>
   <meta charset='UTF-8'>
-  <title>CoffeeScript API Documentation</title>
+  <title>Broyologramming Life API Documentation</title>
   <link rel='stylesheet' href='../../assets/codo.css' type='text/css'>
   <script src='../../assets/codo.js'></script>
   <script src='../../assets/search_data.js'></script>
@@ -28,6 +28,7 @@
     <div id='search'>
       <a id='class_list_link' href='../../class_list.html'>Classes</a>
       <a id='mixin_list_link' href='../../mixin_list.html'>Mixins</a>
+      <a id='file_list_link' href='../../file_list.html'>Files</a>
       <a id='method_list_link' href='../../method_list.html'>Methods</a>
       <a id='extra_list_link' href='../../extra_list.html'>Extras</a>
     </div>
@@ -115,6 +116,18 @@
           <td>Defined in:</td>
           <td>app&#47;assets&#47;javascripts&#47;models&#47;node.js.coffee</td>
         </tr>
+        <tr>
+          <td>Inherits:</td>
+          <td>
+            <a href='../../classes/Helper/Mixable.html'>Helper.Mixable</a>
+          </td>
+        </tr>
+        <tr>
+          <td>Concerns:</td>
+          <td>
+            <a href='../../mixins/Mixin/EventBindings.html'>Mixin.EventBindings</a>
+          </td>
+        </tr>
       </table>
       <h2>Overview</h2>
       <div class='docstring'>
@@ -127,7 +140,7 @@
   <li>
     <span class='signature'>
       <a href='#constructor-instance'>
-        - (void) <strong>constructor</strong>(object, parent, children = [])
+        - (void) <strong>constructor</strong>(object, parent, children)
       </a>
     </span>
     <span class='constructor note title'>Constructor</span>
@@ -137,20 +150,68 @@
   </li>
   <li>
     <span class='signature'>
-      <a href='#rebase-instance'>
-        - (self) <strong>rebase</strong>(parent)
+      <a href='#_defineProperties-instance'>
+        - (void) <strong>_defineProperties</strong>(children = [])
       </a>
     </span>
     <span class='desc'>
-      Rebase this branch on a different node than its current parent.
+      Define the properties of the node
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#addChild-instance'>
+        - (Model.Node) <strong>addChild</strong>(object)
+      </a>
+    </span>
+    <span class='desc'>
+      Add a child to this node
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#replace-instance'>
+        - (Model.Node) <strong>replace</strong>(other)
+      </a>
+    </span>
+    <span class='desc'>
+      Replace this node with a different node
     </span>
   </li>
 </ul>
+      <h2>
+        <small>Inherited Method Summary</small>
+      </h2>
+      <h3 class='inherited'>
+        Methods inherited from
+        <a href='../../classes/Helper/Mixable.html'>Helper.Mixable</a>
+      </h3>
+      <p class='inherited'>
+                <a href='../../classes/Helper/Mixable.html#extend-class'>.extend</a>,
+                <a href='../../classes/Helper/Mixable.html#include-class'>.include</a>,
+        <a href='../../classes/Helper/Mixable.html#concern-class'>.concern</a>
+      </p>
+      <h2>
+        <small>Concern Method Summary</small>
+      </h2>
+      <h3 class='included'>
+        Methods mixed in from
+        <a href='../../mixins/Mixin/EventBindings.html'>Mixin.EventBindings</a>
+      </h3>
+      <p class='included'>
+                <a href='../../mixins/Mixin/EventBindings.html#_allowEventBindings-instance'>#_allowEventBindings</a>,
+                <a href='../../mixins/Mixin/EventBindings.html#_unbindAll-instance'>#_unbindAll</a>,
+                <a href='../../mixins/Mixin/EventBindings.html#_bind-instance'>#_bind</a>,
+                <a href='../../mixins/Mixin/EventBindings.html#_unbind-instance'>#_unbind</a>,
+                <a href='../../mixins/Mixin/EventBindings.html#_trigger-instance'>#_trigger</a>,
+                <a href='../../mixins/Mixin/EventBindings.html#_onNotificate-instance'>#_onNotificate</a>,
+        <a href='../../mixins/Mixin/EventBindings.html#_notificate-instance'>#_notificate</a>
+      </p>
       <h2>Constructor Details</h2>
       <div class='methods'>
   <div class='method_details'>
     <p class='signature' id='constructor-instance'>
-      - (void) <strong>constructor</strong>(object, parent, children = [])
+      - (void) <strong>constructor</strong>(object, parent, children)
     </p>
     <div class='docstring'>
   <p>Constructor for node</p>
@@ -189,31 +250,82 @@
       <h2>Instance Method Details</h2>
       <div class='methods'>
   <div class='method_details'>
-    <p class='signature' id='rebase-instance'>
-      - (self) <strong>rebase</strong>(parent)
+    <p class='signature' id='_defineProperties-instance'>
+      - (void) <strong>_defineProperties</strong>(children = [])
     </p>
     <div class='docstring'>
-  <p>Rebase this branch on a different node than its current parent.</p>
+  <p>Define the properties of the node</p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
   <ul class='param'>
     <li>
-      <span class='name'>parent</span>
+      <span class='name'>children</span>
       <span class='type'>
-        (<tt>Node</tt>)
+        (<tt>Array</tt>)
       </span>
       &mdash;
-      <span class='desc'>The new parent for the branch.</span>
+      <span class='desc'>Initial children of this node</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='addChild-instance'>
+      - (Model.Node) <strong>addChild</strong>(object)
+    </p>
+    <div class='docstring'>
+  <p>Add a child to this node</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>object</span>
+      <span class='type'>
+        (<tt>Object</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The object to be contained in the child</span>
     </li>
   </ul>
   <h3>Returns:</h3>
   <ul class='return'>
     <li>
       <span class='type'></span>
-      (<tt>self</tt>)
+      (<tt><a href='../../classes/Model/Node.html'>Model.Node</a></tt>)
       &mdash;
-      <span class='desc'>chainable self</span>
+      <span class='desc'>The created node</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='replace-instance'>
+      - (Model.Node) <strong>replace</strong>(other)
+    </p>
+    <div class='docstring'>
+  <p>Replace this node with a different node</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>other</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Model/Node.html'>Model.Node</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The other node</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt><a href='../../classes/Model/Node.html'>Model.Node</a></tt>)
+      &mdash;
+      <span class='desc'>The other node</span>
     </li>
   </ul>
 </div>
@@ -222,7 +334,7 @@
     </div>
     <div id='footer'>
   Generated on
-  Sun May 19 2013 15:38:42 GMT+0200 (W. Europe Daylight Time)
+  Sun Jun 02 2013 15:47:57 GMT+0200 (W. Europe Daylight Time)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

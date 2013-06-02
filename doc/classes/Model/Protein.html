@@ -2,7 +2,7 @@
 <html>
   <head>
   <meta charset='UTF-8'>
-  <title>CoffeeScript API Documentation</title>
+  <title>Broyologramming Life API Documentation</title>
   <link rel='stylesheet' href='../../assets/codo.css' type='text/css'>
   <script src='../../assets/codo.js'></script>
   <script src='../../assets/search_data.js'></script>
@@ -28,6 +28,7 @@
     <div id='search'>
       <a id='class_list_link' href='../../class_list.html'>Classes</a>
       <a id='mixin_list_link' href='../../mixin_list.html'>Mixins</a>
+      <a id='file_list_link' href='../../file_list.html'>Files</a>
       <a id='method_list_link' href='../../method_list.html'>Methods</a>
       <a id='extra_list_link' href='../../extra_list.html'>Extras</a>
     </div>
@@ -182,7 +183,7 @@
   <li>
     <span class='signature'>
       <a href='#constructor-instance'>
-        - (void) <strong>constructor</strong>(params = {}, start = 0, consume = "p#int", name = "protein")
+        - (void) <strong>constructor</strong>(params = {}, start = 0, consume = "p#int", name = "Protein")
       </a>
     </span>
     <span class='constructor note title'>Constructor</span>
@@ -223,7 +224,8 @@
                 <a href='../../classes/Model/Module.html#_defineProperties-instance'>#_defineProperties</a>,
                 <a href='../../classes/Model/Module.html#_defineGetters-instance'>#_defineGetters</a>,
                 <a href='../../classes/Model/Module.html#_defineAccessors-instance'>#_defineAccessors</a>,
-                <a href='../../classes/Model/Module.html#onPropertySet-instance'>#onPropertySet</a>,
+                <a href='../../classes/Model/Module.html#_defineDynamicProperties-instance'>#_defineDynamicProperties</a>,
+                <a href='../../classes/Model/Module.html#onActionDo-instance'>#onActionDo</a>,
                 <a href='../../classes/Model/Module.html#extractId-class'>.extractId</a>,
                 <a href='../../classes/Model/Module.html#isLocal-instance'>#isLocal</a>,
                 <a href='../../classes/Model/Module.html#getCompound-instance'>#getCompound</a>,
@@ -234,7 +236,9 @@
                 <a href='../../classes/Model/Module.html#setMetabolite-instance'>#setMetabolite</a>,
                 <a href='../../classes/Model/Module.html#setSubstrate-instance'>#setSubstrate</a>,
                 <a href='../../classes/Model/Module.html#setProduct-instance'>#setProduct</a>,
+                <a href='../../classes/Model/Module.html#getFullType-instance'>#getFullType</a>,
                 <a href='../../classes/Model/Module.html#step-instance'>#step</a>,
+                <a href='../../classes/Model/Module.html#_listify-instance'>#_listify</a>,
                 <a href='../../classes/Model/Module.html#test-instance'>#test</a>,
                 <a href='../../classes/Model/Module.html#_test-instance'>#_test</a>,
                 <a href='../../classes/Model/Module.html#_ensure-instance'>#_ensure</a>,
@@ -264,6 +268,10 @@
         <a href='../../mixins/Mixin/DynamicProperties.html'>Mixin.DynamicProperties</a>
       </h3>
       <p class='included'>
+                <a href='../../mixins/Mixin/DynamicProperties.html#setter-instance'>#setter</a>,
+                <a href='../../mixins/Mixin/DynamicProperties.html#getter-instance'>#getter</a>,
+                <a href='../../mixins/Mixin/DynamicProperties.html#property-instance'>#property</a>,
+                <a href='../../mixins/Mixin/DynamicProperties.html#_defineProperty-instance'>#_defineProperty</a>,
                 <a href='../../mixins/Mixin/DynamicProperties.html#_propertiesFromParams-instance'>#_propertiesFromParams</a>,
                 <a href='../../mixins/Mixin/DynamicProperties.html#_nonEnumerableValue-instance'>#_nonEnumerableValue</a>,
         <a href='../../mixins/Mixin/DynamicProperties.html#_nonEnumerableGetter-instance'>#_nonEnumerableGetter</a>
@@ -288,7 +296,6 @@
       <p class='included'>
                 <a href='../../mixins/Mixin/TimeMachine.html#_allowTimeMachine-instance'>#_allowTimeMachine</a>,
                 <a href='../../mixins/Mixin/TimeMachine.html#addUndoableEvent-instance'>#addUndoableEvent</a>,
-                <a href='../../mixins/Mixin/TimeMachine.html#addUndoableEventToSub-instance'>#addUndoableEventToSub</a>,
                 <a href='../../mixins/Mixin/TimeMachine.html#undo-instance'>#undo</a>,
                 <a href='../../mixins/Mixin/TimeMachine.html#redo-instance'>#redo</a>,
         <a href='../../mixins/Mixin/TimeMachine.html#_createAction-instance'>#_createAction</a>
@@ -297,7 +304,7 @@
       <div class='methods'>
   <div class='method_details'>
     <p class='signature' id='constructor-instance'>
-      - (void) <strong>constructor</strong>(params = {}, start = 0, consume = "p#int", name = "protein")
+      - (void) <strong>constructor</strong>(params = {}, start = 0, consume = "p#int", name = "Protein")
     </p>
     <div class='docstring'>
   <p>Constructor for Protein</p>
@@ -450,7 +457,7 @@
     </div>
     <div id='footer'>
   Generated on
-  Sun May 19 2013 15:38:42 GMT+0200 (W. Europe Daylight Time)
+  Sun Jun 02 2013 15:47:57 GMT+0200 (W. Europe Daylight Time)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6
