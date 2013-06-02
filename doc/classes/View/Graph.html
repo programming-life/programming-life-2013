@@ -2,7 +2,7 @@
 <html>
   <head>
   <meta charset='UTF-8'>
-  <title>CoffeeScript API Documentation</title>
+  <title>Broyologramming Life API Documentation</title>
   <link rel='stylesheet' href='../../assets/codo.css' type='text/css'>
   <script src='../../assets/codo.js'></script>
   <script src='../../assets/search_data.js'></script>
@@ -28,6 +28,7 @@
     <div id='search'>
       <a id='class_list_link' href='../../class_list.html'>Classes</a>
       <a id='mixin_list_link' href='../../mixin_list.html'>Mixins</a>
+      <a id='file_list_link' href='../../file_list.html'>Files</a>
       <a id='method_list_link' href='../../method_list.html'>Methods</a>
       <a id='extra_list_link' href='../../extra_list.html'>Extras</a>
     </div>
@@ -140,19 +141,33 @@
 </div>
         </dt>
         <dd>
-          <pre><code class='coffee'>2</code></pre>
+          <pre><code class='coffee'>3</code></pre>
         </dd>
-        <dt id='MAX_LENGTH-constant'>
-          MAX_LENGTH
+        <dt id='DEFAULTS-constant'>
+          DEFAULTS
           =
           <div class='docstring'>
-  <p>Maximum length of a set</p>
+  <p>The default options for this graph</p>
 </div>
 <div class='tags'>
 </div>
         </dt>
         <dd>
-          <pre><code class='coffee'>100</code></pre>
+          <pre><code class='coffee'>{
+  smooth: true,
+  axis: '0 0 1 1',
+  shade: true,
+  colors: ["rgba(140, 137, 132, 0.3)", "rgba(1, 145, 200, 0.5)", "rgba(0, 91, 154, 0.85)"]
+}</code></pre>
+        </dd>
+        <dt id='AXISPADDING-constant'>
+          AXISPADDING
+          =
+          <div class='tags'>
+</div>
+        </dt>
+        <dd>
+          <pre><code class='coffee'>20</code></pre>
         </dd>
       </dl>
       <h2>Instance Method Summary</h2>
@@ -160,32 +175,12 @@
   <li>
     <span class='signature'>
       <a href='#constructor-instance'>
-        - (void) <strong>constructor</strong>(paper, _title, _parent)
+        - (void) <strong>constructor</strong>(id, _titletext, parent, container = "#graphs", _width = 240, _height = 175)
       </a>
     </span>
     <span class='constructor note title'>Constructor</span>
     <span class='desc'>
       Construct a new Graph object
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#addData-instance'>
-        - (self) <strong>addData</strong>(data)
-      </a>
-    </span>
-    <span class='desc'>
-      Add a dataset to visualize in this graphs
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#appendData-instance'>
-        - (void) <strong>appendData</strong>(data)
-      </a>
-    </span>
-    <span class='desc'>
-      Append a dataset to the most recently added dataset
     </span>
   </li>
   <li>
@@ -200,8 +195,18 @@
   </li>
   <li>
     <span class='signature'>
+      <a href='#kill-instance'>
+        - (void) <strong>kill</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Kills the view
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
       <a href='#draw-instance'>
-        - (void) <strong>draw</strong>(_x, _y, _scale)
+        - (void) <strong>draw</strong>(datasets)
       </a>
     </span>
     <span class='desc'>
@@ -210,8 +215,8 @@
   </li>
   <li>
     <span class='signature'>
-      <a href='#_drawChart-instance'>
-        - (void) <strong>_drawChart</strong>(x, y, scale)
+      <a href='#drawChart-instance'>
+        - (void) <strong>drawChart</strong>(datasets)
       </a>
     </span>
     <span class='desc'>
@@ -220,8 +225,28 @@
   </li>
   <li>
     <span class='signature'>
-      <a href='#_drawTitle-instance'>
-        - (Raphael) <strong>_drawTitle</strong>(x, y, scale)
+      <a href='#moveViewBox-instance'>
+        - (void) <strong>moveViewBox</strong>(x)
+      </a>
+    </span>
+    <span class='desc'>
+      Move the viewbox of the chart
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#play-instance'>
+        - (void) <strong>play</strong>(x = @_width, time = 500)
+      </a>
+    </span>
+    <span class='desc'>
+      Plays the graphs forward over a timespan
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#drawTitle-instance'>
+        - (JQuery) <strong>drawTitle</strong>()
       </a>
     </span>
     <span class='desc'>
@@ -230,18 +255,8 @@
   </li>
   <li>
     <span class='signature'>
-      <a href='#_drawGridLines-instance'>
-        - (Raphael) <strong>_drawGridLines</strong>(x, width)
-      </a>
-    </span>
-    <span class='desc'>
-      Draws the gridlines
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#_drawRedLine-instance'>
-        - (void) <strong>_drawRedLine</strong>(x)
+      <a href='#drawRedLine-instance'>
+        - (void) <strong>drawRedLine</strong>(x)
       </a>
     </span>
     <span class='desc'>
@@ -258,13 +273,29 @@
       </h3>
       <p class='inherited'>
                 <a href='../../classes/View/RaphaelBase.html#constructor-instance'>#constructor</a>,
+                <a href='../../classes/View/RaphaelBase.html#_catcher-instance'>#_catcher</a>,
+                <a href='../../classes/View/RaphaelBase.html#getBBox-instance'>#getBBox</a>,
                 <a href='../../classes/View/RaphaelBase.html#clear-instance'>#clear</a>,
+                <a href='../../classes/View/RaphaelBase.html#kill-instance'>#kill</a>,
+                <a href='../../classes/View/RaphaelBase.html#setPosition-instance'>#setPosition</a>,
+                <a href='../../classes/View/RaphaelBase.html#moveTo-instance'>#moveTo</a>,
+                <a href='../../classes/View/RaphaelBase.html#move-instance'>#move</a>,
                 <a href='../../classes/View/RaphaelBase.html#draw-instance'>#draw</a>,
                 <a href='../../classes/View/RaphaelBase.html#redraw-instance'>#redraw</a>,
-                <a href='../../classes/View/RaphaelBase.html#addView-instance'>#addView</a>,
-                <a href='../../classes/View/RaphaelBase.html#removeView-instance'>#removeView</a>,
-                <a href='../../classes/View/RaphaelBase.html#resize-instance'>#resize</a>,
-        <a href='../../classes/View/RaphaelBase.html#kill-instance'>#kill</a>
+        <a href='../../classes/View/RaphaelBase.html#getAbsoluteCoords-instance'>#getAbsoluteCoords</a>
+      </p>
+      <h3 class='inherited'>
+        Methods inherited from
+        <a href='../../classes/View/Collection.html'>View.Collection</a>
+      </h3>
+      <p class='inherited'>
+                <a href='../../classes/View/Collection.html#constructor-instance'>#constructor</a>,
+                <a href='../../classes/View/Collection.html#clear-instance'>#clear</a>,
+                <a href='../../classes/View/Collection.html#kill-instance'>#kill</a>,
+                <a href='../../classes/View/Collection.html#add-instance'>#add</a>,
+                <a href='../../classes/View/Collection.html#remove-instance'>#remove</a>,
+                <a href='../../classes/View/Collection.html#draw-instance'>#draw</a>,
+        <a href='../../classes/View/Collection.html#redraw-instance'>#redraw</a>
       </p>
       <h3 class='inherited'>
         Methods inherited from
@@ -279,7 +310,7 @@
       <div class='methods'>
   <div class='method_details'>
     <p class='signature' id='constructor-instance'>
-      - (void) <strong>constructor</strong>(paper, _title, _parent)
+      - (void) <strong>constructor</strong>(id, _titletext, parent, container = "#graphs", _width = 240, _height = 175)
     </p>
     <div class='docstring'>
   <p>Construct a new Graph object</p>
@@ -310,65 +341,6 @@
       <h2>Instance Method Details</h2>
       <div class='methods'>
   <div class='method_details'>
-    <p class='signature' id='addData-instance'>
-      - (self) <strong>addData</strong>(data)
-    </p>
-    <div class='docstring'>
-  <p>Add a dataset to visualize in this graphs</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>data</span>
-      <span class='type'>
-        (<tt>Array</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>An array of datapoints</span>
-    </li>
-  </ul>
-  <h3>Returns:</h3>
-  <ul class='return'>
-    <li>
-      <span class='type'></span>
-      (<tt>self</tt>)
-      &mdash;
-      <span class='desc'>chainable self</span>
-    </li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='appendData-instance'>
-      - (void) <strong>appendData</strong>(data)
-    </p>
-    <div class='docstring'>
-  <p>Append a dataset to the most recently added dataset</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>data</span>
-      <span class='type'>
-        (<tt>Array</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>The data to append</span>
-    </li>
-    <li>
-      <span class='name'>return</span>
-      <span class='type'>
-        (<tt><a href='../../classes/View/Graph.html'>View.Graph</a></tt>)
-      </span>
-      &mdash;
-      <span class='desc'>This for easy chaining</span>
-    </li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
     <p class='signature' id='clear-instance'>
       - (void) <strong>clear</strong>()
     </p>
@@ -379,8 +351,18 @@
 </div>
   </div>
   <div class='method_details'>
+    <p class='signature' id='kill-instance'>
+      - (void) <strong>kill</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Kills the view</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
     <p class='signature' id='draw-instance'>
-      - (void) <strong>draw</strong>(_x, _y, _scale)
+      - (void) <strong>draw</strong>(datasets)
     </p>
     <div class='docstring'>
   <p>Draws the graph</p>
@@ -416,8 +398,8 @@
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='_drawChart-instance'>
-      - (void) <strong>_drawChart</strong>(x, y, scale)
+    <p class='signature' id='drawChart-instance'>
+      - (void) <strong>drawChart</strong>(datasets)
     </p>
     <div class='docstring'>
   <p>Draws the chart</p><p>@retun [Raphael] The chart object</p>
@@ -453,11 +435,11 @@
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='_drawTitle-instance'>
-      - (Raphael) <strong>_drawTitle</strong>(x, y, scale)
+    <p class='signature' id='moveViewBox-instance'>
+      - (void) <strong>moveViewBox</strong>(x)
     </p>
     <div class='docstring'>
-  <p>Draws the title</p>
+  <p>Move the viewbox of the chart</p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
@@ -468,30 +450,53 @@
         (<tt>Integer</tt>)
       </span>
       &mdash;
-      <span class='desc'>the x position</span>
+      <span class='desc'>The amount of pixels to move the viewbox to the right</span>
     </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='play-instance'>
+      - (void) <strong>play</strong>(x = @_width, time = 500)
+    </p>
+    <div class='docstring'>
+  <p>Plays the graphs forward over a timespan</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
     <li>
-      <span class='name'>y</span>
+      <span class='name'>x</span>
       <span class='type'>
         (<tt>Integer</tt>)
       </span>
       &mdash;
-      <span class='desc'>the y position</span>
+      <span class='desc'>The x to move to</span>
     </li>
     <li>
-      <span class='name'>scale</span>
+      <span class='name'>time</span>
       <span class='type'>
-        (<tt>Float</tt>)
+        (<tt>Integer</tt>)
       </span>
       &mdash;
-      <span class='desc'>the scale</span>
+      <span class='desc'>The timespan to animate over</span>
     </li>
   </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='drawTitle-instance'>
+      - (JQuery) <strong>drawTitle</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Draws the title</p>
+</div>
+<div class='tags'>
   <h3>Returns:</h3>
   <ul class='return'>
     <li>
       <span class='type'></span>
-      (<tt>Raphael</tt>)
+      (<tt>JQuery</tt>)
       &mdash;
       <span class='desc'>the text object</span>
     </li>
@@ -499,46 +504,8 @@
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='_drawGridLines-instance'>
-      - (Raphael) <strong>_drawGridLines</strong>(x, width)
-    </p>
-    <div class='docstring'>
-  <p>Draws the gridlines</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>x</span>
-      <span class='type'>
-        (<tt>Integer</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the x position</span>
-    </li>
-    <li>
-      <span class='name'>width</span>
-      <span class='type'>
-        (<tt>Integer</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the width</span>
-    </li>
-  </ul>
-  <h3>Returns:</h3>
-  <ul class='return'>
-    <li>
-      <span class='type'></span>
-      (<tt>Raphael</tt>)
-      &mdash;
-      <span class='desc'>the lines object</span>
-    </li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='_drawRedLine-instance'>
-      - (void) <strong>_drawRedLine</strong>(x)
+    <p class='signature' id='drawRedLine-instance'>
+      - (void) <strong>drawRedLine</strong>(x)
     </p>
     <div class='docstring'>
   <p>Draws a red line over the chart</p>
@@ -561,7 +528,7 @@
     </div>
     <div id='footer'>
   Generated on
-  Sun May 19 2013 15:38:42 GMT+0200 (W. Europe Daylight Time)
+  Sun Jun 02 2013 15:47:57 GMT+0200 (W. Europe Daylight Time)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

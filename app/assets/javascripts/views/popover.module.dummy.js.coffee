@@ -54,9 +54,8 @@ class View.DummyModuleProperties extends View.ModuleProperties
 	_createHeader: ( ) ->
 		@_header = $('<div class="popover-title"></div>')
 
-		onclick = () => @_trigger( 'module.creation.aborted', @_parent )
 		@_closeButton = $('<button class="close">&times;</button>')
-		@_closeButton.on('click', onclick ) if onclick?
+		@_closeButton.on('click', @_close )
 		
 		@_header.append @title
 		@_header.append @_closeButton
@@ -68,12 +67,11 @@ class View.DummyModuleProperties extends View.ModuleProperties
 	# @param saveText [String] the text on the save button
 	# @return [Array<jQuery.Elem>] the footer and the button element
 	#
-	_createFooter: ( removeText = '<i class="icon-trash icon-white"></i>', saveText = '<i class=" icon-ok icon-white"></i> Save' ) ->
+	_createFooter: ( removeText = '<i class="icon-trash icon-white"></i>', saveText = '<i class=" icon-ok icon-white"></i> Create' ) ->
 		@_footer = $('<div class="modal-footer"></div>')
 
-		save = () => @_save()
 		@_saveButton = $('<button class="btn btn-primary">' + saveText + '</button>')
-		@_saveButton.on('click', save ) if save?
+		@_saveButton.click @_save 
 
 		@_footer.append @_saveButton
 		return [ @_footer, @_saveButton ]
@@ -110,10 +108,18 @@ class View.DummyModuleProperties extends View.ModuleProperties
 		properties.parameters.push('amount')
 		return properties
 
+	# Closes the module
+	#
+	_close: ( ) =>
+		@_trigger( 'module.creation.aborted', @_parent )
+		@_elem.find('input').blur()
+
 	# Saves all changed properties to the module.
 	#
-	_save: ( ) ->
+	_save: ( ) =>
 		@_trigger('module.creation.finished', @_parent, [@_changes])
+		@_elem.find('input').blur()
+		@_changes = {}
 
 	# Binds an on change event to a selectable input that sets the key
 	#
@@ -132,6 +138,7 @@ class View.DummyModuleProperties extends View.ModuleProperties
 						@_changes[ key ] = _( @_changes[ key ] ).without value
 				else
 					@_changes[ key ] = value
+				@_trigger "module.properties.change", @_parent , [ key, value]
 			)
 		) key
 

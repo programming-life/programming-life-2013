@@ -11,7 +11,7 @@ class Helper.Mixable
 	@extend: ( classmixins... ) ->
 	
 		for mixin in classmixins
-			for key, value of mixin when key not in Helper.Mixable.ModuleKeyWords
+			for key, value of mixin when key not in Mixable.ModuleKeyWords
 				@[ key ] = value
 			
 			mixin.extended?.apply( @ )
@@ -23,7 +23,7 @@ class Helper.Mixable
 	#
 	@include: ( instancemixins... ) ->
 		for mixin in instancemixins
-			for key, value of mixin when key not in Helper.Mixable.ModuleKeyWords
+			for key, value of mixin when key not in Mixable.ModuleKeyWords
 				# Assign properties to the prototype
 				@::[ key ] = value
 

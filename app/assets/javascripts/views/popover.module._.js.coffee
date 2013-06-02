@@ -51,9 +51,8 @@ class View.ModuleProperties extends View.HTMLPopOver
 	_createHeader: ( ) ->
 		@_header = $('<div class="popover-title"></div>')
 
-		onclick = () => @_trigger( 'module.selected.changed', @module, [ off ] )
 		@_closeButton = $('<button class="close">&times;</button>')
-		@_closeButton.on('click', onclick ) if onclick?
+		@_closeButton.on('click', @_close )
 		
 		@_header.append @title
 		@_header.append @_closeButton
@@ -75,14 +74,11 @@ class View.ModuleProperties extends View.HTMLPopOver
 	_createFooter: ( removeText = '<i class="icon-trash icon-white"></i>', saveText = '<i class=" icon-ok icon-white"></i> Save' ) ->
 		@_footer = $('<div class="modal-footer"></div>')
 
-		remove = () => @_remove()
 		@_removeButton = $('<button class="btn btn-danger pull-left">' + removeText + '</button>')
-		@_removeButton.on('click', remove ) if remove?
+		@_removeButton.on('click', @_remove )
 
-		save = () => @_save()
 		@_saveButton = $('<button class="btn btn-primary">' + saveText + '</button>')
-		@_saveButton.on('click', save ) if save?
-
+		@_saveButton.click @_save
 	
 		@_footer.append @_removeButton
 		@_footer.append @_saveButton
@@ -135,6 +131,10 @@ class View.ModuleProperties extends View.HTMLPopOver
 		for section in sections
 			form.append section
 
+		form.find('input[type=text]').click( ( e ) ->
+			$(@).select()
+		)
+
 		@_body.append form
 
 	# Draws input 
@@ -171,14 +171,14 @@ class View.ModuleProperties extends View.HTMLPopOver
 				controls.append @_drawParameter( id, key, value )
 
 			when 'metabolites'
-				controls.append @_drawMetabolite( id, key, v ) for v in value
+				#controls.append @_drawMetabolite( id, key, v ) for v in value
 				controls.append @_drawSelectionFor( type, drawtype, id, key, value )
 					
 			when 'dna'
 				controls.append @_drawDNA( id, key, value )
 			
 			when 'compounds'
-				controls.append @_drawCompound( id, key, v ) for v in value
+				#controls.append @_drawCompound( id, key, v ) for v in value
 				controls.append @_drawSelectionFor( type, drawtype, id, key, value )
 
 			when 'enumeration'
@@ -265,10 +265,11 @@ class View.ModuleProperties extends View.HTMLPopOver
 	# 
 	_bindOnChange: ( key, input ) ->
 		((key) => 
-			input.on('change', (event) => 
+			input.on('keyup', (event) => 
 				value = event.target.value
 				value = parseFloat value unless isNaN value
 				@_changes[ key ] = value
+				@_trigger "module.properties.change", @_parent , [ key, value]
 			)
 		) key
 		
@@ -342,9 +343,13 @@ class View.ModuleProperties extends View.HTMLPopOver
 			elem = $( "<input type='#{selectable.type}' name='#{selectable.name}' id='#{selectable.id}-#{option}' value='#{option}'>" )
 			elem.prop( 'checked', values.contains(option) )
 			@_bindOnSelectableChange( selectable.key, elem )
+
+			text = option?.split( '#' )[0]
+			color = View.Module::hashColor text	
 			
 			display_name = option.replace( /#(.*)/, '' )
-			labeltext = $("<span class='badge #{if !options.contains(option) then 'unknown' else ''}'>#{display_name}</span>")
+			labeltext = $("<span class='badge #{selectable.drawtype} #{if !options.contains(option) then 'unknown' else ''}'>#{display_name}</span>")
+			labeltext.css('background', color)
 			label.append elem
 			label.append labeltext 
 			selectable.container.append label
@@ -364,13 +369,12 @@ class View.ModuleProperties extends View.HTMLPopOver
 	# @param selected [Boolean] is selected flag
 	#
 	_setSelectablesVisibility: ( selected ) ->
-		@_getThisForm()
-			.find( '[data-selectable-value]' )
-			.css( 'display', if selected then 'none' else 'inline-block' )
+		if selected
+			@_getThisForm().find( '[data-selectable]').find('input').parent().removeClass('selectable-hide')
+		else
+			@_getThisForm().find( '[data-selectable]').find('input:not(:checked)').parent().addClass('selectable-hide')			
 			
-		@_getThisForm()
-			.find( '[data-selectable]' )
-			.css( 'display', if selected then 'inline-block' else 'none' )
+		#.css( 'display', if selected then 'inline-block' else 'none' )
 		
 	# Gets this form element
 	#
@@ -393,14 +397,35 @@ class View.ModuleProperties extends View.HTMLPopOver
 			
 		@_setSelectablesVisibility( selected )
 
+		if selected	
+			@_elem.focus()
+			@_elem.find('input[type=text]:enabled').first().select()
+
+			@_elem.keyup( ( e ) => 
+				switch e.keyCode
+					when 27
+						@_close()
+					when 13
+						@_save()
+			)
+		else
+			@_elem.find('input').blur()
+			@_elem.off('keyup')
+
 	# Returns the properties of our module
 	#
 	_getModuleProperties: () ->
 		return @module.metadata.properties
 
+	# Closes the module
+	#
+	_close: ( ) =>
+		@_trigger( 'module.selected.changed', @module, [ off ] )
+
+
 	# Saves all changed properties to the module.
 	#
-	_save: ( ) ->	
+	_save: ( ) =>	
 		for key, value of @_changes
 			@module[ key ] = value
 			
@@ -410,7 +435,8 @@ class View.ModuleProperties extends View.HTMLPopOver
 	
 	# Removes this module from the cell
 	#
-	_remove: ( ) ->	
+	_remove: ( ) =>	
+		@_trigger('module.selected.changed', @module, [ off ])
 		@_cell.remove(@module)
 			
 	# Runs when a compound is changed (added/removed)

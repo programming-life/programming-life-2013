@@ -4,16 +4,62 @@
 
 # The controller for the Main action and view
 #
-class Controller.Main
+class Controller.Main extends Controller.Base
+	
+	@concern Mixin.TimeMachine
 
 	# Creates a new instance of Main
 	#
 	# @param container [String, Object] A string with an id or a DOM node to serve as a container for the view
+	# @param view [View.Main] the view for this controller
 	#
-	constructor: ( @container ) ->
-		@view = new View.Main @container
+	constructor: ( @container, view ) ->
+		super view ? ( new View.Main @container )
+
+		@_allowTimeMachine()
+		@timemachines = []
+	
+		@_createChildren()
+		@_createBindings()
+
 		
-		$( '#actions' ).on( 'click', '[data-action]', @onAction )
+	# Creates children
+	#
+	_createChildren: () ->
+		@addChild 'cell', new Controller.Cell( @view.paper, @view )
+		@timemachines.push @controller("cell").model.timemachine
+		@timemachine.setRoot new Model.Node(@controller("cell").model.tree.root.object)
+		@addChild 'graphs', new Controller.Graphs( @view.paper )
+		@addChild 'undo', new Controller.Undo( @timemachine )
+		
+		@view.add @controller('cell').view
+		@view.add @controller('graphs').view
+		@view.addToLeftPane @controller('undo').view
+		
+	# Creates bindings
+	#
+	_createBindings: () ->
+		
+		@view.bindActionButtonClick( () => @onAction( arguments... ) ) 
+	
+		@_bind( 'view.cell.set', @, 
+			( cell ) => @controller('undo').setTimeMachine( @timemachine ) 
+		)
+		
+		@_bind( 'module.selected.changed', @, 
+			(module, selected) => 
+				@controller('undo').setTimeMachine if selected
+					module.timemachine 
+				else 
+					@timemachine 
+		)
+		@_bind( 'cell.metabolite.added', @, @addTimeMachine )
+		@_bind( 'cell.module.added', @, @addTimeMachine )
+		@_bind( 'tree.node.added', @, 
+			( tree, node ) => 
+				if tree in @timemachines
+					@addUndoableEvent(node.object)
+		)
 		
 	# Loads a new cell into the main view
 	#
@@ -22,8 +68,8 @@ class Controller.Main
 	# @return [jQuery.Promise] the promise
 	#
 	load: ( cell_id, callback ) ->
-		promise = @view.load cell_id, callback
-		promise.done( () => @_setCellNameActionField( @view.cell.model.name ) )
+		promise =  @controller('cell').load cell_id, callback
+		promise.always( () => @_setCellNameActionField( @controller('cell').model.name ) )
 		return promise
 		
 	# Saves the main view cell
@@ -32,16 +78,14 @@ class Controller.Main
 	#
 	save: () ->
 		name = @_getCellNameActionField()
-		return @view.save( name )
+		return @controller('cell').save( name )
 		
 	# Gets the cell name from the action field
 	#
 	# @return [String] the cell name
 	#
 	_getCellNameActionField: () ->
-		value = $( '#cell_name' ).val()
-		return null if value.length is 0
-		return value ? null
+		return @view.getCellName()
 		
 	# Sets the cell name to the action field
 	# 
@@ -49,32 +93,21 @@ class Controller.Main
 	# @return [self] chainable self
 	#
 	_setCellNameActionField: ( name ) ->
-		value = $( '#cell_name' ).val name
+		@view.setCellName name
 		return this
 		
 	# Gets the progress bar
 	#
 	_getProgressBar: () ->
-		return $( '#progress' )
+		return @view.getProgressBar()
 	
 	# Sets the progress bar
 	#
 	# @param value [Integer] the current value
 	#
 	_setProgressBar: ( value ) =>
-		@_getProgressBar().find( '.bar' ).css( 'width', "#{value * 100 / @_num + 100 / @_num * @_curr }%" )
-		if ( value is 1 )
-			if ++@_curr is @_num
-				@_getProgressBar().css( 'opacity', 0 )
-			
+		@view.setProgressBar value / @_iterations + 1 / @_iterations * @_currentIteration
 		return this
-	
-	# Finds the action buttons
-	#
-	# @return [jQuery.Collection] the action buttons
-	#
-	_findActionButtons: () ->
-		return $( '#actions' ).find( '[data-action]' )
 		
 	# Runs on an action (click)
 	#
@@ -82,21 +115,11 @@ class Controller.Main
 	#
 	onAction: ( event ) =>
 		
-		@_findActionButtons()
-			.removeClass( 'btn-success' )
-			.removeClass( 'btn-danger' )
-			.prop( { disabled :  true } )
-			.filter( ':not([data-toggle])' )
-				.filter( ':not([class*="btn-warning"])' )
-				.find( 'i' )
-					.removeClass( 'icon-white' )
-
-		enable = () => 
-			@_findActionButtons()
-				.prop( 'disabled', false )
+		@view.resetActionButtons()
+		enable = () => @view.enableActionButtons()
 			
-		success = () => target.button( 'success' ).addClass( 'btn-success' ) 
-		error = () => target.button( 'error' ).addClass( 'btn-danger' ) 
+		success = () => @view.setButtonState( target, 'success', 'btn-success' ) 
+		error = () => @view.setButtonState( target, 'error', 'btn-danger' ) 
 		
 		target = $( event.currentTarget )
 		action = target.data( 'action' )
@@ -115,7 +138,7 @@ class Controller.Main
 	# @param error [Function] function to run on error
 	#
 	onSave: ( target, enable, success, error ) ->
-		target.button('loading')
+		@view.setButtonState target, 'loading'
 		@save().always( enable )
 			.done( success )
 			.fail( error )
@@ -128,8 +151,7 @@ class Controller.Main
 	# @param error [Function] function to run on error
 	#
 	onLoad: ( target, enable, success, error ) ->
-		target.button('loading')
-				
+		@view.setButtonState target, 'loading'
 		confirm = ( id ) =>
 			if id?
 				@load( id )
@@ -154,8 +176,7 @@ class Controller.Main
 	# @param error [Function] function to run on error
 	#
 	onReport: ( target, enable, success, error ) ->
-	
-		target.button('loading')
+		@view.setButtonState target, 'loading'
 		@save().then( ( cell ) =>
 				cell = cell[0] if _( cell ).isArray()
 				return $.post( '/reports.json', { report: { cell_id: cell.cell_id } } )
@@ -174,17 +195,19 @@ class Controller.Main
 	# @param enable [Function] function to re-enable buttons
 	# @param succes [Function] function to run on success
 	# @param error [Function] function to run on error
+	# @todo action should be more dynamic for child controllers and views
 	#
 	onReset: ( target, enable, success, error ) ->
-		@_findActionButtons()
-			.button( 'reset' )
+		@view.resetActionButtonState()
 		
-		confirm = () =>
-			@view.kill()
+		action = () =>
+			@kill()
 			Model.EventManager.clear()
 			@view = new View.Main @container
+			@_createChildren()
+			@_createBindings()
 			
-		@view.confirmReset( confirm )
+		@view.confirmReset action
 		
 	# On Simulate Button clicked
 	#
@@ -193,28 +216,37 @@ class Controller.Main
 	# @param succes [Function] function to run on success
 	# @param error [Function] function to run on error
 	#
+	# @todo hack remove
+	#
 	onSimulate: ( target, enable, success, error ) ->
 		target.attr( 'disabled', false )
-		action = not target.hasClass( 'active' )
+		startSimulateFlag = not target.hasClass( 'active' )
 		
-		# hack
-		@_num = 2
-		@_curr = 0
-		
-		[ ppromise, token ] = @view.toggleSimulation action
-		if action
+		iterationDone = ( results, from, to ) =>
+			@controller( 'graphs' ).show( results.datasets, @_currentIteration > 0 )
+			@_currentIteration++
+			@_setProgressBar 0
+			
+		@_iterations = 4
+		@_currentIteration = 0
+		[ token, progress_promise ] = @controller('cell').setSimulationState startSimulateFlag, iterationDone, 20, @_iterations
+		if startSimulateFlag is on
 			@_token = token
-			@_getProgressBar().css( 'visibility', 'visible' )
-			@_getProgressBar().css( 'opacity', 1 )
-			ppromise.progress @_setProgressBar
-			ppromise.always enable
-			ppromise.always () -> target.button( 'toggle' ) if target.hasClass( 'active' )
+			@view.showProgressBar()
+			progress_promise.progress @_setProgressBar
+			progress_promise.always enable
+			progress_promise.always () => @view.setButtonState( target, 'toggle' ) if target.hasClass( 'active' )
+			progress_promise.done () => @view.hideProgressBar()
 		else
 			@_token?.cancel()
-			@_getProgressBar().css( 'opacity', 0 )
+			@view.hideProgressBar()
 			enable()
-				
-	# Kills this controller
+	
+	# Adds a timemachine to the list of timemachines this timemachine can control
 	#
-	kill: () ->
-		$( '#actions' ).find( '[data-action]' ).removeProp( 'disabled' )
+	# @param cell [Model.Cell] The source of the event
+	# @param tm [Mixin.TimeMachine] The object containing the timemachine
+	#
+	addTimeMachine: ( cell, tm ) ->
+		if cell is @controller("cell").model
+			@timemachines.push tm.timemachine

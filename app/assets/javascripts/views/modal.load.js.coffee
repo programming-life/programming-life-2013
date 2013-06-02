@@ -73,13 +73,13 @@ class View.LoadModal extends View.HTMLModal
 	# @return [Date]
 	# 
 	_parseDate: ( date ) ->
+		#console.log date
 		matchOffset = /(Z|([+-])(\d\d):(\d\d))$/
 		offset = matchOffset.exec date
-		result = new Date( date.replace( 'T', ' ' ).replace( matchOffset, '' ) )
-		timezone = 0
+		result = new Date( date.replace( 'T', 'T' ).replace( matchOffset, 'Z' ) )
 		unless offset[ 1 ] is 'Z' 
 			timezone = ( if offset[ 2 ] is '+' then -1 else 1 ) * ( offset[ 3 ] * 60 + Number( offset[ 3 ] ) )
-		result.setMinutes( result.getMinutes() + timezone - result.getTimezoneOffset() )
+			result.setMinutes( result.getMinutes() + timezone ) #- result.getTimezoneOffset() 
 		
 		time = $ "<time datetime='#{date}' title='#{result}'></time>"
 		time.append ( @_prettifyDate result )

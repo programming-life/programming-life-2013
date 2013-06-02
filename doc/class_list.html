@@ -2,7 +2,7 @@
 <html>
   <head>
   <meta charset='UTF-8'>
-  <title>CoffeeScript API Documentation</title>
+  <title>Broyologramming Life API Documentation</title>
   <link rel='stylesheet' href='assets/codo.css' type='text/css'>
   <script src='assets/codo.js'></script>
   <script src='assets/search_data.js'></script>
@@ -13,6 +13,7 @@
       <nav>
   <a target='_self' href='class_list.html'>Classes</a>
   <a target='_self' href='mixin_list.html'>Mixins</a>
+  <a target='_self' href='file_list.html'>Files</a>
   <a target='_self' href='method_list.html'>Methods</a>
   <a target='_self' href='extra_list.html'>Extras</a>
 </nav>
@@ -28,9 +29,87 @@
         </li>
       <ul>
         <li>
-          <a href='classes/Controller/Main.html' target='main'>Main</a>
+          <a href='classes/Controller/Cell.html' target='main'>Cell</a>
+          <small class='parent'>
+            <
+            Controller.Base
+          </small>
           <small class='namespace'>
             Controller
+          </small>
+        </li>
+        <li>
+          <a href='classes/Controller/Graph.html' target='main'>Graph</a>
+          <small class='parent'>
+            <
+            Controller.Base
+          </small>
+          <small class='namespace'>
+            Controller
+          </small>
+        </li>
+        <li>
+          <a href='classes/Controller/Graphs.html' target='main'>Graphs</a>
+          <small class='parent'>
+            <
+            Controller.Base
+          </small>
+          <small class='namespace'>
+            Controller
+          </small>
+        </li>
+        <li>
+          <a href='classes/Controller/Main.html' target='main'>Main</a>
+          <small class='parent'>
+            <
+            Controller.Base
+          </small>
+          <small class='namespace'>
+            Controller
+          </small>
+        </li>
+        <li>
+          <a href='classes/Controller/Report.html' target='main'>Report</a>
+          <small class='parent'>
+            <
+            Controller.Base
+          </small>
+          <small class='namespace'>
+            Controller
+          </small>
+        </li>
+        <li>
+          <a href='classes/Controller/Undo.html' target='main'>Undo</a>
+          <small class='parent'>
+            <
+            Controller.Base
+          </small>
+          <small class='namespace'>
+            Controller
+          </small>
+        </li>
+        <li>
+          <a href='classes/Controller/Base.html' target='main'>Base</a>
+          <small class='parent'>
+            <
+            Helper.Mixable
+          </small>
+          <small class='namespace'>
+            Controller
+          </small>
+        </li>
+      </ul>
+        
+        <li>
+          <span>
+            Mixin
+          </span>
+        </li>
+      <ul>
+        <li>
+          <a href='classes/Mixin/Catcher.html' target='main'>Catcher</a>
+          <small class='namespace'>
+            Mixin
           </small>
         </li>
       </ul>
@@ -159,12 +238,20 @@
         </li>
         <li>
           <a href='classes/Model/Node.html' target='main'>Node</a>
+          <small class='parent'>
+            <
+            Helper.Mixable
+          </small>
           <small class='namespace'>
             Model
           </small>
         </li>
         <li>
           <a href='classes/Model/Tree.html' target='main'>Tree</a>
+          <small class='parent'>
+            <
+            Helper.Mixable
+          </small>
           <small class='namespace'>
             Model
           </small>
@@ -182,13 +269,73 @@
       </ul>
         
         <li>
+          <a href='classes/CancelToken.html' target='main'>CancelToken</a>
+          <small class='namespace'>
+            
+          </small>
+        </li>
+        <li>
           <span>
             View
           </span>
         </li>
       <ul>
         <li>
-          <a href='classes/View/Action.html' target='main'>Action</a>
+          <a href='classes/View/Collection.html' target='main'>Collection</a>
+          <small class='parent'>
+            <
+            Helper.Mixable
+          </small>
+          <small class='namespace'>
+            View
+          </small>
+        </li>
+        <li>
+          <a href='classes/View/ConfirmModal.html' target='main'>ConfirmModal</a>
+          <small class='parent'>
+            <
+            View.HTMLModal
+          </small>
+          <small class='namespace'>
+            View
+          </small>
+        </li>
+        <li>
+          <a href='classes/View/LoadModal.html' target='main'>LoadModal</a>
+          <small class='parent'>
+            <
+            View.HTMLModal
+          </small>
+          <small class='namespace'>
+            View
+          </small>
+        </li>
+        <li>
+          <a href='classes/View/HTMLModal.html' target='main'>HTMLModal</a>
+          <small class='parent'>
+            <
+            Helper.Mixable
+          </small>
+          <small class='namespace'>
+            View
+          </small>
+        </li>
+        <li>
+          <a href='classes/View/Pane.html' target='main'>Pane</a>
+          <small class='parent'>
+            <
+            Helper.Mixable
+          </small>
+          <small class='namespace'>
+            View
+          </small>
+        </li>
+        <li>
+          <a href='classes/View/DummyModuleProperties.html' target='main'>DummyModuleProperties</a>
+          <small class='parent'>
+            <
+            View.ModuleProperties
+          </small>
           <small class='namespace'>
             View
           </small>
@@ -198,6 +345,16 @@
           <small class='parent'>
             <
             View.HTMLPopOver
+          </small>
+          <small class='namespace'>
+            View
+          </small>
+        </li>
+        <li>
+          <a href='classes/View/CellNotification.html' target='main'>CellNotification</a>
+          <small class='parent'>
+            <
+            View.Notification
           </small>
           <small class='namespace'>
             View
@@ -267,6 +424,16 @@
           <a href='classes/View/DummyModule.html' target='main'>DummyModule</a>
           <small class='parent'>
             <
+            View.RaphaelBase
+          </small>
+          <small class='namespace'>
+            View
+          </small>
+        </li>
+        <li>
+          <a href='classes/View/ModulePreview.html' target='main'>ModulePreview</a>
+          <small class='parent'>
+            <
             View.Module
           </small>
           <small class='namespace'>
@@ -284,7 +451,7 @@
           </small>
         </li>
         <li>
-          <a href='classes/View/Node.html' target='main'>Node</a>
+          <a href='classes/View/Report.html' target='main'>Report</a>
           <small class='parent'>
             <
             View.RaphaelBase
@@ -294,27 +461,7 @@
           </small>
         </li>
         <li>
-          <a href='classes/View/Pane.html' target='main'>Pane</a>
-          <small class='parent'>
-            <
-            View.RaphaelBase
-          </small>
-          <small class='namespace'>
-            View
-          </small>
-        </li>
-        <li>
-          <a href='classes/View/Play.html' target='main'>Play</a>
-          <small class='parent'>
-            <
-            View.RaphaelBase
-          </small>
-          <small class='namespace'>
-            View
-          </small>
-        </li>
-        <li>
-          <a href='classes/View/Tree.html' target='main'>Tree</a>
+          <a href='classes/View/Spline.html' target='main'>Spline</a>
           <small class='parent'>
             <
             View.RaphaelBase
@@ -325,6 +472,16 @@
         </li>
         <li>
           <a href='classes/View/RaphaelBase.html' target='main'>RaphaelBase</a>
+          <small class='parent'>
+            <
+            View.Collection
+          </small>
+          <small class='namespace'>
+            View
+          </small>
+        </li>
+        <li>
+          <a href='classes/View/Undo.html' target='main'>Undo</a>
           <small class='parent'>
             <
             Helper.Mixable

@@ -2,7 +2,7 @@
 <html>
   <head>
   <meta charset='UTF-8'>
-  <title>CoffeeScript API Documentation</title>
+  <title>Broyologramming Life API Documentation</title>
   <link rel='stylesheet' href='../../assets/codo.css' type='text/css'>
   <script src='../../assets/codo.js'></script>
   <script src='../../assets/search_data.js'></script>
@@ -28,6 +28,7 @@
     <div id='search'>
       <a id='class_list_link' href='../../class_list.html'>Classes</a>
       <a id='mixin_list_link' href='../../mixin_list.html'>Mixins</a>
+      <a id='file_list_link' href='../../file_list.html'>Files</a>
       <a id='method_list_link' href='../../method_list.html'>Methods</a>
       <a id='extra_list_link' href='../../extra_list.html'>Extras</a>
     </div>
@@ -121,6 +122,12 @@
             <a href='../../classes/View/RaphaelBase.html'>View.RaphaelBase</a>
           </td>
         </tr>
+        <tr>
+          <td>Concerns:</td>
+          <td>
+            <a href='../../mixins/Mixin/EventBindings.html'>Mixin.EventBindings</a>
+          </td>
+        </tr>
       </table>
       <h2>Overview</h2>
       <div class='docstring'>
@@ -133,14 +140,11 @@
         <dt id='MAX_RUNTIME-constant'>
           MAX_RUNTIME
           =
-          <div class='docstring'>
-  <p>Maximum t for the cell simulation</p>
-</div>
-<div class='tags'>
+          <div class='tags'>
 </div>
         </dt>
         <dd>
-          <pre><code class='coffee'>100</code></pre>
+          <pre><code class='coffee'>50</code></pre>
         </dd>
       </dl>
       <h2>Instance Method Summary</h2>
@@ -148,7 +152,7 @@
   <li>
     <span class='signature'>
       <a href='#constructor-instance'>
-        - (void) <strong>constructor</strong>(paper, cell, container = "#graphs")
+        - (void) <strong>constructor</strong>(paper, parent, cell, _interaction = true)
       </a>
     </span>
     <span class='constructor note title'>Constructor</span>
@@ -158,22 +162,42 @@
   </li>
   <li>
     <span class='signature'>
+      <a href='#_defineAccessors-instance'>
+        - (void) <strong>_defineAccessors</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Defines the accessors for this view
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_addInteraction-instance'>
+        - (void) <strong>_addInteraction</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Adds interaction to the cell
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#setCell-instance'>
+        - (void) <strong>setCell</strong>(value)
+      </a>
+    </span>
+    <span class='desc'>
+      Sets the displayed cell to value
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
       <a href='#kill-instance'>
         - (void) <strong>kill</strong>()
       </a>
     </span>
     <span class='desc'>
-      
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#getBBox-instance'>
-        - (void) <strong>getBBox</strong>()
-      </a>
-    </span>
-    <span class='desc'>
-      
+      Kills the cell view by resetting itself and its children
     </span>
   </li>
   <li>
@@ -183,7 +207,77 @@
       </a>
     </span>
     <span class='desc'>
+      Creates the interaction buttons
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#getBBox-instance'>
+        - (Object) <strong>getBBox</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Returns the bounding box of this view
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#getPoint-instance'>
+        - ([float, float) <strong>getPoint</strong>(location)
+      </a>
+    </span>
+    <span class='desc'>
+      Returns the coordinates of either the entrance or exit of this view
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#getAbsolutePoint-instance'>
+        - (void) <strong>getAbsolutePoint</strong>(location)
+      </a>
+    </span>
+    <span class='desc'>
       
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#add-instance'>
+        - (void) <strong>add</strong>(view)
+      </a>
+    </span>
+    <span class='desc'>
+      Add a view to draw in the container
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#remove-instance'>
+        - (void) <strong>remove</strong>(view)
+      </a>
+    </span>
+    <span class='desc'>
+      Removes a view from the container
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#getView-instance'>
+        - (Module.View) <strong>getView</strong>(module)
+      </a>
+    </span>
+    <span class='desc'>
+      Get module view for the given module
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#draw-instance'>
+        - (void) <strong>draw</strong>(x = 0, y = 0, _radius = 400)
+      </a>
+    </span>
+    <span class='desc'>
+      Draws the cell
     </span>
   </li>
   <li>
@@ -198,12 +292,22 @@
   </li>
   <li>
     <span class='signature'>
-      <a href='#draw-instance'>
-        - (void) <strong>draw</strong>(x, y, scale)
+      <a href='#_drawCell-instance'>
+        - (Raphael) <strong>_drawCell</strong>()
       </a>
     </span>
     <span class='desc'>
-      Draws the cell
+      Draws the cell on coordinates
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#getViewPlacement-instance'>
+        - ([float, float) <strong>getViewPlacement</strong>(view)
+      </a>
+    </span>
+    <span class='desc'>
+      Returns the location for a module view
     </span>
   </li>
   <li>
@@ -214,7 +318,7 @@
     </span>
     <span class='bound note title'>Bound</span>
     <span class='desc'>
-      On module added, add it from the cell
+      On module added, add it to the cell
     </span>
   </li>
   <li>
@@ -230,112 +334,34 @@
   </li>
   <li>
     <span class='signature'>
-      <a href='#getLocationForModule-instance'>
-        - (Object) <strong>getLocationForModule</strong>(module, params)
+      <a href='#onSplineAdd-instance'>
+        - (void) <strong>onSplineAdd</strong>(cell, spline)
       </a>
     </span>
+    <span class='bound note title'>Bound</span>
     <span class='desc'>
-      Returns the location for a module
+      On spline added, add it to the cell and draw
     </span>
   </li>
   <li>
     <span class='signature'>
-      <a href='#getView-instance'>
-        - (Module.View) <strong>getView</strong>(module)
+      <a href='#onSplineRemove-instance'>
+        - (void) <strong>onSplineRemove</strong>(cell, spline)
       </a>
     </span>
+    <span class='bound note title'>Bound</span>
     <span class='desc'>
-      Get module view for the given module
+      On spline removed, remove it from the cell and kill it
     </span>
   </li>
   <li>
     <span class='signature'>
-      <a href='#_getCellData-instance'>
-        - (Object) <strong>_getCellData</strong>(duration, base_values = [], dt = 1, iteration = 0)
+      <a href='#previewModule-instance'>
+        - (void) <strong>previewModule</strong>(source, module, selected)
       </a>
     </span>
     <span class='desc'>
-      Get the simulation data from the cell
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#_getGraphPlacement-instance'>
-        - (Object) <strong>_getGraphPlacement</strong>(basex, basey, scale, graph_num)
-      </a>
-    </span>
-    <span class='desc'>
-      Get the graph placement
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#_drawGraphs-instance'>
-        - (Object) <strong>_drawGraphs</strong>(datasets, x, y, scale, append = false)
-      </a>
-    </span>
-    <span class='desc'>
-      Draw the graphs with the data from the datasets
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#_redrawGraphs-instance'>
-        - (void) <strong>_redrawGraphs</strong>()
-      </a>
-    </span>
-    <span class='desc'>
-      Redraw graphs
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#startSimulation-instance'>
-        - (void) <strong>startSimulation</strong>(step_duration = 20, step_update = 2000, dt = 1)
-      </a>
-    </span>
-    <span class='desc'>
-      Starts drawing the simulation
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#_step-instance'>
-        - (Array&lt;Float&gt;) <strong>_step</strong>(duration, dt, base_values)
-      </a>
-    </span>
-    <span class='desc'>
-      Steps the simulation
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#_simulate-instance'>
-        - (void) <strong>_simulate</strong>(step)
-      </a>
-    </span>
-    <span class='desc'>
-      Simulation handler Actually loops the simulation.
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#stopSimulation-instance'>
-        - (void) <strong>stopSimulation</strong>()
-      </a>
-    </span>
-    <span class='desc'>
-      Stops the simulation
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#_drawRedLines-instance'>
-        - (void) <strong>_drawRedLines</strong>(x)
-      </a>
-    </span>
-    <span class='desc'>
-      Draws red lines
+      Creates or removes a preview view for a module
     </span>
   </li>
 </ul>
@@ -348,13 +374,29 @@
       </h3>
       <p class='inherited'>
                 <a href='../../classes/View/RaphaelBase.html#constructor-instance'>#constructor</a>,
+                <a href='../../classes/View/RaphaelBase.html#_catcher-instance'>#_catcher</a>,
+                <a href='../../classes/View/RaphaelBase.html#getBBox-instance'>#getBBox</a>,
                 <a href='../../classes/View/RaphaelBase.html#clear-instance'>#clear</a>,
+                <a href='../../classes/View/RaphaelBase.html#kill-instance'>#kill</a>,
+                <a href='../../classes/View/RaphaelBase.html#setPosition-instance'>#setPosition</a>,
+                <a href='../../classes/View/RaphaelBase.html#moveTo-instance'>#moveTo</a>,
+                <a href='../../classes/View/RaphaelBase.html#move-instance'>#move</a>,
                 <a href='../../classes/View/RaphaelBase.html#draw-instance'>#draw</a>,
                 <a href='../../classes/View/RaphaelBase.html#redraw-instance'>#redraw</a>,
-                <a href='../../classes/View/RaphaelBase.html#addView-instance'>#addView</a>,
-                <a href='../../classes/View/RaphaelBase.html#removeView-instance'>#removeView</a>,
-                <a href='../../classes/View/RaphaelBase.html#resize-instance'>#resize</a>,
-        <a href='../../classes/View/RaphaelBase.html#kill-instance'>#kill</a>
+        <a href='../../classes/View/RaphaelBase.html#getAbsoluteCoords-instance'>#getAbsoluteCoords</a>
+      </p>
+      <h3 class='inherited'>
+        Methods inherited from
+        <a href='../../classes/View/Collection.html'>View.Collection</a>
+      </h3>
+      <p class='inherited'>
+                <a href='../../classes/View/Collection.html#constructor-instance'>#constructor</a>,
+                <a href='../../classes/View/Collection.html#clear-instance'>#clear</a>,
+                <a href='../../classes/View/Collection.html#kill-instance'>#kill</a>,
+                <a href='../../classes/View/Collection.html#add-instance'>#add</a>,
+                <a href='../../classes/View/Collection.html#remove-instance'>#remove</a>,
+                <a href='../../classes/View/Collection.html#draw-instance'>#draw</a>,
+        <a href='../../classes/View/Collection.html#redraw-instance'>#redraw</a>
       </p>
       <h3 class='inherited'>
         Methods inherited from
@@ -365,11 +407,27 @@
                 <a href='../../classes/Helper/Mixable.html#include-class'>.include</a>,
         <a href='../../classes/Helper/Mixable.html#concern-class'>.concern</a>
       </p>
+      <h2>
+        <small>Concern Method Summary</small>
+      </h2>
+      <h3 class='included'>
+        Methods mixed in from
+        <a href='../../mixins/Mixin/EventBindings.html'>Mixin.EventBindings</a>
+      </h3>
+      <p class='included'>
+                <a href='../../mixins/Mixin/EventBindings.html#_allowEventBindings-instance'>#_allowEventBindings</a>,
+                <a href='../../mixins/Mixin/EventBindings.html#_unbindAll-instance'>#_unbindAll</a>,
+                <a href='../../mixins/Mixin/EventBindings.html#_bind-instance'>#_bind</a>,
+                <a href='../../mixins/Mixin/EventBindings.html#_unbind-instance'>#_unbind</a>,
+                <a href='../../mixins/Mixin/EventBindings.html#_trigger-instance'>#_trigger</a>,
+                <a href='../../mixins/Mixin/EventBindings.html#_onNotificate-instance'>#_onNotificate</a>,
+        <a href='../../mixins/Mixin/EventBindings.html#_notificate-instance'>#_notificate</a>
+      </p>
       <h2>Constructor Details</h2>
       <div class='methods'>
   <div class='method_details'>
     <p class='signature' id='constructor-instance'>
-      - (void) <strong>constructor</strong>(paper, cell, container = "#graphs")
+      - (void) <strong>constructor</strong>(paper, parent, cell, _interaction = true)
     </p>
     <div class='docstring'>
   <p>Constructor for this view</p>
@@ -386,6 +444,14 @@
       <span class='desc'>paper parent</span>
     </li>
     <li>
+      <span class='name'>parent</span>
+      <span class='type'>
+        (<tt><a href='../../classes/View/RaphaelBase.html'>View.RaphaelBase</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>base view</span>
+    </li>
+    <li>
       <span class='name'>cell</span>
       <span class='type'>
         (<tt><a href='../../classes/Model/Cell.html'>Model.Cell</a></tt>)
@@ -400,17 +466,54 @@
       <h2>Instance Method Details</h2>
       <div class='methods'>
   <div class='method_details'>
-    <p class='signature' id='kill-instance'>
-      - (void) <strong>kill</strong>()
+    <p class='signature' id='_defineAccessors-instance'>
+      - (void) <strong>_defineAccessors</strong>()
     </p>
-    <div class='tags'>
+    <div class='docstring'>
+  <p>Defines the accessors for this view</p>
+</div>
+<div class='tags'>
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='getBBox-instance'>
-      - (void) <strong>getBBox</strong>()
+    <p class='signature' id='_addInteraction-instance'>
+      - (void) <strong>_addInteraction</strong>()
     </p>
-    <div class='tags'>
+    <div class='docstring'>
+  <p>Adds interaction to the cell</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='setCell-instance'>
+      - (void) <strong>setCell</strong>(value)
+    </p>
+    <div class='docstring'>
+  <p>Sets the displayed cell to value</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>value</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Model/Cell.html'>Model.Cell</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the cell to display</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='kill-instance'>
+      - (void) <strong>kill</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Kills the cell view by resetting itself and its children</p>
+</div>
+<div class='tags'>
 </div>
   </div>
   <div class='method_details'>
@@ -418,28 +521,138 @@
       - (void) <strong>_createButtons</strong>()
     </p>
     <div class='docstring'>
-  <div class='note todo'>
-    <strong>TODO:</strong>
-    hide buttons if module present etc.
-  </div>
-  
+  <p>Creates the interaction buttons</p>
 </div>
 <div class='tags'>
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='redraw-instance'>
-      - (void) <strong>redraw</strong>()
+    <p class='signature' id='getBBox-instance'>
+      - (Object) <strong>getBBox</strong>()
     </p>
     <div class='docstring'>
-  <p>Redraws the cell</p>
+  <p>Returns the bounding box of this view</p>
 </div>
 <div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Object</tt>)
+      &mdash;
+      <span class='desc'>a bounding box object with coordinates</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='getPoint-instance'>
+      - ([float, float) <strong>getPoint</strong>(location)
+    </p>
+    <div class='docstring'>
+  <p>Returns the coordinates of either the entrance or exit of this view</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>location</span>
+      <span class='type'>
+        (<tt>View.Module.Location</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the location (entrance or exit)</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span><tt>[float, float</tt></li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='getAbsolutePoint-instance'>
+      - (void) <strong>getAbsolutePoint</strong>(location)
+    </p>
+    <div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='add-instance'>
+      - (void) <strong>add</strong>(view)
+    </p>
+    <div class='docstring'>
+  <p>Add a view to draw in the container</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>view</span>
+      <span class='type'>
+        (<tt>View.Base</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The view to add</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='remove-instance'>
+      - (void) <strong>remove</strong>(view)
+    </p>
+    <div class='docstring'>
+  <p>Removes a view from the container</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>The</span>
+      <span class='type'>
+        (<tt>View.Base</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>view to remove</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='getView-instance'>
+      - (Module.View) <strong>getView</strong>(module)
+    </p>
+    <div class='docstring'>
+  <p>Get module view for the given module</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>module</span>
+      <span class='type'>
+        (<tt>Module</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the module for which to return the view</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Module.View</tt>)
+      &mdash;
+      <span class='desc'>the view which represents the given module</span>
+    </li>
+  </ul>
 </div>
   </div>
   <div class='method_details'>
     <p class='signature' id='draw-instance'>
-      - (void) <strong>draw</strong>(x, y, scale)
+      - (void) <strong>draw</strong>(x = 0, y = 0, _radius = 400)
     </p>
     <div class='docstring'>
   <p>Draws the cell</p>
@@ -463,14 +676,77 @@
       &mdash;
       <span class='desc'>y location</span>
     </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='redraw-instance'>
+      - (void) <strong>redraw</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Redraws the cell</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_drawCell-instance'>
+      - (Raphael) <strong>_drawCell</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Draws the cell on coordinates</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
     <li>
-      <span class='name'>scale</span>
+      <span class='name'>x</span>
       <span class='type'>
         (<tt>Integer</tt>)
       </span>
       &mdash;
-      <span class='desc'>scale</span>
+      <span class='desc'>the center x position</span>
     </li>
+    <li>
+      <span class='name'>y</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the center y position</span>
+    </li>
+    <li>
+      <span class='name'>radius</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>radius of the cell</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Raphael</tt>)
+      &mdash;
+      <span class='desc'>the cell shape</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='getViewPlacement-instance'>
+      - ([float, float) <strong>getViewPlacement</strong>(view)
+    </p>
+    <div class='docstring'>
+  <p>Returns the location for a module view</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span><tt>[float, float</tt></li>
   </ul>
 </div>
   </div>
@@ -480,7 +756,7 @@
       (bound)
     </p>
     <div class='docstring'>
-  <p>On module added, add it from the cell</p>
+  <p>On module added, add it to the cell</p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
@@ -535,323 +811,98 @@
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='getLocationForModule-instance'>
-      - (Object) <strong>getLocationForModule</strong>(module, params)
+    <p class='signature' id='onSplineAdd-instance'>
+      - (void) <strong>onSplineAdd</strong>(cell, spline)
+      (bound)
     </p>
     <div class='docstring'>
-  <p>Returns the location for a module</p>
+  <p>On spline added, add it to the cell and draw</p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
   <ul class='param'>
+    <li>
+      <span class='name'>cell</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Model/Cell.html'>Model.Cell</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>cell added to</span>
+    </li>
+    <li>
+      <span class='name'>spline</span>
+      <span class='type'>
+        (<tt><a href='../../classes/View/Spline.html'>View.Spline</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>spline added</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='onSplineRemove-instance'>
+      - (void) <strong>onSplineRemove</strong>(cell, spline)
+      (bound)
+    </p>
+    <div class='docstring'>
+  <p>On spline removed, remove it from the cell and kill it</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>cell</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Model/Cell.html'>Model.Cell</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>cell removed from</span>
+    </li>
+    <li>
+      <span class='name'>spline</span>
+      <span class='type'>
+        (<tt><a href='../../classes/View/Spline.html'>View.Spline</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>spline removed</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='previewModule-instance'>
+      - (void) <strong>previewModule</strong>(source, module, selected)
+    </p>
+    <div class='docstring'>
+  <p>Creates or removes a preview view for a module</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>source</span>
+      <span class='type'>
+        (<tt>Model.View</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The source of the preview request</span>
+    </li>
     <li>
       <span class='name'>module</span>
       <span class='type'>
         (<tt><a href='../../classes/Model/Module.html'>Model.Module</a></tt>)
       </span>
       &mdash;
-      <span class='desc'>the module to get the location for</span>
+      <span class='desc'>The module that needs to be previewed</span>
     </li>
-  </ul>
-  <h3>Returns:</h3>
-  <ul class='return'>
     <li>
-      <span class='type'></span>
-      (<tt>Object</tt>)
-      &mdash;
-      <span class='desc'>the size as an object with x, y</span>
-    </li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='getView-instance'>
-      - (Module.View) <strong>getView</strong>(module)
-    </p>
-    <div class='docstring'>
-  <p>Get module view for the given module</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>module</span>
+      <span class='name'>selected</span>
       <span class='type'>
-        (<tt>Module</tt>)
+        (<tt>boolean</tt>)
       </span>
       &mdash;
-      <span class='desc'>the module for which to return the view</span>
-    </li>
-  </ul>
-  <h3>Returns:</h3>
-  <ul class='return'>
-    <li>
-      <span class='type'></span>
-      (<tt>Module.View</tt>)
-      &mdash;
-      <span class='desc'>the view which represents the given module</span>
-    </li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='_getCellData-instance'>
-      - (Object) <strong>_getCellData</strong>(duration, base_values = [], dt = 1, iteration = 0)
-    </p>
-    <div class='docstring'>
-  <p>Get the simulation data from the cell</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>duration</span>
-      <span class='type'>
-        (<tt>Integer</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>The duration of the simulation</span>
-    </li>
-    <li>
-      <span class='name'>dt</span>
-      <span class='type'>
-        (<tt>Float</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>The timestep for the graphs</span>
-    </li>
-    <li>
-      <span class='name'>base_values</span>
-      <span class='type'>
-        (<tt>Array</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>continuation values</span>
-    </li>
-  </ul>
-  <h3>Returns:</h3>
-  <ul class='return'>
-    <li>
-      <span class='type'></span>
-      (<tt>Object</tt>)
-      &mdash;
-      <span class='desc'>Object with data such as An array of datapoints</span>
-    </li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='_getGraphPlacement-instance'>
-      - (Object) <strong>_getGraphPlacement</strong>(basex, basey, scale, graph_num)
-    </p>
-    <div class='docstring'>
-  <div class='note todo'>
-    <strong>TODO:</strong>
-    why is there width/height code here? should come from graph
-  </div>
-  <p>Get the graph placement</p>
-</div>
-<div class='tags'>
-  <h3>Returns:</h3>
-  <ul class='return'>
-    <li>
-      <span class='type'></span>
-      (<tt>Object</tt>)
-      &mdash;
-      <span class='desc'>A placement object</span>
-    </li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='_drawGraphs-instance'>
-      - (Object) <strong>_drawGraphs</strong>(datasets, x, y, scale, append = false)
-    </p>
-    <div class='docstring'>
-  <p>Draw the graphs with the data from the datasets</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>datasets</span>
-      <span class='type'>
-        (<tt>Object</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>An object of datasets</span>
-    </li>
-    <li>
-      <span class='name'>x</span>
-      <span class='type'>
-        (<tt>Integer</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>x location to draw</span>
-    </li>
-    <li>
-      <span class='name'>y</span>
-      <span class='type'>
-        (<tt>Integer</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>y location to draw</span>
-    </li>
-    <li>
-      <span class='name'>scale</span>
-      <span class='type'>
-        (<tt>Integer</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>scale</span>
-    </li>
-  </ul>
-  <h3>Returns:</h3>
-  <ul class='return'>
-    <li>
-      <span class='type'></span>
-      (<tt>Object</tt>)
-      &mdash;
-      <span class='desc'>graphs</span>
-    </li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='_redrawGraphs-instance'>
-      - (void) <strong>_redrawGraphs</strong>()
-    </p>
-    <div class='docstring'>
-  <p>Redraw graphs</p>
-</div>
-<div class='tags'>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='startSimulation-instance'>
-      - (void) <strong>startSimulation</strong>(step_duration = 20, step_update = 2000, dt = 1)
-    </p>
-    <div class='docstring'>
-  <p>Starts drawing the simulation</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>step_duration</span>
-      <span class='type'>
-        (<tt>Integer</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>duration of each step call</span>
-    </li>
-    <li>
-      <span class='name'>step_update</span>
-      <span class='type'>
-        (<tt>Integer</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>time between steps</span>
-    </li>
-    <li>
-      <span class='name'>dt</span>
-      <span class='type'>
-        (<tt>Integer</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>graph dt</span>
-    </li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='_step-instance'>
-      - (Array&lt;Float&gt;) <strong>_step</strong>(duration, dt, base_values)
-    </p>
-    <div class='docstring'>
-  <div class='note todo'>
-    <strong>TODO:</strong>
-    stopSimulation should throw event that is captured by play button
-  </div>
-  <p>Steps the simulation</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>duration</span>
-      <span class='type'>
-        (<tt>Integer</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the duration of this step</span>
-    </li>
-    <li>
-      <span class='name'>dt</span>
-      <span class='type'>
-        (<tt>Integer</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the dt of the graphs</span>
-    </li>
-    <li>
-      <span class='name'>base_values</span>
-      <span class='type'>
-        (<tt>Array&lt;Float&gt;</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the previous values</span>
-    </li>
-  </ul>
-  <h3>Returns:</h3>
-  <ul class='return'>
-    <li>
-      <span class='type'></span>
-      (<tt>Array&lt;Float&gt;</tt>)
-      &mdash;
-      <span class='desc'>the new values</span>
-    </li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='_simulate-instance'>
-      - (void) <strong>_simulate</strong>(step)
-    </p>
-    <div class='docstring'>
-  <p>Simulation handler</p><p>Actually loops the simulation. Expects step to be a throttled function
-and gracefully defers execution of this step function. </p>
-</div>
-<div class='tags'>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='stopSimulation-instance'>
-      - (void) <strong>stopSimulation</strong>()
-    </p>
-    <div class='docstring'>
-  <p>Stops the simulation</p>
-</div>
-<div class='tags'>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='_drawRedLines-instance'>
-      - (void) <strong>_drawRedLines</strong>(x)
-    </p>
-    <div class='docstring'>
-  <p>Draws red lines</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>x</span>
-      <span class='type'>
-        (<tt>Integer</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>x position</span>
+      <span class='desc'>The selected state of the module view</span>
     </li>
   </ul>
 </div>
@@ -860,7 +911,7 @@ and gracefully defers execution of this step function. </p>
     </div>
     <div id='footer'>
   Generated on
-  Sun May 19 2013 15:38:42 GMT+0200 (W. Europe Daylight Time)
+  Sun Jun 02 2013 15:47:57 GMT+0200 (W. Europe Daylight Time)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

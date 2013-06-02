@@ -30,7 +30,7 @@ class Model.Module extends Helper.Mixable
 		@_defineProperties( params, step, metadata )
 		
 		action = @_createAction( "Created #{this.constructor.name}:#{this.name}")
-		@_tree.setRoot( new Model.Node(action, null) )
+		@tree.setRoot( new Model.Node(action, null) )
 					
 		@_bind( 'module.property.changed', @, @onActionDo )
 		@_bind( 'module.set.compound', @, @onActionDo )
@@ -110,7 +110,7 @@ class Model.Module extends Helper.Mixable
 	onActionDo: ( caller, action ) =>
 		if caller is @
 			@addUndoableEvent( action )
-		
+
 	# Extracts id data from id
 	#
 	# @param id [Object,Number,String] id containing id data
@@ -170,7 +170,6 @@ class Model.Module extends Helper.Mixable
 	# @return [self] for chaining
 	#
 	setCompound: ( compound, value ) ->
-		
 		return this if  @starts[ compound ] is value
 		
 		todo = _( ( compound, value ) -> @starts[ compound ] = value ).bind( @, compound, value )
@@ -212,6 +211,35 @@ class Model.Module extends Helper.Mixable
 	#
 	setProduct: ( product, value ) ->
 		return @setCompound( product, value )
+
+	# Returns a module's full type string
+	#
+	# @return [String] the type string
+	#
+	getFullType: ( direction = @direction, type = @type, placement = @placement ) ->
+		switch @constructor.name
+			when 'Transporter'
+				res = 'Transporter'
+				if direction is Model.Transporter.Inward
+					res += '-inward'
+				else if direction is Model.Transporter.Outward
+					res += '-outward'
+			when 'Metabolite'
+				res = 'Metabolite'
+
+				if type is Model.Metabolite.Substrate
+					res += '-substrate'
+				else if type is Model.Metabolite.Product
+					res += '-product'
+
+				if placement is Model.Metabolite.Inside
+					res += '-inside'
+				else if placement is Model.Metabolite.Outside
+					res += '-outside'
+			else
+				res = @constructor.name
+
+		return res
 		
 	# Runs the step function in the correct context
 	# 

@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset='UTF-8'>
+  <title>Broyologramming Life API Documentation</title>
+  <link rel='stylesheet' href='../../assets/codo.css' type='text/css'>
+  <script src='../../assets/codo.js'></script>
+  <script src='../../assets/search_data.js'></script>
+</head>
+  <body>
+    <div id='base' data-path='../../'></div>
+<div id='header'>
+  <div id='menu'>
+    <a href='../../README.md.html' title='Programming-life'>Programming-life</a>
+    &raquo;
+    <a href='../../class_index.html' title='Index'>Index</a>
+    &raquo;
+    <span class='title'>Controller</span>
+    &raquo;
+    <span class='title'>Cell</span>
+    <nav>
+      <ul>
+        <li class='noframes'>
+          (<a class='noframes' href='#'>no frames</a>)
+        </li>
+      </ul>
+    </nav>
+    <div id='search'>
+      <a id='class_list_link' href='../../class_list.html'>Classes</a>
+      <a id='mixin_list_link' href='../../mixin_list.html'>Mixins</a>
+      <a id='file_list_link' href='../../file_list.html'>Files</a>
+      <a id='method_list_link' href='../../method_list.html'>Methods</a>
+      <a id='extra_list_link' href='../../extra_list.html'>Extras</a>
+    </div>
+  </div>
+  <iframe id='search_frame'></iframe>
+  <div id='fuzzySearch'>
+    <input type='text'>
+    <ol></ol>
+  </div>
+  <div id='help'>
+    <p>
+      Quickly fuzzy find classes, mixins, methods, file:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-T</span>
+        Open fuzzy finder dialog
+      </li>
+    </ul>
+    <p>
+      In frame mode you can toggle the list naviation frame on the left side:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-L</span>
+        Toggle list view
+      </li>
+    </ul>
+    <p>
+      You can focus a list in frame mode or toggle a tab in frameless mode:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-C</span>
+        Class list
+      </li>
+      <li>
+        <span>Ctrl-I</span>
+        Mixin list
+      </li>
+      <li>
+        <span>Ctrl-F</span>
+        File list
+      </li>
+      <li>
+        <span>Ctrl-M</span>
+        Method list
+      </li>
+      <li>
+        <span>Ctrl-E</span>
+        Extras list
+      </li>
+    </ul>
+    <p>
+      You can focus and blur the search input:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-S</span>
+        Focus search input
+      </li>
+      <li>
+        <span>Esc</span>
+        Blur search input
+      </li>
+    </ul>
+    <p>
+      In frameless mode you can close the list tab:
+    </p>
+    <ul>
+      <li>
+        <span>Esc</span>
+        Close list tab
+      </li>
+    </ul>
+  </div>
+</div>
+    <div id='content'>
+      <h1>
+        Class:
+        Controller.Cell
+      </h1>
+      <table class='box'>
+        <tr>
+          <td>Defined in:</td>
+          <td>app&#47;assets&#47;javascripts&#47;controllers&#47;cell.js.coffee</td>
+        </tr>
+        <tr>
+          <td>Inherits:</td>
+          <td>
+            <a href='../../classes/Controller/Base.html'>Controller.Base</a>
+          </td>
+        </tr>
+        <tr>
+          <td>Concerns:</td>
+          <td>
+            <a href='../../mixins/Mixin/EventBindings.html'>Mixin.EventBindings</a>
+          </td>
+        </tr>
+      </table>
+      <h2>Overview</h2>
+      <div class='docstring'>
+  <p>The controller for the Cell view</p>
+</div>
+<div class='tags'>
+</div>
+      <h2>Constant Summary</h2>
+      <dl class='constants'>
+        <dt id='MAX_ITERATIONS-constant'>
+          MAX_ITERATIONS
+          =
+          <div class='tags'>
+</div>
+        </dt>
+        <dd>
+          <pre><code class='coffee'>100</code></pre>
+        </dd>
+        <dt id='SIGNIFICANCE-constant'>
+          SIGNIFICANCE
+          =
+          <div class='tags'>
+</div>
+        </dt>
+        <dd>
+          <pre><code class='coffee'>1e-15</code></pre>
+        </dd>
+      </dl>
+      <h2>Instance Method Summary</h2>
+      <ul class='summary'>
+  <li>
+    <span class='signature'>
+      <a href='#constructor-instance'>
+        - (void) <strong>constructor</strong>()
+      </a>
+    </span>
+    <span class='constructor note title'>Constructor</span>
+    <span class='desc'>
+      Creates a new instance of Cell Creates the cell view from parameters @param parent [View.<em>] the parent view @param model [Model.</em>] the model Sets the cell view @param view [View.Cell] the view
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_createBindings-instance'>
+        - (void) <strong>_createBindings</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Create event bindings
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#load-instance'>
+        - (jQuery.Promise) <strong>load</strong>(cell_id, callback)
+      </a>
+    </span>
+    <span class='desc'>
+      Loads a new cell into the view
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#save-instance'>
+        - (jQuery.Promise) <strong>save</strong>(name)
+      </a>
+    </span>
+    <span class='desc'>
+      Saves the cell view model
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#solveTheSystem-instance'>
+        - (Object) <strong>solveTheSystem</strong>(from, to, base_values = [], token = numeric.asynccancel(), dt = 1, interpolate = false)
+      </a>
+    </span>
+    <span class='desc'>
+      Get the simulation data from the cell
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#setSimulationState-instance'>
+        - ( [ token, promise ) <strong>setSimulationState</strong>(startSimulateFlag, callback, t, iterations, dt)
+      </a>
+    </span>
+    <span class='desc'>
+      Sets the simulation state
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#startSimulation-instance'>
+        - (void) <strong>startSimulation</strong>(t = 20, iterations = Cell.MAX_ITERATIONS, callback, dt = 0.001)
+      </a>
+    </span>
+    <span class='desc'>
+      Starts the simulation
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_step-instance'>
+        - (Array&lt;Float&gt;) <strong>_step</strong>(dt, callback, from, to, base_values)
+      </a>
+    </span>
+    <span class='desc'>
+      Steps the simulation
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_simulate-instance'>
+        - (void) <strong>_simulate</strong>(step, t, iterations)
+      </a>
+    </span>
+    <span class='desc'>
+      Simulation handler Actually loops the simulation.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#stopSimulation-instance'>
+        - (void) <strong>stopSimulation</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Stops the simulation
+    </span>
+  </li>
+</ul>
+      <h2>
+        <small>Inherited Method Summary</small>
+      </h2>
+      <h3 class='inherited'>
+        Methods inherited from
+        <a href='../../classes/Controller/Base.html'>Controller.Base</a>
+      </h3>
+      <p class='inherited'>
+                <a href='../../classes/Controller/Base.html#constructor-instance'>#constructor</a>,
+                <a href='../../classes/Controller/Base.html#addChild-instance'>#addChild</a>,
+                <a href='../../classes/Controller/Base.html#removeChild-instance'>#removeChild</a>,
+                <a href='../../classes/Controller/Base.html#controller-instance'>#controller</a>,
+                <a href='../../classes/Controller/Base.html#controllers-instance'>#controllers</a>,
+        <a href='../../classes/Controller/Base.html#kill-instance'>#kill</a>
+      </p>
+      <h3 class='inherited'>
+        Methods inherited from
+        <a href='../../classes/Helper/Mixable.html'>Helper.Mixable</a>
+      </h3>
+      <p class='inherited'>
+                <a href='../../classes/Helper/Mixable.html#extend-class'>.extend</a>,
+                <a href='../../classes/Helper/Mixable.html#include-class'>.include</a>,
+        <a href='../../classes/Helper/Mixable.html#concern-class'>.concern</a>
+      </p>
+      <h2>
+        <small>Concern Method Summary</small>
+      </h2>
+      <h3 class='included'>
+        Methods mixed in from
+        <a href='../../mixins/Mixin/EventBindings.html'>Mixin.EventBindings</a>
+      </h3>
+      <p class='included'>
+                <a href='../../mixins/Mixin/EventBindings.html#_allowEventBindings-instance'>#_allowEventBindings</a>,
+                <a href='../../mixins/Mixin/EventBindings.html#_unbindAll-instance'>#_unbindAll</a>,
+                <a href='../../mixins/Mixin/EventBindings.html#_bind-instance'>#_bind</a>,
+                <a href='../../mixins/Mixin/EventBindings.html#_unbind-instance'>#_unbind</a>,
+                <a href='../../mixins/Mixin/EventBindings.html#_trigger-instance'>#_trigger</a>,
+                <a href='../../mixins/Mixin/EventBindings.html#_onNotificate-instance'>#_onNotificate</a>,
+        <a href='../../mixins/Mixin/EventBindings.html#_notificate-instance'>#_notificate</a>
+      </p>
+      <h2>Constructor Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='constructor-instance'>
+      - (void) <strong>constructor</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Creates a new instance of Cell</p><p>Creates the cell view from parameters
+    @param parent [View.<em>] the parent view
+    @param model [Model.</em>] the model</p><p> Sets the cell view
+ @param view [View.Cell] the view</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>paper</span>
+      <span class='type'>
+        (<tt>Rapahel</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the paper</span>
+    </li>
+  </ul>
+</div>
+  </div>
+</div>
+      <h2>Instance Method Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='_createBindings-instance'>
+      - (void) <strong>_createBindings</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Create event bindings</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='load-instance'>
+      - (jQuery.Promise) <strong>load</strong>(cell_id, callback)
+    </p>
+    <div class='docstring'>
+  <p>Loads a new cell into the view</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>cell_id</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the cell to load</span>
+    </li>
+    <li>
+      <span class='name'>callback</span>
+      <span class='type'>
+        (<tt>Function</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the callback function</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>jQuery.Promise</tt>)
+      &mdash;
+      <span class='desc'>the promise</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='save-instance'>
+      - (jQuery.Promise) <strong>save</strong>(name)
+    </p>
+    <div class='docstring'>
+  <p>Saves the cell view model</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>jQuery.Promise</tt>)
+      &mdash;
+      <span class='desc'>the promise</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='solveTheSystem-instance'>
+      - (Object) <strong>solveTheSystem</strong>(from, to, base_values = [], token = numeric.asynccancel(), dt = 1, interpolate = false)
+    </p>
+    <div class='docstring'>
+  <p>Get the simulation data from the cell</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>duration</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The duration of the simulation</span>
+    </li>
+    <li>
+      <span class='name'>dt</span>
+      <span class='type'>
+        (<tt>Float</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The timestep for the graphs</span>
+    </li>
+    <li>
+      <span class='name'>base_values</span>
+      <span class='type'>
+        (<tt>Array</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>continuation values</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Object</tt>)
+      &mdash;
+      <span class='desc'>Object with data such as An array of datapoints</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='setSimulationState-instance'>
+      - ( [ token, promise ) <strong>setSimulationState</strong>(startSimulateFlag, callback, t, iterations, dt)
+    </p>
+    <div class='docstring'>
+  <p>Sets the simulation state</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>startSimulateFlag</span>
+      <span class='type'>
+        (<tt>Boolean</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>flag to start the simulation</span>
+    </li>
+    <li>
+      <span class='name'>callback</span>
+      <span class='type'>
+        (<tt>Function</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the callback function after each iteration</span>
+    </li>
+    <li>
+      <span class='name'>t</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>duration of each step call</span>
+    </li>
+    <li>
+      <span class='name'>iterations</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>maximum t to run</span>
+    </li>
+    <li>
+      <span class='name'>dt</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>graph dt</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>[ token, promise</tt>)
+      &mdash;
+      <span class='desc'>] tuple</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='startSimulation-instance'>
+      - (void) <strong>startSimulation</strong>(t = 20, iterations = Cell.MAX_ITERATIONS, callback, dt = 0.001)
+    </p>
+    <div class='docstring'>
+  <p>Starts the simulation</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>t</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>duration of each step call</span>
+    </li>
+    <li>
+      <span class='name'>iterations</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>maximum t to run</span>
+    </li>
+    <li>
+      <span class='name'>callback</span>
+      <span class='type'>
+        (<tt>Function</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the callback function after each iteration</span>
+    </li>
+    <li>
+      <span class='name'>dt</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>graph dt</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_step-instance'>
+      - (Array&lt;Float&gt;) <strong>_step</strong>(dt, callback, from, to, base_values)
+    </p>
+    <div class='docstring'>
+  <div class='note todo'>
+    <strong>TODO:</strong>
+    view.drawGraphs should be extracted
+  </div>
+  <p>Steps the simulation</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>t</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the duration of this step</span>
+    </li>
+    <li>
+      <span class='name'>dt</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the dt of the graphs</span>
+    </li>
+    <li>
+      <span class='name'>callback</span>
+      <span class='type'>
+        (<tt>Function</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the callback after each iteration</span>
+    </li>
+    <li>
+      <span class='name'>base_values</span>
+      <span class='type'>
+        (<tt>Array&lt;Float&gt;</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the previous values</span>
+    </li>
+    <li>
+      <span class='name'>max</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>max t</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Array&lt;Float&gt;</tt>)
+      &mdash;
+      <span class='desc'>the new values</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_simulate-instance'>
+      - (void) <strong>_simulate</strong>(step, t, iterations)
+    </p>
+    <div class='docstring'>
+  <p>Simulation handler</p><p>Actually loops the simulation. Expects step to be a throttled function
+and gracefully defers execution of this step function. </p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='stopSimulation-instance'>
+      - (void) <strong>stopSimulation</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Stops the simulation</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+</div>
+    </div>
+    <div id='footer'>
+  Generated on
+  Sun Jun 02 2013 15:47:57 GMT+0200 (W. Europe Daylight Time)
+  by
+  <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
+  v1.5.6
+  (Node.js v0.10.4).
+  &#10034;
+  Press Ctrl-h to see the keyboard shortcuts
+  &#10034;
+  <a href='http://twitter.com/#!/netzpirat'>@netzpirat</a>
+  &#10034;
+  <a href='https://mksoft.ch'>mksoft.ch</a>
+</div>
+  </body>
+</html>
