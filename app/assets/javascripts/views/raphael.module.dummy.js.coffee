@@ -331,5 +331,3 @@ class View.DummyModule extends View.RaphaelBase
 		unless module is @module
 			if @_selected
 				@_setSelected off
-				#@_trigger "module.creation.ended", @, [@module]
-

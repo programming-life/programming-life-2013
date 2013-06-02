@@ -9,14 +9,16 @@ class View.Undo extends Helper.Mixable
 	#
 	# @param tree [Model.UndoTree] The UndoTree to visualize
 	#
-	constructor: ( @_tree ) ->
+	constructor: ( @tree ) ->
 		@_allowEventBindings()
-
-		@_bind("tree.node.added", @, @_onNodeAdd)
-		@_bind("tree.node.removed", @, @_onNodeRemove)
-		@_bind("tree.node.selected", @, @_onNodeSelect)
+		@_createBindings()
 
 		@_rows = {}
+	
+	_createBindings: ( ) ->
+		@_bind("tree.node.added", @, @_onNodeAdd)
+		@_bind("tree.node.removed", @, @_onNodeRemove )
+		@_bind("view.undo.branch", @, @_onBranch )
 
 	# Clears this view
 	#
@@ -54,7 +56,7 @@ class View.Undo extends Helper.Mixable
 
 		body = $('<div class="undo-body"></div>')
 		@_list = $('<div class="undo-list"></div>')
-		@_list.append(@_getTreeView(@_tree.root))
+		@_list.append(@_getTreeView(@tree.root))
 
 		body.append(@_list)
 		@_contents.append(body)
@@ -63,15 +65,19 @@ class View.Undo extends Helper.Mixable
 		leftBranchButton = $('<div class="branch-button pull-left"><i class="icon-chevron-left"></i></div>')
 		rightBranchButton = $('<div class="branch-button pull-right"><i class="icon-chevron-right"></i></div>')
 
-		leftBranchButton.click(@_branchLeft)
-		rightBranchButton.click(@_branchRight)
+		leftBranchButton.click( () =>
+			@_trigger "view.undo.branch", @, [ -1 ]
+		)
+		rightBranchButton.click( () =>
+			@_trigger "view.undo.branch", @, [ 1 ]
+		)
 		
 		@_footer.find('.navbar-inner').append(leftBranchButton)
 		@_footer.find('.navbar-inner').append(rightBranchButton)
 		@_contents.append(@_footer)
 		container.append(@_contents)
 
-		@_selectNode(@_tree.current)
+		@selectNode(@tree.current)
 	
 	# Gets the view for the node
 	#
@@ -105,7 +111,7 @@ class View.Undo extends Helper.Mixable
 
 		((node) =>
 			row.click( node, ( event ) =>
-				@_trigger('tree.node.selected', @_tree, [ event.data ])
+				@_trigger('tree.node.selected', @, [ event.data ])
 			)
 		) node
 		
@@ -129,7 +135,7 @@ class View.Undo extends Helper.Mixable
 	# @param node [Model.Node] The node that was added
 	#
 	_onNodeAdd: ( tree, node ) ->
-		if tree is @_tree
+		if tree is @tree
 			if @_list.scrollTop() == @_list[0].scrollHeight - @_list.height()
 				doScroll = true
 
@@ -137,7 +143,7 @@ class View.Undo extends Helper.Mixable
 				@_drawContents()
 			else
 				@_list.append(@_getNodeView(node))
-				@_selectNode(@_tree.current)
+				@selectNode(@tree.current)
 
 			if doScroll
 				@_scrollToBottom()
@@ -148,33 +154,22 @@ class View.Undo extends Helper.Mixable
 	# @param node [Model.Node] The node that was removed
 	#
 	_onNodeRemove: ( tree, node ) ->
-		if tree is @_tree
+		if tree is @tree
 			@_list.append(@_getNodeView(node))
-			@_selectNode(@_tree.current)
+			@selectNode(@tree.current)
 	
-	# Is called when a node is selected
+	# Gets called when branching occurs
 	#
-	# @param tree [Model.Tree] The tree in which the node was selected
-	# @param node [Model.Node] The node that was selected
+	# @param direction [String] The direction of the branching
 	#
-	_onNodeSelect: ( tree, node ) ->
-		if tree is @_tree
-
-			nodes = @_tree.jump( node )
-			for undo in nodes.reverse
-				undo.object.undo()
-			for redo in nodes.forward
-				redo.object.redo()
-
-			console.log(nodes.reverse...,nodes.forward...)
-
-			@_selectNode(node)
+	_onBranch: ( direction ) ->
+		@_drawContents()
 
 	# Mark a node in the list as selected
 	#
 	# @param node [Model.Node] the node to mark
 	#
-	_selectNode: ( node ) ->
+	selectNode: ( node ) ->
 		row = @_rows[node.id]
 
 		@_elem.find('.undo-row').removeClass('selected')
@@ -201,43 +196,30 @@ class View.Undo extends Helper.Mixable
 		else
 			@_list.scrollTop = @_list[0].scrollHeight - @_list.height()
 
-	# Move one branch to the left
-	#
-	_branchLeft: ( ) =>
-		@_branch(-1)
-
-	# Move one branch to the right
-	#
-	_branchRight: ( ) =>
-		@_branch(1)
-
-	# Move one branch to either direction
-	#
-	# @param direction [int] the direction (-1 or 1) in which to move
-	#
-	_branch: ( direction ) ->
-		length = @_tree.current.parent?.children?.length
-		return unless length?
-		
-		switch length
-			when 1
-				index = 0
-			when 2
-				index = !@_branchIndex + 0
-			else
-				index = (@_branchIndex + direction + length) % length
-		node = @_tree.current.parent.children[index]
-		old = @_tree.switchBranch( node )
-		old.object.undo()
-		node.object.redo()
-		@_drawContents()
-
 	# Sets the tree of the view
 	#
 	# @param tree [Model.UndoTree] The tree to view
 	#
 	setTree: ( tree ) ->
-		@_tree = tree
+		@tree = tree
 		@_drawContents()
+	
+	# Sets the view of node to active
+	#
+	# @param node [Model.Node] The node
+	#
+	setActive: ( node ) ->
+		view = @_rows[node.id]
+		if view?
+			view.addClass("active")
+			view.removeClass("inactive")
 
-(exports ? this).View.Undo = View.Undo
+	# Sets the view of node to inactive
+	#
+	# @param node [Model.Node] The node
+	#
+	setInactive: ( node ) ->
+		view = @_rows[node.id]
+		if view?
+			view.removeClass("active")
+			view.addClass("inactive")
