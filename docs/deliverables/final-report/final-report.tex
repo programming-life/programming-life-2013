@@ -71,7 +71,9 @@
 			Secondly one can create access keys to his or her creation. This will make the cell readonly for everyone, unless they have the access key. This can also be used to create private cells, which have a limited amount of read-only access keys.
 		
 		\subsection{Offline availability}
-			
+			The application should be available offline. As this was one of our design goals, we chose to write the base functionality in a client side application. The next step was making this available to the offline user.\\
+			HTML5 has new functionality with application manifests. We implemented these to make sure the application is available offline. The HTML5 Local Storage feature was used for a key-value database storage client side. The HTML5 online-offline events perfectly provided the link to transparently update both the database, as well as the application when a user came online.\\
+			The beauty of this solution is that you don't need to install anything and the application simply degrades to online-only if these features are not available.
 		
 		\subsection{Undo}
 	
