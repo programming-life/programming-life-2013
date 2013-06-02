@@ -208,7 +208,7 @@ class View.Cell extends View.RaphaelBase
 	#
 	getViewPlacement: ( view ) ->
 		type = view.getFullType()
-		views = @_viewsByType[type]
+		views = @_viewsByType[type] ? []
 
 		index = views.indexOf(view)
 		
