@@ -6,6 +6,7 @@
 \usepackage{amssymb}
 \usepackage{graphicx}
 \usepackage{hyperref}
+\usepackage{lstlisting}
 \usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry}
 
 \title{Title}
@@ -43,14 +44,46 @@
 	\section{Key challenges and Solutions}
 		The project itself had some challenges that were conceived as difficult. Apart from these challenges, the process itself had some as well, which are listed under 'Reflection on the teamwork'. 
 		
-		\subsection{ODE}
-			Let's first define component as any module or metabolite in the cell such as a transporter or substrate. The biological-cell model consists of components that interact with eachother, but the differential equations are not defined by interaction, but component. Our task was to make these components modular, meaning you need to be able to change them, add more of them and so forth and so on. A differential equation that resides
+		\subsection{ODE modularity}
+			Let's first define component as any module or metabolite in the cell such as a transporter or substrate. The biological-cell model consists of components that interact with eachother, but the differential equations are not defined by interaction, but component. Our task was to make these components modular, meaning you need to be able to change them, add more of them and so forth and so on. But since these differential equations were intertwined, a way needed to be devised to seperate them and make the arguments dynamic. For example '\frac{ds}{dt} = ks * s + kc * c' would need to assign s and c dynamically. kc belongs to c, so it's probably its own compound. If we have two, it would become '\frac{ds}{dt} = ks * s + kc1 * c1 + kc2 * c2'.\\
+			We wrote a mapping code that collects produced compounds. So c would produce c and s and s would produce s. The equations were seperated by how operators depencies work. We gave each compound all the effects and affects as equations. s now has '\frac{ds}{dt} = ks * s' and c has '\frac{ds}{dt} = kc * c' and '\frac{dc}{dt} = magix' Now adding more c's will dynamically build the correct equation. But since we have a mapping, we can use indexes to get those compound values. '\frac{ds}{dt} = ks * compounds[s]'. And if we make the indexer a settable parameter, we are done! '\frac{ds}{dt} = @ks * compounds[@s]'. \\
+			This way we could turn the equations from statically defined to dynamically settable.
+			
+		\subsection{ODE solver complexity}
+			Our ordinary differential equations solver is the same used in MATLAB. It's very powerfull but this did yield some problems. The more components we added, the more noticeable the delay between pressing simulate and the actual output. To get accurate results we were doing the caluclations on a low tolerance and a high number of iterations. \\
+			One could always tweak this tolerance and iteration number, but defining that dynamically is hard. Instead we took a different road. We re-implemented the ODE by implementing the algorithm and deferring each iteration. This made the overal solving time higher, but there was no UI freeze anymore whatsoever. We could now also display results on the fly and show progress.\\
+			If the next function denotes the pseudocode:\\
+			\begin{lstlisting}
+ODE Solver( T, f, y, I )
+	initialize t = 0, y = [ y ], i = 0
+	WHILE t \lt T AND i \lt I
+		WHILE error \gt tolerance
+			6 times solve dopri f()
+			determine error
+			increment i
+		y[ t ] = solved values
+		increment t
+			\end{lstlising}
+			The outer while block was deferred. Deferring in JavaScript is achieved by pushing a function to the end of the callstack, using setTimeout.
 		
 		\subsection{Concurrency}
+			The database operations themself are atomic: isolated, but since users can edit the same cell, or might have a copy on their local storage which isn't updated back into the database, consistency between data is a problem. We offer two solutions to the problem.\\ 
+			
+			Firstly there is a clone cell feature, where all the data is copied, rather than simply loaded. This means that you are safe editing that data. See it as forking a repository on GitHub.\\
+			
+			Secondly one can create access keys to his or her creation. This will make the cell readonly for everyone, unless they have the access key. This can also be used to create private cells, which have a limited amount of read-only access keys.
 		
 		\subsection{Offline availability}
+			The application should be available offline. As this was one of our design goals, we chose to write the base functionality in a client side application. The next step was making this available to the offline user.\\
+			HTML5 has new functionality with application manifests. We implemented these to make sure the application is available offline. The HTML5 Local Storage feature was used for a key-value database storage client side. The HTML5 online-offline events perfectly provided the link to transparently update both the database, as well as the application when a user came online.\\
+			The beauty of this solution is that you don't need to install anything and the application simply degrades to online-only if these features are not available.
 		
 		\subsection{Undo}
+			The ability to undo and redo your actions makes an interface more user friendly and easy to use, and so the decision to add this functionality to our application was made early on. This resulted in a functionality that could be added to as the application grew in complexity. The challenge in accomplishing this, is to store and update the relevant data in such a way in becomes a self containing entity. To do this, the functionality needs to have an easy to use interface, while all the complex logic is contained within the entity itself.\\
+			
+			In implementing this, it becomes evident that the interface to the entity consists of it's basic functions; namely \emph{undo}, \emph{redo}, and \emph{addAction}. Any action that can be undone and redone is stored a tree structure, each point in time containing a reference to the previous point and all the future point that emerged from that specific snapshot in time. This allows for multiple possible timelines, and makes this functionality more powerfull without adding much complexity to the use of it, because everything complicated is contained within the entity.\\
+
+			In addition to creating an easy to use implementation, it is also required that the functionality remains simple even when the cell model is very complex. To easily maintain the timeline of the entire application, each module keeps track of it's own history and future and makes this data avaiable. The cell also track changes made to it and makes its timeline avaiable. Because of this separation, any part of the cell model can be adapted without having to think about the consequences of the changes to other parts of the model, allowing for easier development and generally higher quality software.
 	
 	\section{Reflection on the teamwork}
 		This section covers the reflection as a group on the teamwork during the development of the software. The reflection is divided in different subsections.
@@ -106,8 +139,10 @@
 		
 	\section{Lightweight SCRUM plans}
 		-- Dear TA's, what's expected here? We do have these on paper and on planbox and in de PV --
-	
 		
 	\section{Conclusion}
+		We struggled a bit, we fought even harder. This project has thought us a great deal about scrum. Told us that great projectmembers still exist. It opened up our eyes to the beauty of biology and chemistry into engineering, and most of all, we encouraged ourselved to learn more and even more. \\
+		Working on this application and working together as we did, was a lot of fun. A lot of laughter and a lot of great moments, both positive and negative. As a team we grew. As computer scientists even so.\\
+		Not only did we apprehend the context, we learned three new languages and even more new technologies. Technology seems limitless. 
 	
 \end{document}
