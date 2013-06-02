@@ -55,7 +55,7 @@ Mixin.TimeMachine =
 		#
 		# @param description [String] the description for the action
 		# @param context [Context] defaults to this
-		# @returns [Model.Action] the action
+		# @return [Model.Action] the action
 		#
 		_createAction: ( description, context = @ ) ->
 			return new Model.Action( context, undefined, undefined, description )
