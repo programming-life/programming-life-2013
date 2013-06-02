@@ -6,14 +6,12 @@ class View.Cell extends View.RaphaelBase
 
 	@concern Mixin.EventBindings
 
-	@MAX_RUNTIME: 50
-
 	# Constructor for this view
 	# 
 	# @param paper [Raphael] paper parent
 	# @param parent [View.RaphaelBase] base view
 	# @param cell [Model.Cell] cell to view
-	#
+	# @param interaction [Boolean] the interaction flag
 	# 	
 	constructor: ( paper, parent, cell, @_interaction = on ) ->
 		super paper, parent
@@ -22,8 +20,8 @@ class View.Cell extends View.RaphaelBase
 		@_viewsByType = {}
 		@_splines = []
 
-		@_width = @_paper.width
-		@_height = @_paper.height
+		@_width = @paper.width
+		@_height = @paper.height
 		
 		@_allowEventBindings()
 		@_defineAccessors()
@@ -54,7 +52,6 @@ class View.Cell extends View.RaphaelBase
 	# Adds interaction to the cell
 	#
 	_addInteraction: () ->
-		@_createButtons()
 		@_notificationsView = new View.CellNotification( @, @model )
 
 	# Sets the displayed cell to value
@@ -67,17 +64,12 @@ class View.Cell extends View.RaphaelBase
 		
 		@_model = value
 		for module in @_model._getModules()
-			view = new View.Module( @_paper, @, @_model, module, @_interaction )
+			view = new View.Module( @paper, @, @_model, module, @_interaction )
 			@add view
 			@_drawn.push { model: module, view: view } 
 		
 		@_addInteraction() if @_interaction
-		@_bind( 'cell.module.add', @, @onModuleAdd )		
-		@_bind( 'cell.module.remove', @, @onModuleRemove )
-		@_bind( 'cell.metabolite.add', @, @onModuleAdd )
-		@_bind( 'cell.metabolite.remove', @, @onModuleRemove )
-		@_bind( 'cell.spline.add', @, @onSplineAdd)
-		@_bind( 'cell.spline.remove', @, @onSplineRemove)
+		
 		
 		@_trigger( 'view.cell.set', @, [ @model ] )
 
@@ -94,20 +86,6 @@ class View.Cell extends View.RaphaelBase
 		@_drawn = []
 		@_viewsByType = {}
 		
-	# Creates the interaction buttons
-	# 
-	_createButtons: () ->
-		
-		@add new View.DummyModule( @_paper, @, @model, Model.CellGrowth, 1 )
-		@add new View.DummyModule( @_paper, @, @model, Model.DNA, 1 )
-		@add new View.DummyModule( @_paper, @, @model, Model.Lipid, 1 )
-		@add new View.DummyModule( @_paper, @, @model, Model.Metabolite, -1, { placement: Model.Metabolite.Outside, type: Model.Metabolite.Substrate, amount: 0, supply: 1 } )
-		@add new View.DummyModule( @_paper, @, @model, Model.Metabolite, -1, { placement: Model.Metabolite.Inside, type: Model.Metabolite.Product, amount: 0, supply: 0 } )
-		@add new View.DummyModule( @_paper, @, @model, Model.Transporter, -1, { direction: Model.Transporter.Inward } )
-		@add new View.DummyModule( @_paper, @, @model, Model.Metabolism, -1 )
-		@add new View.DummyModule( @_paper, @, @model, Model.Protein, -1 )
-		@add new View.DummyModule( @_paper, @, @model, Model.Transporter, -1, { direction: Model.Transporter.Outward } )
-
 	# Returns the bounding box of this view
 	#
 	# @return [Object] a bounding box object with coordinates
@@ -160,7 +138,7 @@ class View.Cell extends View.RaphaelBase
 	#
 	remove: ( view ) ->
 		type = view.getFullType()
-		@_viewsByType[type] = _( @_viewsByType[type] ).without view
+		@_viewsByType[type] = _( @_viewsByType[type] ? [] ).without view
 
 		view.kill()
 
@@ -195,8 +173,8 @@ class View.Cell extends View.RaphaelBase
 	# @return [Raphael] the cell shape
 	#
 	_drawCell: ( ) ->
-		@_shape = @_paper.circle( @x, @y, @_radius )
-		@_shape.insertBefore(@_paper.bottom)
+		@_shape = @paper.circle( @x, @y, @_radius )
+		@_shape.insertBefore(@paper.bottom)
 		$(@_shape.node).addClass('cell' )
 
 		@_contents.push @_shape
@@ -267,36 +245,30 @@ class View.Cell extends View.RaphaelBase
 		return [x, y]
 	
 	# On module added, add it to the cell
-	# 
-	# @param cell [Model.Cell] cell added to
+	#
 	# @param module [Model.Module] module added
 	#
-	onModuleAdd: ( cell, module ) =>
-		if cell is @model
-			unless ( _( @_drawn ).find( ( d ) -> d.model is module ) )?
-				view = new View.Module( @_paper, @, @model, module, @_interaction )
-				@_drawn.push({view: view, model: module})
-				@add view		
+	addModule: ( module ) =>
+		unless ( _( @_drawn ).find( ( d ) -> d.model is module ) )?
+			view = new View.Module( @paper, @, @model, module, @_interaction )
+			@_drawn.push({view: view, model: module})
+			@add view
 			
-	# On module removed, removed it from the cell
+	# On module removed, remove it from the cell
 	# 
-	# @param cell [Model.Cell] cell removed from
 	# @param module [Model.Module] module removed
 	#
-	onModuleRemove: ( cell, module ) =>
-		if cell is @model
-			if ( drawn = _( @_drawn ).find( ( d ) -> d.model is module ) )?
-				view = drawn.view.kill()				
-				@_drawn = _( @_drawn ).without drawn
-				@remove view
+	removeModule: ( module ) =>
+		if ( drawn = _( @_drawn ).find( ( d ) -> d.model is module ) )?
+			view = drawn.view.kill()				
+			@_drawn = _( @_drawn ).without drawn
+			@remove view
 
 	# On spline added, add it to the cell and draw
 	# 
-	# @param cell [Model.Cell] cell added to
 	# @param spline [View.Spline] spline added
 	#
-	onSplineAdd: ( cell, spline ) =>
-		if cell is @model
+	addSpline: ( spline ) =>
 			if _(@_splines).find( ( s ) -> (s.orig is spline.orig and s.dest is spline.dest) )?
 				spline.kill()
 				return
@@ -306,10 +278,8 @@ class View.Cell extends View.RaphaelBase
 
 	# On spline removed, remove it from the cell and kill it
 	# 
-	# @param cell [Model.Cell] cell removed from
 	# @param spline [View.Spline] spline removed
 	#
-	onSplineRemove: ( cell, spline ) =>
-		if cell is @model
+	removeSpline: ( spline ) =>
 			@_splines = _( @_splines ).without spline
 			spline.kill()

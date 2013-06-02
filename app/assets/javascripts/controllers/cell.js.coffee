@@ -14,19 +14,22 @@ class Controller.Cell extends Controller.Base
 	#
 	# @overload constructor( paper, parent, model )
 	#	Creates the cell view from parameters
-	#	@param paper [Rapahel] the paper
+	#	@param paper [Raphael] the paper
 	# 	@param parent [View.*] the parent view
 	# 	@param model [Model.*] the model
+	#   @param interaction [Boolean] the interation
 	#
 	# @overload constructor( view )
 	#   Sets the cell view
 	#   @param view [View.Cell] the view
+	#   @param interaction [Boolean] the interation
 	#
 	constructor: ( ) ->
 		view = if arguments.length is 1
+			@_interaction = arguments[ 1 ] ? off
 			arguments[ 0 ]
 		else
-			new View.Cell( arguments[ 0 ], arguments[ 1 ], arguments[ 2 ] ? new Model.Cell(), arguments[ 3 ] ? on )	
+			new View.Cell( arguments[ 0 ], arguments[ 1 ], arguments[ 2 ] ? new Model.Cell(), ( @_interaction = arguments[ 3 ] ? on ) )	
 		super view
 				
 		Object.defineProperty( @, 'model', 
@@ -36,6 +39,126 @@ class Controller.Cell extends Controller.Base
 				@view.model = value
 		)
 		
+		@_addInteraction() if @_interaction
+		@_createBindings()
+	
+	# Adds interaction to the cell
+	#
+	_addInteraction: () ->
+		@_automagically = on
+
+		@_bind( 'cell.module.added', @, @onModuleAdded )
+		@_bind( 'module.property.changed', @, @onModuleChanged)
+		
+		@_addDummyViews()
+	
+	#
+	#
+	_addDummyControllers: () ->
+		
+	
+	# Adds dummy modules
+	#
+	_addDummyViews: () ->
+		
+		@view.each( (view) => @view.remove view if view instanceof View.DummyModule )
+		
+		@view.add new View.DummyModule( @view.paper, @view, @model, Model.CellGrowth, 1 ), false
+		@view.add new View.DummyModule( @view.paper, @view, @model, Model.DNA, 1 ), false
+		@view.add new View.DummyModule( @view.paper, @view, @model, Model.Lipid, 1 ), false
+		@view.add new View.DummyModule( @view.paper, @view, @model, Model.Metabolite, -1, { placement: Model.Metabolite.Outside, type: Model.Metabolite.Substrate, amount: 0, supply: 1 } ), false
+		@view.add new View.DummyModule( @view.paper, @view, @model, Model.Metabolite, -1, { placement: Model.Metabolite.Inside, type: Model.Metabolite.Product, amount: 0, supply: 0 } ), false
+		@view.add new View.DummyModule( @view.paper, @view, @model, Model.Transporter, -1, { direction: Model.Transporter.Inward } ), false
+		@view.add new View.DummyModule( @view.paper, @view, @model, Model.Metabolism, -1 ), false
+		@view.add new View.DummyModule( @view.paper, @view, @model, Model.Protein, -1 ), false
+		@view.add new View.DummyModule( @view.paper, @view, @model, Model.Transporter, -1, { direction: Model.Transporter.Outward } ), false
+		
+		$( '.module-properties' ).click( '[data-action]', ( event ) => 
+			func = @["on#{ $( event.target ).data( 'action' )}"]
+			func( event ) if func?
+		)
+		
+	#
+	#
+	onCreate: ( event ) ->
+		
+		
+	# Creates the bindings for the cell
+	#
+	_createBindings: () ->
+		@_bind( 'cell.module.add', @, @onModuleAdd )		
+		@_bind( 'cell.module.remove', @, @onModuleRemove )
+		@_bind( 'cell.metabolite.add', @, @onModuleAdd )
+		@_bind( 'cell.metabolite.remove', @, @onModuleRemove )
+		@_bind( 'cell.spline.add', @, @onSplineAdd)
+		@_bind( 'cell.spline.remove', @, @onSplineRemove)
+		
+	#
+	#
+	onModuleAdd: ( cell, module ) ->
+		return if cell isnt @model
+		@view.addModule module
+			
+	#
+	#
+	onModuleAdded: ( cell, module ) ->
+		return if cell isnt @model
+		return unless @_automagically
+		for prop in module.getMetaboliteProperties()
+			@onModuleChanged( module, undefined, prop, module[prop] )
+	#
+	#
+	onModuleRemove: ( cell, module ) ->
+		return if cell isnt @model
+		@view.removeModule module
+		
+	#
+	#
+	onSplineAdd: ( cell, spline ) ->
+		return if cell isnt @model
+		@view.addSpline spline
+		
+	#
+	#
+	onSplineRemove: ( cell, spline ) ->
+		return if cell isnt @model
+		@view.removeSpline spline
+		
+	# On Module property changed add missing metabolites
+	# 
+	# @param module [Model.Module] the module changed
+	# @param action [Model.Action] the action invoked
+	# @param key [String] the property name changed
+	# @param param [String] the property values
+	#
+	onModuleChanged: ( module, action, key, param ) =>
+		return unless @_automagically
+		return if not _( @model._getModules() ).contains module
+
+		# Find parameters that are metabolites
+		props = module.getMetaboliteProperties()
+		return if not _( props ).contains key
+			
+		# Expand names
+		names = []
+		param = [ param ] unless _( param ).isArray()
+		for name in param
+			name = new String( name ).toString()
+			if name.indexOf('#') is -1
+				names.push "#{name}#int"
+				names.push "#{name}#ext"
+			else
+				names.push name
+				
+		# Find missing metabolites
+		missing = _( names ).filter( ( name ) => not _( @model._getModules() ).any( ( m ) -> name is m.name ) )
+		for name in missing
+			product = 
+				( module instanceof Model.Transporter and key is 'transported' and module.direction is Model.Transporter.Outward ) or
+				( module instanceof Model.Metabolism and key is 'dest' )
+			console.log name
+			@model.addMetabolite( name, 0, 0, name.split( '#' )[1] is 'int', product )
+		
 	# Loads a new cell into the view
 	#
 	# @param cell_id [Integer] the cell to load
@@ -44,10 +167,16 @@ class Controller.Cell extends Controller.Base
 	#
 	load: ( cell_id, callback ) ->
 	
+		
 		setcallback = ( cell ) => 
 			@model = cell 
+			@_addDummyViews() if @_interaction
 			callback?.call( @, cell )
-		return Model.Cell.load cell_id, setcallback
+			
+		@_automagically = off
+		promise = Model.Cell.load cell_id, setcallback
+		promise.always( () => @_automagically = on )
+		return promise
 		
 	# Saves the cell view model
 	#
@@ -102,7 +231,7 @@ class Controller.Cell extends Controller.Base
 			for key, value of mapping
 				yValues = []
 
-				if @_interpolation
+				if interpolate
 					for time in [ 0 ... duration ] by dt
 						yValues.push( interpolation[ time ][ value ] ) 
 				else
