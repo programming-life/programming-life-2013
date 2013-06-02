@@ -15,7 +15,7 @@ class Controller.Report extends Controller.Base
 		@_createChildren()
 		@_createBindings()
 		
-		@load( cell_id, () -> console.log arguments )
+		@load( cell_id )
 		
 		
 	# Creates children
@@ -32,7 +32,13 @@ class Controller.Report extends Controller.Base
 	_createBindings: () ->
 		#@view.bindActionButtonClick( () => @onAction( arguments... ) ) 
 		
-		
+	# Sets the progress bar
+	#
+	# @param value [Integer] the current value
+	#
+	_setProgressBar: ( value ) =>
+		@view.setProgressBar value / @_iterations + 1 / @_iterations * @_currentIteration
+		return this
 
 	# Loads a new cell into the report view
 	#
@@ -65,16 +71,20 @@ class Controller.Report extends Controller.Base
 	# @return [Tuple<CancelToken, jQuery.Promise>] a token and the promise
 	#
 	solveTheSystem: () ->
+		
+		@_iterations = 2
+		@_currentIteration = 0
 	
 		iterationDone = ( results, from, to ) =>
-			console.log @_currentIteration
 			@controller( 'graphs' ).show( results.datasets, @_currentIteration > 0, 'key' )
 			@_currentIteration++
+			@_setProgressBar 0
 
-		[ token, promise ] = @controller('cell').startSimulation( 20, 2, iterationDone )
-		promise.done( () =>
-				$('#create-pdf').removeProp('disabled')
-			)
+		@view.showProgressBar()
+		[ token, promise ] = @controller('cell').startSimulation( 20, @_iterations, iterationDone )
+		promise.done () => $('#create-pdf').removeProp 'disabled'
+		promise.done () => @view.hideProgressBar()
+		promise.progress @_setProgressBar
 		
 	# Runs on an action (click)
 	#
