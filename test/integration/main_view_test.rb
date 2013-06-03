@@ -6,18 +6,18 @@ require 'selenium-webdriver'
 class MainViewTest < ActionDispatch::IntegrationTest
 
 	setup do
-		saucename = ENV['SAUCE_USERNAME']
-		saucekey = ENV['SAUCE_ACCES_KEY']
-		caps = Selenium::WebDriver::Remote::Capabilities.firefox
-		caps.platform = "Windows 7"
-		caps.version = "21"
-		caps[:name] = "Testing Selenium with Ruby on Sauce"
-		# @driver = Selenium::WebDriver.for :firefox
-		@driver = Selenium::WebDriver.for(
-			:remote,
-			:url => "http://"+saucename+":"+saucekey+"@ondemand.saucelabs.com:80/wd/hub",
-			:desired_capabilities => caps
-			)
+		# saucename = ENV['SAUCE_USERNAME']
+		# saucekey = ENV['SAUCE_ACCES_KEY']
+		# caps = Selenium::WebDriver::Remote::Capabilities.firefox
+		# caps.platform = "Windows 7"
+		# caps.version = "21"
+		# caps[:name] = "Testing Selenium with Ruby on Sauce"
+		@driver = Selenium::WebDriver.for :firefox
+		# @driver = Selenium::WebDriver.for(
+		# 	:remote,
+		# 	:url => "http://"+saucename+":"+saucekey+"@ondemand.saucelabs.com:80/wd/hub",
+		# 	:desired_capabilities => caps
+		# 	)
 		@wait = Selenium::WebDriver::Wait.new :timeout => 10
 
 		# navigate to the main view
