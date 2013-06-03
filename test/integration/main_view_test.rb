@@ -6,6 +6,8 @@ require 'selenium-webdriver'
 class MainViewTest < ActionDispatch::IntegrationTest
 
 	setup do
+		saucename = ENV['SAUCE_USERNAME']
+		saucekey = ENV['SAUCE_ACCES_KEY']
 		caps = Selenium::WebDriver::Remote::Capabilities.firefox
 		caps.platform = "Windows 7"
 		caps.version = "21"
@@ -13,7 +15,7 @@ class MainViewTest < ActionDispatch::IntegrationTest
 		# @driver = Selenium::WebDriver.for :firefox
 		@driver = Selenium::WebDriver.for(
 			:remote,
-			:url => "http://"+ENV['SAUCE_USERNAME']+":"+ENV['SAUCE_ACCES_KEY']+"@ondemand.saucelabs.com:80/wd/hub",
+			:url => "http://"+saucename+":"+saucekey+"@ondemand.saucelabs.com:80/wd/hub",
 			:desired_capabilities => caps
 			)
 		@wait = Selenium::WebDriver::Wait.new :timeout => 10
