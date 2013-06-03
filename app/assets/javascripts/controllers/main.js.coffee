@@ -21,7 +21,6 @@ class Controller.Main extends Controller.Base
 	
 		@_createChildren()
 		@_createBindings()
-
 		
 	# Creates children
 	#

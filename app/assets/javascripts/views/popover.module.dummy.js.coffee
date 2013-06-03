@@ -138,7 +138,9 @@ class View.DummyModuleProperties extends View.ModuleProperties
 						@_changes[ key ] = _( @_changes[ key ] ).without value
 				else
 					@_changes[ key ] = value
-				@_trigger "module.properties.change", @_parent , [ key, value]
+					
+				console.log @_changes[ key ]
+				@_trigger "module.properties.change", @_parent , [key, @_changes[ key ] ]
 			)
 		) key
 

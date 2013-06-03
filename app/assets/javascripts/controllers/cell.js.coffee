@@ -40,19 +40,8 @@ class Controller.Cell extends Controller.Base
 		)
 
 		@_createBindings()
-	
-	# Create event bindings
-	#
-	_createBindings: ( ) ->
-		@_bind "module.creation.started", @, ( source, module ) => @view.previewModule( source, module, on )
-		@_bind "module.creation.ended", @, ( source, module ) => @view.previewModule( source, module, off )
-		#@_bind "module.creation.changed", @, (( source, newModule ) =>
-		#	@view.previewModule( source, newModule, on )
-		#)
-		
 		@_addInteraction() if @_interaction
-		@_createBindings()
-	
+
 	# Adds interaction to the cell
 	#
 	_addInteraction: () ->
@@ -62,32 +51,30 @@ class Controller.Cell extends Controller.Base
 		@_bind( 'module.property.changed', @, @onModuleChanged)
 		
 		@_addDummyViews()
-	
-	#
-	#
-	_addDummyControllers: () ->
-		
-	
+
 	# Adds dummy modules
 	#
 	_addDummyViews: () ->
 		
 		@view.each( (view) => @view.remove view if view instanceof View.DummyModule )
 		
-		@view.add new View.DummyModule( @view.paper, @view, @model, Model.CellGrowth, 1 ), false
-		@view.add new View.DummyModule( @view.paper, @view, @model, Model.DNA, 1 ), false
-		@view.add new View.DummyModule( @view.paper, @view, @model, Model.Lipid, 1 ), false
-		@view.add new View.DummyModule( @view.paper, @view, @model, Model.Metabolite, -1, { placement: Model.Metabolite.Outside, type: Model.Metabolite.Substrate, amount: 0, supply: 1 } ), false
-		@view.add new View.DummyModule( @view.paper, @view, @model, Model.Metabolite, -1, { placement: Model.Metabolite.Inside, type: Model.Metabolite.Product, amount: 0, supply: 0 } ), false
-		@view.add new View.DummyModule( @view.paper, @view, @model, Model.Transporter, -1, { direction: Model.Transporter.Inward } ), false
-		@view.add new View.DummyModule( @view.paper, @view, @model, Model.Metabolism, -1 ), false
-		@view.add new View.DummyModule( @view.paper, @view, @model, Model.Protein, -1 ), false
-		@view.add new View.DummyModule( @view.paper, @view, @model, Model.Transporter, -1, { direction: Model.Transporter.Outward } ), false
+		@view.add new View.DummyModule( @view.paper, @view, @model, Model.CellGrowth, 1 )
+		@view.add new View.DummyModule( @view.paper, @view, @model, Model.DNA, 1 )
+		@view.add new View.DummyModule( @view.paper, @view, @model, Model.Lipid, 1 )
+		@view.add new View.DummyModule( @view.paper, @view, @model, Model.Metabolite, -1, { placement: Model.Metabolite.Outside, type: Model.Metabolite.Substrate, amount: 0, supply: 1 } )
+		@view.add new View.DummyModule( @view.paper, @view, @model, Model.Metabolite, -1, { placement: Model.Metabolite.Inside, type: Model.Metabolite.Product, amount: 0, supply: 0 } )
+		@view.add new View.DummyModule( @view.paper, @view, @model, Model.Transporter, -1, { direction: Model.Transporter.Inward } )
+		@view.add new View.DummyModule( @view.paper, @view, @model, Model.Metabolism, -1 )
+		@view.add new View.DummyModule( @view.paper, @view, @model, Model.Protein, -1 )
+		@view.add new View.DummyModule( @view.paper, @view, @model, Model.Transporter, -1, { direction: Model.Transporter.Outward } )
 		
 		$( '.module-properties' ).click( '[data-action]', ( event ) => 
 			func = @["on#{ $( event.target ).data( 'action' )}"]
 			func( event ) if func?
 		)
+		
+		@_bind "module.creation.started", @, ( source, module ) => @view.previewModule( source, module, on )
+		@_bind "module.creation.ended", @, ( source, module ) => @view.previewModule( source, module, off )
 		
 	#
 	#
