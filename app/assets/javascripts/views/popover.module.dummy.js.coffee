@@ -70,9 +70,9 @@ class View.DummyModuleProperties extends View.ModuleProperties
 	_createFooter: ( removeText = '<i class="icon-trash icon-white"></i>', saveText = '<i class=" icon-ok icon-white"></i> Create' ) ->
 		@_footer = $('<div class="modal-footer"></div>')
 
-		@_saveButton = $('<button class="btn btn-primary">' + saveText + '</button>')
-		@_saveButton.click @_save 
-
+		@_saveButton = $('<button class="btn btn-primary" data-action="create">' + saveText + '</button>')
+		@_saveButton.click @save
+		
 		@_footer.append @_saveButton
 		return [ @_footer, @_saveButton ]
 
@@ -116,7 +116,7 @@ class View.DummyModuleProperties extends View.ModuleProperties
 
 	# Saves all changed properties to the module.
 	#
-	_save: ( ) =>
+	save: ( ) =>
 		@_trigger('module.creation.finished', @_parent, [@_changes])
 		@_elem.find('input').blur()
 		@_changes = {}

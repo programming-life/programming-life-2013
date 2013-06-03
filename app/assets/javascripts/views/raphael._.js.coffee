@@ -27,7 +27,8 @@ class View.RaphaelBase extends View.Collection
 				return @_anchor?.getBBox()?.cx ? 0
 			y: ( ) ->
 				return @_anchor?.getBBox()?.cy ? 0
-
+			paper: ( ) -> 
+				return @_paper
 	# Catcher function for Mixin.Catcher that will notificate any thrown Error on catchable methods
 	#
 	# @param e [Error] the error to notificate

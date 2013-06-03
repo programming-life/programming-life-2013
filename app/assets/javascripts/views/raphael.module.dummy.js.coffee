@@ -285,7 +285,7 @@ class View.DummyModule extends View.RaphaelBase
 	drawBox : ( elem ) ->
 		rect = elem.getBBox()
 		padding = 15
-		box = @_paper.rect(rect.x - padding, rect.y - padding, rect.width + 2 * padding, rect.height + 2 * padding)
+		box = @paper.rect(rect.x - padding, rect.y - padding, rect.width + 2 * padding, rect.height + 2 * padding)
 
 		classname = 'module-box inactive dummy dummy-' + @_type.toLowerCase()
 		classname += ' hovered' if @_hovered
@@ -303,11 +303,11 @@ class View.DummyModule extends View.RaphaelBase
 	#
 	drawContents: ( ) ->
 		
-		@_paper.setStart()
-		text = @_paper.text( @x, @y, _.escape "Add #{@_type}" )
+		@paper.setStart()
+		text = @paper.text( @x, @y, _.escape "Add #{@_type}" )
 		$(text.node).addClass('module-text')
 
-		return @_paper.setFinish()
+		return @paper.setFinish()
 		
 	# Draws this view hitbox
 	#
@@ -316,7 +316,7 @@ class View.DummyModule extends View.RaphaelBase
 	#
 	drawHitbox : ( elem ) ->
 		rect = elem.getBBox()
-		hitbox = @_paper.rect(rect.x, rect.y, rect.width, rect.height)
+		hitbox = @paper.rect(rect.x, rect.y, rect.width, rect.height)
 		hitbox.node.setAttribute('class', 'module-hitbox hitdummy-' + @_type.toLowerCase() )	
 
 		return hitbox

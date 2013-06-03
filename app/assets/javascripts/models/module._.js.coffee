@@ -370,7 +370,16 @@ class Model.Module extends Helper.Mixable
 		}
 		result.id = instance.id unless @isLocal()
 		return result
-		
+	
+	# Gets the properties that have metabolites
+	#
+	# @return [Array<String>] the properties
+	#
+	getMetaboliteProperties: () ->
+		metadata = @_getParameterMetaData()
+		props = _( _( metadata?.properties?.metabolites ? [] ).concat( metadata?.properties?.metabolite ? [] ) ).flatten()
+		return props
+			
 	# Updates the parameters givin
 	#
 	# @param prameters [Object] parameters to update

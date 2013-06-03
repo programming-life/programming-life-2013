@@ -13,10 +13,7 @@ class View.Main extends View.RaphaelBase
 		container = $( container )[0]
 		super Raphael(container, 0,0) 
 
-		@_viewbox = @_paper.setViewBox(-750, -500, 1500, 1000)
-		Object.defineProperty( @, 'paper'
-			get: () -> return @_paper 
-		)
+		@_viewbox = @paper.setViewBox(-750, -500, 1500, 1000)
 		
 		@_createSidebars()
 		@_createConfirmReset()
@@ -84,7 +81,7 @@ class View.Main extends View.RaphaelBase
 	getAbsoluteCoords: ( x, y ) ->
 		width = @_viewbox.width
 		height = @_viewbox.height
-		offset = $(@_paper.canvas).offset()
+		offset = $(@paper.canvas).offset()
 
 		vX = @_viewbox._viewBox[0]
 		vY = @_viewbox._viewBox[1]
