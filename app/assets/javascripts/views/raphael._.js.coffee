@@ -34,7 +34,8 @@ class View.RaphaelBase extends View.Collection
 	# @param e [Error] the error to notificate
 	#
 	_catcher: ( e ) =>
-		@_notificate(@, @, '', e.name, [], View.RaphaelBase.Notification.Error)
+		text = e.message
+		@_notificate(@, @, '', text, [], View.RaphaelBase.Notification.Error)
 
 		
 	# Gets the Bounding Box for this view

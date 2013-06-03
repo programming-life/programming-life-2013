@@ -73,8 +73,9 @@ class Controller.Cell extends Controller.Base
 			func( event ) if func?
 		)
 		
-		@_bind "module.creation.started", @, ( source, module ) => @view.previewModule( source, module, on )
-		@_bind "module.creation.ended", @, ( source, module ) => @view.previewModule( source, module, off )
+		@_bind "module.creation.started", @, @_onModuleCreationStarted
+		@_bind "module.creation.aborted", @, @_onModuleCreationAborted
+		@_bind "module.created", @, @_onModuleCreated
 		
 	#
 	#
@@ -156,7 +157,50 @@ class Controller.Cell extends Controller.Base
 				( module instanceof Model.Metabolism and key is 'dest' )
 			console.log 'automagically creating ' + name
 			@model.addMetabolite( name, 0, 0, name.split( '#' )[1] is 'int', product )
+	
+	# Gets called on module.creation.started
+	#
+	# @param source [View.DummyModule] The source of the event
+	# @param module [Model.Module] The module representation of the current creation parameters
+	#
+	_onModuleCreationStarted: ( source, module ) ->
+		@_creating = on
+		@view.previewModule( source, module, on )
+
+	# Gets called on module.creation.aborted
+	#
+	# @param source [View.DummyModule] The source of the event
+	# @param module [Model.Module] The module representation of the current creation parameters
+	#
+	_onModuleCreationAborted: ( source, module ) ->
+		@_creating = off
+		@view.previewModule( source, module, off )
 		
+	# Gets called on module.creation.finished
+	#
+	# @param source [View.DummyModule] The source of the event
+	# @param module [Model.Module] The module representation of the current creation parameters
+	#
+	_onModuleCreated: ( source, module ) ->
+		type = source.getFullType()
+		if source in @view.viewsByType[type] 
+			@_creating = off
+			@view.previewModule( source, module, off )
+
+			@model.add module
+			
+		#	switch @_type
+		#		when "Transporter"
+		#			if params.direction is Model.Transporter.Outward
+		#				@_cell.addProduct( params.transported , 0, false )
+		#			if params.direction is Model.Transporter.Inward
+		#				@_cell.addSubstrate( params.transported , 0, 0, true )
+		#		when "Metabolism"
+		#			for o in params.orig ? []
+		#				@_cell.addSubstrate( o , 0, 0, true )
+		#			for d in params.dest ? []
+		#				@_cell.addProduct( d , 0, true )
+
 	# Loads a new cell into the view
 	#
 	# @param cell_id [Integer] the cell to load

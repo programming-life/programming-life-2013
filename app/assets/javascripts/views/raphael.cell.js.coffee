@@ -18,7 +18,7 @@ class View.Cell extends View.RaphaelBase
 		super paper, parent
 		
 		@_drawn = []
-		@_viewsByType = {}
+		@viewsByType = {}
 		@_splines = []
 
 		@_width = @paper.width
@@ -44,7 +44,7 @@ class View.Cell extends View.RaphaelBase
 			model: ( ) ->
 				return @_model
 			_views: ( ) ->
-				return (_.flatten(_.map(@_viewsByType, _.values))).concat(@_splines)
+				return (_.flatten(_.map(@viewsByType, _.values))).concat(@_splines)
 
 		@setter
 			model: @setCell
@@ -84,7 +84,7 @@ class View.Cell extends View.RaphaelBase
 		@_notificationsView?.kill()
 		
 		@_drawn = []
-		@_viewsByType = {}
+		@viewsByType = {}
 		
 	# Returns the bounding box of this view
 	#
@@ -124,12 +124,12 @@ class View.Cell extends View.RaphaelBase
 	add: ( view ) ->
 		type = view.getFullType()
 
-		unless @_viewsByType[type]?
-			@_viewsByType[type] = []
+		unless @viewsByType[type]?
+			@viewsByType[type] = []
 
-		dummies = _(@_viewsByType[type]).filter( (v) -> v instanceof View.DummyModule)
-		@_viewsByType[type].push(view)
-		@_viewsByType[type] = _(@_viewsByType[type]).difference(dummies).concat(dummies)
+		dummies = _(@viewsByType[type]).filter( (v) -> v instanceof View.DummyModule)
+		@viewsByType[type].push(view)
+		@viewsByType[type] = _(@viewsByType[type]).difference(dummies).concat(dummies)
 		view.draw()
 
 	# Removes a view from the container
@@ -138,7 +138,7 @@ class View.Cell extends View.RaphaelBase
 	#
 	remove: ( view ) ->
 		type = view.getFullType()
-		@_viewsByType[type] = _( @_viewsByType[type] ? [] ).without view
+		@viewsByType[type] = _( @viewsByType[type] ? [] ).without view
 
 		view.kill()
 
@@ -186,7 +186,7 @@ class View.Cell extends View.RaphaelBase
 	#
 	getViewPlacement: ( view ) ->
 		type = view.getFullType()
-		views = @_viewsByType[type] ? []
+		views = @viewsByType[type] ? []
 
 		index = views.indexOf(view)
 		
@@ -292,7 +292,7 @@ class View.Cell extends View.RaphaelBase
 	#
 	previewModule: ( source, module, selected ) ->
 		type = source.getFullType()
-		if source in @_viewsByType[type]
+		if source in @viewsByType[type]
 			if selected
 				preview = new View.ModulePreview( @_paper, @, @model, module, off )
 				@_drawn.push({view: preview, model: module})
@@ -301,3 +301,4 @@ class View.Cell extends View.RaphaelBase
 				preview = @getView( module )
 				if preview
 					@remove preview
+					@_trigger "module.preview.ended", preview

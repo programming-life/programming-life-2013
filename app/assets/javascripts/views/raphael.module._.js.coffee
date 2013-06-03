@@ -170,7 +170,6 @@ class View.Module extends View.RaphaelBase
 	# @return [self] chainable self
 	#
 	kill: () ->
-
 		#@_contents.insertBefore(@paper.bottom)
 
 		fadeOut = ( ) =>
@@ -187,6 +186,8 @@ class View.Module extends View.RaphaelBase
 
 
 		_(fadeOut).defer()
+
+		super()
 
 		return this
 

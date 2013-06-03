@@ -268,6 +268,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 			input.on('keyup', (event) => 
 				value = event.target.value
 				value = parseFloat value unless isNaN value
+				value = event.target.value if isNaN value
 				@_changes[ key ] = value
 				@_trigger "module.properties.change", @_parent , [ key, value]
 			)
