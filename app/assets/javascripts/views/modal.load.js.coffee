@@ -40,7 +40,7 @@ class View.LoadModal extends View.HTMLModal
 				body.empty()
 						
 				table = $ '<table class="table table-condensed"></table>'
-				thead = $ '<thead><th>#</th><th>Name</th><th>Creation</th><th class="span2"></th></thead>' 
+				thead = $ '<thead><th>#</th><th>Name</th><th>Timestamp</th><th class="span2"></th></thead>' 
 				tbody = $ '<tbody></tbody>'
 				
 				for cell in cells.reverse()
@@ -48,7 +48,7 @@ class View.LoadModal extends View.HTMLModal
 					row.append $ "<td>#{cell.id}</td>"
 					row.append $ "<td>#{cell.name}</td>"
 					row.append ( time = $ "<td></td>" )
-					time.append @_parseDate cell.created_at
+					time.append @_parseDate cell.updated_at
 					
 					load_button = $ '<button class="btn btn-primary" data-dismiss="modal" data-action="load" aria-hidden="true" data-id="' + cell.id + '"><i class="icon-download icon-white"></i> Load</button>'
 					load_button.on( 'click', ( event ) => 
@@ -85,11 +85,13 @@ class View.LoadModal extends View.HTMLModal
 		time.append ( @_prettifyDate result )
 		return time
 		
+	# Prettifies date to say x seconds, minutes, hours ago
 	#
+	# @param date [Date] the date
+	# @return [String] pretty formatted string
 	#
 	_prettifyDate: ( date ) ->
 		diff = ( Date.now() - date.getTime() ) / 1000
-		console.log diff
 		steps = [ 
 			[ 60, 'seconds' ]
 			[ 60, 'minutes' ]

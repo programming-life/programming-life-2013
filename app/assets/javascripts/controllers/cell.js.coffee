@@ -156,7 +156,7 @@ class Controller.Cell extends Controller.Base
 			product = 
 				( module instanceof Model.Transporter and key is 'transported' and module.direction is Model.Transporter.Outward ) or
 				( module instanceof Model.Metabolism and key is 'dest' )
-			console.log name
+			console.log 'automagically creating ' + name
 			@model.addMetabolite( name, 0, 0, name.split( '#' )[1] is 'int', product )
 		
 	# Loads a new cell into the view
