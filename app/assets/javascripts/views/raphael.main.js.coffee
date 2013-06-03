@@ -115,6 +115,7 @@ class View.Main extends View.RaphaelBase
 		@_loadModal.kill()
 		@getActionButtons().removeProp( 'disabled' )
 		$( window ).off( 'resize' )
+		$( '#actions' ).off( 'click', '[data-action]' )
 		return this
 
 	# Gets the cell name
