@@ -62,6 +62,8 @@ class View.HTMLPopOver extends Helper.Mixable
 		@_elem.append header if header?
 		@_elem.append @_createBody()
 		@_elem.append footer if footer?	
+
+		@_setSelected(off)
 		
 	# Nullifies the header
 	#
