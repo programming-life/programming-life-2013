@@ -375,7 +375,7 @@ class Model.Module extends Helper.Mixable
 	# @return [Array<String>] the properties
 	#
 	getMetaboliteProperties: () ->
-		metadata = @_getParameterMetaData()
+		metadata = @constructor.getParameterMetaData()
 		props = _( _( metadata?.properties?.metabolites ? [] ).concat( metadata?.properties?.metabolite ? [] ) ).flatten()
 		return props
 			
