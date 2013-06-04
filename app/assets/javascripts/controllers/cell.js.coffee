@@ -156,14 +156,16 @@ class Controller.Cell extends Controller.Base
 			is_product = 
 				( module instanceof Model.Transporter and key is 'transported' and module.direction is Model.Transporter.Outward ) or
 				( module instanceof Model.Metabolism and key is 'dest' )
+				
+			is_inside = name.split( '#' )[1] is 'int'
 			
 			if @_creating
 				type = if is_product then Model.Metabolite.Product else Model.Metabolite.Substrate
-				placement = if name.split( '#' )[1] is 'int' then Model.Metabolite.Inside else Model.Metabolite.Outside
+				placement = if is_inside is 'int' then Model.Metabolite.Inside else Model.Metabolite.Outside
 				metabolite = new Model.Metabolite( { supply: 0 }, 0, name, placement , type )
 				#@view.previewModule( @view , metabolite, on )
 			else
-				@model.addMetabolite( name, 0, 0, is_product, name.split("#") )
+				@model.addMetabolite( name, 0, 0, is_inside, is_product )
 	
 	# Gets called on module.creation.started
 	#
