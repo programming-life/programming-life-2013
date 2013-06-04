@@ -319,7 +319,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 			drawtype: drawtype
 			key: key
 			id: id
-			value: () => @module?[ key ] ? ( if multiple then [] else '' )
+			value: () => value ? ( if multiple then [] else '' )
 			
 		@_selectables.push selectable
 		@_drawSelectable selectable
