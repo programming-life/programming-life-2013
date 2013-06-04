@@ -269,7 +269,7 @@ class Model.Module extends Helper.Mixable
 	# @return [Boolean] true if all are available
 	#
 	test: ( compounds, keys... ) ->
-		
+		console.log "Testing", @, "with", compounds, "against", keys
 		tests = _( _( keys ).flatten() ).map( ( t ) => @[ t ] )
 		unless @_test( compounds, tests )
 			missing = _( _( tests ).flatten()  ).difference( _( compounds ).keys() )
@@ -280,6 +280,7 @@ class Model.Module extends Helper.Mixable
 				[ missing ],
 				Model.Module.Notification.Error
 			)
+			@_trigger "model.module.missing", @, [ missing ]
 			return false
 	
 		return true

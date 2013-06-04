@@ -111,7 +111,7 @@ class View.Undo extends Helper.Mixable
 
 		((node) =>
 			row.click( node, ( event ) =>
-				@_trigger('tree.node.selected', @, [ event.data ])
+				@_trigger('view.undo.node.selected', @, [ event.data ])
 			)
 		) node
 		

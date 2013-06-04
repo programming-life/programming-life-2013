@@ -121,6 +121,8 @@ class View.DummyModuleProperties extends View.ModuleProperties
 		@_elem.find('input').blur()
 		@_changes = {}
 
+		super()
+
 	# Binds an on change event to a selectable input that sets the key
 	#
 	# @param key [String] property to set

@@ -75,15 +75,10 @@ class View.DummyModule extends View.RaphaelBase
 	# @param source [View.DummyModule] The source of the change
 	# @param key [String] The property
 	# @oaram value [Object] The new value
-	# @TODO Do the validity check somewhere higher up
 	#
 	@catchable
 		onModulePropertiesChange:( source, key, value ) ->
 			if source is @
-				if value.length == 0
-					@module[ key ] = undefined
-					throw new Error "Invalid property value for #{key}. The default value will be used."
-
 				@module[ key ] = value
 				@_notificationsView.hide()
 

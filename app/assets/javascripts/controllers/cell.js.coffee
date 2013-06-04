@@ -26,7 +26,7 @@ class Controller.Cell extends Controller.Base
 	#
 	constructor: ( ) ->
 		view = if arguments.length is 1
-			@_interaction = off
+			@_interaction = arguments[ 1 ] ? off
 			arguments[ 0 ]
 		else
 			new View.Cell( arguments[ 0 ], arguments[ 1 ], arguments[ 2 ] ? new Model.Cell(), ( @_interaction = arguments[ 3 ] ? on ) )	
@@ -49,6 +49,7 @@ class Controller.Cell extends Controller.Base
 
 		@_bind( 'cell.module.added', @, @onModuleAdded )
 		@_bind( 'module.property.changed', @, @onModuleChanged)
+		@_bind "model.module.missing", @, @_onModuleMissing
 		
 		@_addDummyViews()
 
@@ -151,6 +152,7 @@ class Controller.Cell extends Controller.Base
 				
 		# Find missing metabolites
 		missing = _( names ).filter( ( name ) => not _( @model._getModules() ).any( ( m ) -> name is m.name ) )
+		#module.test(@model.mapping, module.metadata.tests.compounds)
 		for name in missing
 			product = 
 				( module instanceof Model.Transporter and key is 'transported' and module.direction is Model.Transporter.Outward ) or
@@ -200,6 +202,14 @@ class Controller.Cell extends Controller.Base
 		#				@_cell.addSubstrate( o , 0, 0, true )
 		#			for d in params.dest ? []
 		#				@_cell.addProduct( d , 0, true )
+	
+	# Gets called when a module is missing parameters
+	#
+	# @param module [Model.Module] The module
+	# @param missing [Array] The properties the module is missing values for
+	#
+	_onModuleMissing: ( module, missing ) ->
+		console.log "Module", module, "is missing", missing
 
 	# Loads a new cell into the view
 	#
