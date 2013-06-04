@@ -484,29 +484,14 @@ class Model.Cell extends Helper.Mixable
 	#
 	run : ( from, to, base_values = [], callback, token, stepsize = 1e-9, iterations = 4000 ) ->
 		
-		@_trigger( 'cell.before.run', @, [ to - from ] )
-								
-		exclude = []
-		while not ( finished ? off )
-		
-			# We would like to get all the variables in all the equations, so
-			# that's what we are going to do. Then we can insert the value indices
-			# into the equations.
-			[ modules, variables, values ] = @_getModulesAndCompounds( exclude )
-
-			console.log module, variables, values
+		@_trigger( 'cell.before.run', @, [ to - from ] )			
+		@generateWarnings()
 			
-			# Create the mapping from variable to value index
-			mapping = { }
-			for i, variable of variables
-				mapping[variable] = parseInt i
-			
-			# Check modules
-			finished = on
-			for module in modules when module.metadata.tests? and module.metadata.tests.compounds?
-				if !module.test( mapping, module.metadata.tests.compounds )
-					exclude.push module
-					finished = off
+		# Get the actual modules and mapping
+		[ modules, variables, values ] = @_getModulesAndCompounds( [] )	
+		mapping = { }	
+		for i, variable of variables
+			mapping[variable] = parseInt i
 			
 		# The map function to map substrates
 		#
@@ -542,6 +527,33 @@ class Model.Cell extends Helper.Mixable
 		
 		# Return the system results
 		return promise
+		
+	# Generate warnings
+	#
+	# @return [self] chainable self
+	#
+	generateWarnings: () ->
+		# Show some warnings
+		exclude = []
+		while not ( finished ? off )
+		
+			# We would like to get all the variables in all the equations, so
+			# that's what we are going to do. Then we can insert the value indices
+			# into the equations.
+			[ modules, variables, values ] = @_getModulesAndCompounds( exclude )
+			
+			# Create the mapping from variable to value index
+			mapping = { }	
+			for i, variable of variables
+				mapping[variable] = parseInt i
+			
+			# Check modules
+			finished = on
+			for module in modules when module.metadata.tests? and module.metadata.tests.compounds?
+				if !module.test( mapping, module.metadata.tests.compounds )
+					exclude.push module
+					finished = off
+		return this
 		
 	# The step function for the cell
 	#
