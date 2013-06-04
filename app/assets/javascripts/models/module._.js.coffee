@@ -269,7 +269,7 @@ class Model.Module extends Helper.Mixable
 	# @return [Boolean] true if all are available
 	#
 	test: ( compounds, keys... ) ->
-		
+		console.log "Testing", @, "with", compounds, "against", keys
 		tests = _( _( keys ).flatten() ).map( ( t ) => @[ t ] )
 		unless @_test( compounds, tests )
 			missing = _( _( tests ).flatten()  ).difference( _( compounds ).keys() )
@@ -280,6 +280,7 @@ class Model.Module extends Helper.Mixable
 				[ missing ],
 				Model.Module.Notification.Error
 			)
+			@_trigger "model.module.missing", @, [ missing ]
 			return false
 	
 		return true
@@ -370,7 +371,16 @@ class Model.Module extends Helper.Mixable
 		}
 		result.id = instance.id unless @isLocal()
 		return result
-		
+	
+	# Gets the properties that have metabolites
+	#
+	# @return [Array<String>] the properties
+	#
+	getMetaboliteProperties: () ->
+		metadata = @_getParameterMetaData()
+		props = _( _( metadata?.properties?.metabolites ? [] ).concat( metadata?.properties?.metabolite ? [] ) ).flatten()
+		return props
+			
 	# Updates the parameters givin
 	#
 	# @param prameters [Object] parameters to update

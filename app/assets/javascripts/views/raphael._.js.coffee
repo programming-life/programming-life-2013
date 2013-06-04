@@ -27,13 +27,15 @@ class View.RaphaelBase extends View.Collection
 				return @_anchor?.getBBox()?.cx ? 0
 			y: ( ) ->
 				return @_anchor?.getBBox()?.cy ? 0
-
+			paper: ( ) -> 
+				return @_paper
 	# Catcher function for Mixin.Catcher that will notificate any thrown Error on catchable methods
 	#
 	# @param e [Error] the error to notificate
 	#
 	_catcher: ( e ) =>
-		@_notificate(@, @, '', e.name, [], View.RaphaelBase.Notification.Error)
+		text = e.message
+		@_notificate(@, @, '', text, [], View.RaphaelBase.Notification.Error)
 
 		
 	# Gets the Bounding Box for this view

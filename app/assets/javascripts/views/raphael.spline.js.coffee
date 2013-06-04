@@ -54,8 +54,8 @@ class View.Spline extends View.RaphaelBase
 
 		path = @_getPathString()
 
-		@_contents = @_paper.path(path)
-		@_contents.insertBefore(@_paper.bottom)
+		@_contents = @paper.path(path)
+		@_contents.insertBefore(@paper.bottom)
 		$(@_contents.node).addClass('metabolite-spline')
 
 		@setColor()

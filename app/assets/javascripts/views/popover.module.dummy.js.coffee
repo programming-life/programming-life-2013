@@ -70,9 +70,9 @@ class View.DummyModuleProperties extends View.ModuleProperties
 	_createFooter: ( removeText = '<i class="icon-trash icon-white"></i>', saveText = '<i class=" icon-ok icon-white"></i> Create' ) ->
 		@_footer = $('<div class="modal-footer"></div>')
 
-		@_saveButton = $('<button class="btn btn-primary">' + saveText + '</button>')
-		@_saveButton.click @_save 
-
+		@_saveButton = $('<button class="btn btn-primary" data-action="create">' + saveText + '</button>')
+		@_saveButton.click @_save
+		
 		@_footer.append @_saveButton
 		return [ @_footer, @_saveButton ]
 
@@ -121,6 +121,8 @@ class View.DummyModuleProperties extends View.ModuleProperties
 		@_elem.find('input').blur()
 		@_changes = {}
 
+		super()
+
 	# Binds an on change event to a selectable input that sets the key
 	#
 	# @param key [String] property to set
@@ -138,7 +140,8 @@ class View.DummyModuleProperties extends View.ModuleProperties
 						@_changes[ key ] = _( @_changes[ key ] ).without value
 				else
 					@_changes[ key ] = value
-				@_trigger "module.properties.change", @_parent , [ key, value]
+					
+				@_trigger "module.properties.change", @_parent , [key, @_changes[ key ] ]
 			)
 		) key
 

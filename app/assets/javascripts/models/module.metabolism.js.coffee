@@ -113,8 +113,9 @@ class Model.Metabolism extends Model.Module
 					results[ dest ] = vmetabolism
 			
 			return results
-		
+
 		defaults = @_getParameterDefaults( start, orig, dest, name )
+				
 		params = _( params ).defaults( defaults )
 		metadata = @_getParameterMetaData()
 		

@@ -46,3 +46,8 @@ class View.Collection extends Helper.Mixable
 	redraw: () ->
 		view.redraw() for view in @_views
 		return this
+		
+	#
+	#
+	each: ( func ) ->
+		_( @_views ).each func
