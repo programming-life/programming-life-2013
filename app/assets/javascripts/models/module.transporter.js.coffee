@@ -45,7 +45,7 @@
 class Model.Transporter extends Model.Module
 
 	# Active Transporters actively move metabolites
-	@Active:	1
+	@Active: 1
 	
 	# Passive Transporters passily diffuse metabolites
 	@Passive: 0
@@ -75,7 +75,7 @@ class Model.Transporter extends Model.Module
 	# @option params [Integer] direction the direction of the transporter
 	# @option params [Integer] type the type of the transporter
 	#
-	constructor: ( params = {}, start = 1, transported, name, direction = Model.Transporter.Inward , type = Model.Transporter.Active, consume = "s#int" ) ->
+	constructor: ( params = {}, start, transported, name, direction, type, consume ) ->
 
 		# Define differential equations here
 		step = ( t, compounds, mu ) ->
@@ -158,9 +158,25 @@ class Model.Transporter extends Model.Module
 			return results
 		
 		# Default parameters set here
-		defaults = @_getParameterDefaults( start, name, consume, type, direction, params.transported ? transported )
-		params = _( params ).defaults( defaults )			
-		metadata = @_getParameterMetaData()
+		defaults = Transporter.getParameterDefaults()
+		
+		if start?
+			defaults.starts.name = start
+		if transported?
+			defaults.transported = transported
+			defaults.name = "#{defaults.name}_#{transported}"
+		if name?
+			defaults.name = name
+		if direction?
+			defaults.direction = direction
+		if type?
+			defaults.type = type
+		if consume?
+			consume = [ consume ] unless _( consume ).isArray()
+			defaults.consume = consume
+		
+		params = _( params ).defaults( defaults )
+		metadata = Transporter.getParameterMetaData()
 
 		super params, step, metadata
 		
@@ -178,34 +194,34 @@ class Model.Transporter extends Model.Module
 	# @param start [Integer] the start value
 	# @return [Object] default values
 	#
-	_getParameterDefaults: ( start, name, consume, type, direction, transported ) ->
+	@getParameterDefaults: ( ) ->
 		return { 
 		
 			# Parameters
 			k: 1
 			k_tr: 1
 			k_m : 1
-			transported: transported
-			consume: if _( consume ).isArray() then consume else [ consume ]
+			transported: "s"
+			consume: [ "s#int" ]
 			
 			# Meta-Parameters
-			direction: direction
-			type: type
+			direction: Model.Transporter.Inward
+			type: Model.Transporter.Active
 			cell: "cell"
 			dna: "dna"
 			
 			# The start values
-			starts: { name : start, dest : 0 }
+			starts: { name : 1, dest : 0 }
 			
 			# The name
-			name : name ? "transporter_#{transported}"
+			name : "#{_.uniqueId( 'transporter-' )}"
 		}
 		
 	# Get parameter metadata
 	#
 	# @return [Object] metadata values
 	#
-	_getParameterMetaData: () ->
+	@getParameterMetaData: () ->
 		return {
 		
 			properties:

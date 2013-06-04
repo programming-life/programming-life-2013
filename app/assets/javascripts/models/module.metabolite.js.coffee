@@ -29,15 +29,11 @@ class Model.Metabolite extends Model.Module
 	# Constructor for Metabolite
 	#
 	# @param params [Object] parameters for this module
-	# @param start [Integer] the initial value of metabolite, defaults to 1
-	# @param name [String] the name to use
-	# @param placement [Integer] placement of this metabolite, defaults to Model.Metabolite.Outside
-	# @param type [Boolean] type of this metabolite, defaults to Model.Metabolite.Substrate
 	# @option params [Integer] start the start amount of this metabolite
 	# @option params [Integer] placement the placement
 	# @option params [Integer] type the type
 	#
-	constructor: ( params = {}, start = 1, name, placement = Model.Metabolite.Outside , type = Model.Metabolite.Substrate ) ->
+	constructor: ( params = {}, start, name, placement, type ) ->
 					
 		# Define differential equations here
 		step = ( t, compounds, mu ) ->		
@@ -54,11 +50,20 @@ class Model.Metabolite extends Model.Module
 				
 			return results
 
-		defaults = @_getParameterDefaults( params.amount ? start, placement, type )
+		# Get the defaults
+		defaults = Metabolite.getParameterDefaults( )
 		
-		params.name = params.name ? name ? undefined
-		params = _( _( params ).defaults( defaults ) ).omit( 'amount' ) 
-		metadata = @_getParameterMetaData()
+		if start?
+			defaults.starts.name = start
+		if name?
+			defaults.name = name
+		if placement?
+			defaults.placement = placement
+		if type?
+			defaults.type = type
+
+		params = _( params ).defaults( defaults )
+		metadata = Metabolite.getParameterMetaData()
 		
 		super params, step, metadata
 		
@@ -98,28 +103,27 @@ class Model.Metabolite extends Model.Module
 		
 	# Get parameter defaults array
 	#
-	# @param start [Integer] the start value
 	# @return [Object] default values
 	#
-	_getParameterDefaults: ( start, placement, type ) ->
+	@getParameterDefaults: () ->
 		return { 
 		
 			# Parameters
-			supply: if placement is Model.Metabolite.Outside and type is Model.Metabolite.Substrate then 1 else 0
+			supply: 1
 			
 			# Meta-Parameters
-			placement : placement
-			type : type
+			placement : Metabolite.Outside
+			type : Metabolite.Substrate
 			
 			# Start values
-			starts : { name: start }
+			starts : { name: 1 }
 		}
 		
 	# Get parameter metadata
 	#
 	# @return [Object] metadata values
 	#
-	_getParameterMetaData: () ->
+	@getParameterMetaData: () ->
 		return {
 		
 			properties:
@@ -164,7 +168,7 @@ class Model.Metabolite extends Model.Module
 	# @option params [Integer] type the type
 	#
 	@sint: ( params = {}, start = 0, name = "s" ) -> 
-		return new Model.Metabolite( params, start, name,  Model.Metabolite.Inside, Metabolite.Substrate )
+		return new Model.Metabolite( _( params ).extend( { supply: 0 } ), start, name,  Model.Metabolite.Inside, Metabolite.Substrate )
 	
 	# Constructor for Internal Products
 	#
@@ -176,7 +180,7 @@ class Model.Metabolite extends Model.Module
 	# @option params [Integer] type the type
 	#
 	@pint: ( params = {}, start = 0, name = "p" ) -> 
-		return new Model.Metabolite( params, start, name,  Model.Metabolite.Inside, Metabolite.Product )
+		return new Model.Metabolite(  _( params ).extend( { supply: 0 } ), start, name,  Model.Metabolite.Inside, Metabolite.Product )
 		
 	# Constructor for External Products
 	#
@@ -188,4 +192,4 @@ class Model.Metabolite extends Model.Module
 	# @option params [Integer] type the type
 	#
 	@pext: ( params = {}, start = 0, name = "p" ) -> 
-		return new Model.Metabolite( params, start, name,  Model.Metabolite.Outside, Metabolite.Product )
+		return new Model.Metabolite(  _( params ).extend( { supply: 0 } ), start, name,  Model.Metabolite.Outside, Metabolite.Product )

@@ -29,14 +29,12 @@ class Model.Lipid extends Model.Module
 	# Constructor for lipids
 	#
 	# @param params [Object] parameters for this module
-	# @param start [Integer] the initial value of lipid, defaults to 1
-	# @param consume [String] the substrate converted to lipid, defaults to "s#int"
 	# @option params [Integer] k the subscription rate, defaults to 1
 	# @option params [String] dna the dna to use, defaults to "dna"
 	# @option params [String] consume the consume substrate, overides the consume parameter, defaults to "s#int"
 	# @option params [String] name the name, defaults to "lipid"
 	#
-	constructor: ( params = {}, start = 1, consume = "s#int" ) ->
+	constructor: ( params = {} ) ->
 	
 		# Define differential equations here
 		step = ( t, compounds, mu ) ->
@@ -74,29 +72,27 @@ class Model.Lipid extends Model.Module
 			
 			return results
 		
-		defaults = @_getParameterDefaults( start, consume )
+		defaults = Lipid.getParameterDefaults()
 		params = _( params ).defaults( defaults )
-		metadata = @_getParameterMetaData()
+		metadata = Lipid.getParameterMetaData()
 		
 		super params, step, metadata
 		
 	# Get parameter defaults array
-	#
-	# @param start [Integer] the start value
 	# @return [Object] default values
 	#
-	_getParameterDefaults: ( start, consume ) ->
+	@getParameterDefaults: () ->
 		return { 
 		
 			# Parameters
 			k : 1
-			consume: if _( consume ).isArray() then consume else [ consume ] 
+			consume: [ "s#int" ]
 			
 			# Meta-Parameters 
 			dna : 'dna'
 			
 			# Start values
-			starts: { name : start }
+			starts: { name : 1 }
 			
 			# The name
 			name : "lipid"
@@ -106,7 +102,7 @@ class Model.Lipid extends Model.Module
 	#
 	# @return [Object] metadata values
 	#
-	_getParameterMetaData: () ->
+	@getParameterMetaData: () ->
 		return {
 		
 			properties:
