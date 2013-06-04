@@ -29,14 +29,11 @@ class Model.DNA extends Model.Module
 	# Constructor for DNA
 	#
 	# @param params [Object] parameters for this module
-	# @param start [Integer] the initial value of dna
-	# @param prefix [String] the prefix name to use
-	# @param consume [String] the metabolite converted to dna
 	# @option params [Integer] k the synth rate, defaults to 1
 	# @option params [String] name the name to use, defaults to prefix_dna or dna if prefix is undefined
 	# @option params [String] consume the food, overides the consume parameter, defaults to "p#int"
 	#
-	constructor: ( params = {}, start = 1, prefix, consume = "p#int" ) ->
+	constructor: ( params = {} ) ->
 			
 		# Define differential equations here
 		step = ( t, compounds, mu ) ->
@@ -74,37 +71,35 @@ class Model.DNA extends Model.Module
 			
 			return results
 		
-		# Define default parameters here
-		defaults = @_getParameterDefaults( start, prefix, consume )
+		defaults = DNA.getParameterDefaults()
 		params = _( params ).defaults( defaults )
-		metadata =  @_getParameterMetaData()
+		metadata = DNA.getParameterMetaData()
 		
 		super params, step, metadata
 		
 	# Get parameter defaults array
 	#
-	# @param start [Integer] the start value
 	# @return [Object] default values
 	#
-	_getParameterDefaults: ( start, prefix, consume ) ->
+	@getParameterDefaults: () ->
 		return { 
 		
 			# Parameters
 			k : 1
-			consume: if _( consume ).isArray() then consume else [ consume ]
+			consume: [ "p#int" ]
 
 			# Start value
-			starts: { name : start }
+			starts: { name : 1 }
 			
 			# Display name
-			name : if prefix then "#{prefix}_dna" else "dna"
+			name : "dna"
 		}
 		
 	# Get parameter metadata
 	#
 	# @return [Object] metadata values
 	#
-	_getParameterMetaData: () ->
+	@getParameterMetaData: () ->
 		return {
 		
 			properties:

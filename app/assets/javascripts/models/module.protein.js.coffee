@@ -33,17 +33,13 @@ class Model.Protein extends Model.Module
 	# Constructor for Protein
 	#
 	# @param params [Object] parameters for this module
-	# @param consume [String, Array<String>] the metabolite to be converted
-	# @param product [String] the product after conversion
-	# @param start [Integer] the initial value of metabolism, defaults to 0
-	# @param name [String] the name of the metabolism, defaults to "enzym"
 	# @option params [Integer] k the subscription rate, defaults to 1
 	# @option params [Integer] k_d the degration rate, defaults to 1
 	# @option params [String] dna the dna to use, defaults to "dna"
 	# @option params [Array<String>] consume the metabolite to convert, overrides consume
 	# @option params [String] name the name of the protein, overrides name
 	#
-	constructor: ( params = {}, start = 0, consume = "p#int", name = "Protein" ) ->			
+	constructor: ( params = {} ) ->			
 		
 		# Define differential equations here
 		step = ( t, compounds, mu ) ->
@@ -86,40 +82,39 @@ class Model.Protein extends Model.Module
 			return results
 		
 		# Default parameters set here
-		defaults = @_getParameterDefaults( start, name, consume )
+		defaults = Protein.getParameterDefaults()
 		params = _( defaults ).extend( params )
-		metadata = @_getParameterMetaData()
+		metadata = Protein.getParameterMetaData()
 		
 		super params, step, metadata
 		
 	# Get parameter defaults array
 	#
-	# @param start [Integer] the start value
 	# @return [Object] default values
 	#
-	_getParameterDefaults: ( start, name, consume ) ->
+	@getParameterDefaults: () ->
 		return { 
 		
 			# Parameters
 			k : 1
 			k_d : 1
-			consume: if _( consume ).isArray() then consume else [ consume ]
+			consume: [ "p#int" ]
 			
 			# Meta-parameters
 			dna: "dna"
 			
 			# The name 
-			name : name
+			name : "complex"
 			
 			# The start values
-			starts: { name : start }
+			starts: { name : 0 }
 		}
 		
 	# Get parameter metadata
 	#
 	# @return [Object] metadata values
 	#
-	_getParameterMetaData: () ->
+	@getParameterMetaData: () ->
 		return {
 		
 			properties:

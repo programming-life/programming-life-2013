@@ -12,11 +12,11 @@ class View.DummyModuleProperties extends View.ModuleProperties
 	#
 	constructor: ( parent, @_cellView, @_cell, @modulector, params = {} ) ->
 		@_dummyId = _.uniqueId('dummy-module-')
-
 		@_changes = {}
 
 		@_compounds = @_cell.getCompoundNames()
 		@_metabolites = @_cell.getMetaboliteNames()
+		@_params = _( params ).defaults( @_getModuleDefaults() )
 		@_selectables = []
 
 		# Behold, the mighty super constructor train! Reminds me of some super plumber called Mario.
@@ -95,19 +95,30 @@ class View.DummyModuleProperties extends View.ModuleProperties
 	# @return [jQuery.elem] elements
 	#
 	_drawProperty: ( key, type, params = {} ) ->
-		return @_drawInput( type, key, undefined, params )		
+		return @_drawInput( type, key, @_params[ key ] ? undefined, params )		
 
 	# Returns the properties of our module to be
 	#
+	# @return [Object] the properties
+	#
 	_getModuleProperties: ( ) ->
-		properties = @modulector::_getParameterMetaData().properties
+		properties = @modulector.getParameterMetaData().properties
 
 		unless properties.parameters?
 			properties.parameters = []
 
 		properties.parameters.push('amount')
 		return properties
-
+		
+	# Returns the defaults of our module to be
+	# 
+	# @return [Object] the defaults
+	#
+	_getModuleDefaults: ( ) ->
+		defaults = @modulector.getParameterDefaults()
+		defaults.amount = defaults.starts.name
+		return defaults
+		
 	# Closes the module
 	#
 	_close: ( ) =>
@@ -117,7 +128,7 @@ class View.DummyModuleProperties extends View.ModuleProperties
 	# Saves all changed properties to the module.
 	#
 	_save: ( ) =>
-		@_trigger('module.creation.finished', @_parent, [@_changes])
+		@_trigger('module.creation.finished', @_parent, [ _( @_changes ).defaults( @_params ) ])
 		@_elem.find('input').blur()
 		@_changes = {}
 

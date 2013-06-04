@@ -23,7 +23,7 @@ class View.DummyModule extends View.RaphaelBase
 
 		@_createBindings()
 
-		@_propertiesView = new View.DummyModuleProperties( @, @_parent, @_cell, @_modulector )
+		@_propertiesView = new View.DummyModuleProperties( @, @_parent, @_cell, @_modulector, @_params )
 		@_notificationsView = new View.ModuleNotification( @, @_parent, @_cell, @_modulector )
 		
 		Object.defineProperty( @, 'visible',
@@ -97,8 +97,6 @@ class View.DummyModule extends View.RaphaelBase
 				return
 
 			@_setSelected off
-
-			params = _( params ).defaults( @_params )
 			@module = new @_modulector( _( params ).clone( true ) )
 
 			@_trigger "module.created", @, [ @module ]

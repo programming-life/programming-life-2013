@@ -164,20 +164,6 @@ describe("Module Cell Growth", function() {
 		
 	});
 
-	describe( "when using start in the constructor", function() {
-		
-		var module;
-
-		beforeEach( function() {
-			module = new Model.CellGrowth( undefined, 2 );
-		});		
-		
-		it( "should overide the default start value", function() {
-			expect( module.starts.name ).toBe( 2 );
-			expect( module.amount ).toBe( 2 );
-		});
-	});
-
 	describe( "when stepping", function(){
 
 		var module, result, compounds;

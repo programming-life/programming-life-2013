@@ -26,7 +26,7 @@ class Model.Module extends Helper.Mixable
 			starts = params.starts ? { name: amount }
 			starts.name = amount
 			params.starts = starts
-		
+
 		@_defineProperties( params, step, metadata )
 		
 		action = @_createAction( "Created #{this.constructor.name}:#{this.name}")
@@ -269,7 +269,7 @@ class Model.Module extends Helper.Mixable
 	# @return [Boolean] true if all are available
 	#
 	test: ( compounds, keys... ) ->
-		console.log "Testing", @, "with", compounds, "against", keys
+
 		tests = _( _( keys ).flatten() ).map( ( t ) => @[ t ] )
 		unless @_test( compounds, tests )
 			missing = _( _( tests ).flatten()  ).difference( _( compounds ).keys() )
@@ -377,7 +377,7 @@ class Model.Module extends Helper.Mixable
 	# @return [Array<String>] the properties
 	#
 	getMetaboliteProperties: () ->
-		metadata = @_getParameterMetaData()
+		metadata = @constructor.getParameterMetaData()
 		props = _( _( metadata?.properties?.metabolites ? [] ).concat( metadata?.properties?.metabolite ? [] ) ).flatten()
 		return props
 			

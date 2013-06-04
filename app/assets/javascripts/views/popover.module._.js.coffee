@@ -252,7 +252,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 		select = $('<select id = "' + id + '" class="input-small"></select>')
 		for k, v of params.values
 			option = $('<option value="' + v + '">' + k + '</option>')
-			option.prop( 'selected', true ) if v is value
+			option.attr( 'selected', true ) if v is value
 			select.append option
 			
 		@_bindOnChange( key, select )
