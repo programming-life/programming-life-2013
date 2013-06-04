@@ -10,13 +10,13 @@ class View.DummyModuleProperties extends View.ModuleProperties
 	# @param modulector [Function] the constructor for the dummy module
 	# @param params [Object] options
 	#
-	constructor: ( parent, @_cellView, @_cell, @modulector, params = {} ) ->
+	constructor: ( parent, @_cellView, @_cell, @modulector, @_override_params = {} ) ->
 		@_dummyId = _.uniqueId('dummy-module-')
 		@_changes = {}
 
 		@_compounds = @_cell.getCompoundNames()
 		@_metabolites = @_cell.getMetaboliteNames()
-		@_params = _( params ).defaults( @_getModuleDefaults() )
+		@_params = _( _( @_override_params ).clone( true ) ).defaults( @_getModuleDefaults() )
 		@_selectables = []
 
 		# Behold, the mighty super constructor train! Reminds me of some super plumber called Mario.
@@ -116,6 +116,7 @@ class View.DummyModuleProperties extends View.ModuleProperties
 	#
 	_getModuleDefaults: ( ) ->
 		defaults = @modulector.getParameterDefaults()
+		console.log 'new defaults: #{@modulector.name} is ', defaults
 		defaults.amount = defaults.starts.name
 		return defaults
 		
@@ -128,11 +129,16 @@ class View.DummyModuleProperties extends View.ModuleProperties
 	# Saves all changed properties to the module.
 	#
 	_save: ( ) =>
-		@_trigger('module.creation.finished', @_parent, [ _( @_changes ).defaults( @_params ) ])
+		@_trigger('module.creation.finished', @_parent, [ _( _( @_changes ).clone( true ) ).defaults( @_params ) ])
 		@_elem.find('input').blur()
 		@_changes = {}
-
+		@_params = _( _( @_override_params ).clone( true ) ).defaults( @_getModuleDefaults() )
+		
 		super()
+
+		@_body?.empty()
+		@_selectables = []
+		@_drawForm()
 
 	# Binds an on change event to a selectable input that sets the key
 	#
