@@ -104,7 +104,7 @@ class Model.Protein extends Model.Module
 			dna: "dna"
 			
 			# The name 
-			name : "complex"
+			name : "Protein"
 			
 			# The start values
 			starts: { name : 0 }

@@ -20,7 +20,7 @@ class View.ModuleNotification extends View.Notification
 		@_bind( 'cell.module.removed', @, ( cell, module ) => @kill().hide() if module is @_source )		
 		@_bind( 'cell.metabolite.added', @, ( cell ) => @hide() if cell is @_cell )
 		@_bind( 'cell.metabolite.removed', @, ( cell, module ) => @kill().hide() if module is @_source )		
-		@_bind( 'cell.before.run', @, ( cell ) => @hide() if cell is @_cell )
+		#@_bind( 'cell.before.run', @, ( cell ) => @hide() if cell is @_cell )
 		
 	# Filters incoming messages
 	#
