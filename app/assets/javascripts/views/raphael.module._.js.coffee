@@ -172,7 +172,7 @@ class View.Module extends View.RaphaelBase
 	kill: () ->
 		#@_contents.insertBefore(@paper.bottom)
 
-		fadeOut = ( ) =>
+		###fadeOut = ( ) =>
 			@_contents.stop()
 			@_contents.animate Raphael.animation(
 				transform: '...S0'
@@ -180,12 +180,12 @@ class View.Module extends View.RaphaelBase
 					
 				View.RaphaelBase::kill.apply( @ )
 			)
-
+		###
 		@_propertiesView?.kill()
 		@_notificationsView?.kill()	
 
 
-		_(fadeOut).defer()
+		#_(fadeOut).defer()
 
 		super()
 
@@ -602,6 +602,7 @@ class View.Module extends View.RaphaelBase
 	#
 	onModuleInvalidated: ( module ) =>
 		if module is @model
+			console.log 'onModuleInvalidated'
 			@redraw()
 	
 	# Gets called when a module view selected.
