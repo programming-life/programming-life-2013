@@ -7,8 +7,8 @@ describe("Module Protein", function() {
 			module = new Model.Protein();
 		});
 		
-		it( "should have 'Protein' as name", function() {
-			expect( module.name ).toBe( "Protein" );
+		it( "should have 'complex' as name", function() {
+			expect( module.name ).toBe( "complex" );
 		});
 		
 		it( "should have 'p#int' as consume", function() {
@@ -58,8 +58,8 @@ describe("Module Protein", function() {
 					deserialized = Model.Protein.deserialize( serialized )
 				});
 				
-				it( "should have 'Protein' as name", function() {
-					expect( module.name ).toBe( "Protein" );
+				it( "should have 'complex' as name", function() {
+					expect( module.name ).toBe( "complex" );
 				});
 				
 				it( "should have 'p#int' as consume", function() {
@@ -115,66 +115,6 @@ describe("Module Protein", function() {
 			expect( module.dna ).toMatch( 'override_dna' );
 		});
 		
-		describe( "and using named option in the constructor, not as params", function() {
-			
-			beforeEach( function() {
-				module = new Model.Protein( { a: 'new' }, undefined, "food" );
-			});
-			
-			it( "should override default parameters", function() {
-				expect( module.consume ).toMatch( ['food'] );
-			});
-			
-		});
-		
-		describe( "and using named option in the constructor, also as params", function() {
-			
-			beforeEach( function() {
-				module = new Model.Protein( { a: 'new', consume: ['winner'] }, undefined, "loser" );
-			});
-			
-			it( "should not override given params ", function() {
-				expect( module.consume ).toMatch( ['winner'] );
-			});
-			
-		});
-	});
-	
-	describe( "when using start in the constructor", function() {
-		
-		var module;
-		beforeEach( function() {
-			module = new Model.Protein( undefined, 2 );
-		});		
-		
-		it( "should overide the default start value", function() {
-			expect( module.starts.name ).toBe( 2 );
-			expect( module.amount ).toBe( 2 );
-		});
-	});
-	
-	describe( "when using food in the constructor", function() {
-		
-		var module;
-		beforeEach( function() {
-			module = new Model.Protein( undefined, undefined, 'magix' );
-		});		
-		
-		it( "should overide the default food with 'magix'", function() {
-			expect( module.consume ).toMatch( ['magix'] );
-		});
-	});
-	
-	describe( "when using name in the constructor", function() {
-		
-		var module;
-		beforeEach( function() {
-			module = new Model.Protein( undefined, undefined, undefined,  'magix' );
-		});		
-		
-		it( "should overide the name with that name", function() {
-			expect( module.name ).toMatch( 'magix' );
-		});
 	});
 	
 	describe( "when stepping", function() {
