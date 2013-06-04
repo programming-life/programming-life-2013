@@ -116,7 +116,6 @@ class View.DummyModuleProperties extends View.ModuleProperties
 	#
 	_getModuleDefaults: ( ) ->
 		defaults = @modulector.getParameterDefaults()
-		console.log 'new defaults: #{@modulector.name} is ', defaults
 		defaults.amount = defaults.starts.name
 		return defaults
 		
