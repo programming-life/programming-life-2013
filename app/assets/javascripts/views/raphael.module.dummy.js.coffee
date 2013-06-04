@@ -23,7 +23,7 @@ class View.DummyModule extends View.RaphaelBase
 
 		@_createBindings()
 
-		@_propertiesView = new View.DummyModuleProperties( @, @_parent, @_cell, @_modulector, _( @_params ).clone( true ) )
+		@_propertiesView = new View.DummyModuleProperties( @, @_parent, @_cell, @_modulector )
 		@_notificationsView = new View.ModuleNotification( @, @_parent, @_cell, @_modulector )
 		
 		Object.defineProperty( @, 'visible',
@@ -82,7 +82,6 @@ class View.DummyModule extends View.RaphaelBase
 				@module[ key ] = value
 				@_notificationsView.hide()
 
-				#@_trigger "module.property.changed", @, [@module]
 				@_trigger "module.creation.changed", @, [@module]
 
 	# Clicked the add button
@@ -97,6 +96,8 @@ class View.DummyModule extends View.RaphaelBase
 				return
 
 			@_setSelected off
+
+			params = _( params ).defaults( @_params )
 			@module = new @_modulector( _( params ).clone( true ) )
 
 			@_trigger "module.created", @, [ @module ]

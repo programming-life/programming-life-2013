@@ -17,4 +17,6 @@ class View.ModulePreview extends View.Module
 	# @return [View.Spline] the created spline
 	#
 	_createSpline: ( orig, dest ) ->
-		new View.SplinePreview(@paper, @_parent, @_cell, orig, dest)
+		if orig? and dest?
+			return # Forgot to add spline preview class. Will remove this return when class added
+			new View.SplinePreview(@paper, @_parent, @_cell, orig, dest)

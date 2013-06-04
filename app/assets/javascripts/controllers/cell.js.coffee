@@ -49,7 +49,6 @@ class Controller.Cell extends Controller.Base
 
 		@_bind( 'cell.module.added', @, @onModuleAdded )
 		@_bind( 'module.property.changed', @, @onModuleChanged)
-		@_bind "model.module.missing", @, @_onModuleMissing
 		
 		@_addDummyViews()
 
@@ -133,12 +132,13 @@ class Controller.Cell extends Controller.Base
 	#
 	onModuleChanged: ( module, action, key, param ) =>
 		return unless @_automagically
-		return if not _( @model._getModules() ).contains module
+		return unless @view.getView( module )?
+		
 
 		# Find parameters that are metabolites
 		props = module.getMetaboliteProperties()
 		return if not _( props ).contains key
-			
+
 		# Expand names
 		names = []
 		param = [ param ] unless _( param ).isArray()
@@ -149,16 +149,21 @@ class Controller.Cell extends Controller.Base
 				names.push "#{name}#ext"
 			else
 				names.push name
-				
+		
 		# Find missing metabolites
 		missing = _( names ).filter( ( name ) => not _( @model._getModules() ).any( ( m ) -> name is m.name ) )
-		#module.test(@model.mapping, module.metadata.tests.compounds)
 		for name in missing
-			product = 
+			is_product = 
 				( module instanceof Model.Transporter and key is 'transported' and module.direction is Model.Transporter.Outward ) or
 				( module instanceof Model.Metabolism and key is 'dest' )
-			console.log 'automagically creating ' + name
-			@model.addMetabolite( name, 0, 0, name.split( '#' )[1] is 'int', product )
+			
+			if @_creating
+				type = if is_product then Model.Metabolite.Product else Model.Metabolite.Substrate
+				placement = if name.split( '#' )[1] is 'int' then Model.Metabolite.Inside else Model.Metabolite.Outside
+				metabolite = new Model.Metabolite( { supply: 0 }, 0, name, placement , type )
+				#@view.previewModule( @view , metabolite, on )
+			else
+				@model.addMetabolite( name, 0, 0, is_product, name.split("#") )
 	
 	# Gets called on module.creation.started
 	#
@@ -166,8 +171,10 @@ class Controller.Cell extends Controller.Base
 	# @param module [Model.Module] The module representation of the current creation parameters
 	#
 	_onModuleCreationStarted: ( source, module ) ->
-		@_creating = on
-		@view.previewModule( source, module, on )
+		type = source.getFullType()
+		if source in @view.viewsByType[type]
+			@_creating = on
+			@view.previewModule( @view , module, on )
 
 	# Gets called on module.creation.aborted
 	#
@@ -175,8 +182,10 @@ class Controller.Cell extends Controller.Base
 	# @param module [Model.Module] The module representation of the current creation parameters
 	#
 	_onModuleCreationAborted: ( source, module ) ->
-		@_creating = off
-		@view.previewModule( source, module, off )
+		type = source.getFullType()
+		if source in @view.viewsByType[type]
+			@_creating = off
+			@view.previewModule( @view , module, off )
 		
 	# Gets called on module.creation.finished
 	#
@@ -187,30 +196,10 @@ class Controller.Cell extends Controller.Base
 		type = source.getFullType()
 		if source in @view.viewsByType[type] 
 			@_creating = off
-			@view.previewModule( source, module, off )
+			@view.previewModule( @view, module, off )
 
 			@model.add module
 			
-		#	switch @_type
-		#		when "Transporter"
-		#			if params.direction is Model.Transporter.Outward
-		#				@_cell.addProduct( params.transported , 0, false )
-		#			if params.direction is Model.Transporter.Inward
-		#				@_cell.addSubstrate( params.transported , 0, 0, true )
-		#		when "Metabolism"
-		#			for o in params.orig ? []
-		#				@_cell.addSubstrate( o , 0, 0, true )
-		#			for d in params.dest ? []
-		#				@_cell.addProduct( d , 0, true )
-	
-	# Gets called when a module is missing parameters
-	#
-	# @param module [Model.Module] The module
-	# @param missing [Array] The properties the module is missing values for
-	#
-	_onModuleMissing: ( module, missing ) ->
-		console.log "Module", module, "is missing", missing
-
 	# Loads a new cell into the view
 	#
 	# @param cell_id [Integer] the cell to load

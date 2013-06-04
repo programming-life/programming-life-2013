@@ -291,8 +291,7 @@ class View.Cell extends View.RaphaelBase
 	# @param selected [boolean] The selected state of the module view
 	#
 	previewModule: ( source, module, selected ) ->
-		type = source.getFullType()
-		if source in @viewsByType[type]
+		if source is @
 			if selected
 				preview = new View.ModulePreview( @_paper, @, @model, module, off )
 				@_drawn.push({view: preview, model: module})
