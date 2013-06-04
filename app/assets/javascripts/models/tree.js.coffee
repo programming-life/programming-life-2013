@@ -1,6 +1,10 @@
 # Basic tree class
 #
 class Model.Tree extends Helper.Mixable
+
+	@LeftBranch: -1
+	@RightBranch: 1
+
 	
 	@concern Mixin.EventBindings
 	

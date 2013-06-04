@@ -417,10 +417,11 @@ class View.Module extends View.RaphaelBase
 	createSplines: () ->
 		if @type is 'Transporter'
 			for property in [ 'orig', 'dest' ]
-				metabolite = @_cell.getMetabolite @model[ property ]
-				if metabolite
-					placement = metabolite.placement
-					view = @_parent.getView(metabolite)
+				#metabolite = @_cell.getMetabolite @model[ property ]
+				view = @_parent.getViewByName @model[ property ]
+				console.log view
+				if view
+					placement = view.model.placement
 					direction = @_getSplineDirection(placement)
 
 					if direction is View.Module.Direction.Inward

@@ -163,7 +163,7 @@ class Controller.Cell extends Controller.Base
 				type = if is_product then Model.Metabolite.Product else Model.Metabolite.Substrate
 				placement = if is_inside is 'int' then Model.Metabolite.Inside else Model.Metabolite.Outside
 				metabolite = new Model.Metabolite( { supply: 0 }, 0, name, placement , type )
-				#@view.previewModule( @view , metabolite, on )
+				@view.previewModule( @view , metabolite, on )
 			else
 				@model.addMetabolite( name, 0, 0, is_inside, is_product )
 	

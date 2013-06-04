@@ -150,6 +150,19 @@ class View.Cell extends View.RaphaelBase
 	getView: ( module ) ->
 		return _( @_drawn ).find( ( d ) -> d.model is module )?.view
 
+	# Get module view by name
+	#
+	# @param name [String ] the module name for which to return the view
+	# @return [Module.View] the view which represents the given module
+	#
+	getViewByName: ( name ) ->
+		module = _( @model._getModules() ).find( (m) -> 
+			m.name is name
+		)
+
+		return @getView(module)
+
+
 	# Draws the cell
 	#
 	# @param x [Integer] x location

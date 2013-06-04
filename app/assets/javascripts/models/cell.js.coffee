@@ -209,8 +209,6 @@ class Model.Cell extends Helper.Mixable
 	# @return [self] chainable instance
 	#
 	addMetabolite: ( name, amount, supply = 1, inside_cell = off, is_product = off ) ->
-		console.log "Adding ", name
-		
 		placement = if inside_cell then Model.Metabolite.Inside else Model.Metabolite.Outside
 		type = if is_product then Model.Metabolite.Product else Model.Metabolite.Substrate
 		metabolite = new Model.Metabolite( { supply: supply }, amount, name, placement, type )
