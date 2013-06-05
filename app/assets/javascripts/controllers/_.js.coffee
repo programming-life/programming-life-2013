@@ -57,3 +57,14 @@ class Controller.Base extends Helper.Mixable
 		@view.kill()
 		@_unbindAll()
 		return this
+		
+	# Runs when the user tries to unload the page
+	#
+	beforeUnload: () ->
+		console.log 'before unload'
+		return undefined
+		
+	# Runs when the user has unloaded the page
+	#
+	onUnload: () ->
+		console.log 'unloaded'
