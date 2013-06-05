@@ -85,7 +85,7 @@ class Model.Cell extends Helper.Mixable
 		)
 		
 		@_nonEnumerableGetter( 'url', () ->
-				data = Model.Cell.extractId( @id )
+				data = Cell.extractId( @id )
 				return "/cells/#{ data.id }.json" if data.origin is "server"
 				return '/cells.json'
 		)
@@ -459,7 +459,7 @@ class Model.Cell extends Helper.Mixable
 					values,
 					base_values
 				],
-				Model.Cell.Notification.Info
+				Cell.Notification.Info
 			)
 			return [ values, off ]
 			
@@ -626,7 +626,7 @@ class Model.Cell extends Helper.Mixable
 			'cell.save',
 			"Saving this cell...",
 			[],
-			Model.Cell.Notification.Info
+			Cell.Notification.Info
 		)	
 		
 		
@@ -641,8 +641,11 @@ class Model.Cell extends Helper.Mixable
 				'cell.save',
 				"Successfully saved this cell",
 				[]
-				Model.Cell.Notification.Success
+				Cell.Notification.Success
 			)	
+			
+			locache.async.set( 'cell.' + @id, @serialize(), Cell.CACHE_TIMEOUT ) 
+			
 			return data
 		)
 		
@@ -694,7 +697,7 @@ class Model.Cell extends Helper.Mixable
 						data, 
 						cell_data 
 					],
-					Model.Cell.Notification.Error
+					Cell.Notification.Error
 				)
 				return [ data, cell_data ]
 			)
@@ -726,7 +729,7 @@ class Model.Cell extends Helper.Mixable
 							data, 
 							cell_data  
 					],
-					Model.Cell.Notification.Error
+					Cell.Notification.Error
 				)
 				return [ data, cell_data ]
 			)
@@ -786,7 +789,7 @@ class Model.Cell extends Helper.Mixable
 					'cell.load',
 					'Loading cell...',
 					[ 'load' ],
-					Model.Cell.Notification.Info
+					Cell.Notification.Info
 				);
 				
 				promises = []
@@ -825,7 +828,7 @@ class Model.Cell extends Helper.Mixable
 						data, 
 						cell_id 
 					],
-					Model.Cell.Notification.Error
+					Cell.Notification.Error
 				)	
 				
 				return [ data, result ]
@@ -837,7 +840,7 @@ class Model.Cell extends Helper.Mixable
 				'cell.load',
 				"Successfully loaded the cell #{ result.name }",
 				[ 'load' ],
-				Model.Cell.Notification.Success
+				Cell.Notification.Success
 			)	
 		)
 		
