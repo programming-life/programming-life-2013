@@ -15,6 +15,7 @@
 //= require jquery_nested_form
 //= require json2
 //= require lodash
+//= require locache
 //= require big.min
 //= require jquery.svg.js
 //= require jquery.svgdom.patched.js
