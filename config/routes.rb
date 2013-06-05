@@ -5,9 +5,10 @@ ProgrammingLife::Application.routes.draw do
 	resources :module_templates
 	resources :cells
 
-
 	post 'hook' => 'hook#post'
 	get 'hook' => 'hook#index'
+	
+	match "/gigabase.manifest" => Rails::Offline
 	
 	# The priority is based upon order of creation:
 	# first created -> highest priority.
