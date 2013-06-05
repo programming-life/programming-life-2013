@@ -116,8 +116,7 @@ class Controller.Main extends Controller.Base
 		
 		btn_target = target = $( event.currentTarget )
 		btn_target = target.closest( '.btn-group' ).find( 'button[data-action]' ) if target.is( 'a' )
-		console.log target, btn_target
-		
+
 		@view.resetActionButtons()
 		enable = () => @view.enableActionButtons()
 		success = () => @view.setButtonState( btn_target, 'success', 'btn-success' ) 
