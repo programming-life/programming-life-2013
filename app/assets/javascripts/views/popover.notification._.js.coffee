@@ -5,16 +5,16 @@ class View.Notification extends View.HTMLPopOver
 	# Constructs a new Notifications view.
 	#
 	# @param parent [View.Cell,View.Module] the accompanying view
-	# @param model [Model.Cell,Model.Module] the module for which to display its properties
+	# @param model [any] the subject to display stuff for
 	#
-	constructor: ( parent, module ) ->
+	constructor: ( parent, subject ) ->
 		
 		@_messages = {}
 		
 		super parent, parent.getFullType?() ? '', 'notification', 'top'
 		
 		@_visible = off
-		@_onNotificate( @, parent, @display )
+		@_onNotificate( @, subject, @display )
 	
 	# Displays a notification
 	#

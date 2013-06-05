@@ -22,10 +22,12 @@ class Controller.Main extends Controller.Base
 		@_createChildren()
 		@_createBindings()
 		
+		
 	# Creates children
 	#
 	_createChildren: () ->
-		@addChild 'cell', new Controller.Cell( @view.paper, @view )
+	
+		@addChild 'cell', new Controller.Cell( @view.paper, @view, @cellFromCache( 'main.cell' ) )
 		@timemachines.push @controller("cell").model.timemachine
 		@timemachine.setRoot new Model.Node(@controller("cell").model.tree.root.object)
 		@addChild 'graphs', new Controller.Graphs( @view.paper )
@@ -34,6 +36,8 @@ class Controller.Main extends Controller.Base
 		@view.add @controller('cell').view
 		@view.add @controller('graphs').view
 		@view.addToLeftPane @controller('undo').view
+		
+		@_setCellNameActionField( if @controller( 'cell' ).model.isLocal() then '' else  @controller( 'cell' ).model.name )
 		
 	# Creates bindings
 	#
@@ -59,6 +63,16 @@ class Controller.Main extends Controller.Base
 				if tree in @timemachines
 					@addUndoableEvent(node.object)
 		)
+		
+	# Load cell from cache
+	#
+	# @param key [String] the key of the cell
+	# @return [Model.Cell,null] the result from cache
+	#
+	cellFromCache: ( key ) ->
+		#locache.async.get( 'main.cell' ).finished( function(cell){ console.log( cell ); } );
+		cached = locache.get( 'main.cell' )
+		return if cached? then Model.Cell.deserialize( cached ) else null
 		
 	# Loads a new cell into the main view
 	#
@@ -139,9 +153,22 @@ class Controller.Main extends Controller.Base
 	#
 	onSave: ( target, enable, success, error ) ->
 		@view.setButtonState target, 'loading'
+		@view.setNotificationsOn( @controller('cell').model, 'button[data-action="save"]' )
 		@save().always( enable )
 			.done( success )
 			.fail( error )
+			.fail( @onSaveError )
+		
+	#
+	#
+	onSaveError: ( data ) =>
+		[ error, cell ] = data
+		switch error.status
+			when 404
+				button = $ '<button id="solution" class="btn btn-small" data-action="saveAs">Save As</button>'
+				button.on( 'click', => $( '#actions [data-action="saveAs"]' ).click() )
+				message = 'It seems like the cell you are trying to save was deleted. You can try to "save as" a new cell.'
+				@view.setSolutionNotification( message, button )
 		
 	# On Save As Button clicked
 	#
@@ -152,6 +179,7 @@ class Controller.Main extends Controller.Base
 	#
 	onSaveAs: ( target, enable, success, error ) ->
 		@view.setButtonState target, 'loading'
+		@view.setNotificationsOn( @controller('cell').model, 'button[data-action="save"]' )
 		@save( true ).always( enable )
 			.done( success )
 			.fail( error )
@@ -166,8 +194,9 @@ class Controller.Main extends Controller.Base
 	onLoad: ( target, enable, success, error ) ->
 		@view.setButtonState target, 'loading'
 		confirm = ( id ) =>
+			callback = ( res ) => @view.setNotificationsOn( res, 'button[data-action="load"]' )
 			if id?
-				@load( id )
+				@load( id, callback )
 					.always( enable )
 					.done( success )
 					.fail( error )
@@ -224,6 +253,7 @@ class Controller.Main extends Controller.Base
 		
 		action = () =>
 			@kill()
+			@flush()
 			Model.EventManager.clear()
 			@view = new View.Main @container
 			@_createChildren()
@@ -272,3 +302,14 @@ class Controller.Main extends Controller.Base
 	addTimeMachine: ( cell, tm ) ->
 		if cell is @controller("cell").model
 			@timemachines.push tm.timemachine
+	
+	# Flushes the cache
+	#
+	flush: () ->
+		locache.remove( 'main.cell' )
+	
+	# On unload, stores the cell
+	#
+	onUnload: () =>
+		locache.set( 'main.cell', @controller("cell").model.serialize() )
+		super()

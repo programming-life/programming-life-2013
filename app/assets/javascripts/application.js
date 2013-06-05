@@ -15,6 +15,7 @@
 //= require jquery_nested_form
 //= require json2
 //= require lodash
+//= require locache
 //= require big.min
 //= require jquery.svg.js
 //= require jquery.svgdom.patched.js
@@ -43,3 +44,10 @@
 //= require numeric.async
 //
 //= require_tree .
+
+$(function () {
+	$(window.applicationCache.bind('error', function () {
+		console.error( 'There was an error when loading the cache manifest.' );
+		console.warn( arguments );
+	}))
+})

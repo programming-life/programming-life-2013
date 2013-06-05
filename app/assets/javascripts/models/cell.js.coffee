@@ -12,6 +12,10 @@ class Model.Cell extends Helper.Mixable
 	@concern Mixin.EventBindings
 	@concern Mixin.TimeMachine
 
+	# The cache timeout ( 1 week )
+	# 
+	@CACHE_TIMEOUT = 60 * 60 * 24 * 7
+	
 	# Constructor for cell
 	#
 	# @param params [Object] parameters for the cellgrowth module
@@ -81,7 +85,7 @@ class Model.Cell extends Helper.Mixable
 		)
 		
 		@_nonEnumerableGetter( 'url', () ->
-				data = Model.Cell.extractId( @id )
+				data = Cell.extractId( @id )
 				return "/cells/#{ data.id }.json" if data.origin is "server"
 				return '/cells.json'
 		)
@@ -455,7 +459,7 @@ class Model.Cell extends Helper.Mixable
 					values,
 					base_values
 				],
-				Model.Cell.Notification.Info
+				Cell.Notification.Info
 			)
 			return [ values, off ]
 			
@@ -622,7 +626,7 @@ class Model.Cell extends Helper.Mixable
 			'cell.save',
 			"Saving this cell...",
 			[],
-			Model.Cell.Notification.Info
+			Cell.Notification.Info
 		)	
 		
 		
@@ -637,8 +641,12 @@ class Model.Cell extends Helper.Mixable
 				'cell.save',
 				"Successfully saved this cell",
 				[]
-				Model.Cell.Notification.Success
+				Cell.Notification.Success
 			)	
+			
+			locache.async.set( 'cell.' + @id, @serialize(), Cell.CACHE_TIMEOUT ) 
+			
+			return data
 		)
 		
 		return promise
@@ -689,8 +697,9 @@ class Model.Cell extends Helper.Mixable
 						data, 
 						cell_data 
 					],
-					Model.Cell.Notification.Error
-				)	
+					Cell.Notification.Error
+				)
+				return [ data, cell_data ]
 			)
 
 		return promise
@@ -720,8 +729,9 @@ class Model.Cell extends Helper.Mixable
 							data, 
 							cell_data  
 					],
-					Model.Cell.Notification.Error
-				)	
+					Cell.Notification.Error
+				)
+				return [ data, cell_data ]
 			)
 		
 		return promise
@@ -779,7 +789,7 @@ class Model.Cell extends Helper.Mixable
 					'cell.load',
 					'Loading cell...',
 					[ 'load' ],
-					Model.Cell.Notification.Info
+					Cell.Notification.Info
 				);
 				
 				promises = []
@@ -793,7 +803,13 @@ class Model.Cell extends Helper.Mixable
 						clone
 					)
 				
-				return $.when.apply( $, promises )
+				promise = $.when.apply( $, promises )
+				promise.done( ( data ) => 
+					unless clone
+						locache.async.set( 'cell.' + result.id, result.serialize(), Cell.CACHE_TIMEOUT ) 
+					return data
+				)
+				return promise
 				
 			# Fail
 			, ( data ) => 
@@ -812,8 +828,10 @@ class Model.Cell extends Helper.Mixable
 						data, 
 						cell_id 
 					],
-					Model.Cell.Notification.Error
+					Cell.Notification.Error
 				)	
+				
+				return [ data, result ]
 			)
 			
 		promise.done( ( data ) => 
@@ -822,13 +840,17 @@ class Model.Cell extends Helper.Mixable
 				'cell.load',
 				"Successfully loaded the cell #{ result.name }",
 				[ 'load' ],
-				Model.Cell.Notification.Success
+				Cell.Notification.Success
 			)	
 		)
 		
 		return promise
 		
-	@loadList: ( callback ) ->
+	# Loads the whole list of cells
+	#
+	# @return [jQuery.Promise] the promise
+	#
+	@loadList: ( ) ->
 	
 		cell = new Model.Cell()
 		promise = $.get( cell.url, {} )
