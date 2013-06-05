@@ -92,8 +92,7 @@ class Model.Module extends Helper.Mixable
 	#
 	#
 	_defineDynamicProperties: ( params ) ->
-		@_propertiesFromParams(  
-			_( params ).defaults( {
+		@_propertiesFromParams( _( params ).defaults( {
 				id: _.uniqueId "client:#{this.constructor.name}:"
 				creation: Date.now()
 				starts: {}
@@ -117,19 +116,7 @@ class Model.Module extends Helper.Mixable
 	# @return [Object] extracted id data
 	#
 	@extractId: ( id ) ->
-		return id if _( id ).isObject()
-		return { id: id, origin: "server" } if _( id ).isNumber()
-		return null unless _( id ).isString()
-		data = id.split( ':' )
-		return { id: parseInt( data[0] ), origin: "server" } if data.length is 1
-		return { id: parseInt( data[2] ), origin: data[0] }
-		
-	# Returns true if this is a local instance
-	# 
-	# @return [Boolean] true if local, false if synced instance
-	#
-	isLocal : () ->
-		return Model.Module.extractId( @id ).origin isnt "server"
+		return Helper.Mixable.extractId id
 		
 	# Gets the compounds start value
 	#
@@ -485,7 +472,6 @@ class Model.Module extends Helper.Mixable
 	# @todo error handling
 	#
 	save: ( cell ) ->
-		
 		serialized_data = @serialize( false )
 		
 		# if dynamic, also needs to save the template
@@ -530,7 +516,7 @@ class Model.Module extends Helper.Mixable
 	# @return [Model.Module] the module
 	#
 	@deserialize : ( serialized ) ->
-		
+	
 		serialized = JSON.parse( serialized ) if _( serialized ).isString()
 		serialized.parameters.name = serialized.parameters.name ? serialized.name
 		serialized.parameters.amount = serialized.parameters.amount ? serialized.amount
@@ -548,7 +534,8 @@ class Model.Module extends Helper.Mixable
 	# @param cell [Model.Cell] the cell to load to
 	# @param callback [Function] function to call on completion
 	#
-	@load : ( module_id, cell, callback ) ->
+	@load : ( module_id, cell, callback, clone = off ) ->
+		
 		module = new Model.Module( { id: module_id } )
 		promise = $.get( module.url, { all: true } )
 		
@@ -556,6 +543,9 @@ class Model.Module extends Helper.Mixable
 			
 			# Done
 			( data ) =>
+				if clone
+					delete data.parameters.id
+					delete data.parameters.creation
 				result = Model.Module.deserialize( data )
 				callback.call( @, result ) if callback?
 				

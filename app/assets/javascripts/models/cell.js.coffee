@@ -103,19 +103,7 @@ class Model.Cell extends Helper.Mixable
 	# @return [Object] extracted id data
 	#
 	@extractId: ( id ) ->
-		return id if _( id ).isObject()
-		return { id: id, origin: "server" } if _( id ).isNumber()
-		return null unless _( id ).isString()
-		data = id.split( ':' )
-		return { id: parseInt( data[0] ), origin: "server" } if data.length is 1
-		return { id: parseInt( data[2] ), origin: data[0] }
-		
-	# Returns true if local cell
-	#
-	# @return [Boolean] true if local, false if synced
-	#
-	isLocal : () ->
-		return Model.Cell.extractId( @id ).origin isnt "server"
+		return Helper.Mixable.extractId id
 	
 	# Add module to cell
 	#
@@ -761,7 +749,7 @@ class Model.Cell extends Helper.Mixable
 	# @param cell_id [Integer] the id of the cell
 	# @param callback [Function] function to call on completion
 	#
-	@load : ( cell_id, callback ) ->
+	@load : ( cell_id, callback, clone = off ) ->
 	
 		result = undefined
 		cell = new Model.Cell( undefined, undefined, { id: cell_id } )
@@ -770,15 +758,17 @@ class Model.Cell extends Helper.Mixable
 			
 			# Done
 			( data ) =>
-				result = new Model.Cell( 
-					undefined,
-					undefined,
-					{ 
+			
+				unless clone
+					params =
 						id: data.cell.id
 						name: data.cell.name
-						#creation: new Date(data.created_at).getTime()
-					}
-				)
+						creation: Helper.Mixable.parseDate( data.cell.created_at )
+				else
+					params = 
+						name: "#{data.cell.name}-clone"
+					
+				result = new Model.Cell( undefined, undefined, params )
 				for module in result._modules
 					result.remove module, false
 				
@@ -795,7 +785,11 @@ class Model.Cell extends Helper.Mixable
 					promises.push Model.Module.load( 
 						module_id, 
 						result, 
-						( module ) => result.add module, false 
+						( ( module ) => 
+							result.add module, false 
+							console.log "id is #{module.id}, #{module_id}"
+						), 
+						clone
 					)
 				
 				return $.when.apply( $, promises )
