@@ -3,8 +3,10 @@
 (exports ? this).View = {}
 (exports ? this).Helper = {}
 (exports ? this).Mixin = {}
+(exports ? this).GIGBASE_VERSION = '1.5.0'
 
 document.mvc = null
+
 locache.cachePrefix += '.gigabase.'
 locache.cleanup()
 
