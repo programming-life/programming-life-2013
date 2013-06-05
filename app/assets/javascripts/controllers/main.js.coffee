@@ -153,9 +153,22 @@ class Controller.Main extends Controller.Base
 	#
 	onSave: ( target, enable, success, error ) ->
 		@view.setButtonState target, 'loading'
+		@view.setNotificationsOn( @controller('cell').model, 'button[data-action="save"]' )
 		@save().always( enable )
 			.done( success )
 			.fail( error )
+			.fail( @onSaveError )
+		
+	#
+	#
+	onSaveError: ( data ) =>
+		[ error, cell ] = data
+		switch error.status
+			when 404
+				button = $ '<button id="solution" class="btn btn-small" data-action="saveAs">Save As</button>'
+				button.on( 'click', => $( '#actions [data-action="saveAs"]' ).click() )
+				message = 'It seems like the cell you are trying to save was deleted. You can try to "save as" a new cell.'
+				@view.setSolutionNotification( message, button )
 		
 	# On Save As Button clicked
 	#
@@ -166,6 +179,7 @@ class Controller.Main extends Controller.Base
 	#
 	onSaveAs: ( target, enable, success, error ) ->
 		@view.setButtonState target, 'loading'
+		@view.setNotificationsOn( @controller('cell').model, 'button[data-action="save"]' )
 		@save( true ).always( enable )
 			.done( success )
 			.fail( error )
@@ -180,8 +194,9 @@ class Controller.Main extends Controller.Base
 	onLoad: ( target, enable, success, error ) ->
 		@view.setButtonState target, 'loading'
 		confirm = ( id ) =>
+			callback = ( res ) => @view.setNotificationsOn( res, 'button[data-action="load"]' )
 			if id?
-				@load( id )
+				@load( id, callback )
 					.always( enable )
 					.done( success )
 					.fail( error )

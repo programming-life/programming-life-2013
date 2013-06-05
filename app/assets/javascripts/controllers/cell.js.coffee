@@ -209,8 +209,7 @@ class Controller.Cell extends Controller.Base
 	# @return [jQuery.Promise] the promise
 	#
 	load: ( cell_id, callback, clone = off ) ->
-	
-		
+
 		setcallback = ( cell ) => 
 			@model = cell 
 			@_addDummyViews() if @_interaction
