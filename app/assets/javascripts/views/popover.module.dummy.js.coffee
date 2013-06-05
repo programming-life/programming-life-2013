@@ -12,11 +12,11 @@ class View.DummyModuleProperties extends View.ModuleProperties
 	#
 	constructor: ( parent, @_cellView, @_cell, @modulector, @_override_params = {} ) ->
 		@_dummyId = _.uniqueId('dummy-module-')
-		@_changes = {}
 
 		@_compounds = @_cell.getCompoundNames()
 		@_metabolites = @_cell.getMetaboliteNames()
 		@_params = _( _( @_override_params ).clone( true ) ).defaults( @_getModuleDefaults() )
+		@_changes = _( @_params ).clone( true )
 		@_selectables = []
 
 		# Behold, the mighty super constructor train! Reminds me of some super plumber called Mario.
@@ -95,7 +95,7 @@ class View.DummyModuleProperties extends View.ModuleProperties
 	# @return [jQuery.elem] elements
 	#
 	_drawProperty: ( key, type, params = {} ) ->
-		return @_drawInput( type, key, @_params[ key ] ? undefined, params )		
+		return @_drawInput( type, key, @_changes[ key ] ? undefined, params )		
 
 	# Returns the properties of our module to be
 	#
@@ -128,13 +128,11 @@ class View.DummyModuleProperties extends View.ModuleProperties
 	# Saves all changed properties to the module.
 	#
 	_save: ( ) =>
-		@_trigger('module.creation.finished', @_parent, [ _( _( @_changes ).clone( true ) ).defaults( @_params ) ])
-		@_elem.find('input').blur()
-		@_changes = {}
-		@_params = _( _( @_override_params ).clone( true ) ).defaults( @_getModuleDefaults() )
 		
-		super()
-
+		@_trigger('module.creation.finished', @_parent, [ @_changes ])
+		@_elem.find('input').blur()
+		@_changes = _( @_params ).clone( true )
+		
 		@_body?.empty()
 		@_selectables = []
 		@_drawForm()

@@ -264,8 +264,10 @@ class View.ModuleProperties extends View.HTMLPopOver
 	# @param input [jQuery.Elem] the element to set it on
 	# 
 	_bindOnChange: ( key, input ) ->
-		((key) => 
-			input.on('keyup', (event) => 
+
+		((key) =>
+		
+			onchange = (event) => 
 				value = event.target.value
 				if value.length == 0
 					@_changes[ key ] = undefined
@@ -274,8 +276,10 @@ class View.ModuleProperties extends View.HTMLPopOver
 					value = parseFloat value unless isNaN value
 
 				@_changes[ key ] = value
-				@_trigger "module.properties.change", @_parent , [ key, value]
-			)
+				@_trigger "module.properties.change", @_parent , [ key, value ]
+				
+			input.on( 'change', onchange )
+				.on( 'keyup', onchange )
 		) key
 		
 	# Binds an on change event to a selectable input that sets the key
