@@ -15,7 +15,7 @@ class View.Collection extends Helper.Mixable
 	#
 	# @param reset [Boolean] if true, clears the internal array
 	#
-	kill: ( reset = on ) ->
+	kill: ( reset = off ) ->
 		@clear()
 		view.kill?() for view in @_views
 		@_views = [] if reset
