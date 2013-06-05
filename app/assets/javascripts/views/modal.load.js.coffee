@@ -13,7 +13,7 @@ class View.LoadModal extends View.HTMLModal
 	#
 	constructor: ( id, classname ) ->
 		header = "Select a cell to load"
-		contents = '<div class="contents"></div>'
+		contents = '<div class="contents modal-load"></div>'
 		@cell = null
 		
 		super header, contents, id, classname
@@ -89,14 +89,7 @@ class View.LoadModal extends View.HTMLModal
 	# @return [Date]
 	# 
 	_parseDate: ( date ) ->
-		#console.log date
-		matchOffset = /(Z|([+-])(\d\d):(\d\d))$/
-		offset = matchOffset.exec date
-		result = new Date( date.replace( 'T', 'T' ).replace( matchOffset, 'Z' ) )
-		unless offset[ 1 ] is 'Z' 
-			timezone = ( if offset[ 2 ] is '+' then -1 else 1 ) * ( offset[ 3 ] * 60 + Number( offset[ 3 ] ) )
-			result.setMinutes( result.getMinutes() + timezone ) #- result.getTimezoneOffset() 
-		
+		result = Helper.Mixable.parseDate date
 		time = $ "<time datetime='#{date}' title='#{result}'></time>"
 		time.append ( @_prettifyDate result )
 		return time

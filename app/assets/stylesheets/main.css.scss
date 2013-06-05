@@ -45,3 +45,7 @@ div#paper svg, .pane, .btn {
 	-o-transition: none;
 	transition: none;
 }
+
+.modal-load .dropdown-menu {
+	min-width: 100px;
+}
