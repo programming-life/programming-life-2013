@@ -46,8 +46,8 @@
 //= require_tree .
 
 $(function () {
-	$(window.applicationCache.bind('error', function () {
+	$(window.applicationCache).bind('error', function () {
 		console.error( 'There was an error when loading the cache manifest.' );
 		console.warn( arguments );
-	}))
+	});
 })

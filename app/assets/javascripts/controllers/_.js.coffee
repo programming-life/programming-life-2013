@@ -58,6 +58,9 @@ class Controller.Base extends Helper.Mixable
 		@_unbindAll()
 		return this
 		
+	update: () ->
+		return $.Deferred().promise()
+		
 	# Runs when the user tries to unload the page
 	#
 	beforeUnload: () ->
