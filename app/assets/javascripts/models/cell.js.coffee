@@ -789,7 +789,6 @@ class Model.Cell extends Helper.Mixable
 						result, 
 						( ( module ) => 
 							result.add module, false 
-							console.log "id is #{module.id}, #{module_id}"
 						), 
 						clone
 					)
