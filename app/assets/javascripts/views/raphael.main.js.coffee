@@ -184,7 +184,7 @@ class View.Main extends View.RaphaelBase
 	# @return [jQuery.Collection] the action button elements
 	#
 	getActionButtons: ( ) ->
-		return $( '#actions' ).find( '[data-action]' )
+		return $( '#actions' ).find( '[data-action], button.dropdown-toggle' )
 		
 	# Resets the action buttons visual state
 	# 
