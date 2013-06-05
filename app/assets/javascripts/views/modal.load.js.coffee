@@ -45,18 +45,34 @@ class View.LoadModal extends View.HTMLModal
 				
 				for cell in cells.reverse()
 					row = $ '<tr></tr>'
+					
+					# the data
 					row.append $ "<td>#{cell.id}</td>"
 					row.append $ "<td>#{cell.name}</td>"
 					row.append ( time = $ "<td></td>" )
 					time.append @_parseDate cell.updated_at
 					
+					# The load button
 					load_button = $ '<button class="btn btn-primary" data-dismiss="modal" data-action="load" aria-hidden="true" data-id="' + cell.id + '"><i class="icon-download icon-white"></i> Load</button>'
-					load_button.on( 'click', ( event ) => 
+					
+					# The load actions
+					load_group  = $ '<div class="btn-group"></div>'
+					load_group.append( load_button = $ '<button class="btn btn-primary" aria-hidden="true" data-id="' + cell.id + '" data-dismiss="modal" data-action="load"><i class="icon-download icon-white"></i> Load</button></button>' )
+					
+					load_group.append( load_caret = $ '<button class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>' )
+					load_group.append( load_dropdown = $ '<ul class="dropdown-menu"></ul>' )
+					
+					load_dropdown.append( load_action = $ '<li><a href="#" data-dismiss="modal" data-action="load" aria-hidden="true" data-id="' + cell.id + '" ><i class="icon-download"></i> Load</a></li>' )
+					load_dropdown.append( clone_action = $ '<li><a href="#" data-dismiss="modal" data-action="clone" aria-hidden="true" data-id="' + cell.id + '" ><i class="icon-plus"></i> Clone</a></li>' )
+					load_dropdown.append( merge_action = $ '<li><a href="#" data-dismiss="modal" data-action="merge" aria-hidden="true" data-id="' + cell.id + '" ><i class="icon-random"></i> Merge</a></li>' )
+					
+					# The load data set action
+					load_group.on( 'click', '[data-action]', ( event ) => 
 						@cell = $( event.currentTarget ).data( 'id' ) 
 					)
 					
 					row.append( action = $ "<td></td>" )
-					action.append load_button
+					action.append load_group
 					
 					tbody.append row
 				

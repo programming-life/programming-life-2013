@@ -253,15 +253,21 @@ class View.Main extends View.RaphaelBase
 	# Call modal for load
 	#
 	# @param load [Function] action on confirmed
+	# @param other [Function] action on confirmed but not load
 	# @param close [Function] action on closed
 	# @param always [Function] action always
 	# @return [self] chainable self
 	#
-	showLoad: ( load, close, always ) ->
+	showLoad: ( load, other, close, always ) ->
 	
 		func = ( caller, action ) =>
-			load?( @_loadModal.cell ) if action is 'load'
-			close?() if action is 'cancel' or action is undefined
+			if action is 'cancel' or action is undefined
+				close?()
+			else if action is 'load'
+				load?( @_loadModal.cell ) 
+			else
+				other?( action, @_loadModal.cell )
+			
 			always?()
 			
 			@_loadModal.offClosed( @, func ) 

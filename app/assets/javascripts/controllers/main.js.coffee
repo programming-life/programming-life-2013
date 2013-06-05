@@ -160,12 +160,17 @@ class Controller.Main extends Controller.Base
 			else
 				enable()
 				error()
+				
+		other = ( action, id ) =>
+			console.log action
+			target.button( 'reset' )
+			enable()
 		
 		cancel = () =>
 			target.button( 'reset' )
 			enable()
 		
-		@view.showLoad( confirm, cancel )
+		@view.showLoad( confirm, other, cancel )
 		
 	# On Report Button clicked
 	#
