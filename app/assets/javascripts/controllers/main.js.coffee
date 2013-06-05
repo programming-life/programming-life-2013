@@ -66,8 +66,8 @@ class Controller.Main extends Controller.Base
 	# @param callback [Function] the callback function
 	# @return [jQuery.Promise] the promise
 	#
-	load: ( cell_id, callback ) ->
-		promise =  @controller('cell').load cell_id, callback
+	load: ( cell_id, callback, clone = off ) ->
+		promise =  @controller('cell').load cell_id, callback, clone
 		promise.always( () => @_setCellNameActionField( @controller('cell').model.name ) )
 		return promise
 		
@@ -162,7 +162,11 @@ class Controller.Main extends Controller.Base
 				error()
 				
 		other = ( action, id ) =>
-			console.log action
+			if id? and action is 'clone'
+				@load( id, undefined, true )
+					.always( enable )
+					.done( success )
+					.fail( error )
 			target.button( 'reset' )
 			enable()
 		

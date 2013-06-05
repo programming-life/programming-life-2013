@@ -208,7 +208,7 @@ class Controller.Cell extends Controller.Base
 	# @param callback [Function] the callback function
 	# @return [jQuery.Promise] the promise
 	#
-	load: ( cell_id, callback ) ->
+	load: ( cell_id, callback, clone = off ) ->
 	
 		
 		setcallback = ( cell ) => 
@@ -217,7 +217,7 @@ class Controller.Cell extends Controller.Base
 			callback?.call( @, cell )
 			
 		@_automagically = off
-		promise = Model.Cell.load cell_id, setcallback
+		promise = Model.Cell.load cell_id, setcallback, clone
 		promise.always( () => @_automagically = on )
 		return promise
 		
