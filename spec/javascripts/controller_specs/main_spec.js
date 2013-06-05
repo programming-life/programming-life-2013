@@ -3,7 +3,7 @@ describe("Main", function() {
 	
 	describe("when constructed", function() {
 		beforeEach( function() {
-			container = $("<div id='paper'></div>")[0]
+			container = $("<div id='paper'></div>")
 			controller = new Controller.Main( container )
 			view_name = controller.view.constructor.name;
 		});
@@ -15,7 +15,9 @@ describe("Main", function() {
 			
 		afterEach( function() {
 			controller.view.kill()
-			container.remove()
+			
+			if ( container.remove )
+				container.remove()
 		});
 	});
 
