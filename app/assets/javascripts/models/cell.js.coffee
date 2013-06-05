@@ -676,7 +676,7 @@ class Model.Cell extends Helper.Mixable
 		promise = promise.then( 
 			# Done
 			( data ) => 			
-				@id = data.id
+				@_id = data.id
 				return @_save_modules( true )
 			
 			# Fail

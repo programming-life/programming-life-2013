@@ -441,7 +441,7 @@ class Model.Module extends Helper.Mixable
 		
 			# Done
 			( data ) => 	
-				@id = data.id
+				@_id = data.id
 				
 				@_notificate( @,  @, 
 					"module.save.#{ @name }",
