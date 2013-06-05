@@ -14,9 +14,28 @@ class Controller.Report extends Controller.Base
 		@_currentIteration = 0
 		@_createChildren()
 		@_createBindings()
-		
 		@load( cell_id )
 		
+	
+	# Prepends the CSS styles in the SVG
+	#
+	prependStyles: () ->
+		# Get the right CSS file
+		for sheet in document.styleSheets
+			if /svg/.test(sheet.href)
+				stylesheet = sheet
+				break
+
+		rules = []
+		# Get all the rules in said CSS file		
+		for rule in stylesheet.cssRules
+			# Remove hitboxes which show up as black boxes in PDF
+			if rule.selectorText == '.module-hitbox'
+				rule.style.fill = ''
+			rules.push rule.cssText
+
+		rules = rules.reduce (x, y) -> x + " " + y
+		$('#paper').find('svg').prepend("<defs><style type='text/css'><![CDATA[#{rules}]]></style></defs>")
 		
 	# Creates children
 	#
@@ -51,7 +70,10 @@ class Controller.Report extends Controller.Base
 		
 		promise = @controller('cell').load cell_id, callback
 		promise.done( () => 
-			@serializePaper()
+			@prependStyles()
+			setTimeout( =>
+				@serializePaper()
+			, 3000)
 			@solveTheSystem()
 		)
 			
