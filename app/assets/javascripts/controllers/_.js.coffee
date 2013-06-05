@@ -61,10 +61,9 @@ class Controller.Base extends Helper.Mixable
 	# Runs when the user tries to unload the page
 	#
 	beforeUnload: () ->
-		console.log 'before unload'
 		return undefined
 		
 	# Runs when the user has unloaded the page
 	#
 	onUnload: () ->
-		console.log 'unloaded'
+		return undefined
