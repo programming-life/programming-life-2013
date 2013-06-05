@@ -643,6 +643,7 @@ class Model.Cell extends Helper.Mixable
 				[]
 				Model.Cell.Notification.Success
 			)	
+			return data
 		)
 		
 		return promise
@@ -694,7 +695,8 @@ class Model.Cell extends Helper.Mixable
 						cell_data 
 					],
 					Model.Cell.Notification.Error
-				)	
+				)
+				return [ data, cell_data ]
 			)
 
 		return promise
@@ -725,7 +727,8 @@ class Model.Cell extends Helper.Mixable
 							cell_data  
 					],
 					Model.Cell.Notification.Error
-				)	
+				)
+				return [ data, cell_data ]
 			)
 		
 		return promise
@@ -798,9 +801,10 @@ class Model.Cell extends Helper.Mixable
 					)
 				
 				promise = $.when.apply( $, promises )
-				promise.done( () => 
+				promise.done( ( data ) => 
 					unless clone
 						locache.async.set( 'cell.' + result.id, result.serialize(), Cell.CACHE_TIMEOUT ) 
+					return data
 				)
 				return promise
 				
@@ -823,6 +827,8 @@ class Model.Cell extends Helper.Mixable
 					],
 					Model.Cell.Notification.Error
 				)	
+				
+				return [ data, result ]
 			)
 			
 		promise.done( ( data ) => 
