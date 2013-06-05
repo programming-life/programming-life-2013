@@ -12,6 +12,10 @@ class Model.Cell extends Helper.Mixable
 	@concern Mixin.EventBindings
 	@concern Mixin.TimeMachine
 
+	# The cache timeout ( 1 week )
+	# 
+	@CACHE_TIMEOUT = 60 * 60 * 24 * 7
+	
 	# Constructor for cell
 	#
 	# @param params [Object] parameters for the cellgrowth module
@@ -793,7 +797,12 @@ class Model.Cell extends Helper.Mixable
 						clone
 					)
 				
-				return $.when.apply( $, promises )
+				promise = $.when.apply( $, promises )
+				promise.done( () => 
+					unless clone
+						locache.async.set( 'cell.' + result.id, result.serialize(), Cell.CACHE_TIMEOUT ) 
+				)
+				return promise
 				
 			# Fail
 			, ( data ) => 
@@ -828,7 +837,11 @@ class Model.Cell extends Helper.Mixable
 		
 		return promise
 		
-	@loadList: ( callback ) ->
+	# Loads the whole list of cells
+	#
+	# @return [jQuery.Promise] the promise
+	#
+	@loadList: ( ) ->
 	
 		cell = new Model.Cell()
 		promise = $.get( cell.url, {} )
