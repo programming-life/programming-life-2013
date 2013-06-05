@@ -226,9 +226,9 @@ class Controller.Cell extends Controller.Base
 	# @param name the name to save with
 	# @return [jQuery.Promise] the promise
 	#
-	save: ( name ) ->
+	save: ( name, clone = off ) ->
 		@model.name = name ? @model.name
-		return @model.save()
+		return @model.save( clone )
 		
 	# Get the simulation data from the cell
 	# 

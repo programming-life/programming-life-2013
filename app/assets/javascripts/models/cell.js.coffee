@@ -604,11 +604,11 @@ class Model.Cell extends Helper.Mixable
 	# 
 	# @return [jQuery.Promise] the promiseses deffered 
 	#
-	_save_modules: () =>
+	_save_modules: ( clone = off ) =>
 		
 		promiseses = []
 		for module in @_getModules()
-			promiseses.push module.save @id
+			promiseses.push module.save @id, clone
 		
 		return $.when( promiseses... )
 		
@@ -616,7 +616,7 @@ class Model.Cell extends Helper.Mixable
 	#
 	# @return [JQuery.Promise] promise
 	#
-	save: ( ) ->
+	save: ( clone = off ) ->
 	
 		@_notificate( @, @, 
 			'cell.save',
@@ -624,8 +624,10 @@ class Model.Cell extends Helper.Mixable
 			[],
 			Model.Cell.Notification.Info
 		)	
-			
-		if @isLocal()
+		
+		
+		@_id = {} if clone
+		if @isLocal() or clone
 			promise = @_create()
 		else 
 			promise = @_update()
@@ -675,7 +677,7 @@ class Model.Cell extends Helper.Mixable
 			# Done
 			( data ) => 			
 				@id = data.id
-				return @_save_modules()
+				return @_save_modules( true )
 			
 			# Fail
 			, ( data ) => 

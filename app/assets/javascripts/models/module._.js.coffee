@@ -471,7 +471,8 @@ class Model.Module extends Helper.Mixable
 	# @todo if dynamic, also needs to save the template
 	# @todo error handling
 	#
-	save: ( cell ) ->
+	save: ( cell, clone = off ) ->
+		@_id = {} if clone
 		serialized_data = @serialize( false )
 		
 		# if dynamic, also needs to save the template

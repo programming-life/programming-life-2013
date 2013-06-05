@@ -75,9 +75,9 @@ class Controller.Main extends Controller.Base
 	#
 	# @return [jQuery.Promise] the promise
 	#
-	save: () ->
+	save: ( clone = off ) ->
 		name = @_getCellNameActionField()
-		return @controller('cell').save( name )
+		return @controller('cell').save( name, clone )
 		
 	# Gets the cell name from the action field
 	#
@@ -114,18 +114,20 @@ class Controller.Main extends Controller.Base
 	#
 	onAction: ( event ) =>
 		
+		btn_target = target = $( event.currentTarget )
+		btn_target = target.closest( '.btn-group' ).find( 'button[data-action]' ) if target.is( 'a' )
+		console.log target, btn_target
+		
 		@view.resetActionButtons()
 		enable = () => @view.enableActionButtons()
-			
-		success = () => @view.setButtonState( target, 'success', 'btn-success' ) 
-		error = () => @view.setButtonState( target, 'error', 'btn-danger' ) 
-		
-		target = $( event.currentTarget )
+		success = () => @view.setButtonState( btn_target, 'success', 'btn-success' ) 
+		error = () => @view.setButtonState( btn_target, 'error', 'btn-danger' ) 
+
 		action = target.data( 'action' )
 		action = action.charAt(0).toUpperCase() + action.slice(1)
 		
 		if @[ 'on' + action ]?
-			@[ 'on' + action ]( target, enable, success, error )
+			@[ 'on' + action ]( btn_target, enable, success, error )
 		else
 			enable()
 				
@@ -139,6 +141,19 @@ class Controller.Main extends Controller.Base
 	onSave: ( target, enable, success, error ) ->
 		@view.setButtonState target, 'loading'
 		@save().always( enable )
+			.done( success )
+			.fail( error )
+		
+	# On Save As Button clicked
+	#
+	# @param target [jQuery.Elem] target element
+	# @param enable [Function] function to re-enable buttons
+	# @param succes [Function] function to run on success
+	# @param error [Function] function to run on error
+	#
+	onSaveAs: ( target, enable, success, error ) ->
+		@view.setButtonState target, 'loading'
+		@save( true ).always( enable )
 			.done( success )
 			.fail( error )
 			
