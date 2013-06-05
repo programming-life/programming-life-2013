@@ -60,7 +60,6 @@ class Helper.Mixable
 	# @return [Boolean] true if local, false if synced instance
 	#
 	isLocal : () ->
-		console.log @id, Helper.Mixable.extractId( @id )
 		return Helper.Mixable.extractId( @id ).origin isnt "server"
 
 	# Parses a date with or without timezone offset to a javascript date
