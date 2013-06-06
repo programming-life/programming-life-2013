@@ -60,7 +60,7 @@ class Controller.Base extends Helper.Mixable
 		
 	# Runs when the user comes online
 	#
-	update: () ->
+	onUpdate: () ->
 		return $.Deferred().promise()
 		
 	# Runs when the user tries to unload the page
