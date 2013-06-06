@@ -1,3 +1,4 @@
+'use strict'
 # This is the model of a cell. It holds modules and substrates and is capable
 # of simulating the modules for a timespan. A cell comes with one default 
 # module which is the Cell Growth.
@@ -967,12 +968,13 @@ class Model.Cell extends Helper.Mixable
 							
 								if cell 
 									if not only_local or Helper.Mixable.extractId( cell_id ).origin isnt "server"
-										cells.push cell
+										cells.push Model.Cell.deserialize( cell )
 								else
 									cell_ids = _( cell_ids ).without cell_id
 									locache.set( 'cells', cell_ids )
 									
 								if --counter is 0
+									cells = _( cells ).sortBy( 'creation' ).reverse()
 									promise.resolve [ cells, 'local' ]
 							)
 					)( id )

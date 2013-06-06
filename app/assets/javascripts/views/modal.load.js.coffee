@@ -81,8 +81,8 @@ class View.LoadModal extends View.HTMLModal
 	#
 	#
 	_listCells: ( tbody, cells, origin ) ->
-		for cell in cells.reverse()
-			cell = Model.Cell.deserialize( cell ) if origin is 'local'
+	
+		for cell in cells
 			row = $ '<tr class="' + origin + ' ' + ( if origin is 'local' then 'hide' else '') + '" data-origin="' + origin + '"></tr>'
 			
 			# the data
