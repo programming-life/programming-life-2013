@@ -68,10 +68,12 @@ class Helper.Mixable
 	# @return [Date] the parsed date
 	# 
 	@parseDate: ( date ) ->
+		unless _( date ).isString()
+			return new Date( date )
 		matchOffset = /(Z|([+-])(\d\d):(\d\d))$/
 		offset = matchOffset.exec date
 		result = new Date( date.replace( 'T', 'T' ).replace( matchOffset, 'Z' ) )
 		unless offset[ 1 ] is 'Z' 
 			timezone = ( if offset[ 2 ] is '+' then -1 else 1 ) * ( offset[ 3 ] * 60 + Number( offset[ 3 ] ) )
 			result.setMinutes( result.getMinutes() + timezone ) #- result.getTimezoneOffset() 
-		return result;
+		return result
