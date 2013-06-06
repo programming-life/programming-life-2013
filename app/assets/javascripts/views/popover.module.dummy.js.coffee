@@ -22,16 +22,16 @@ class View.DummyModuleProperties extends View.ModuleProperties
 		# Behold, the mighty super constructor train! Reminds me of some super plumber called Mario.
 		@constructor.__super__.constructor.__super__.constructor.apply( @, [parent, @modulector.name, 'module-properties', 'bottom'] )
 
-		@_bind('module.selected.changed', @, @_onModuleSelected)
+		@_bind( 'module.selected.changed', @, @_onModuleSelected )
 
-		@_bind('module.creation.started', @, @_onModuleCreationStarted)
-		@_bind('module.creation.finished', @, @_onModuleCreationFinished)
-		@_bind('module.creation.aborted', @, @_onModuleCreationAborted)
+		@_bind( 'module.creation.started', @, @_onModuleCreationStarted )
+		@_bind( 'module.creation.finished', @, @_onModuleCreationFinished )
+		@_bind( 'module.creation.aborted', @, @_onModuleCreationAborted )
 
-		@_bind('cell.module.added', @, @_onCompoundsChanged)
-		@_bind('cell.module.removed', @, @_onCompoundsChanged)
-		@_bind('cell.metabolite.added', @, @_onMetabolitesChanged)
-		@_bind('cell.metabolite.removed', @, @_onMetabolitesChanged)
+		@_bind( 'cell.module.added', @, @_onCompoundsChanged )
+		@_bind( 'cell.module.removed', @, @_onCompoundsChanged )
+		@_bind( 'cell.metabolite.added', @, @_onMetabolitesChanged )
+		@_bind( 'cell.metabolite.removed', @, @_onMetabolitesChanged )
 
 		@_setSelected off
 
@@ -129,7 +129,6 @@ class View.DummyModuleProperties extends View.ModuleProperties
 	# Saves all changed properties to the module.
 	#
 	_save: ( ) =>
-		
 		@_trigger('module.creation.finished', @_parent, [ @_changes ])
 		@_elem.find('input').blur()
 		@_reset()
@@ -140,15 +139,21 @@ class View.DummyModuleProperties extends View.ModuleProperties
 		@_changes = _( @_params ).clone( true )
 		super()
 
-	#
+	# Gets the current value for a key
+	# 
+	# @param key [String] the key to get
+	# @return [any] the current value
 	#
 	_getCurrentValueFor: ( key ) ->
 		return if @_changes[ key ] then @_changes[ key ] else []
 		
-	#
+	# Triggers when changed  a key
+	# 
+	# @param key [String] the key of the change
+	# @param value [any] the new value
 	#
 	_triggerChange: ( key, value ) ->
-		console.log "trigger change #{key} to #{value}"
+		console.debug "trigger change #{key} to #{value}"
 		@_trigger( 'dummy.properties.change', @_parent, [ @_changes, key, value, @modulector ] )
 		
 	# Will be called when the creation process of a module has started

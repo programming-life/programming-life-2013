@@ -50,25 +50,26 @@ class View.Module extends View.RaphaelBase
 	
 		@_bind( 'module.selected.changed', @, @onModuleSelected )
 		@_bind( 'module.hovered.changed', @, @onModuleHovered )
+		@_bind( 'module.properties.change', @, @_onModuleChanged )
 
-		@_onNotificate( @, @model, @onNotificate)
+		@_onNotificate( @, @model, @_onNotificate)
 		return this
 
 
 	# Forwards any notification from the model
 	#
-	onNotificate: ( context, source, identifier, type, message, args ) ->
+	_onNotificate: ( context, source, identifier, type, message, args ) ->
 		@_notificate( @, @, identifier, message, args, type )
 
 		
 	# Adds bindings to the module (non-interaction)
 	#
 	addBindings: () ->
-		@_bind( 'module.property.changed', @, @onModuleInvalidated )
-		@_bind( 'cell.module.added', @, @onModuleAdded )
-		@_bind( 'cell.module.removed', @, @onModuleRemoved )
-		@_bind( 'cell.metabolite.added', @, @onMetaboliteAdded )
-		@_bind( 'cell.metabolite.removed', @, @onMetaboliteRemoved )
+		@_bind( 'module.property.changed', @, @_onModuleInvalidated )
+		@_bind( 'cell.module.added', @, @_onModuleAdded )
+		@_bind( 'cell.module.removed', @, @_onModuleRemoved )
+		@_bind( 'cell.metabolite.added', @, @_onMetaboliteAdded )
+		@_bind( 'cell.metabolite.removed', @, @_onMetaboliteRemoved )
 		
 	# Adds hitbox interaction (click, mouseout, mouseover)
 	#
@@ -602,9 +603,15 @@ class View.Module extends View.RaphaelBase
 	# 
 	# @param module [Model.Module] the module invalidated
 	#
-	onModuleInvalidated: ( module ) =>
+	_onModuleInvalidated: ( module ) =>
 		if module is @model
 			@redraw()
+			
+	# Runs if module is changed
+	#
+	_onModuleChanged: ( source ) =>
+		if source.model is @model
+			@_notificationsView.hide()
 	
 	# Gets called when a module view selected.
 	#
@@ -635,7 +642,7 @@ class View.Module extends View.RaphaelBase
 	# @param cell [Model.Cell] the cell to which the module was added
 	# @param module [Module] the module that was added
 	#
-	onModuleAdded: ( cell, module ) ->
+	_onModuleAdded: ( cell, module ) ->
 		return if cell isnt @_cell
 
 	# Gets called when a module is removed from a cell
@@ -643,7 +650,7 @@ class View.Module extends View.RaphaelBase
 	# @param cell [Model.Cell] the cell from which the module was removed
 	# @param module [Module] the module that was removed
 	#
-	onModuleRemoved: ( cell, module ) ->
+	_onModuleRemoved: ( cell, module ) ->
 		return if cell isnt @_cell
 		if @getFullType() is module.getFullType() and module isnt @model
 			@setPosition()
@@ -653,7 +660,7 @@ class View.Module extends View.RaphaelBase
 	# @param cell [Model.Cell] the cell to which the metabolite was added
 	# @param metabolite [Metabolite] the metabolite that was added
 	#
-	onMetaboliteAdded: ( cell, metabolite ) ->
+	_onMetaboliteAdded: ( cell, metabolite ) ->
 		return if cell isnt @_cell
 		@createSplines()
 		return
@@ -673,6 +680,6 @@ class View.Module extends View.RaphaelBase
 	# @param cell [Model.Cell] the cell from which the metabolite was removed
 	# @param metabolite [Metabolite] the metabolite that was removed
 	#
-	onMetaboliteRemoved: ( cell, metabolite ) ->
+	_onMetaboliteRemoved: ( cell, metabolite ) ->
 		if @getFullType() is metabolite.getFullType() and metabolite isnt @model
 			@setPosition()		

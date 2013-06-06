@@ -158,6 +158,9 @@ class Controller.Cell extends Controller.Base
 	# 
 	# @param module [Model.Module] the module changed
 	# @param params [Array] The keys and values
+	# @param key [String] the actual changed key
+	# @param value [any] the new value
+	# @param modulector [Constructor] the contstructor for this dummy module
 	#
 	_onDummyModuleChanged: ( source, params, key, value, modulector ) =>
 		return unless @_automagically
@@ -167,7 +170,6 @@ class Controller.Cell extends Controller.Base
 
 		@killPreviews()
 		@preview module
-
 
 	# Kill and remove all previews
 	#

@@ -1,6 +1,10 @@
 # Displays the properties of a module in a neat HTML popover
 #
+# @concern Mixin.Catcher
+#
 class View.ModuleProperties extends View.HTMLPopOver
+
+	@concern Mixin.Catcher
 
 	# Constructs a new ModuleProperties view.
 	#
@@ -457,15 +461,31 @@ class View.ModuleProperties extends View.HTMLPopOver
 	# Saves all changed properties to the module.
 	#
 	_save: ( ) =>	
-		for key, value of @_changes
-			if value is undefined
-				throw new Error "Invalid property value for #{key}."
-			@module[ key ] = value
+		return if not @_saveChanges()
 			
 		@_changes = {}
 		@_reset()
 		@_trigger( 'module.selected.changed', @module, [ off ] )
 		@_trigger( 'module.hovered.changed', @module, [ off ] )
+		
+	# Saves the changes
+	#
+	@catchable
+		_saveChanges: () ->
+			for key, value of @_changes
+				if value is undefined
+					throw new Error "I need #{key}."
+					return false
+				@module[ key ] = value
+			return true
+			
+	# Catcher function for Mixin.Catcher that will notificate any thrown Error on catchable methods
+	#
+	# @param e [Error] the error to notificate
+	#
+	_catcher: ( source, e ) =>
+		text = if _( e ).isObject() then e.message ? 'no message' else e 
+		@_notificate( @, @module, text , text, [], View.RaphaelBase.Notification.Error)
 	
 	# Removes this module from the cell
 	#
