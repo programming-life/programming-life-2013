@@ -286,16 +286,19 @@ class View.ModuleProperties extends View.HTMLPopOver
 				.on( 'keyup', onchange )
 		) key
 		
+	# Gets the current value for this key
+	#
+	# @param key [String] the key
+	# @return [any] the value
+	#
+	_getCurrentValueFor: ( key ) ->
+		return _( @module[ key ] ).clone( true )
+
 	# Binds an on change event to a selectable input that sets the key
 	#
 	# @param key [String] property to set
 	# @param selectable [jQuery.Elem] the selectable to set it on
 	# 
-	_getCurrentValueFor: ( key ) ->
-		return _( @module[ key ] ).clone( true )
-
-	#
-	#
 	_bindOnSelectableChange: ( key, selectable ) ->
 		((key) => 
 			selectable.on('change', (event) => 
@@ -313,7 +316,10 @@ class View.ModuleProperties extends View.HTMLPopOver
 			)
 		) key
 	
+	# Triggers the cahnge
 	#
+	# @param key [String] the key changed
+	# @param value [any] the new value
 	#
 	_triggerChange: ( key, value ) ->
 		console.debug "trigger change #{key} to #{value}"

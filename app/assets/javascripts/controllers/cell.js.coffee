@@ -183,37 +183,39 @@ class Controller.Cell extends Controller.Base
 	# Automagically adds the metabolite modules requires to the cell view or model
 	#
 	# @param module [Model.Module] The module for which to automagically add
+	# @todo remove is_product
 	#
 	_automagicAdd: ( module ) ->
 		# Expand names
 		names = []
 		props = module.getMetaboliteProperties()
 		for key, value of props
-			name = new String( module[value] ).toString()
-			if name.indexOf('#') is -1
-				names.push "#{name}#int"
-				names.push "#{name}#ext"
-			else
-				names.push name
+			values = if _( module[value] ).isArray() then module[value] else [ module[value] ]
+			for name in values
+				name = new String( name ).toString()
+				continue if not name? or name.length is 0
+				if name.indexOf('#') is -1
+					names.push "#{name}#int"
+					names.push "#{name}#ext"
+				else
+					names.push name
 
 		names = _( names ).unique()
-		
+
 		# Find missing metabolites
 		missing = _( names ).filter( ( name ) => not _( @model._getModules() ).any( ( m ) -> name is m.name ) )
 
 		for name in missing
 			is_product = 
-				( module instanceof Model.Transporter and name.substring(0, name.length - 4) in module['transported'] and module.direction is Model.Transporter.Outward ) or
+				( module instanceof Model.Transporter and module.direction is Model.Transporter.Outward ) or
 				( module instanceof Model.Metabolism and name in module['dest'] )
 
-				
 			is_inside = name.split( '#' )[1] is 'int'
 			
 			if @_creating
 				type = if is_product then Model.Metabolite.Product else Model.Metabolite.Substrate
 				placement = if is_inside then Model.Metabolite.Inside else Model.Metabolite.Outside
-
-				metabolite = new Model.Metabolite( { supply: 0 }, 0, name, placement , type )
+				metabolite = new Model.Metabolite( { supply: 0, placement: placement, type: type }, 0, name )
 				@preview metabolite
 			else
 				@model.addMetabolite( name, 0, 0, is_inside, is_product )
