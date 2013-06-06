@@ -24,9 +24,9 @@ class Controller.Graphs extends Controller.Base
 		
 		for key, dataset of datasets
 			unless @controller( key )?
-				@addChild key, ( graph = new Controller.Graph( @_container, key, @view, 
-						template({ id: _.uniqueId(), key: key.replace(/#/g, '_') }) 
-				) )
-				@view.add graph.view, false
+				id = template({ id: _.uniqueId(), key: key.replace(/#/g, '_') }) 
+				view = new View.Graph( id, key, @view, @_container )
+				@addChild key, new Controller.Graph( view )
+				@view.add view, false
 			@controller( key ).show( dataset, append ) 
 		return this
