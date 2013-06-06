@@ -89,17 +89,17 @@ class Controller.Cell extends Controller.Base
 	# Creates the bindings for the cell
 	#
 	_createBindings: () ->
-		@_bind( 'cell.module.add', @, @onModuleAdd )		
-		@_bind( 'cell.module.remove', @, @onModuleRemove )
-		@_bind( 'cell.metabolite.add', @, @onModuleAdd )
-		@_bind( 'cell.metabolite.remove', @, @onModuleRemove )
+		@_bind( 'cell.module.add', @, @_onModuleAdd )		
+		@_bind( 'cell.module.remove', @, @_onModuleRemove )
+		@_bind( 'cell.metabolite.add', @, @_onModuleAdd )
+		@_bind( 'cell.metabolite.remove', @, @_onModuleRemove )
 		@_bind( 'cell.spline.add', @, @onSplineAdd)
 		@_bind( 'cell.spline.remove', @, @onSplineRemove)
-		@_bind "module.creation.started", @, @_onModuleCreationStarted
-		@_bind "module.creation.aborted", @, @_onModuleCreationAborted
-		@_bind "module.created", @, @_onModuleCreated
-		@_bind( 'cell.module.added', @, @onModuleAdded )
-		@_bind( 'module.properties.change', @, @onModuleChanged)
+		@_bind( "module.creation.started", @, @_onModuleCreationStarted )
+		@_bind( "module.creation.aborted", @, @_onModuleCreationAborted )
+		@_bind( "module.created", @, @_onModuleCreated )
+		@_bind( 'cell.module.added', @, @_onModuleAdded )
+		@_bind( 'dummy.properties.change', @, @_onDummyModuleChanged)
 		
 	# Kills this controller
 	#
@@ -112,7 +112,7 @@ class Controller.Cell extends Controller.Base
 	# @param cell [Model.Cell] the cell
 	# @param module [Model.Module] the module
 	#
-	onModuleAdd: ( cell, module ) ->
+	_onModuleAdd: ( cell, module ) ->
 		return if cell isnt @model
 		@view.addModule module
 			
@@ -121,7 +121,7 @@ class Controller.Cell extends Controller.Base
 	# @param cell [Model.Cell] the cell
 	# @param module [Model.Module] the module
 	#
-	onModuleAdded: ( cell, module ) ->
+	_onModuleAdded: ( cell, module ) ->
 		return if cell isnt @model
 		return unless @_automagically
 		@_automagicAdd( module )
@@ -132,7 +132,7 @@ class Controller.Cell extends Controller.Base
 	# @param cell [Model.Cell] the cell
 	# @param module [Model.Module] the module
 	#
-	onModuleRemove: ( cell, module ) ->
+	_onModuleRemove: ( cell, module ) ->
 		return if cell isnt @model
 		@view.removeModule module
 		
@@ -159,11 +159,11 @@ class Controller.Cell extends Controller.Base
 	# @param module [Model.Module] the module changed
 	# @param params [Array] The keys and values
 	#
-	onModuleChanged: ( dummy, params ) =>
+	_onDummyModuleChanged: ( source, params, key, value, modulector ) =>
 		return unless @_automagically
 
 		# Create a new module
-		module = new dummy._modulector( _( params ).clone( true ) )
+		module = new modulector( _( params ).clone( true ) )
 
 		@killPreviews()
 		@preview module
