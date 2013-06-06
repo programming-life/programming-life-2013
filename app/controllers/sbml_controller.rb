@@ -1,0 +1,2 @@
+class SbmlController < ApplicationController
+end
