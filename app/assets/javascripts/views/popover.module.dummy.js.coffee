@@ -22,16 +22,16 @@ class View.DummyModuleProperties extends View.ModuleProperties
 		# Behold, the mighty super constructor train! Reminds me of some super plumber called Mario.
 		@constructor.__super__.constructor.__super__.constructor.apply( @, [parent, @modulector.name, 'module-properties', 'bottom'] )
 
-		@_bind('module.selected.changed', @, @onModuleSelected)
+		@_bind('module.selected.changed', @, @_onModuleSelected)
 
-		@_bind('module.creation.started', @, @onModuleCreationStarted)
-		@_bind('module.creation.finished', @, @onModuleCreationFinished)
-		@_bind('module.creation.aborted', @, @onModuleCreationAborted)
+		@_bind('module.creation.started', @, @_onModuleCreationStarted)
+		@_bind('module.creation.finished', @, @_onModuleCreationFinished)
+		@_bind('module.creation.aborted', @, @_onModuleCreationAborted)
 
-		@_bind('cell.module.added', @, @onCompoundsChanged)
-		@_bind('cell.module.removed', @, @onCompoundsChanged)
-		@_bind('cell.metabolite.added', @, @onMetabolitesChanged)
-		@_bind('cell.metabolite.removed', @, @onMetabolitesChanged)
+		@_bind('cell.module.added', @, @_onCompoundsChanged)
+		@_bind('cell.module.removed', @, @_onCompoundsChanged)
+		@_bind('cell.metabolite.added', @, @_onMetabolitesChanged)
+		@_bind('cell.metabolite.removed', @, @_onMetabolitesChanged)
 
 		@_setSelected off
 
@@ -124,6 +124,7 @@ class View.DummyModuleProperties extends View.ModuleProperties
 	_close: ( ) =>
 		@_trigger( 'module.creation.aborted', @_parent )
 		@_elem.find('input').blur()
+		@_reset()
 
 	# Saves all changed properties to the module.
 	#
@@ -131,39 +132,30 @@ class View.DummyModuleProperties extends View.ModuleProperties
 		
 		@_trigger('module.creation.finished', @_parent, [ @_changes ])
 		@_elem.find('input').blur()
-		@_changes = _( @_params ).clone( true )
+		@_reset()
 		
-		@_body?.empty()
-		@_selectables = []
-		@_drawForm()
-
-	# Binds an on change event to a selectable input that sets the key
-	#
-	# @param key [String] property to set
-	# @param selectable [jQuery.Elem] the selectable to set it on
+	# Resets the popover module
 	# 
-	_bindOnSelectableChange: ( key, selectable ) ->
-		((key) => 
-			selectable.on('change', (event) => 
-				value = event.target.value
-				if ( selectable.closest('[data-multiple]').data( 'multiple' ) is on )
-					@_changes[ key ] = [] unless @_changes[ key ]
-					if event.target.checked
-						@_changes[ key ].push value
-					else
-						@_changes[ key ] = _( @_changes[ key ] ).without value
-				else
-					@_changes[ key ] = value
-					
-				@_trigger "module.properties.change", @_parent , [@_changes ]
-			)
-		) key
+	_reset: () =>
+		@_changes = _( @_params ).clone( true )
+		super()
 
-	# Will be called when the creation process of a module has started
 	#
+	#
+	_getCurrentValueFor: ( key ) ->
+		return if @_changes[ key ] then @_changes[ key ] else []
+		
+	#
+	#
+	_triggerChange: ( key, value ) ->
+		console.log "trigger change #{key} to #{value}"
+		@_trigger( 'dummy.properties.change', @_parent, [ @_changes, key, value, @modulector ] )
+		
+	# Will be called when the creation process of a module has started
+	# 
 	# @param dummy [DummyModule] the dummy module for which to start the creation
 	#
-	onModuleCreationStarted: ( dummy ) ->
+	_onModuleCreationStarted: ( dummy ) ->
 		if dummy is @_parent
 			@setPosition()
 			@_setSelected on
@@ -174,20 +166,18 @@ class View.DummyModuleProperties extends View.ModuleProperties
 	#
 	# @param dummy [DummyModule] the dummy module for which to abort the creation
 	#
-	onModuleCreationAborted: ( dummy ) ->
+	_onModuleCreationAborted: ( dummy ) ->
 		if dummy is @_parent
 			@_setSelected off
-			@clear()
-			@draw()
+			@_reset()
 
 	# Will be called when the creation process of a module has finished
 	#
 	# @param dummy [DummyModule] the dummy module for which to finish the creation
 	#
-	onModuleCreationFinished: ( dummy ) ->
+	_onModuleCreationFinished: ( dummy ) ->
 		if dummy is @_parent
 			@_setSelected off
-			@clear()
-			@draw()
+			@_reset()
 
 

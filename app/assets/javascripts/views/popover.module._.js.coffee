@@ -19,16 +19,16 @@ class View.ModuleProperties extends View.HTMLPopOver
 
 		super parent, module.constructor.name, 'module-properties', 'bottom'
 		
-		@_bind('module.hovered.changed', @, @onModuleHovered)
-		@_bind('module.selected.changed', @, @onModuleSelected)
-		@_bind('module.property.changed', @, @onModuleInvalidated)
+		@_bind('module.hovered.changed', @, @_onModuleHovered)
+		@_bind('module.selected.changed', @, @_onModuleSelected)
+		@_bind('module.property.changed', @, @_onModuleInvalidated)
 
-		@_bind('module.creation.started', @, @onModuleCreationStarted)
+		@_bind('module.creation.started', @, @_onModuleCreationStarted)
 
-		@_bind('cell.module.added', @, @onCompoundsChanged)
-		@_bind('cell.module.removed', @, @onCompoundsChanged)
-		@_bind('cell.metabolite.added', @, @onMetabolitesChanged)
-		@_bind('cell.metabolite.removed', @, @onMetabolitesChanged)
+		@_bind('cell.module.added', @, @_onCompoundsChanged)
+		@_bind('cell.module.removed', @, @_onCompoundsChanged)
+		@_bind('cell.metabolite.added', @, @_onMetabolitesChanged)
+		@_bind('cell.metabolite.removed', @, @_onMetabolitesChanged)
 		
 		@_setSelected off
 		
@@ -205,7 +205,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 	# @param value [any] the current value
 	#
 	_drawParameter: ( id, key, value ) ->
-		input = $('<input type="text" id="' + id + '" class="input-small" value="' + value + '" />')
+		input = $('<input required type="text" id="' + id + '" class="input-small" value="' + value + '" />')
 		@_bindOnChange( key, input )
 		return input
 				
@@ -276,7 +276,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 					value = parseFloat value unless isNaN value
 
 				@_changes[ key ] = value
-				@_trigger "module.properties.change", @_parent , [ @_changes ]
+				@_triggerChange( key, value )
 				
 			input.on( 'change', onchange )
 				.on( 'keyup', onchange )
@@ -287,20 +287,34 @@ class View.ModuleProperties extends View.HTMLPopOver
 	# @param key [String] property to set
 	# @param selectable [jQuery.Elem] the selectable to set it on
 	# 
+	_getCurrentValueFor: ( key ) ->
+		return _( @module[ key ] ).clone( true )
+
+	#
+	#
 	_bindOnSelectableChange: ( key, selectable ) ->
 		((key) => 
 			selectable.on('change', (event) => 
 				value = event.target.value
+				console.log 'hello, ' + value
 				if ( selectable.closest('[data-multiple]').data( 'multiple' ) is on )
-					@_changes[ key ] = _( @module[ key ] ).clone( true ) unless @_changes[ key ]
+					@_changes[ key ] = @_getCurrentValueFor( key )
 					if event.target.checked
 						@_changes[ key ].push value
 					else
 						@_changes[ key ] = _( @_changes[ key ] ).without value
 				else
 					@_changes[ key ] = value
+				
+				@_triggerChange( key, value )
 			)
 		) key
+	
+	#
+	#
+	_triggerChange: ( key, value ) ->
+		console.log "trigger change #{key} to #{value}"
+		@_trigger( 'module.properties.change', @_parent, [ @_changes, key, value ] )
 		
 	# Draws the selectable selection for
 	#
@@ -430,7 +444,15 @@ class View.ModuleProperties extends View.HTMLPopOver
 	#
 	_close: ( ) =>
 		@_trigger( 'module.selected.changed', @module, [ off ] )
+		@_changes = {}
+		@_reset()
 
+	# Resets this view
+	#
+	_reset: () =>
+		@_body?.empty()
+		@_selectables = []
+		@_drawForm()
 
 	# Saves all changed properties to the module.
 	#
@@ -441,6 +463,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 			@module[ key ] = value
 			
 		@_changes = {}
+		@_reset()
 		@_trigger( 'module.selected.changed', @module, [ off ] )
 		@_trigger( 'module.hovered.changed', @module, [ off ] )
 	
@@ -448,14 +471,14 @@ class View.ModuleProperties extends View.HTMLPopOver
 	#
 	_remove: ( ) =>	
 		@_trigger('module.selected.changed', @module, [ off ])
-		@_cell.remove(@module)
+		@_cell.remove @module
 			
 	# Runs when a compound is changed (added/removed)
 	#
 	# @param cell [Model.Cell] changed on
 	# @param module [Model.Module] the changed compound
 	#
-	onCompoundsChanged: ( cell, module ) ->
+	_onCompoundsChanged: ( cell, module ) ->
 		return if cell isnt @_cell
 		@_compounds = @_cell.getCompoundNames()
 		@_redrawSelectable( selectable ) for selectable in @_selectables
@@ -465,7 +488,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 	# @param cell [Model.Cell] changed on
 	# @param module [Model.Metabolite] the changed metabolite
 	#
-	onMetabolitesChanged: ( cell, module ) ->
+	_onMetabolitesChanged: ( cell, module ) ->
 		return if cell isnt @_cell
 		@_metabolites = @_cell.getMetaboliteNames()
 		@_redrawSelectable( selectable ) for selectable in @_selectables
@@ -474,7 +497,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 	#
 	# @param module [Module] the module that is being drawn
 	#
-	onModuleDrawn: ( module ) ->
+	_onModuleDrawn: ( module ) ->
 		@setPosition() if module is @module
 
 	# Gets called when a module view selected.
@@ -482,7 +505,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 	# @param module [Module] the module that is being selected
 	# @param selected [Boolean] the selection state of the module
 	#
-	onModuleSelected: ( module, selected ) ->
+	_onModuleSelected: ( module, selected ) ->
 		if module is @module 
 			if @_selected isnt selected
 				@_setSelected selected 
@@ -494,7 +517,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 	# @param module [Module] the module that is being hovered
 	# @param selected [Boolean] the hover state of the module
 	#
-	onModuleHovered: ( module, hovered ) ->
+	_onModuleHovered: ( module, hovered ) ->
 		if module is @module 
 			if @_hovered isnt hovered
 				@_setHovered hovered
@@ -505,14 +528,12 @@ class View.ModuleProperties extends View.HTMLPopOver
 	#
 	# @param module [Module] the module that has changed
 	#
-	onModuleInvalidated: ( module, action ) ->
+	_onModuleInvalidated: ( module, action ) ->
 		if module is @module
-			@_body?.empty()
-			@_selectables = []
-			@_drawForm()
+			@_reset()
 
 	# Gets called when a module creation process has started
 	#
-	onModuleCreationStarted: ( ) ->
+	_onModuleCreationStarted: ( ) ->
 		@_setSelected off
 			
