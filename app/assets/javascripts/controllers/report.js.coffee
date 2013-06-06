@@ -11,10 +11,11 @@ class Controller.Report extends Controller.Base
 	
 		super view ? new View.Report( @container )
 		
+		@_currentIteration = 0
 		@_createChildren()
 		@_createBindings()
 		
-		@load( cell_id, () -> console.log arguments )
+		@load( cell_id )
 		
 		
 	# Creates children
@@ -31,7 +32,13 @@ class Controller.Report extends Controller.Base
 	_createBindings: () ->
 		#@view.bindActionButtonClick( () => @onAction( arguments... ) ) 
 		
-		
+	# Sets the progress bar
+	#
+	# @param value [Integer] the current value
+	#
+	_setProgressBar: ( value ) =>
+		@view.setProgressBar value / @_iterations + 1 / @_iterations * @_currentIteration
+		return this
 
 	# Loads a new cell into the report view
 	#
@@ -48,26 +55,36 @@ class Controller.Report extends Controller.Base
 			@solveTheSystem()
 		)
 			
-		#return promise
+		return promise
 		
+	# Serializes a paper
 	#
+	# @return [String] the serialized paper in XML
 	#
 	serializePaper: () ->
 		cell_svg = new XMLSerializer().serializeToString @view.paper.canvas
 		$( '#report_data' ).attr( "value", cell_svg )
+		return cell_svg
 		
+	# Solve the system
 	#
+	# @return [Tuple<CancelToken, jQuery.Promise>] a token and the promise
 	#
 	solveTheSystem: () ->
-		[ token, promise ] = @controller('cell').startSimulation( 20, 2 )
-		promise.done( () =>
-				
-				$('#graphs').find('.graph').each( (i, graph) -> 
-					$("#graph-#{$( graph ).find( 'h2' ).text().replace('#', '_')}").empty().append $ graph		
-				)
-					
-				$('#create-pdf').removeProp('disabled')
-			)
+		
+		@_iterations = 2
+		@_currentIteration = 0
+	
+		iterationDone = ( results, from, to ) =>
+			@controller( 'graphs' ).show( results.datasets, @_currentIteration > 0, 'key' )
+			@_currentIteration++
+			@_setProgressBar 0
+
+		@view.showProgressBar()
+		[ token, promise ] = @controller('cell').startSimulation( 20, @_iterations, iterationDone )
+		promise.done () => $('#create-pdf').removeProp 'disabled'
+		promise.done () => @view.hideProgressBar()
+		promise.progress @_setProgressBar
 		
 	# Runs on an action (click)
 	#

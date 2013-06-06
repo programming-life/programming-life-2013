@@ -21,18 +21,10 @@ class View.DummyModule extends View.RaphaelBase
 
 		@_visible = @_number is -1 or @_count < @_number
 
-		@_bind( 'cell.module.added', @, @onModuleAdd )
-		@_bind( 'cell.module.removed', @, @onModuleRemove )
-		@_bind( 'cell.metabolite.added', @, @onModuleAdd )		
-		@_bind( 'cell.metabolite.removed', @, @onModuleRemove )
-		@_bind( 'module.creation.started', @, @onModuleCreationStarted)
-		@_bind( 'module.creation.aborted', @, @onModuleCreationAborted )
-		@_bind( 'module.creation.finished', @, @onModuleCreationFinished )
-		@_bind "module.properties.change", @, @onModulePropertiesChange
-		@_bind "module.selected.changed", @, @onModuleSelected
-		
-		@_propertiesView = new View.DummyModuleProperties( @, @_parent, @_cell, @_modulector )
-		@_notificationsView = new View.ModuleNotification( @, @_parent, @_cell, @_modulector )
+		@_createBindings()
+
+		@_propertiesView = new View.DummyModuleProperties( @, @_parent, @_cell, @_modulector, @_params )
+		@_notificationsView = new View.ModuleNotification( @, @_parent, @_cell, @ )
 		
 		Object.defineProperty( @, 'visible',
 			get: ->
@@ -43,6 +35,19 @@ class View.DummyModule extends View.RaphaelBase
 			get: ->
 				return @_type
 		)
+	
+	# Creates event bindings
+	#
+	_createBindings: ( ) ->
+		@_bind( 'cell.module.added', @, @onModuleAdd )
+		@_bind( 'cell.module.removed', @, @onModuleRemove )
+		@_bind( 'cell.metabolite.added', @, @onModuleAdd )		
+		@_bind( 'cell.metabolite.removed', @, @onModuleRemove )
+		@_bind( 'module.creation.started', @, @onModuleCreationStarted)
+		@_bind( 'module.creation.aborted', @, @onModuleCreationAborted )
+		@_bind( 'module.creation.finished', @, @onModuleCreationFinished )
+		@_bind "module.properties.change", @, @onModulePropertiesChange
+		@_bind "module.selected.changed", @, @onModuleSelected
 
 	# Gets called when a module creation has started
 	#
@@ -63,13 +68,17 @@ class View.DummyModule extends View.RaphaelBase
 	onModuleCreationAborted: ( dummy ) ->
 		if dummy is @
 			@_setSelected off
-			@_trigger "module.creation.ended", @, [@module]
+			@_notificationsView.hide()
 	
-	onModulePropertiesChange:( source, key, value ) ->
-		if source is @
-			@module[ key ] = value
-			@_trigger "module.property.changed", @, [@module]
-			@_trigger "module.creation.changed", @, [@module]
+	# Gets called on a change in the module properties
+	#
+	# @param source [View.DummyModule] The source of the change
+	# @param params [Array] The keys and values
+	#
+	@catchable
+		onModulePropertiesChange:( source, params ) ->
+			if source is @
+				@_notificationsView.hide()
 
 	# Clicked the add button
 	#
@@ -81,24 +90,13 @@ class View.DummyModule extends View.RaphaelBase
 		onModuleCreationFinished : ( dummy, params ) ->
 			if dummy isnt this
 				return
-
+			console.log 'creationfinished'
 			@_setSelected off
 
 			params = _( params ).defaults( @_params )
-			@module = new @_modulector( _( params ).clone( true ) )
-			@_cell.add @module
-			
-			switch @_type
-				when "Transporter"
-					if params.direction is Model.Transporter.Outward
-						@_cell.addProduct( params.transported , 0, false )
-					if params.direction is Model.Transporter.Inward
-						@_cell.addSubstrate( params.transported , 0, 0, true )
-				when "Metabolism"
-					for o in params.orig ? []
-						@_cell.addSubstrate( o , 0, 0, true )
-					for d in params.dest ? []
-						@_cell.addProduct( d , 0, true )
+			module = new @_modulector( _( params ).clone( true ) )
+
+			@_trigger "module.created", @, [ module ]
 	
 	# On Module Added to the Cell
 	#
@@ -191,10 +189,10 @@ class View.DummyModule extends View.RaphaelBase
 
 		hitbox.click =>
 			unless @_selected
-				@module = new @_modulector( _( @_params ).clone( true ) )
-				@_trigger 'module.creation.started', @, [ @module ]
+				module = new @_modulector( _( @_params ).clone( true ) )
+				@_trigger 'module.creation.started', @, [ module ]
 			else
-				@_trigger 'module.creation.aborted', @, [ @module ]
+				@_trigger 'module.creation.aborted', @, []
 		
 		@_contents.push hitbox
 		@_contents.push contents
@@ -259,7 +257,7 @@ class View.DummyModule extends View.RaphaelBase
 				$(@_box.node).addClass('selected')
 			else
 				$(@_box.node).removeClass('selected')
-				@_trigger "module.creation.ended", @, [@module]
+				@_trigger "module.creation.aborted", @, []
 
 		return this
 
@@ -285,7 +283,7 @@ class View.DummyModule extends View.RaphaelBase
 	drawBox : ( elem ) ->
 		rect = elem.getBBox()
 		padding = 15
-		box = @_paper.rect(rect.x - padding, rect.y - padding, rect.width + 2 * padding, rect.height + 2 * padding)
+		box = @paper.rect(rect.x - padding, rect.y - padding, rect.width + 2 * padding, rect.height + 2 * padding)
 
 		classname = 'module-box inactive dummy dummy-' + @_type.toLowerCase()
 		classname += ' hovered' if @_hovered
@@ -303,11 +301,11 @@ class View.DummyModule extends View.RaphaelBase
 	#
 	drawContents: ( ) ->
 		
-		@_paper.setStart()
-		text = @_paper.text( @x, @y, _.escape "Add #{@_type}" )
+		@paper.setStart()
+		text = @paper.text( @x, @y, _.escape "Add #{@_type}" )
 		$(text.node).addClass('module-text')
 
-		return @_paper.setFinish()
+		return @paper.setFinish()
 		
 	# Draws this view hitbox
 	#
@@ -316,7 +314,7 @@ class View.DummyModule extends View.RaphaelBase
 	#
 	drawHitbox : ( elem ) ->
 		rect = elem.getBBox()
-		hitbox = @_paper.rect(rect.x, rect.y, rect.width, rect.height)
+		hitbox = @paper.rect(rect.x, rect.y, rect.width, rect.height)
 		hitbox.node.setAttribute('class', 'module-hitbox hitdummy-' + @_type.toLowerCase() )	
 
 		return hitbox

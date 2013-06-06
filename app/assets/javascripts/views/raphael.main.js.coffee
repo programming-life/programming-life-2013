@@ -13,10 +13,7 @@ class View.Main extends View.RaphaelBase
 		container = $( container )[0]
 		super Raphael(container, 0,0) 
 
-		@_viewbox = @_paper.setViewBox(-750, -500, 1500, 1000)
-		Object.defineProperty( @, 'paper'
-			get: () -> return @_paper 
-		)
+		@_viewbox = @paper.setViewBox(-750, -500, 1500, 1000)
 		
 		@_createSidebars()
 		@_createConfirmReset()
@@ -33,6 +30,7 @@ class View.Main extends View.RaphaelBase
 		@_leftPane = new View.Pane( View.Pane.Position.Left, false ) 
 		@add @_leftPane, off
 		
+	# Creates the confirmation for reset modal
 	# Creates the confirmation for reset modal
 	#
 	_createConfirmReset: () ->
@@ -53,7 +51,22 @@ class View.Main extends View.RaphaelBase
 	_createBindings: () ->
 		$( window ).on( 'resize', => _( @resize() ).debounce( 100 ) )
 		
+	# Create action notifications
 	#
+	# @param [any] Subject model
+	# @param [String] element to show over
+	#
+	_createActionNotifications: ( subject, element ) ->
+		@_notifications?.kill()
+		
+		parent = 
+			getAbsolutePoint: ( location ) ->
+				offset = $( element ).offset()
+				return [ offset.left + $( element ).width(), offset.top ]
+					
+		@_notifications = new View.MainNotification( parent, subject )
+		
+	# Adds a view to the left pane
 	#
 	addToLeftPane: ( view ) ->
 		@_leftPane.addView view	
@@ -84,7 +97,7 @@ class View.Main extends View.RaphaelBase
 	getAbsoluteCoords: ( x, y ) ->
 		width = @_viewbox.width
 		height = @_viewbox.height
-		offset = $(@_paper.canvas).offset()
+		offset = $(@paper.canvas).offset()
 
 		vX = @_viewbox._viewBox[0]
 		vY = @_viewbox._viewBox[1]
@@ -116,8 +129,10 @@ class View.Main extends View.RaphaelBase
 		@paper.remove()
 		@_resetModal.kill()
 		@_loadModal.kill()
+		@_notifications?.kill()
 		@getActionButtons().removeProp( 'disabled' )
 		$( window ).off( 'resize' )
+		$( '#actions' ).off( 'click', '[data-action]' )
 		return this
 
 	# Gets the cell name
@@ -178,6 +193,7 @@ class View.Main extends View.RaphaelBase
 	# @return [self] chainable self
 	#
 	bindActionButtonClick: ( action ) ->
+		$( '#actions' ).off( 'click', '[data-action]' )
 		$( '#actions' ).on( 'click', '[data-action]', action )
 		return this
 		
@@ -186,7 +202,7 @@ class View.Main extends View.RaphaelBase
 	# @return [jQuery.Collection] the action button elements
 	#
 	getActionButtons: ( ) ->
-		return $( '#actions' ).find( '[data-action]' )
+		return $( '#actions' ).find( '[data-action], button.dropdown-toggle' )
 		
 	# Resets the action buttons visual state
 	# 
@@ -255,20 +271,40 @@ class View.Main extends View.RaphaelBase
 	# Call modal for load
 	#
 	# @param load [Function] action on confirmed
+	# @param other [Function] action on confirmed but not load
 	# @param close [Function] action on closed
 	# @param always [Function] action always
 	# @return [self] chainable self
 	#
-	showLoad: ( load, close, always ) ->
+	showLoad: ( load, other, close, always ) ->
 	
 		func = ( caller, action ) =>
-			load?( @_loadModal.cell ) if action is 'load'
-			close?() if action is 'cancel' or action is undefined
+			if action is 'cancel' or action is undefined
+				close?()
+			else if action is 'load'
+				load?( @_loadModal.cell ) 
+			else
+				other?( action, @_loadModal.cell )
+			
 			always?()
 			
 			@_loadModal.offClosed( @, func ) 
 			
 		@_loadModal.onClosed( @, func )
 		@_loadModal.show()
-		
 		return this
+			
+	# On error, give alternative to resolve the error
+	#
+	setSolutionNotification: ( solution, action ) ->
+		@_notifications.setSolutionMessage( solution, action )
+		return this
+		
+	# Sets the notifications on
+	# 
+	# @param [any] the subject
+	# @param [String] the element
+	#
+	setNotificationsOn: ( subject, element ) ->
+		@_createActionNotifications( subject, element )
+		#@_notifications.show()

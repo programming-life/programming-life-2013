@@ -9,3 +9,13 @@ class View.ModulePreview extends View.Module
 	#
 	constructor: ( paper, parent, @_cell, @model ) ->
 		super paper, parent, @_cell, @model, off
+
+	# Creates a new spline
+	#
+	# @param orig [View.Module] the origin module view
+	# @param dest [View.Module] the destination module view
+	# @return [View.Spline] the created spline
+	#
+	_createSpline: ( orig, dest ) ->
+		if orig? and dest?
+			new View.SplinePreview(@paper, @_parent, @_cell, orig, dest)

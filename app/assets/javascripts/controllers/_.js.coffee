@@ -57,3 +57,18 @@ class Controller.Base extends Helper.Mixable
 		@view.kill()
 		@_unbindAll()
 		return this
+		
+	# Runs when the user comes online
+	#
+	onUpdate: () ->
+		return $.Deferred().promise()
+		
+	# Runs when the user tries to unload the page
+	#
+	beforeUnload: () ->
+		return undefined
+		
+	# Runs when the user has unloaded the page
+	#
+	onUnload: () ->
+		return undefined

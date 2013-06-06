@@ -10,13 +10,13 @@ class View.DummyModuleProperties extends View.ModuleProperties
 	# @param modulector [Function] the constructor for the dummy module
 	# @param params [Object] options
 	#
-	constructor: ( parent, @_cellView, @_cell, @modulector, params = {} ) ->
+	constructor: ( parent, @_cellView, @_cell, @modulector, @_override_params = {} ) ->
 		@_dummyId = _.uniqueId('dummy-module-')
-
-		@_changes = {}
 
 		@_compounds = @_cell.getCompoundNames()
 		@_metabolites = @_cell.getMetaboliteNames()
+		@_params = _( _( @_override_params ).clone( true ) ).defaults( @_getModuleDefaults() )
+		@_changes = _( @_params ).clone( true )
 		@_selectables = []
 
 		# Behold, the mighty super constructor train! Reminds me of some super plumber called Mario.
@@ -70,9 +70,9 @@ class View.DummyModuleProperties extends View.ModuleProperties
 	_createFooter: ( removeText = '<i class="icon-trash icon-white"></i>', saveText = '<i class=" icon-ok icon-white"></i> Create' ) ->
 		@_footer = $('<div class="modal-footer"></div>')
 
-		@_saveButton = $('<button class="btn btn-primary">' + saveText + '</button>')
-		@_saveButton.click @_save 
-
+		@_saveButton = $('<button class="btn btn-primary" data-action="create">' + saveText + '</button>')
+		@_saveButton.click @_save
+		
 		@_footer.append @_saveButton
 		return [ @_footer, @_saveButton ]
 
@@ -95,19 +95,30 @@ class View.DummyModuleProperties extends View.ModuleProperties
 	# @return [jQuery.elem] elements
 	#
 	_drawProperty: ( key, type, params = {} ) ->
-		return @_drawInput( type, key, undefined, params )		
+		return @_drawInput( type, key, @_changes[ key ] ? undefined, params )		
 
 	# Returns the properties of our module to be
 	#
+	# @return [Object] the properties
+	#
 	_getModuleProperties: ( ) ->
-		properties = @modulector::_getParameterMetaData().properties
+		properties = @modulector.getParameterMetaData().properties
 
 		unless properties.parameters?
 			properties.parameters = []
 
 		properties.parameters.push('amount')
 		return properties
-
+		
+	# Returns the defaults of our module to be
+	# 
+	# @return [Object] the defaults
+	#
+	_getModuleDefaults: ( ) ->
+		defaults = @modulector.getParameterDefaults()
+		defaults.amount = defaults.starts.name
+		return defaults
+		
 	# Closes the module
 	#
 	_close: ( ) =>
@@ -117,9 +128,14 @@ class View.DummyModuleProperties extends View.ModuleProperties
 	# Saves all changed properties to the module.
 	#
 	_save: ( ) =>
-		@_trigger('module.creation.finished', @_parent, [@_changes])
+		
+		@_trigger('module.creation.finished', @_parent, [ @_changes ])
 		@_elem.find('input').blur()
-		@_changes = {}
+		@_changes = _( @_params ).clone( true )
+		
+		@_body?.empty()
+		@_selectables = []
+		@_drawForm()
 
 	# Binds an on change event to a selectable input that sets the key
 	#
@@ -138,7 +154,8 @@ class View.DummyModuleProperties extends View.ModuleProperties
 						@_changes[ key ] = _( @_changes[ key ] ).without value
 				else
 					@_changes[ key ] = value
-				@_trigger "module.properties.change", @_parent , [ key, value]
+					
+				@_trigger "module.properties.change", @_parent , [@_changes ]
 			)
 		) key
 

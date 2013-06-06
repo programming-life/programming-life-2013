@@ -19,7 +19,7 @@ class View.Spline extends View.RaphaelBase
 	# Fires a spline remove event, which should lead to this spline dying
 	#
 	_die: ( ) ->
-		@_trigger( 'cell.spline.remove', @_cell, [ @ ] )
+		@_trigger( 'cell.spline.remove', @_parent, [ @ ] )
 
 	# Adds interaction to the spline
 	#
@@ -33,7 +33,7 @@ class View.Spline extends View.RaphaelBase
 		@_bind( 'view.moved', @, @onViewMoved )
 		@_bind( 'view.drawn', @, @onViewDrawn )
 
-		@_trigger( 'cell.spline.add', @_cell, [ @ ] )
+		@_trigger( 'cell.spline.add', @_parent , [ @ ] )
 
 		return this
 
@@ -54,8 +54,8 @@ class View.Spline extends View.RaphaelBase
 
 		path = @_getPathString()
 
-		@_contents = @_paper.path(path)
-		@_contents.insertBefore(@_paper.bottom)
+		@_contents = @paper.path(path)
+		@_contents.insertBefore(@paper.bottom)
 		$(@_contents.node).addClass('metabolite-spline')
 
 		@setColor()

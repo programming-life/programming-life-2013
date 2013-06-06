@@ -47,10 +47,6 @@ class Model.Metabolism extends Model.Module
 	# Constructor for Metabolism
 	#
 	# @param params [Object] parameters for this module
-	# @param orig [String] the substrate to be converted
-	# @param dest [String] the product after conversion
-	# @param start [Integer] the initial value of metabolism, defaults to 0
-	# @param name [String] the name of the metabolism, defaults to "enzyme"
 	# @option params [Integer] k the subscription rate, defaults to 1
 	# @option params [Integer] k_met the conversion rate, defaults to 1
 	# @option params [Integer] k_d the degredation rate, defaults to 1
@@ -59,7 +55,7 @@ class Model.Metabolism extends Model.Module
 	# @option params [String] dest the product after conversion, overrides product
 	# @option params [String] name the name of the metabolism, overrides name
 	#
-	constructor: ( params = {}, start = 0, orig = "s#int", dest = "p#int", name = "enzyme" ) ->
+	constructor: ( params = {} ) ->
 	
 		# Define differential equations here
 		step = ( t, compounds, mu ) ->
@@ -113,44 +109,43 @@ class Model.Metabolism extends Model.Module
 					results[ dest ] = vmetabolism
 			
 			return results
-		
-		defaults = @_getParameterDefaults( start, orig, dest, name )
+
+		defaults = Metabolism.getParameterDefaults()
 		params = _( params ).defaults( defaults )
-		metadata = @_getParameterMetaData()
+		metadata = Metabolism.getParameterMetaData()
 		
 		super params, step, metadata
 		
 	# Get parameter defaults array
 	#
-	# @param start [Integer] the start value
 	# @return [Object] default values
 	#
-	_getParameterDefaults: ( start, orig, dest, name ) ->
+	@getParameterDefaults: () ->
 		return { 
-		
+				
 			# Parameters
 			k: 1
 			k_m: 1 
 			v: 1
 			k_d : 1
-			orig: if _( orig ).isArray() then orig else [ orig ] 
-			dest: if _( dest ).isArray() then dest else [ dest ] 
+			orig: [ "s#int" ]
+			dest: [ "p#int" ]
 			
 			# Meta-Parameters
 			dna: "dna"
 			
 			# The name
-			name: name
+			name: "enzyme"
 			
 			# Start Values
-			starts: { name : start, dest: 0 }
+			starts: { name : 0 }
 		}
 		
 	# Get parameter metadata
 	#
 	# @return [Object] metadata values
 	#
-	_getParameterMetaData: () ->
+	@getParameterMetaData: () ->
 		return {
 		
 			properties:

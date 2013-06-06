@@ -252,7 +252,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 		select = $('<select id = "' + id + '" class="input-small"></select>')
 		for k, v of params.values
 			option = $('<option value="' + v + '">' + k + '</option>')
-			option.prop( 'selected', true ) if v is value
+			option.attr( 'selected', true ) if v is value
 			select.append option
 			
 		@_bindOnChange( key, select )
@@ -264,13 +264,22 @@ class View.ModuleProperties extends View.HTMLPopOver
 	# @param input [jQuery.Elem] the element to set it on
 	# 
 	_bindOnChange: ( key, input ) ->
-		((key) => 
-			input.on('keyup', (event) => 
+
+		((key) =>
+		
+			onchange = (event) => 
 				value = event.target.value
-				value = parseFloat value unless isNaN value
+				if value.length == 0
+					@_changes[ key ] = undefined
+					value = undefined
+				else
+					value = parseFloat value unless isNaN value
+
 				@_changes[ key ] = value
-				@_trigger "module.properties.change", @_parent , [ key, value]
-			)
+				@_trigger "module.properties.change", @_parent , [ @_changes ]
+				
+			input.on( 'change', onchange )
+				.on( 'keyup', onchange )
 		) key
 		
 	# Binds an on change event to a selectable input that sets the key
@@ -314,7 +323,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 			drawtype: drawtype
 			key: key
 			id: id
-			value: () => @module?[ key ] ? ( if multiple then [] else '' )
+			value: () => value ? ( if multiple then [] else '' )
 			
 		@_selectables.push selectable
 		@_drawSelectable selectable
@@ -427,6 +436,8 @@ class View.ModuleProperties extends View.HTMLPopOver
 	#
 	_save: ( ) =>	
 		for key, value of @_changes
+			if value is undefined
+				throw new Error "Invalid property value for #{key}."
 			@module[ key ] = value
 			
 		@_changes = {}

@@ -22,6 +22,9 @@
 			<td class="span2"></td>
 			<td class="span10">
 				<%= render 'cell' %>
+				<div id="progress" class="progress progress-striped active fade" style="visibility: hidden">
+					<div class="bar" style="100%;"></div>
+				</div>
 			</td>
 		</tr>
 		<tr>
@@ -58,43 +61,29 @@
 		<tr>
 			<td><%= @module_template.name %></td>
 			<td>
-				<!-- Start module table -->
-				<table class="table-condensed table-striped table">
+				
+				<!-- Start parameter table -->						
+				<table class="table-condensed table-striped table span6" style="margin-right:20px; margin-left: 0">
 					<thead>
 						<tr>
-							<th class="span6">Name: <%= module_instance.name %></th>
-							<th class="span6">Graph</th>
+							<th class="span3">Key</th>
+							<th class="span9">Value</th>
 						</tr>
 					</thead>
 					<tbody>
-						<tr>
-							<td>
-								<!-- Start parameter table -->						
-								<table class="table-condensed table-striped table">
-									<thead>
-										<tr>
-											<th class="span3">Key</th>
-											<th class="span9">Value</th>
-										</tr>
-									</thead>
-									<tbody>
-										<% @module_hash.each { |key, value| %>
-											<tr>
-												<td class="span3"> <%= key %> </td>
-												<td class="span9"><%= value.nil? ? '<span class="label label-important">missing</span>'.html_safe : value  %>
-												</td>
-											</tr>
-										<% } %>
-									</tbody>
-								</table>
-								<!-- End parameter table -->
-							</td>
-							<td id="graph-<%= ( module_instance.name.gsub("#","_") ) %>">
-							</td>
-						</tr>
+						<% @module_hash.each { |key, value| %>
+							<tr>
+								<td class="span3"> <%= key %> </td>
+								<td class="span9"><%= value.nil? ? '<span class="label label-important">missing</span>'.html_safe : value  %>
+								</td>
+							</tr>
+						<% } %>
 					</tbody>
 				</table>
-				<!-- End module table -->
+				<!-- End parameter table -->
+				
+				<div id="graph-<%= ( module_instance.name.gsub("#","_") ) %>">
+							
 			</td>
 		</tr>
 		<% end %>

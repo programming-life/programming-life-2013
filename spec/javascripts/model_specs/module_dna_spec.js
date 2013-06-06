@@ -93,66 +93,6 @@ describe("Module DNA", function() {
 			expect( module.name ).toMatch( 'override_dna' );
 		});
 		
-		describe( "when using named option in the constructor, not as params", function() {
-			
-			beforeEach( function() {
-				module = new Model.DNA( { a: 'new' }, undefined, "prefix" );
-			});
-			
-			it( "should override default parameters", function() {
-				expect( module.name ).toMatch( 'prefix_dna' );
-			});
-			
-		});
-		
-		describe( "when using named option in the constructor, also as params", function() {
-			
-			beforeEach( function() {
-				module = new Model.DNA( { a: 'new', name: 'override_dna' }, undefined, "prefix" );
-			});
-			
-			it( "should not override given params ", function() {
-				expect( module.name ).toMatch( 'override_dna' );
-			});
-			
-		});
-	});
-	
-	describe( "when using start in the constructor", function() {
-		
-		var module;
-		beforeEach( function() {
-			module = new Model.DNA( undefined, 2 );
-		});		
-		
-		it( "should overide the default start value", function() {
-			expect( module.starts.name ).toBe( 2 );
-			expect( module.amount ).toBe( 2 );
-		});
-	});
-	
-	describe( "when using prefix in the constructor", function() {
-		
-		var module;
-		beforeEach( function() {
-			module = new Model.DNA( undefined, undefined, 'prefix' );
-		});		
-		
-		it( "should overide the default name with 'prefix_dna'", function() {
-			expect( module.name ).toMatch( 'prefix_dna' );
-		});
-	});
-	
-	describe( "when using food in the constructor", function() {
-		
-		var module;
-		beforeEach( function() {
-			module = new Model.DNA( undefined, undefined, undefined, 'magix' );
-		});		
-		
-		it( "should overide the consume with that food", function() {
-			expect( module.consume ).toMatch( 'magix' );
-		});
 	});
 	
 	describe( "when stepping", function() {

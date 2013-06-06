@@ -13,9 +13,12 @@ class View.Collection extends Helper.Mixable
 	
 	# Kills the collection
 	#
-	kill: () ->
+	# @param reset [Boolean] if true, clears the internal array
+	#
+	kill: ( reset = off ) ->
 		@clear()
 		view.kill?() for view in @_views
+		@_views = [] if reset
 		return this
 		
 	# Add a view to draw
@@ -46,3 +49,8 @@ class View.Collection extends Helper.Mixable
 	redraw: () ->
 		view.redraw() for view in @_views
 		return this
+		
+	#
+	#
+	each: ( func ) ->
+		_( @_views ).each func

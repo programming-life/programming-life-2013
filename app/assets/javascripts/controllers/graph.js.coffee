@@ -12,8 +12,8 @@ class Controller.Graph extends Controller.Base
 	#
 	#
 	#
-	constructor: ( @container, title, parentview ) ->
-		super new View.Graph( _( 'graph' ).uniqueId(), title, parentview, @container )
+	constructor: ( @container, title, parentview, id = _( 'graph-' ).uniqueId() ) ->
+		super new View.Graph( id, title, parentview, @container )
 	
 		@_datasets = []
 		
