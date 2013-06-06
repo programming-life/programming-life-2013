@@ -3,7 +3,11 @@
 (exports ? this).View = {}
 (exports ? this).Helper = {}
 (exports ? this).Mixin = {}
-(exports ? this).GIGBASE_VERSION = '1.5.0'
+(exports ? this).GIGABASE_VERSION = 
+	major: 1
+	minor: 5
+	revision: 0
+	full: '1.5.0'
 
 document.mvc = null
 

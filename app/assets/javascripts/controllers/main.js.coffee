@@ -340,20 +340,43 @@ class Controller.Main extends Controller.Base
 	# On Upgrade resy
 	#
 	onUpgrade: () ->
-	
-		return
-		contents = $ ( '<div></div>' )
-		contents.append 'A <strong>new version</strong> of the application is ready and has been downloaded to your computer. Simply '
-		contents.append( $ '<a href="#" class="btn btn-mini" data-action="refresh" onclick="document.location.reload(true);">refresh</a>' )
-		contents.append ' this page to use the new version. Changes you made are stored and will be available after refreshing the page.'
 		
-		view = new View.HTMLModal( 
-			'New version of the application!', 
-			contents, 
-			'upgrade-notice', 'upgrade-notice' 
+		$.get( '/version' ).done( ( version ) => 
+		
+			if ( version.major > GIGABASE_VERSION.major )
+				contents = $ ( '<div></div>' )
+				contents.append 'A <strong>new version</strong> of the application is ready and has been downloaded to your computer. You are' +
+								' required to <a href="#" class="btn btn-mini" data-action="refresh" onclick="document.location.reload(true);' +
+								'">refresh</a> this page to upgrade to version ' + version.full + '. Changes made before this dialog popped up ' +
+								'are stored and will be available after you refreshed.<br>You are currently running ' + GIGABASE_VERSION.full  + 
+								'.'
+				
+				view = new View.HTMLModal( 
+					'Major upgrade!', 
+					contents, 
+					'upgrade-notice', 'upgrade-notice upgrade-major' 
+				)
+				@view.add view
+				view.onClosed( view, view.show )
+				
+			if ( version.major > GIGABASE_VERSION.major or version.minor > GIGABASE_VERSION.minor )
+			
+				contents = $ ( '<div></div>' )
+				contents.append 'A <strong>new version</strong> of the application is ready and has been downloaded to your computer. Simply ' +
+								'<a href="#" class="btn btn-mini" data-action="refresh" onclick="document.location.reload(true);">refresh</a>' +
+								' this page to upgrade to version ' + version.full + '. Changes made before this dialog popped up are stored an' +
+								'd will be available after you refreshed.<br>You are currently running ' + GIGABASE_VERSION.full + '.'
+				
+				view = new View.HTMLModal( 
+					'Minor upgrade!', 
+					contents, 
+					'upgrade-notice', 'upgrade-notice upgrade-minor' 
+				)
+				@view.add view
+				view.show()
+			#else
+			#	# show as notification, not modal
 		)
-		@view.add view
-		view.show()
 				
 	# Flushes the cache
 	#
