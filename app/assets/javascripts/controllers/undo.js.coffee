@@ -85,7 +85,6 @@ class Controller.Undo extends Controller.Base
 		nodes = []
 		for otherNode in timemachine.iterator()
 			node = @model.find( otherNode.object )
-			console.log node
 			nodes.push node if node?
 		for node in @model.iterator()
 			if node in nodes

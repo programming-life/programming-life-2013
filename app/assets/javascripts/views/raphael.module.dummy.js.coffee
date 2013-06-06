@@ -73,16 +73,12 @@ class View.DummyModule extends View.RaphaelBase
 	# Gets called on a change in the module properties
 	#
 	# @param source [View.DummyModule] The source of the change
-	# @param key [String] The property
-	# @oaram value [Object] The new value
+	# @param params [Array] The keys and values
 	#
 	@catchable
-		onModulePropertiesChange:( source, key, value ) ->
+		onModulePropertiesChange:( source, params ) ->
 			if source is @
-				@module[ key ] = value
 				@_notificationsView.hide()
-
-				@_trigger "module.creation.changed", @, [@module]
 
 	# Clicked the add button
 	#
@@ -98,9 +94,9 @@ class View.DummyModule extends View.RaphaelBase
 			@_setSelected off
 
 			params = _( params ).defaults( @_params )
-			@module = new @_modulector( _( params ).clone( true ) )
+			module = new @_modulector( _( params ).clone( true ) )
 
-			@_trigger "module.created", @, [ @module ]
+			@_trigger "module.created", @, [ module ]
 	
 	# On Module Added to the Cell
 	#
@@ -193,10 +189,10 @@ class View.DummyModule extends View.RaphaelBase
 
 		hitbox.click =>
 			unless @_selected
-				@module = new @_modulector( _( @_params ).clone( true ) )
-				@_trigger 'module.creation.started', @, [ @module ]
+				module = new @_modulector( _( @_params ).clone( true ) )
+				@_trigger 'module.creation.started', @, [ module ]
 			else
-				@_trigger 'module.creation.aborted', @, [ @module ]
+				@_trigger 'module.creation.aborted', @, []
 		
 		@_contents.push hitbox
 		@_contents.push contents
@@ -261,7 +257,7 @@ class View.DummyModule extends View.RaphaelBase
 				$(@_box.node).addClass('selected')
 			else
 				$(@_box.node).removeClass('selected')
-				@_trigger "module.creation.aborted", @, [@module]
+				@_trigger "module.creation.aborted", @, []
 
 		return this
 

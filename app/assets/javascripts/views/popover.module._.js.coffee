@@ -274,7 +274,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 					value = parseFloat value unless isNaN value
 
 				@_changes[ key ] = value
-				@_trigger "module.properties.change", @_parent , [ key, value]
+				@_trigger "module.properties.change", @_parent , [ @_changes ]
 			)
 		) key
 		
