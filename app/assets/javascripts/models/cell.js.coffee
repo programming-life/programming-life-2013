@@ -636,15 +636,16 @@ class Model.Cell extends Helper.Mixable
 			Cell.Notification.Info
 		)	
 		
+		# Update that creation date
+		@_creation = new Date()
+		
 		if @isLocal() or clone
 			
-			console.log @isLocal(),  'cell.' + @id 
 			if @isLocal()
 				locache.remove( 'cell.' + @id )
 				
 			if clone
 				@_id = Cell.getUniqueId()
-				@_creation = new Date()
 				
 			promise = @_create()
 		else 
