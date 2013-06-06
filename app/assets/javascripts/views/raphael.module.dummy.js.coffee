@@ -90,7 +90,7 @@ class View.DummyModule extends View.RaphaelBase
 		onModuleCreationFinished : ( dummy, params ) ->
 			if dummy isnt this
 				return
-
+			console.log 'creationfinished'
 			@_setSelected off
 
 			params = _( params ).defaults( @_params )

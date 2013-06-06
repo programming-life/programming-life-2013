@@ -69,7 +69,7 @@ class Controller.Cell extends Controller.Base
 		@view.add new View.DummyModule( @view.paper, @view, @model, Model.Transporter, -1, { direction: Model.Transporter.Inward } )
 		@view.add new View.DummyModule( @view.paper, @view, @model, Model.Metabolism, -1 )
 		@view.add new View.DummyModule( @view.paper, @view, @model, Model.Protein, -1 )
-		@view.add new View.DummyModule( @view.paper, @view, @model, Model.Transporter, -1, { direction: Model.Transporter.Outward } )
+		@view.add new View.DummyModule( @view.paper, @view, @model, Model.Transporter, -1, { direction: Model.Transporter.Outward, transported: 'p' } )
 		
 		$( '.module-properties' ).off( 'click', '[data-action]', @onAction )
 		$( '.module-properties' ).on( 'click', '[data-action]', @onAction )
