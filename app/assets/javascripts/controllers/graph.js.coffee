@@ -49,9 +49,10 @@ class Controller.Graph extends Controller.Base
 	# @param append [Boolean] Whether to append the dataset or add it as a new dataset
 	#
 	show: ( dataset, append = false ) ->
-		if @_automagically
-			dataset.xValues.splice(1)
-			dataset.yValues.splice(1)
+		console.log dataset
+		if @_automagically and append
+			dataset.xValues = dataset.xValues.splice(1)
+			dataset.yValues = dataset.yValues.splice(1)
 
 		@add dataset unless append
 		@append dataset if append

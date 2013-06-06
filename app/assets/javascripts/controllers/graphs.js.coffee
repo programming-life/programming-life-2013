@@ -2,12 +2,14 @@
 #
 class Controller.Graphs extends Controller.Base
 	
+	# Creates a new instance of graph controller
 	#
+	# @param view [View.Collection] The view to contain the graphs controller by this
+	# @param id [String] A string id for the container of the graphs
 	#
-	#
-	#
-	constructor: ( @container = "#graphs" ) ->
-		super new View.Collection()
+	constructor: ( id ) ->
+		console.log id
+		super new View.Collection( id )
 	
 	# Shows the graphs with the data from the datasets
 	#
@@ -25,8 +27,8 @@ class Controller.Graphs extends Controller.Base
 		for key, dataset of datasets
 			unless @controller( key )?
 				id = template({ id: _.uniqueId(), key: key.replace(/#/g, '_') }) 
-				view = new View.Graph( id, key, @view, @_container )
-				@addChild key, new Controller.Graph( view )
-				@view.add view, false
+				graph = new View.Graph( id, key, @view )
+				@addChild key, new Controller.Graph( graph )
+				@view.add graph, false
 			@controller( key ).show( dataset, append ) 
 		return this

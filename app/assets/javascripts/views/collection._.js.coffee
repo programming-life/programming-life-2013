@@ -2,7 +2,12 @@ class View.Collection extends Helper.Mixable
 
 	# Creates a collection of views
 	#
-	constructor: () ->
+	# @param id [String] The id of the container for the views
+	#
+	constructor: ( @id ) ->
+		if @id?
+			@container = $( id )
+
 		@_views = []
 	
 	# Clears the collection

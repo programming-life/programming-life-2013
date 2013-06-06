@@ -27,7 +27,7 @@ class Controller.Main extends Controller.Base
 		@addChild 'cell', new Controller.Cell( @view.paper, @view, @cellFromCache( 'main.cell' ) )
 		@timemachines.push @controller("cell").model.timemachine
 		@timemachine.setRoot new Model.Node(@controller("cell").model.tree.root.object)
-		@addChild 'graphs', new Controller.Graphs( @view.paper )
+		@addChild 'graphs', new Controller.Graphs( "#graphs" )
 		@addChild 'undo', new Controller.Undo( @timemachine )
 		
 		@view.add @controller('cell').view
@@ -271,6 +271,7 @@ class Controller.Main extends Controller.Base
 		startSimulateFlag = not target.hasClass( 'active' )
 		
 		iterationDone = ( results, from, to ) =>
+			console.log results.datasets
 			@controller( 'graphs' ).show( results.datasets, @_currentIteration > 0 )
 			@_currentIteration++
 			@_setProgressBar 0

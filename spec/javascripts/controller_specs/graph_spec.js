@@ -1,5 +1,5 @@
 describe("Graph", function() {
-	describe("when initialized", function() {
+	describe("when constructed", function() {
 		beforeEach( function() {
 			view = {
 				draw: function() {}
@@ -64,12 +64,12 @@ describe("Graph", function() {
 				spyOn( view, "draw" );
 			});
 
-			describe("when automagically", function() {
+			describe("when automagically and append", function() {
 				beforeEach( function() {
 					oldXLength = data.xValues.length;
 					oldYLength = data.yValues.length;
 
-					controller.show( data )
+					controller.show( data , true)
 				});
 				it("should have removed the first x and y value", function() {
 					expect( data.xValues.length ).toBe( oldXLength - 1 );

@@ -18,14 +18,14 @@ class View.Graph extends View.RaphaelBase
 	# Construct a new Graph object
 	#
 	# @param title [String] The title of the graph	
-	# @param parent [View.Cell] The cell view this graph belongs to
+	# @param parent [View.Collection] The view this graph belongs to
+	# @param width [Integer] The width of the graph
+	# @param height [Integer] The height of the graph
 	#
-	constructor: ( id , @_titletext, parent, container = "#graphs", @_width = 240, @_height = 175 ) ->
+	constructor: ( id , @_titletext, parent, @_width = 240, @_height = 175 ) ->
 		
-		@_container = $( "##{id}" )
-		 
-		unless @_container.length
-			$( container ).append( @_container = $('<div id="' + id + '" class="graph"></div>') )
+		unless $( "##{id}" ).length
+			$( parent.container[0] ).append( @_container = $('<div id="' + id + '" class="graph"></div>') )
 		
 		super Raphael( id, @_width + Graph.AXISPADDING, @_height + Graph.AXISPADDING), parent
 
@@ -86,13 +86,6 @@ class View.Graph extends View.RaphaelBase
 			_( xValues ).clone( true ), _( yValues ).clone( true ), options )
 		return this
 
-
-	#	unless @_drawn
-	#		@_chart.hoverColumn ( event ) =>
-	#			unless @_parent._running
-	#				@_parent._drawRedLines( event.x - @paper.canvas.offsetLeft )
-	#	@_drawn = on
-	
 	# Move the viewbox of the chart
 	#
 	# @param x [Integer] The amount of pixels to move the viewbox to the right
