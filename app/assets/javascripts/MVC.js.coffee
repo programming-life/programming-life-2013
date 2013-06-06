@@ -5,9 +5,9 @@
 (exports ? this).Mixin = {}
 (exports ? this).GIGABASE_VERSION = 
 	major: 1
-	minor: 5
-	revision: 0
-	full: '1.5.0'
+	minor: 4
+	revision: 2
+	full: '1.4.2'
 
 document.mvc = null
 

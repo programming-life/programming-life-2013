@@ -346,10 +346,10 @@ class Controller.Main extends Controller.Base
 			if ( version.major > GIGABASE_VERSION.major )
 				contents = $ ( '<div></div>' )
 				contents.append 'A <strong>new version</strong> of the application is ready and has been downloaded to your computer. You are' +
-								' required to <a href="#" class="btn btn-mini" data-action="refresh" onclick="document.location.reload(true);' +
-								'">refresh</a> this page to upgrade to version ' + version.full + '. Changes made before this dialog popped up ' +
-								'are stored and will be available after you refreshed.<br>You are currently running ' + GIGABASE_VERSION.full  + 
-								'.'
+								' <strong>required</strong> to <a href="#" class="btn btn-mini" data-action="refresh" onclick="document.locat' +
+								'ion.reload(true);">refresh</a> this page to upgrade to version ' + version.full + '. Changes made before th' +
+								'is dialog popped up are stored and will be available after you refreshed.<br>You are currently running ' + 
+								GIGABASE_VERSION.full  + '.'
 				
 				view = new View.HTMLModal( 
 					'Major upgrade!', 
@@ -364,8 +364,8 @@ class Controller.Main extends Controller.Base
 				contents = $ ( '<div></div>' )
 				contents.append 'A <strong>new version</strong> of the application is ready and has been downloaded to your computer. Simply ' +
 								'<a href="#" class="btn btn-mini" data-action="refresh" onclick="document.location.reload(true);">refresh</a>' +
-								' this page to upgrade to version ' + version.full + '. Changes made before this dialog popped up are stored an' +
-								'd will be available after you refreshed.<br>You are currently running ' + GIGABASE_VERSION.full + '.'
+								' this page to upgrade to version ' + version.full + '. Changes made before this dialog popped up are stored ' +
+								'and will be available after you refreshed.<br>You are currently running ' + GIGABASE_VERSION.full + '.'
 				
 				view = new View.HTMLModal( 
 					'Minor upgrade!', 
