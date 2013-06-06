@@ -1,7 +1,4 @@
-# Place all the behaviors and hooks related to the matching controller here.
-# All this logic will automatically be available in application.js.
-# You can use CoffeeScript in this file: http://jashkenas.github.com/coffee-script/
-
+'use strict'
 # The controller for the Main action and view
 #
 class Controller.Main extends Controller.Base
@@ -303,6 +300,60 @@ class Controller.Main extends Controller.Base
 		if cell is @controller("cell").model
 			@timemachines.push tm.timemachine
 	
+	# Time to store any unstored files
+	#
+	onUpdate: () ->
+		promise = $.Deferred()
+		locache.async.get( 'cells').finished( ( cells ) ->
+			console.info 'I currently have these cells: ' + JSON.stringify( cells )
+			
+			if not cells?
+				promise.resolve()
+				return
+			
+			tryResolve = () ->
+				if --counter is 0
+					promise.resolve()
+			
+			counter = cells.length
+			for key in cells
+				(( cell_key ) ->
+					locache.async.get( cell_key ).finished( ( cell ) ->
+						
+						if not cell?
+							tryResolve()
+							return
+							
+						cell = Model.Cell.deserialize( cell )
+						if Helper.Mixable.extractId( cell.id ).origin isnt 'server'
+							console.log 'This is a local cell! : ' + cell.id
+							cell.save().always( () ->
+								tryResolve()
+							)
+						else
+							tryResolve()
+					)
+				)( key )
+		)
+		return promise.promise()
+	
+	# On Upgrade resy
+	#
+	onUpgrade: () ->
+	
+		contents = $ ( '<div></div>' )
+		contents.append 'A <strong>new version</strong> of the application is ready and has been downloaded to your computer. Simply '
+		contents.append( $ '<a href="#" class="btn btn-mini" data-action="refresh" onclick="document.location.reload(true);">refresh</a>' )
+		contents.append ' this page to use the new version. Changes you made are stored and will be available after refreshing the page.'
+		
+		view = new View.HTMLModal( 
+			'New version of the application!', 
+			contents, 
+			'upgrade-notice', 'upgrade-notice' 
+		)
+		@view.add view
+		view.show()
+				
 	# Flushes the cache
 	#
 	flush: () ->
