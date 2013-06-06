@@ -122,7 +122,6 @@ class View.Cell extends View.RaphaelBase
 	# @param view [View.Base] The view to add
 	#
 	add: ( view ) ->
-		#console.error "Adding view", view, @viewsByType
 		type = view.getFullType()
 
 		unless @viewsByType[type]?
