@@ -341,6 +341,7 @@ class Controller.Main extends Controller.Base
 	#
 	onUpgrade: () ->
 	
+		return
 		contents = $ ( '<div></div>' )
 		contents.append 'A <strong>new version</strong> of the application is ready and has been downloaded to your computer. Simply '
 		contents.append( $ '<a href="#" class="btn btn-mini" data-action="refresh" onclick="document.location.reload(true);">refresh</a>' )
