@@ -33,7 +33,9 @@ ProgrammingLife::Application.routes.draw do
 			network "/"  
 		end
 			
-		match "/gigabase.manifest" => offline
+		# SWITCH IT BABE TO GET MANIFEST
+		if false
+			match "/gigabase.manifest" => offline
 	else
 		offline = Rack::Offline.configure :cache_interval => 120 do      
 		
