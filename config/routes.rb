@@ -7,6 +7,7 @@ ProgrammingLife::Application.routes.draw do
 
 	post 'hook' => 'hook#post'
 	get 'hook' => 'hook#index'
+	get 'version' => 'hook#version'
 	
 	unless Rails.env.production?
 		offline = Rack::Offline.configure :cache_interval => 20 do      
