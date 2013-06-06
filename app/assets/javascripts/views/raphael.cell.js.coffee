@@ -156,12 +156,9 @@ class View.Cell extends View.RaphaelBase
 	# @return [Module.View] the view which represents the given module
 	#
 	getViewByName: ( name ) ->
-		module = _( @model._getModules() ).find( (m) -> 
-			m.name is name
-		)
-
-		return @getView(module)
-
+		return _( @_drawn ).find( (object) -> 
+			object.view.model?.name is name
+		).view
 
 	# Draws the cell
 	#
@@ -314,3 +311,4 @@ class View.Cell extends View.RaphaelBase
 				if preview
 					@remove preview
 					@_trigger "module.preview.ended", preview
+			return preview

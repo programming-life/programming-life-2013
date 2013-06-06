@@ -416,27 +416,28 @@ class View.Module extends View.RaphaelBase
 	#
 	createSplines: () ->
 		if @type is 'Transporter'
-			for property in [ 'orig', 'dest' ]
-				#metabolite = @_cell.getMetabolite @model[ property ]
-				view = @_parent.getViewByName @model[ property ]
-				console.log view
+			for property in @model["transported"]
+				for location in ["int", "ext"]
+					view = @_parent.getViewByName "#{property}##{location}"
+					if view
+						placement = view.model.placement
+						direction = @_getSplineDirection(placement)
+
+						if direction is View.Module.Direction.Inward
+							@_createSpline view, @
+						else if direction is View.Module.Direction.Outward
+							@_createSpline @, view
+		else if @type is 'Metabolism'
+			for property in _( @model["orig"] ).concat( @model["dest"] )
+				view = @_parent.getViewByName property
 				if view
 					placement = view.model.placement
 					direction = @_getSplineDirection(placement)
 
-					if direction is View.Module.Direction.Inward
+					if property in @model["orig"]
 						@_createSpline view, @
-					else if direction is View.Module.Direction.Outward
+					else if property in @model["dest"]
 						@_createSpline @, view
-
-		else if @type is 'Metabolism'
-			for metabolite in @model.orig.map( ( name ) => @_cell.getMetabolite name ) when metabolite?
-				view = @_parent.getView(metabolite)
-				@_createSpline view, @
-
-			for metabolite in @model.dest.map( ( name ) => @_cell.getMetabolite name ) when metabolite?
-				view = @_parent.getView(metabolite)
-				@_createSpline @, view
 		return this
 
 	# Draws this view shadow
@@ -603,7 +604,6 @@ class View.Module extends View.RaphaelBase
 	#
 	onModuleInvalidated: ( module ) =>
 		if module is @model
-			console.log 'onModuleInvalidated'
 			@redraw()
 	
 	# Gets called when a module view selected.
@@ -655,6 +655,8 @@ class View.Module extends View.RaphaelBase
 	#
 	onMetaboliteAdded: ( cell, metabolite ) ->
 		return if cell isnt @_cell
+		@createSplines()
+		return
 		if @type is 'Transporter'
 			if metabolite.name is @model.orig
 				@_createSpline @_parent.getView(metabolite), @

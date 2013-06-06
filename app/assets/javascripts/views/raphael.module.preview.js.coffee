@@ -18,4 +18,5 @@ class View.ModulePreview extends View.Module
 	#
 	_createSpline: ( orig, dest ) ->
 		if orig? and dest?
+			console.log "Creating spline", orig, dest
 			new View.SplinePreview(@paper, @_parent, @_cell, orig, dest)

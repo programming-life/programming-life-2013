@@ -39,6 +39,8 @@ class Controller.Cell extends Controller.Base
 				@view.model = value
 		)
 
+		@_previews = new View.Collection()
+
 		@_createBindings()
 		@_addInteraction() if @_interaction
 
@@ -48,7 +50,7 @@ class Controller.Cell extends Controller.Base
 		@_automagically = on
 
 		@_bind( 'cell.module.added', @, @onModuleAdded )
-		@_bind( 'module.property.changed', @, @onModuleChanged)
+		@_bind( 'module.properties.change', @, @onModuleChanged)
 		
 		@_addDummyViews()
 
@@ -103,8 +105,8 @@ class Controller.Cell extends Controller.Base
 	onModuleAdded: ( cell, module ) ->
 		return if cell isnt @model
 		return unless @_automagically
-		for prop in module.getMetaboliteProperties()
-			@onModuleChanged( module, undefined, prop, module[prop] )
+		@_automagicAdd( module )
+
 	#
 	#
 	onModuleRemove: ( cell, module ) ->
@@ -114,56 +116,75 @@ class Controller.Cell extends Controller.Base
 	#
 	#
 	onSplineAdd: ( cell, spline ) ->
-		return if cell isnt @model
+		return if cell isnt @view
 		@view.addSpline spline
 		
 	#
 	#
 	onSplineRemove: ( cell, spline ) ->
-		return if cell isnt @model
+		return if cell isnt @view
 		@view.removeSpline spline
 		
 	# On Module property changed add missing metabolites
 	# 
 	# @param module [Model.Module] the module changed
-	# @param action [Model.Action] the action invoked
-	# @param key [String] the property name changed
-	# @param param [String] the property values
+	# @param params [Array] The keys and values
 	#
-	onModuleChanged: ( module, action, key, param ) =>
+	onModuleChanged: ( dummy, params ) =>
 		return unless @_automagically
-		return unless @view.getView( module )?
-		
 
-		# Find parameters that are metabolites
-		props = module.getMetaboliteProperties()
-		return if not _( props ).contains key
+		# Create a new module
+		params = _( params ).defaults( @_params )
+		module = new dummy._modulector( _( params ).clone( true ) )
 
+		@killPreviews()
+		@preview module
+
+
+	# Kill and remove all previews
+	#
+	killPreviews: ( ) ->
+		@_previews.each( (preview) =>
+			@view.remove preview
+			@_trigger "module.preview.ended", preview
+		)
+		@_previews.kill(on)
+	
+	# Automagically adds the metabolite modules requires to the cell view or model
+	#
+	# @param module [Model.Module] The module for which to automagically add
+	#
+	_automagicAdd: ( module ) ->
 		# Expand names
 		names = []
-		param = [ param ] unless _( param ).isArray()
-		for name in param
-			name = new String( name ).toString()
+		props = module.getMetaboliteProperties()
+		for key, value of props
+			name = new String( module[value] ).toString()
 			if name.indexOf('#') is -1
 				names.push "#{name}#int"
 				names.push "#{name}#ext"
 			else
 				names.push name
+
+		names = _( names ).unique()
 		
 		# Find missing metabolites
 		missing = _( names ).filter( ( name ) => not _( @model._getModules() ).any( ( m ) -> name is m.name ) )
+
 		for name in missing
 			is_product = 
-				( module instanceof Model.Transporter and key is 'transported' and module.direction is Model.Transporter.Outward ) or
-				( module instanceof Model.Metabolism and key is 'dest' )
+				( module instanceof Model.Transporter and name.substring(0, name.length - 4) in module['transported'] and module.direction is Model.Transporter.Outward ) or
+				( module instanceof Model.Metabolism and name in module['dest'] )
+
 				
 			is_inside = name.split( '#' )[1] is 'int'
 			
 			if @_creating
 				type = if is_product then Model.Metabolite.Product else Model.Metabolite.Substrate
-				placement = if is_inside is 'int' then Model.Metabolite.Inside else Model.Metabolite.Outside
+				placement = if is_inside then Model.Metabolite.Inside else Model.Metabolite.Outside
+
 				metabolite = new Model.Metabolite( { supply: 0 }, 0, name, placement , type )
-				@view.previewModule( @view , metabolite, on )
+				@preview metabolite
 			else
 				@model.addMetabolite( name, 0, 0, is_inside, is_product )
 	
@@ -176,18 +197,17 @@ class Controller.Cell extends Controller.Base
 		type = source.getFullType()
 		if source in @view.viewsByType[type]
 			@_creating = on
-			@view.previewModule( @view , module, on )
+			@preview( module )
 
 	# Gets called on module.creation.aborted
 	#
 	# @param source [View.DummyModule] The source of the event
-	# @param module [Model.Module] The module representation of the current creation parameters
 	#
-	_onModuleCreationAborted: ( source, module ) ->
+	_onModuleCreationAborted: ( source ) ->
 		type = source.getFullType()
 		if source in @view.viewsByType[type]
 			@_creating = off
-			@view.previewModule( @view , module, off )
+			@killPreviews()
 		
 	# Gets called on module.creation.finished
 	#
@@ -198,7 +218,7 @@ class Controller.Cell extends Controller.Base
 		type = source.getFullType()
 		if source in @view.viewsByType[type] 
 			@_creating = off
-			@view.previewModule( @view, module, off )
+			@killPreviews()
 
 			@model.add module
 			
@@ -403,3 +423,12 @@ class Controller.Cell extends Controller.Base
 		@_running = off
 		@_trigger( "simulation.stop", @, [ @model ] )
 		return [ @_token, undefined ]
+	
+
+	# Starts a preview for the module
+	#
+	# @param module [Model.Module] The module to preview
+	#
+	preview: ( module ) ->
+		@_automagicAdd module
+		@_previews.add @view.previewModule( @view , module, on )
