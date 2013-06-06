@@ -40,7 +40,7 @@ class Model.Cell extends Helper.Mixable
 		@_defineProperties( paramscell )
 		
 		@_trigger( 'cell.creation', @, [ @creation, @id ] )
-		@_bind( 'cell.property.changed', @, @onPropertySet )
+		@_bind( 'cell.property.action', @, @opPropertyAction )
 		@add new Model.CellGrowth( params, start ), false
 		
 	# Defines All the properties
@@ -58,7 +58,8 @@ class Model.Cell extends Helper.Mixable
 				creation: new Date()
 				name: null
 			} ),
-			'cell.property.changed'
+			'cell.property.changed',
+			'cell.property.action'
 		)
 		
 		Object.seal @ 
@@ -105,7 +106,7 @@ class Model.Cell extends Helper.Mixable
 	# @param caller [any] the originating property
 	# @param action [Model.Action] the action invoked
 	#
-	onPropertySet: ( caller, action ) =>
+	opPropertyAction: ( caller, action ) =>
 		if caller is @
 			@addUndoableEvent( action )
 		
