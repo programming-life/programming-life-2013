@@ -53,8 +53,8 @@ class Model.Cell extends Helper.Mixable
 		
 		@_propertiesFromParams(  
 			_( params ).defaults( {
-				id: _.uniqueId "client:#{this.constructor.name}:"
-				creation: Date.now()
+				id: Cell.getUniqueId()
+				creation: new Date()
 				name: null
 			} ),
 			'cell.property.changed'
@@ -62,6 +62,13 @@ class Model.Cell extends Helper.Mixable
 		
 		Object.seal @ 
 		return this
+		
+	# Gets a new unique id for a cell
+	#
+	# @return [String] the new id
+	#
+	@getUniqueId: () ->
+		return _.uniqueId "client:#{this.constructor.name}:"
 		
 	# Defines the value properties
 	#
@@ -523,7 +530,7 @@ class Model.Cell extends Helper.Mixable
 	# @return [self] chainable self
 	#
 	generateWarnings: () ->
-		# Show some warnings
+		
 		exclude = []
 		while not ( finished ? off )
 		
@@ -629,9 +636,16 @@ class Model.Cell extends Helper.Mixable
 			Cell.Notification.Info
 		)	
 		
-		
-		@_id = {} if clone
 		if @isLocal() or clone
+			
+			console.log @isLocal(),  'cell.' + @id 
+			if @isLocal()
+				locache.remove( 'cell.' + @id )
+				
+			if clone
+				@_id = Cell.getUniqueId()
+				@_creation = new Date()
+				
 			promise = @_create()
 		else 
 			promise = @_update()
@@ -644,9 +658,18 @@ class Model.Cell extends Helper.Mixable
 				Cell.Notification.Success
 			)	
 			
-			locache.async.set( 'cell.' + @id, @serialize(), Cell.CACHE_TIMEOUT ) 
-			
 			return data
+		)
+		
+		promise.always( ( data ) =>
+
+			locache.async
+				.set( 'cell.' + @id, @serialize(), Cell.CACHE_TIMEOUT )
+				.finished( () =>
+					cells = locache.get( 'cells' ) ? []
+					cells.push 'cell.' + @id
+					locache.async.set( 'cells', _( cells ).uniq() )
+				)
 		)
 		
 		return promise
@@ -764,6 +787,9 @@ class Model.Cell extends Helper.Mixable
 	@load : ( cell_id, callback, clone = off ) ->
 	
 		result = undefined
+		if Helper.Mixable.extractId( cell_id ).origin isnt "server"
+			return Cell.loadLocal( cell_id, callback, clone )
+		
 		cell = new Model.Cell( undefined, undefined, { id: cell_id } )
 		promise = $.get( cell.url, { all: true } )
 		promise = promise.then( 
@@ -806,7 +832,12 @@ class Model.Cell extends Helper.Mixable
 				promise = $.when.apply( $, promises )
 				promise.done( ( data ) => 
 					unless clone
-						locache.async.set( 'cell.' + result.id, result.serialize(), Cell.CACHE_TIMEOUT ) 
+						locache.async.set( 'cell.' + result.id, result.serialize(), Cell.CACHE_TIMEOUT )
+							.finished( () =>
+								cells = locache.get( 'cells' ) ? []
+								cells.push 'cell.' + result.id
+								locache.async.set( 'cells', _( cells ).uniq() )
+							)
 					return data
 				)
 				return promise
@@ -814,6 +845,7 @@ class Model.Cell extends Helper.Mixable
 			# Fail
 			, ( data ) => 
 			
+				
 				if not result?
 					result = cell
 					for module in result._modules
@@ -829,8 +861,9 @@ class Model.Cell extends Helper.Mixable
 						cell_id 
 					],
 					Cell.Notification.Error
-				)	
+				)
 				
+				Cell.loadLocal( cell_id, callback, clone )
 				return [ data, result ]
 			)
 			
@@ -845,6 +878,48 @@ class Model.Cell extends Helper.Mixable
 		)
 		
 		return promise
+	
+	# Loads a local cell
+	#
+	# @param cell_id [String] id of cell to load
+	# @param callback [Function] callback function
+	# @param clone [Boolean] clone flag
+	# @return [jQuery.Promise] the promise
+	#
+	@loadLocal: ( cell_id, callback, clone = off ) ->
+		
+		promise = $.Deferred( () ->
+			locache.async.get( 'cell.' + cell_id )
+				.finished( ( cell ) =>
+
+					unless cell?
+						promise.reject 'Cell was not found'
+						return
+					
+					cell = Cell.deserialize cell
+					unless cell?
+						promise.reject 'Cell could not be loaded'
+						return
+						
+					if clone
+						cell._id = Cell.getUniqueId()
+						cell._name = "#{cell.name}-clone"
+					
+					callback?( cell )
+					
+					cell._notificate( @, cell, 
+						'cell.load',
+						"Loaded the cell #{ cell.name } from local cache.",
+						[ 'load' ],
+						Cell.Notification.Success
+					)	
+					
+					promise.resolve cell
+				)
+			
+		)
+	
+		return promise.promise()
 		
 	# Loads the whole list of cells
 	#
@@ -853,7 +928,52 @@ class Model.Cell extends Helper.Mixable
 	@loadList: ( ) ->
 	
 		cell = new Model.Cell()
-		promise = $.get( cell.url, {} )
+		promise = $.Deferred( () => 
 		
-		return promise
-		
+			retrieve = $.get( cell.url, {} )
+			
+			# Got it from online
+			retrieve.done( ( data ) =>
+				promise.resolve [ data, 'server' ]
+			)
+			
+			# Fallback
+			retrieve.fail( ( data ) => 
+				@loadLocalList promise 
+			)
+		)
+		return promise.promise()
+			
+	# Loads a local list of cells
+	#
+	# @param promise [jQuery.Deferred] deferred to resolve (or reject)
+	#
+	@loadLocalList: ( promise, only_local = off ) ->
+	
+		locache.async.get( 'cells' )
+			.finished( ( cell_ids ) =>
+				cells = []
+				
+				unless cell_ids?
+					promise.resolve cells
+					return cells
+					
+				counter = cell_ids.length
+				for id in cell_ids
+					( ( cell_id ) ->
+						locache.async.get( cell_id )
+							.finished( ( cell ) -> 
+							
+								if cell 
+									if not only_local or Helper.Mixable.extractId( cell_id ).origin isnt "server"
+										cells.push cell
+								else
+									cell_ids = _( cell_ids ).without cell_id
+									locache.set( 'cells', cell_ids )
+									
+								if --counter is 0
+									promise.resolve [ cells, 'local' ]
+							)
+					)( id )
+			)
+		return promise.promise()
