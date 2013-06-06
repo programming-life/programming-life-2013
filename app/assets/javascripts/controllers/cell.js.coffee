@@ -1,3 +1,4 @@
+'use strict'
 # The controller for the Cell view
 #
 class Controller.Cell extends Controller.Base
@@ -68,14 +69,20 @@ class Controller.Cell extends Controller.Base
 		@view.add new View.DummyModule( @view.paper, @view, @model, Model.Protein, -1 )
 		@view.add new View.DummyModule( @view.paper, @view, @model, Model.Transporter, -1, { direction: Model.Transporter.Outward } )
 		
-		$( '.module-properties' ).click( '[data-action]', ( event ) => 
-			func = @["on#{ $( event.target ).data( 'action' )}"]
-			func( event ) if func?
-		)
+		$( '.module-properties' ).off( 'click', '[data-action]', @onAction )
+		$( '.module-properties' ).on( 'click', '[data-action]', @onAction )
 		
 		@_bind "module.creation.started", @, @_onModuleCreationStarted
 		@_bind "module.creation.aborted", @, @_onModuleCreationAborted
 		@_bind "module.created", @, @_onModuleCreated
+
+	# On Action click
+	#
+	# @param event [jQuery.Event] the event raised
+	#
+	onAction: ( event ) =>
+		func = @["on#{ $( event.target ).data( 'action' )}"]
+		func( event ) if func?
 		
 	#
 	#
@@ -92,32 +99,54 @@ class Controller.Cell extends Controller.Base
 		@_bind( 'cell.spline.add', @, @onSplineAdd)
 		@_bind( 'cell.spline.remove', @, @onSplineRemove)
 		
+	# Kills this controller
 	#
+	kill: () ->
+		$( '.module-properties' ).off( 'click', '[data-action]', @onAction )
+		return super()
+			
+	# Runs when module is added
+	#
+	# @param cell [Model.Cell] the cell
+	# @param module [Model.Module] the module
 	#
 	onModuleAdd: ( cell, module ) ->
 		return if cell isnt @model
 		@view.addModule module
 			
+	# Runs after module is added
 	#
+	# @param cell [Model.Cell] the cell
+	# @param module [Model.Module] the module
 	#
 	onModuleAdded: ( cell, module ) ->
 		return if cell isnt @model
 		return unless @_automagically
 		for prop in module.getMetaboliteProperties()
 			@onModuleChanged( module, undefined, prop, module[prop] )
+
+	# Runs when module is removed
 	#
+	# @param cell [Model.Cell] the cell
+	# @param module [Model.Module] the module
 	#
 	onModuleRemove: ( cell, module ) ->
 		return if cell isnt @model
 		@view.removeModule module
 		
+	# Runs when spline is added
 	#
+	# @param cell [View.Cell] the cell view
+	# @param spline [View.Spline] the spline
 	#
 	onSplineAdd: ( cell, spline ) ->
 		return if cell isnt @model
 		@view.addSpline spline
 		
+	# Runs when splice is removed
 	#
+	# @param cell [View.Cell] the cell view
+	# @param spline [View.Spline] the spline
 	#
 	onSplineRemove: ( cell, spline ) ->
 		return if cell isnt @model
