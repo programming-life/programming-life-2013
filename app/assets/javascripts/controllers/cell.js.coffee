@@ -27,7 +27,7 @@ class Controller.Cell extends Controller.Base
 	#
 	constructor: ( ) ->
 		view = if arguments.length is 1
-			@_interaction = off
+			@_interaction = on
 			arguments[ 0 ]
 		else
 			new View.Cell( arguments[ 0 ], arguments[ 1 ], arguments[ 2 ] ? new Model.Cell(), ( @_interaction = arguments[ 3 ] ? on ) )	
