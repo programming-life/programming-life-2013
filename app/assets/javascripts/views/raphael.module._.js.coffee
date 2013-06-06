@@ -268,7 +268,7 @@ class View.Module extends View.RaphaelBase
 		contents = @drawContents()
 		@_contents.push @drawMetaContents( contents )
 		@_contents.push contents		
-		
+
 		@createSplines()
 
 		@_trigger( 'view.drawn', @ )

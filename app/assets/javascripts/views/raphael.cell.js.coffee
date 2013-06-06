@@ -160,7 +160,6 @@ class View.Cell extends View.RaphaelBase
 	#
 	getViewByName: ( name ) ->
 		for type, views of @viewsByType
-			console.log type, views
 			view = _( views ).find( (view) -> view.model?.name is name )
 			if view?
 				return view

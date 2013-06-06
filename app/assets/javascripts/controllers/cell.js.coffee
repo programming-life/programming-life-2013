@@ -48,10 +48,6 @@ class Controller.Cell extends Controller.Base
 	#
 	_addInteraction: () ->
 		@_automagically = on
-
-		@_bind( 'cell.module.added', @, @onModuleAdded )
-		@_bind( 'module.properties.change', @, @onModuleChanged)
-		
 		@_addDummyViews()
 
 	# Adds dummy modules
@@ -75,10 +71,6 @@ class Controller.Cell extends Controller.Base
 			func( event ) if func?
 		)
 		
-		@_bind "module.creation.started", @, @_onModuleCreationStarted
-		@_bind "module.creation.aborted", @, @_onModuleCreationAborted
-		@_bind "module.created", @, @_onModuleCreated
-		
 	#
 	#
 	onCreate: ( event ) ->
@@ -93,6 +85,11 @@ class Controller.Cell extends Controller.Base
 		@_bind( 'cell.metabolite.remove', @, @onModuleRemove )
 		@_bind( 'cell.spline.add', @, @onSplineAdd)
 		@_bind( 'cell.spline.remove', @, @onSplineRemove)
+		@_bind "module.creation.started", @, @_onModuleCreationStarted
+		@_bind "module.creation.aborted", @, @_onModuleCreationAborted
+		@_bind "module.created", @, @_onModuleCreated
+		@_bind( 'cell.module.added', @, @onModuleAdded )
+		@_bind( 'module.properties.change', @, @onModuleChanged)
 		
 	#
 	#
@@ -134,7 +131,6 @@ class Controller.Cell extends Controller.Base
 		return unless @_automagically
 
 		# Create a new module
-		params = _( params ).defaults( @_params )
 		module = new dummy._modulector( _( params ).clone( true ) )
 
 		@killPreviews()

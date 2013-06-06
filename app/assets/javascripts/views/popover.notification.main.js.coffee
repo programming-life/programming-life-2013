@@ -31,6 +31,5 @@ class View.MainNotification extends View.Notification
 	#
 	#
 	setSolutionMessage: ( message, @_button ) ->
-		#console.log message
 		@display( @, @, 'solution', View.Main.Notification.Info, message, [] )
 		#@display( @, @, 'solution-action', View.Main.Notification.Info, button, [] )

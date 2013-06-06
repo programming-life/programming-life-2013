@@ -67,7 +67,6 @@ class Controller.Main extends Controller.Base
 	# @return [Model.Cell,null] the result from cache
 	#
 	cellFromCache: ( key ) ->
-		#locache.async.get( 'main.cell' ).finished( function(cell){ console.log( cell ); } );
 		cached = locache.get( 'main.cell' )
 		return if cached? then Model.Cell.deserialize( cached ) else null
 		
@@ -305,7 +304,6 @@ class Controller.Main extends Controller.Base
 	onUpdate: () ->
 		promise = $.Deferred()
 		locache.async.get( 'cells').finished( ( cells ) ->
-			console.info 'I currently have these cells: ' + JSON.stringify( cells )
 			
 			if not cells?
 				promise.resolve()
@@ -326,7 +324,6 @@ class Controller.Main extends Controller.Base
 							
 						cell = Model.Cell.deserialize( cell )
 						if Helper.Mixable.extractId( cell.id ).origin isnt 'server'
-							console.log 'This is a local cell! : ' + cell.id
 							cell.save().always( () ->
 								tryResolve()
 							)

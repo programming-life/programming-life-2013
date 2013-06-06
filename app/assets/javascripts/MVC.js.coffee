@@ -24,11 +24,9 @@ locache.cleanup()
 		return if updating
 	
 		if document.mvc? and document.mvc.onUpdate?
-			console.info 'Online! Updating controller start'
 			promise = document.mvc.onUpdate()
 			promise.always( () => 
 				updating = off
-				console.info 'Updating controller end'
 			)
 		else
 			updating = on
@@ -39,7 +37,6 @@ locache.cleanup()
 	upgrade = () ->
 		return if upgrading
 		if document.mvc? and document.mvc.onUpgrade?
-			console.info 'Online! Upgrade ready!'
 			document.mvc.onUpgrade()
 			upgrading = on
 	
@@ -48,14 +45,12 @@ locache.cleanup()
 	$( window )
 		.on( 'beforeunload', () ->
 			if document.mvc? and document.mvc.beforeUnload?
-				console.info 'Before unloading!'
 				message = document.mvc.beforeUnload()
 				return message if message?
 			return undefined
 		)
 		.on( 'unload', () ->
 			if document.mvc? and document.mvc.onUnload?
-				console.info 'Unload!'
 				document.mvc.onUnload()
 		)
 		.on( 'online', update )
