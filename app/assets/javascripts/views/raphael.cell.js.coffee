@@ -122,6 +122,7 @@ class View.Cell extends View.RaphaelBase
 	# @param view [View.Base] The view to add
 	#
 	add: ( view ) ->
+		#console.error "Adding view", view, @viewsByType
 		type = view.getFullType()
 
 		unless @viewsByType[type]?
@@ -148,7 +149,10 @@ class View.Cell extends View.RaphaelBase
 	# @return [Module.View] the view which represents the given module
 	#
 	getView: ( module ) ->
-		return _( @_drawn ).find( ( d ) -> d.model is module )?.view
+		for type, views of @viewsByType
+			view = _( views ).find( (view) -> view.model is module )
+			if view?
+				return view
 
 	# Get module view by name
 	#
@@ -156,9 +160,11 @@ class View.Cell extends View.RaphaelBase
 	# @return [Module.View] the view which represents the given module
 	#
 	getViewByName: ( name ) ->
-		return _( @_drawn ).find( (object) -> 
-			object.view.model?.name is name
-		).view
+		for type, views of @viewsByType
+			console.log type, views
+			view = _( views ).find( (view) -> view.model?.name is name )
+			if view?
+				return view
 
 	# Draws the cell
 	#
