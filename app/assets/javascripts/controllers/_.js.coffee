@@ -58,6 +58,8 @@ class Controller.Base extends Helper.Mixable
 		@_unbindAll()
 		return this
 		
+	# Runs when the user comes online
+	#
 	update: () ->
 		return $.Deferred().promise()
 		
