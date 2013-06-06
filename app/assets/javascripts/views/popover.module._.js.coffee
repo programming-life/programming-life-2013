@@ -452,9 +452,10 @@ class View.ModuleProperties extends View.HTMLPopOver
 	# Closes the module
 	#
 	_close: ( ) =>
+		@_reset()
 		@_trigger( 'module.selected.changed', @module, [ off ] )
 		@_changes = {}
-		@_reset()
+		
 
 	# Resets this view
 	#
