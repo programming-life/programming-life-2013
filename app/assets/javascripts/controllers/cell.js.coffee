@@ -203,7 +203,7 @@ class Controller.Cell extends Controller.Base
 		names = _( names ).unique()
 
 		# Find missing metabolites
-		missing = _( names ).filter( ( name ) => not _( @model._getModules() ).any( ( m ) -> name is m.name ) )
+		missing = _( names ).filter( ( name ) => not _( @model.getModules() ).any( ( m ) -> name is m.name ) )
 
 		for name in missing
 			is_product = 

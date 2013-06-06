@@ -63,7 +63,7 @@ class View.Cell extends View.RaphaelBase
 		@kill()
 		
 		@_model = value
-		for module in @_model._getModules()
+		for module in @_model.getModules()
 			view = new View.Module( @paper, @, @_model, module, @_interaction )
 			@add view
 			@_drawn.push { model: module, view: view } 

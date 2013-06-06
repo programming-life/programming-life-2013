@@ -402,7 +402,7 @@ class Model.Cell extends Helper.Mixable
 	# Returns the number of modules of this type
 	#
 	numberOf: ( module_type ) ->
-		return _( @_getModules() ).where( ( module ) -> module instanceof module_type ).length
+		return _( @getModules() ).where( ( module ) -> module instanceof module_type ).length
 	
 	# Get compound names
 	# 
@@ -422,16 +422,16 @@ class Model.Cell extends Helper.Mixable
 	# 
 	# @return [Array<Model.Module>] modules
 	#
-	_getModules: () ->
+	getModules: () ->
 		return _( @_metabolites ).concat @_modules
 			
 	# Gets all the modules that are steppable, and their compounds
 	# 
 	# @return [Array] {Model.Module modules}, variables, values
 	#
-	_getModulesAndCompounds: ( exclude = [] ) ->
+	getModulesAndCompounds: ( exclude = [] ) ->
 	
-		modules = _( @_getModules() ).difference exclude
+		modules = _( @getModules() ).difference exclude
 		values = []
 		variables = []
 		
@@ -487,7 +487,7 @@ class Model.Cell extends Helper.Mixable
 		@generateWarnings()
 			
 		# Get the actual modules and mapping
-		[ modules, variables, values ] = @_getModulesAndCompounds( [] )	
+		[ modules, variables, values ] = @getModulesAndCompounds( [] )	
 		mapping = { }	
 		for i, variable of variables
 			mapping[variable] = parseInt i
@@ -539,7 +539,7 @@ class Model.Cell extends Helper.Mixable
 			# We would like to get all the variables in all the equations, so
 			# that's what we are going to do. Then we can insert the value indices
 			# into the equations.
-			[ modules, variables, values ] = @_getModulesAndCompounds( exclude )
+			[ modules, variables, values ] = @getModulesAndCompounds( exclude )
 			
 			# Create the mapping from variable to value index
 			mapping = { }	
@@ -601,7 +601,7 @@ class Model.Cell extends Helper.Mixable
 		type = @constructor.name
 		
 		modules = []
-		for module in @_getModules()
+		for module in @getModules()
 			modules.push module.serialize( false )
 		
 		result = { 
@@ -623,7 +623,7 @@ class Model.Cell extends Helper.Mixable
 	_save_modules: ( clone = off ) =>
 		
 		promiseses = []
-		for module in @_getModules()
+		for module in @getModules()
 			promiseses.push module.save @id, clone
 		
 		return $.when( promiseses... )
