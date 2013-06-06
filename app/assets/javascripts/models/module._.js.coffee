@@ -399,7 +399,8 @@ class Model.Module extends Helper.Mixable
 				"Succesfully saved #{ @name }",
 				[ 'update parameters' ],
 				Model.Module.Notification.Success
-			)		
+			)	
+			return this
 		)
 			
 		promise.fail( ( data ) => 		
@@ -413,6 +414,7 @@ class Model.Module extends Helper.Mixable
 				],
 				Model.Module.Notification.Error
 			)		
+			return [ data, this ]
 		)
 		
 		return promise
@@ -449,6 +451,7 @@ class Model.Module extends Helper.Mixable
 					[ 'create instance' ],
 					Model.Module.Notification.Success
 				)		
+				return this
 				
 			# Fail
 			, ( data ) => 		
@@ -462,6 +465,7 @@ class Model.Module extends Helper.Mixable
 					],
 					Model.Module.Notification.Error
 				)		
+				return [ data, this ]
 			)
 		
 		return promise
@@ -505,7 +509,8 @@ class Model.Module extends Helper.Mixable
 						serialized_data
 					],
 					Model.Module.Notification.Error
-				)		
+				)
+				return [ data, this ]
 			)
 		
 		return promise
@@ -556,7 +561,8 @@ class Model.Module extends Helper.Mixable
 					"Succesfully loaded #{module.name}",
 					[ 'load' ],
 					Model.Module.Notification.Success
-				)	
+				)
+				return module
 				
 			# Fail
 			( data ) =>
@@ -573,6 +579,8 @@ class Model.Module extends Helper.Mixable
 					],
 					Model.Module.Notification.Error
 				)	
+				
+				return [ data, module ]
 			)
 			
 		return promise
