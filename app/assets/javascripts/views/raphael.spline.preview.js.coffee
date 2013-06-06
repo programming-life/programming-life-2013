@@ -13,7 +13,6 @@ class View.SplinePreview extends View.Spline
 	#
 	constructor: ( paper, parent, cell, orig, dest, interaction ) ->
 		super paper, parent, cell, orig, dest, interaction
-
 	
 	# Adds interaction to the spline
 	#
@@ -26,4 +25,3 @@ class View.SplinePreview extends View.Spline
 	_onModuleCreationEnded: ( preview ) ->
 		if preview.model is @orig.model or preview.model is @dest.model
 			@_die()
-

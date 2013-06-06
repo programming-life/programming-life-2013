@@ -155,7 +155,7 @@ class View.DummyModuleProperties extends View.ModuleProperties
 				else
 					@_changes[ key ] = value
 					
-				@_trigger "module.properties.change", @_parent , [key, @_changes[ key ] ]
+				@_trigger "module.properties.change", @_parent , [@_changes ]
 			)
 		) key
 
