@@ -24,6 +24,7 @@ locache.cleanup()
 		return if updating
 	
 		if document.mvc? and document.mvc.onUpdate?
+			console.info 'Connection established: updating!'
 			promise = document.mvc.onUpdate()
 			promise.always( () => 
 				updating = off
@@ -37,6 +38,7 @@ locache.cleanup()
 	upgrade = () ->
 		return if upgrading
 		if document.mvc? and document.mvc.onUpgrade?
+			console.info 'Application downloaded: upgrading!'
 			document.mvc.onUpgrade()
 			upgrading = on
 	
@@ -45,12 +47,14 @@ locache.cleanup()
 	$( window )
 		.on( 'beforeunload', () ->
 			if document.mvc? and document.mvc.beforeUnload?
+				console.info 'Just before unloading this window...'
 				message = document.mvc.beforeUnload()
 				return message if message?
 			return undefined
 		)
 		.on( 'unload', () ->
 			if document.mvc? and document.mvc.onUnload?
+				console.info '...unloaded this window'
 				document.mvc.onUnload()
 		)
 		.on( 'online', update )

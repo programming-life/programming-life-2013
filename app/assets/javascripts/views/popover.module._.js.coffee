@@ -300,7 +300,6 @@ class View.ModuleProperties extends View.HTMLPopOver
 		((key) => 
 			selectable.on('change', (event) => 
 				value = event.target.value
-				console.log 'hello, ' + value
 				if ( selectable.closest('[data-multiple]').data( 'multiple' ) is on )
 					@_changes[ key ] = @_getCurrentValueFor( key )
 					if event.target.checked
@@ -317,7 +316,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 	#
 	#
 	_triggerChange: ( key, value ) ->
-		console.log "trigger change #{key} to #{value}"
+		console.debug "trigger change #{key} to #{value}"
 		@_trigger( 'module.properties.change', @_parent, [ @_changes, key, value ] )
 		
 	# Draws the selectable selection for
