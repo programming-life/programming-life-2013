@@ -607,8 +607,11 @@ class Model.Cell extends Helper.Mixable
 			parameters: parameters
 			type: type
 			modules: modules
+			name: @name
 		}
 		
+		parameters.name = 'Cell [' + @creation.getTime() + ']' unless parameters.name
+		parameters.creation = @creation.getTime()
 		return JSON.stringify( result ) if to_string
 		return result
 		
@@ -664,7 +667,7 @@ class Model.Cell extends Helper.Mixable
 		)
 		
 		promise.always( ( data ) =>
-
+			
 			locache.async
 				.set( 'cell.' + @id, @serialize(), Cell.CACHE_TIMEOUT )
 				.finished( () =>
@@ -690,7 +693,7 @@ class Model.Cell extends Helper.Mixable
 		
 		result = {
 			cell:
-				name: @name ? 'Cell [' + @creation + ']'
+				name: @name ? 'Cell [' + @creation.getTime() + ']'
 			modules: modules
 				
 		}
@@ -769,6 +772,7 @@ class Model.Cell extends Helper.Mixable
 	@deserialize : ( serialized = {} ) ->
 		
 		serialized = JSON.parse( serialized ) if _( serialized ).isString()
+		serialized.parameters.creation = new Date( serialized.parameters.creation )
 		fn = ( window || @ )["Model"]
 		
 		result = new fn[serialized.type]( undefined, undefined, serialized.parameters  )
