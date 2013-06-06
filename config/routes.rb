@@ -9,7 +9,7 @@ ProgrammingLife::Application.routes.draw do
 	get 'hook' => 'hook#index'
 	
 	unless Rails.env.production?
-		offline = Rack::Offline.configure :cache_interval => 120 do      
+		offline = Rack::Offline.configure :cache_interval => 20 do      
 		
 			# Get everything from the css and js manifest
 			manifests = ["application.css", "application.js"]
