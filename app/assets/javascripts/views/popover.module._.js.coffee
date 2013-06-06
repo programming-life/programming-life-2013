@@ -209,7 +209,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 	# @param value [any] the current value
 	#
 	_drawParameter: ( id, key, value ) ->
-		input = $('<input required type="text" id="' + id + '" class="input-small" value="' + value + '" />')
+		input = $('<input required type="number" min="0.0" step="0.01" id="' + id + '" class="input-small" value="' + value + '" />')
 		@_bindOnChange( key, input )
 		return input
 				
@@ -292,6 +292,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 	# @return [any] the value
 	#
 	_getCurrentValueFor: ( key ) ->
+		return @_changes[ key ]  if @_changes[ key ]?
 		return _( @module[ key ] ).clone( true )
 
 	# Binds an on change event to a selectable input that sets the key
@@ -306,7 +307,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 				if ( selectable.closest('[data-multiple]').data( 'multiple' ) is on )
 					@_changes[ key ] = @_getCurrentValueFor( key )
 					if event.target.checked
-						@_changes[ key ].push value
+						@_changes[ key ].push value if @_changes[ key ].indexOf( value ) is -1
 					else
 						@_changes[ key ] = _( @_changes[ key ] ).without value
 				else
