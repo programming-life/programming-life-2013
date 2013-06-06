@@ -18,7 +18,7 @@ class CellsController < ApplicationController
 
 		respond_to do |format|
 			format.html # index.html.erb
-			format.json { render json: @cells }
+			format.json { render json: Cell.all }
 		end
 	end
 
