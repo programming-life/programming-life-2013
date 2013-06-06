@@ -29,9 +29,6 @@ class Controller.Report extends Controller.Base
 		rules = []
 		# Get all the rules in said CSS file		
 		for rule in stylesheet.cssRules
-			# Remove hitboxes which show up as black boxes in PDF
-			if rule.selectorText == '.module-hitbox'
-				rule.style.fill = ''
 			rules.push rule.cssText
 
 		rules = rules.reduce (x, y) -> x + " " + y
