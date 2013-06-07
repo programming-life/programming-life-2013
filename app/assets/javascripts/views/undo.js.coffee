@@ -62,18 +62,18 @@ class View.Undo extends Helper.Mixable
 		@_contents.append(body)
 
 		@_footer = $('<div class="pane-footer navbar"><div class="navbar-inner"></div></div>')
-		#leftBranchButton = $('<div class="branch-button pull-left"><i class="icon-chevron-left"></i></div>')
-		#rightBranchButton = $('<div class="branch-button pull-right"><i class="icon-chevron-right"></i></div>')
+		leftBranchButton = $('<div class="branch-button pull-left"><i class="icon-chevron-left"></i></div>')
+		rightBranchButton = $('<div class="branch-button pull-right"><i class="icon-chevron-right"></i></div>')
 
-		#leftBranchButton.click( () =>
-		#	@_trigger "view.undo.branch", @, [ -1 ]
-		#)
-		#rightBranchButton.click( () =>
-		#	@_trigger "view.undo.branch", @, [ 1 ]
-		#)
+		leftBranchButton.click( () =>
+			@_trigger "view.undo.branch", @, [ -1 ]
+		)
+		rightBranchButton.click( () =>
+			@_trigger "view.undo.branch", @, [ 1 ]
+		)
 		
-		#@_footer.find('.navbar-inner').append(leftBranchButton)
-		#@_footer.find('.navbar-inner').append(rightBranchButton)
+		@_footer.find('.navbar-inner').append(leftBranchButton)
+		@_footer.find('.navbar-inner').append(rightBranchButton)
 		@_contents.append(@_footer)
 		container.append(@_contents)
 
@@ -107,7 +107,7 @@ class View.Undo extends Helper.Mixable
 		dl.append('<dt>' + node.object._description + '</dt>')
 
 		alternatives = (node.parent?.children.length ? 1) - 1
-		#dl.append('<dd>' + alternatives + ' alternative actions</dd>')
+		dl.append('<dd>' + alternatives + ' alternative actions</dd>')
 
 		row.append(dl)
 
