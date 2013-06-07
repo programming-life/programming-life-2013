@@ -10,7 +10,7 @@ ProgrammingLife::Application.routes.draw do
 	get 'version' => 'hook#version'
 	
 	unless Rails.env.production? or ( not Rails.application.config.assets.debug )
-		offline = Rack::Offline.configure :cache_interval => 20 do      
+		offline = Rack::Offline.configure :cache_interval => 120 do      
 		
 			# Get everything from the css and js manifest
 			manifests = ["application.css", "application.js"]
@@ -34,7 +34,7 @@ ProgrammingLife::Application.routes.draw do
 		end
 			
 		# SWITCH IT BABE TO GET MANIFEST
-		if false
+		if true
 			match "/gigabase.manifest" => offline
 		end
 	else
