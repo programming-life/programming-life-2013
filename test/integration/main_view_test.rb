@@ -29,36 +29,36 @@ class MainViewTest < ActionDispatch::IntegrationTest
 	#Mouseover event on class module-hitbox
 	#Check if popover showed up on mouseover
 	test "module mouseover" do
-		#el = @driver.find_element(:class, "cellgrowth-hitbox")
-		#@driver.mouse.move_to(el)
-		#pop = @driver.find_element(:class, "cellgrowth-box")
-		#assert pop.displayed?
+		el = @wait.until { @driver.find_element(:class, "cellgrowth-hitbox") }
+		@driver.mouse.move_to(el)
+		pop = @wait.until { @driver.find_element(:class, "cellgrowth-box") }
+		assert pop.displayed?
 	end
 
 	#Click on module
 	#Check if edit popover showed up
 	test "open edit popover" do
-		el = @driver.find_element(:class, "module-hitbox")
+		el = @wait.until { @driver.find_element(:class, "module-hitbox") }
 		el.click
-		pop = @driver.find_element(:class, "popover")
+		pop = @wait.until { @driver.find_element(:class, "popover") }
 		assert pop.displayed?
 	end
 
 	#Click on dummy module
 	#Check wether a module has been added
 	test "add a module" do
-		el = @driver.find_element(:class, "inactive")
+		el = @wait.until { @driver.find_element(:class, "inactive") }
 		el.click
-		newmodule = @driver.find_element(:class, "module-hitbox")
+		newmodule = @wait.until { @driver.find_element(:class, "module-hitbox") }
 		assert newmodule.displayed?
 	end
 
 	#Click on Action History Pane
 	#Check if pane showed up
 	test "view the actionhistory pane" do
-		el = @driver.find_element(:class, "pane-button")
+		el = @wait.until { @driver.find_element(:class, "pane-button") }
 		el.click
-		pane = @driver.find_element(:class, "pane-left")
+		pane = @wait.until { @driver.find_element(:class, "pane-left") }
 		assert_equal pane.attribute("class"), "pane pane-left extended"
 	end
 
