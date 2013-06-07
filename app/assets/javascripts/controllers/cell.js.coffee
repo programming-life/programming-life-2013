@@ -497,12 +497,6 @@ class Controller.Cell extends Controller.Base
 		)
 		
 		return promise
-			
-	# Catcher for the cell controller errors
-	#
-	_catcher: ( source, e ) ->
-		text = if _( e ).isObject() then e.message ? 'no message' else e 
-		@_notificate( @, @model, text , text, [], View.RaphaelBase.Notification.Error)
 	
 	# Simulation handler
 	#

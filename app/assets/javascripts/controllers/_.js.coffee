@@ -79,3 +79,9 @@ class Controller.Base extends Helper.Mixable
 	#
 	onUnload: () ->
 		return undefined
+		
+	# Catcher for the cell controller errors
+	#
+	_catcher: ( source, e ) ->
+		text = if _( e ).isObject() then e.message ? 'no message' else e 
+		@_notificate( @, 'global', text , text, [], View.RaphaelBase.Notification.Error)
