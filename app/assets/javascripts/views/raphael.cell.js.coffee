@@ -283,11 +283,15 @@ class View.Cell extends View.RaphaelBase
 	# @param spline [View.Spline] spline added
 	#
 	addSpline: ( spline ) =>
-			if _(@_splines).find( ( s ) -> (s.orig is spline.orig and s.dest is spline.dest) )?
+			return if spline in @_splines
+			
+			if _(@_splines).find( ( s ) -> 
+				( s.orig is spline.orig and s.dest is spline.dest ) or 
+				( s.dest is spline.orig and s.orig is spline.dest )	)?
 				spline.kill()
 				return
-
-			@_splines.push( spline )
+			
+			@_splines.push spline
 			spline.draw()
 
 	# On spline removed, remove it from the cell and kill it
