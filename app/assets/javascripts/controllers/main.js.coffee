@@ -30,7 +30,6 @@ class Controller.Main extends Controller.Base
 		# Unobtrusive notifications view
 		parent =
 			getAbsolutePoint: ( location ) ->
-				console.log location
 				return [ $( window ).width() / 2, 20 ]
 				
 		@view.add ( @_globalNotifications = new View.Notification( parent, 'global', 'global' ) )
@@ -205,7 +204,6 @@ class Controller.Main extends Controller.Base
 	# On Save error occurred
 	#
 	_onSaveError: ( data ) =>
-		console.log data
 		[ error, cell ] = data
 		switch error.status
 			when 404

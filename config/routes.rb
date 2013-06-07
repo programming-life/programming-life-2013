@@ -9,7 +9,7 @@ ProgrammingLife::Application.routes.draw do
 	get 'hook' => 'hook#index'
 	get 'version' => 'hook#version'
 	
-	unless Rails.env.production?
+	unless Rails.env.production? or ( not Rails.application.config.assets.debug )
 		offline = Rack::Offline.configure :cache_interval => 20 do      
 		
 			# Get everything from the css and js manifest
