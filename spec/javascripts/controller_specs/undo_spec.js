@@ -1,16 +1,16 @@
-xdescribe("Undo", function() {
+describe("Undo", function() {
 	var model, view;
 
 	beforeEach( function() {
 		model = new Model.UndoTree();
-		view = new View.Undo();
 	});
 
 	describe("when constructed", function() {
 		var controller;
 		
 		beforeEach( function() {
-			controller = new Controller.Undo( model, view );
+			controller = new Controller.Undo( model);
+			view = controller.view
 		});
 
 		it("should have a defined model", function() {
@@ -18,7 +18,7 @@ xdescribe("Undo", function() {
 		});
 
 		it("should have a defined view", function() {
-			expect( controller.model ).toBeDefined();
+			expect( controller.view ).toBeDefined();
 		});
 
 		describe("when setting the timemachine", function() {

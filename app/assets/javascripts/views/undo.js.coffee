@@ -163,8 +163,9 @@ class View.Undo extends Helper.Mixable
 	#
 	# @param direction [String] The direction of the branching
 	#
-	_onBranch: ( direction ) ->
-		@_drawContents()
+	_onBranch: ( ) ->
+		if @_elem?
+			@_drawContents()
 
 	# Mark a node in the list as selected
 	#
