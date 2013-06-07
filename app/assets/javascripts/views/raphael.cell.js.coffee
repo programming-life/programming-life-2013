@@ -131,7 +131,7 @@ class View.Cell extends View.RaphaelBase
 		@viewsByType[type].push(view)
 		@viewsByType[type] = _(@viewsByType[type]).difference(dummies).concat(dummies)
 		view.draw()
-		@_notificationsView.hide()
+		@_notificationsView?.hide()
 
 	# Removes a view from the container
 	#
@@ -141,7 +141,7 @@ class View.Cell extends View.RaphaelBase
 		type = view.getFullType()
 		@viewsByType[type] = _( @viewsByType[type] ? [] ).without view
 		view.kill() if kill
-		@_notificationsView.hide()
+		@_notificationsView?.hide()
 
 	# Get module view for the given module
 	#
