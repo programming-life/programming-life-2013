@@ -1,10 +1,12 @@
-# The controller for the Undo view
+# The base of all controllers
 #
 # @concern Mixin.EventBindings
+# @concern Mixin.Catcher
 #
 class Controller.Base extends Helper.Mixable
 
 	@concern Mixin.EventBindings
+	@concern Mixin.Catcher
 	
 	# Creates the controller
 	#
