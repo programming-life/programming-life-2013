@@ -16,6 +16,7 @@ class MainViewTest < ActionDispatch::IntegrationTest
 			# :url => "http://vincentrobbemond:d59ae46b-e2a3-49fa-9301-75528e09aa46@ondemand.saucelabs.com:80/wd/hub",
 			# :desired_capabilities => caps
 			# )
+		@driver.manage.timeouts.implicit_wait = 2
 		@wait = Selenium::WebDriver::Wait.new :timeout => 10
 
 		# navigate to the main view
@@ -29,7 +30,6 @@ class MainViewTest < ActionDispatch::IntegrationTest
 	#Mouseover event on class module-hitbox
 	#Check if popover showed up on mouseover
 	test "module mouseover" do
-		sleep( 2 )
 		el = @wait.until { @driver.find_element(:class, "cellgrowth-hitbox") }
 		displayed = false
 		if @wait.until { el.displayed? }
@@ -43,7 +43,6 @@ class MainViewTest < ActionDispatch::IntegrationTest
 	#Click on module
 	#Check if edit popover showed up
 	test "open edit popover" do
-		sleep( 2 )
 		el = @wait.until { @driver.find_element(:class, "module-hitbox") }
 		displayed = false
 		if @wait.until { el.displayed? }
@@ -57,7 +56,6 @@ class MainViewTest < ActionDispatch::IntegrationTest
 	#Click on dummy module
 	#Check wether a module has been added
 	test "add a module" do
-		sleep( 2 )
 		els = @wait.until { @driver.find_elements(:class, "inactive") }
 		displayed = false
 		for el_pot in els
