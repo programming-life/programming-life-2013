@@ -493,7 +493,7 @@ class View.Module extends View.RaphaelBase
 			when 'SubstrateCircle'
 			
 				# This is the circle in which we show the substrate
-				substrate = params.substrate
+				substrate = _.escape params.substrate
 				substrateText = _.escape _( substrate ).first()
 				if ( params.useFullName? and params.useFullName )
 					substrateText = substrate
@@ -531,6 +531,7 @@ class View.Module extends View.RaphaelBase
 			
 				# This is the circle in which we show the conversion
 				
+				origFullTexts = []
 				origTexts = []
 				enzymOrigCircles = []
 				
@@ -543,13 +544,15 @@ class View.Module extends View.RaphaelBase
 					from = min + origTexts.length * d 
 					to = max - ( params.orig.length - origTexts.length - 1 ) * d
 					
+					origFullTexts.push _.escape orig
 					origTexts.push _.escape _( orig ).first()
 					
 					[ enzymOrigCircle ] = @drawComponent( 'enzym', 'Sector', x - 2, y, { r: 20, from: from, to: to } )
 					enzymOrigCircle.attr
-						'fill': @hashColor origTexts[ origTexts.length - 1 ]
+						'fill': @hashColor origFullTexts[ origTexts.length - 1 ]
 					enzymOrigCircles.push enzymOrigCircle
 					
+				destFullTexts = []
 				destTexts = []
 				enzymDestCircles = []
 				
@@ -562,31 +565,16 @@ class View.Module extends View.RaphaelBase
 					from = min - ( params.dest.length - destTexts.length - 1 ) * d 
 					to = max + destTexts.length * d 
 					
+					destFullTexts.push _.escape dest
 					destTexts.push _.escape _( dest ).first()
 					
 					[ enzymDestCircle ] = @drawComponent( 'enzym', 'Sector', x + 2, y, { r: 20, from: from, to: to } )
 					enzymDestCircle.attr
-						'fill': @hashColor destTexts[ destTexts.length - 1 ]
+						'fill': @hashColor destFullTexts[ destTexts.length - 1 ]
 					enzymDestCircles.push enzymDestCircle
 				
-				destText = _.escape _( params.dest ).first()
-				
-				if ( params.showText )
-				
-					substrateTextShadow = @paper.text( x, y - 1, substrateText )
-					substrateTextShadow.node.setAttribute('class', "#{module}-substrate-text-shadow" )
-					substrateTextShadow.attr
-						'font-size': 18 
 
-					substrateTextActual = @paper.text( x, y, substrateText )
-					substrateTextActual.node.setAttribute('class', "#{module}-substrate-text" )
-					substrateTextActual.attr
-						'font-size': 18
-
-					substrateText = @paper.set()
-					substrateText.push(substrateTextShadow, substrateTextActual)
-				
-				return [ enzymOrigCircles, enzymDestCircles, substrateText ]
+				return [ enzymOrigCircles, enzymDestCircles ]
 								
 		return []
 
