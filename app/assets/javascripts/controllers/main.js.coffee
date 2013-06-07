@@ -19,6 +19,15 @@ class Controller.Main extends Controller.Base
 		@_createChildren()
 		@_createBindings()
 		
+		@_options =
+			simulate:
+				iterations: locache.get( 'option.simulate.iterations' ) ? 4
+				iteration_length: locache.get( 'option.simulate.iteration_length' ) ? 20
+			ode:
+				tolerance: locache.get( 'option.ode.tolerance' )
+				iterations: locache.get( 'option.ode.iterations' ) 
+				dt: locache.get( 'option.ode.dt' )
+				interpolate: locache.get( 'option.ode.interpolate' )
 		
 	# Creates children
 	#
@@ -275,9 +284,9 @@ class Controller.Main extends Controller.Base
 			@_currentIteration++
 			@_setProgressBar 0
 			
-		@_iterations = 4
+		@_iterations = @_options.simulate.iterations
 		@_currentIteration = 0
-		[ token, progress_promise ] = @controller('cell').setSimulationState startSimulateFlag, iterationDone, 20, @_iterations
+		[ token, progress_promise ] = @controller('cell').setSimulationState startSimulateFlag, iterationDone, @_options
 		if startSimulateFlag is on
 			@_token = token
 			@view.showProgressBar()
@@ -335,6 +344,7 @@ class Controller.Main extends Controller.Base
 		return promise.promise()
 	
 	# On Upgrade resy
+	# @todo show notification, not modal on revision
 	#
 	onUpgrade: () ->
 		
