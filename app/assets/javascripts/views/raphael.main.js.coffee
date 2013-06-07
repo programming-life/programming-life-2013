@@ -116,8 +116,10 @@ class View.Main extends View.RaphaelBase
 	#
 	clear: () ->
 		super()
-		@_resetModal.clear()
-		@_loadModal.clear()
+		@_resetModal?.clear()
+		@_loadModal?.clear()
+		@_optionsModal?.clear()
+		@_notifications?.clear()
 		return this
 	
 	# Kills the main view
@@ -127,9 +129,10 @@ class View.Main extends View.RaphaelBase
 	kill: ( ) ->
 		super()
 		@paper.remove()
-		@_resetModal.kill()
-		@_loadModal.kill()
+		@_resetModal?.kill()
+		@_loadModal?.kill()
 		@_notifications?.kill()
+		@_optionsModal?.kill()
 		@getActionButtons().removeProp( 'disabled' )
 		$( window ).off( 'resize' )
 		$( '#actions' ).off( 'click', '[data-action]' )

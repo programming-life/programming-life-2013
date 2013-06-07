@@ -481,7 +481,13 @@ class Model.Cell extends Helper.Mixable
 	# @param base_values [Array] the base values to try
 	# @return [self] chainable instance
 	#
-	run : ( from, to, base_values = [], callback, token, stepsize = 1e-9, iterations = 4000 ) ->
+	run : ( from, to, base_values = [], callback, token, options = {} ) ->
+	
+		defaults = {
+			tolerance: 1e-9
+			iterations: 4000
+		}
+		options = _( options ).defaults( defaults )
 		
 		@_trigger( 'cell.before.run', @, [ to - from ] )			
 		@generateWarnings()
@@ -509,7 +515,7 @@ class Model.Cell extends Helper.Mixable
 			from = 0
 			to =  to - from
 		
-		promise = numeric.asyncdopri( 0, to - from, values, @_step( modules, mapping, map ), stepsize, iterations, undefined, token )
+		promise = numeric.asyncdopri( 0, to - from, values, @_step( modules, mapping, map ), options.tolerance, options.iterations, undefined, token )
 		promise = promise.then( ( ret ) =>
 		
 			@_trigger( 'cell.after.run', @, [ to - from, ret, mapping ] )
@@ -771,7 +777,7 @@ class Model.Cell extends Helper.Mixable
 	# @return [Model.Cell] the cell
 	#
 	@deserialize : ( serialized = {} ) ->
-		
+
 		serialized = JSON.parse( serialized ) if _( serialized ).isString()
 		serialized.parameters.creation = new Date( serialized.parameters.creation )
 		fn = ( window || @ )["Model"]
