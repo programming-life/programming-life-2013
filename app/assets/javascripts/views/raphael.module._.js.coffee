@@ -418,7 +418,7 @@ class View.Module extends View.RaphaelBase
 	#
 	createSplines: () ->
 		if @type is 'Transporter'
-			for property in @model["transported"]
+			for property in [ @model["transported"] ]
 				for location in ["int", "ext"]
 					view = @_parent.getViewByName "#{property}##{location}"
 					if view
@@ -666,16 +666,6 @@ class View.Module extends View.RaphaelBase
 		return if cell isnt @_cell
 		@createSplines()
 		return
-		if @type is 'Transporter'
-			if metabolite.name is @model.orig
-				@_createSpline @_parent.getView(metabolite), @
-			else if metabolite.name is @model.dest
-				@_createSpline @, @_parent.getView(metabolite)
-		else if @type is 'Metabolism'
-			if metabolite.name in @model.orig
-				@_createSpline @_parent.getView(metabolite), @
-			else if metabolite.name in @model.dest
-				@_createSpline @, @_parent.getView(metabolite)
 
 	# Gets called when a metabolite is removed from a cell
 	#

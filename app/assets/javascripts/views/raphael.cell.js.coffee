@@ -150,8 +150,8 @@ class View.Cell extends View.RaphaelBase
 	getView: ( module ) ->
 		for type, views of @viewsByType
 			view = _( views ).find( (view) -> view.model is module )
-			if view?
-				return view
+			return view if view?
+		return null
 
 	# Get module view by name
 	#
@@ -161,8 +161,8 @@ class View.Cell extends View.RaphaelBase
 	getViewByName: ( name ) ->
 		for type, views of @viewsByType
 			view = _( views ).find( (view) -> view.model?.name is name )
-			if view?
-				return view
+			return view if view?
+		return null
 
 	# Draws the cell
 	#
