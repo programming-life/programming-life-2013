@@ -45,7 +45,7 @@ class ModuleInstancesController < ApplicationController
 		@module_values = @module_instance.module_values
 		@module_hash = Hash[ ( @module_parameters.map { |p| p.key } ).zip( 
 			@module_parameters.map { |p| 
-					( found = ( @module_values.select{ |v| v.module_parameter == p } ).first ).nil? ? nil : found.value.nil? ? "" : JSON.parse( found.value )[0]
+					( found = ( @module_values.select{ |v| v.module_parameter == p } ).first ).nil? ? nil : ( found.value.nil? or found.value.empty? ? "[]" : JSON.parse( found.value )[0] )
 				} 
 			)
 		]
@@ -97,7 +97,7 @@ class ModuleInstancesController < ApplicationController
 		@module_values = @module_instance.module_values
 		@module_hash = Hash[ ( @module_parameters.map { |p| p.key } ).zip( 
 			@module_parameters.map { |p| 
-					( found = ( @module_values.select{ |v| v.module_parameter == p } ).first ).nil? ? nil : found.value.nil? ? "" : JSON.parse( found.value )[0]
+					( found = ( @module_values.select{ |v| v.module_parameter == p } ).first ).nil? ? nil : ( found.value.nil? or found.value.empty? ? "[]" : JSON.parse( found.value )[0] )
 				} 
 			)
 		]
