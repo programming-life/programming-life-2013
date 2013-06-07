@@ -52,6 +52,7 @@ class View.Module extends View.RaphaelBase
 		@_bind( 'module.selected.changed', @, @onModuleSelected )
 		@_bind( 'module.hovered.changed', @, @onModuleHovered )
 		@_bind( 'module.properties.change', @, @_onModuleChanged )
+		@_bind( 'module.update.aborted', @, @_onModuleUpdateEnded )
 
 		@_onNotificate( @, @model, @_onNotificate)
 		return this
@@ -233,9 +234,9 @@ class View.Module extends View.RaphaelBase
 	# @param metabolitePlacement [Placement] the placement of the metabolite
 	# @return [View.Module.Direction] the direction of the spline
 	#
-	_getSplineDirection: ( metabolitePlacement ) ->
+	_getSplineDirection: ( metabolitePlacement, model = @model ) ->
 		if @_type is 'Transporter'
-			switch @model.direction
+			switch model.direction
 				when Model.Transporter.Inward
 					switch metabolitePlacement
 						when Model.Metabolite.Inside
@@ -417,9 +418,12 @@ class View.Module extends View.RaphaelBase
 		
 	# Creates splines for this module
 	#
-	createSplines: () ->
+	# @param model [Model] the module to create for
+	# @param preview [Boolean] the preview flag
+	#
+	createSplines: ( model = @model, preview = off ) ->
 		if @type is 'Transporter'
-			for property in [ @model["transported"] ]
+			for property in [ model["transported"] ]
 				for location in ["int", "ext"]
 					view = @_parent.getViewByName "#{property}##{location}"
 					if view
@@ -427,20 +431,20 @@ class View.Module extends View.RaphaelBase
 						direction = @_getSplineDirection(placement)
 
 						if direction is View.Module.Direction.Inward
-							@_createSpline view, @
+							@_createSpline( view, @, preview )
 						else if direction is View.Module.Direction.Outward
-							@_createSpline @, view
+							@_createSpline( @, view, preview )
 		else if @type is 'Metabolism'
-			for property in _( @model["orig"] ).concat( @model["dest"] )
+			for property in _( model["orig"] ).concat( model["dest"] )
 				view = @_parent.getViewByName property
 				if view
 					placement = view.model.placement
 					direction = @_getSplineDirection(placement)
 
-					if property in @model["orig"]
-						@_createSpline view, @
-					else if property in @model["dest"]
-						@_createSpline @, view
+					if property in model["orig"]
+						@_createSpline( view, @, preview )
+					else if property in model["dest"]
+						@_createSpline( @, view, preview )
 		return this
 
 	# Draws this view shadow
@@ -585,9 +589,15 @@ class View.Module extends View.RaphaelBase
 	# @param dest [View.Module] the destination module view
 	# @return [View.Spline] the created spline
 	#
-	_createSpline: ( orig, dest ) ->
+	_createSpline: ( orig, dest, preview = off ) ->
+		return @_createPreviewSpline( orig, dest ) if preview
 		return if orig instanceof View.ModulePreview or dest instanceof View.ModulePreview
 		new View.Spline(@paper, @_parent, @_cell, orig, dest)
+
+	# Creates a spline preview
+	#
+	_createPreviewSpline: ( orig, dest ) ->
+		new View.SplinePreview(@paper, @_parent, @_cell, orig, dest)
 
 	# Runs if module is invalidated
 	# 
@@ -599,9 +609,17 @@ class View.Module extends View.RaphaelBase
 			
 	# Runs if module is changed
 	#
-	_onModuleChanged: ( source ) =>
+	_onModuleChanged: ( source, params, key, value, currents ) =>
 		if source.model is @model
 			@_notificationsView.hide()
+			module = new source.model.constructor( _( _( params ).clone( true ) ).defaults( currents ) )
+			@createSplines( module, on )
+			
+	# Runs if module is no longer updated
+	#
+	_onModuleUpdateEnded: ( source ) =>
+		if source.model is @model
+			@createSplines( @model, off )
 	
 	# Gets called when a module view selected.
 	#

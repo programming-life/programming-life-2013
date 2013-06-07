@@ -18,7 +18,7 @@ class View.ModulePreview extends View.Module
 	#
 	_createSpline: ( orig, dest ) ->
 		return unless orig? and dest?
-		new View.SplinePreview(@paper, @_parent, @_cell, orig, dest)
+		new View.SplinePreview( @paper, @_parent, @_cell, orig, dest )
 
 	#
 	#
