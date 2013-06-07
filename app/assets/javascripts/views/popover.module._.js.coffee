@@ -119,6 +119,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 			compound: 'compound'
 			compounds: 'compounds'
 			dna: 'dna'
+			population: 'cell'
 			
 		for type, prop of iteration
 			continue unless properties[ prop ]?
@@ -153,6 +154,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 	_drawInput: ( type, key, value, params = {} ) ->
 		id = @getInputId(key)
 		keyLabel = key.replace(/_(.*)/g, "<sub>$1</sub>")
+		keyLabel = type if key is 'cell'
 
 		controlGroup = $('<div class="control-group"></div>')
 		controlGroup.append('<label class="control-label" for="' + id + '">' + keyLabel + '</label>')
@@ -166,8 +168,8 @@ class View.ModuleProperties extends View.HTMLPopOver
 			drawtype += 's'
 			
 		unless value?
-			value = if key is 'dna' then ['dna'] else []
-
+			value = if key in [ 'dna', 'cell' ] then [ key ] else []
+			
 		switch drawtype
 			when 'name'
 				controls.append @_drawName( id, key, value )
@@ -181,6 +183,9 @@ class View.ModuleProperties extends View.HTMLPopOver
 					
 			when 'dna'
 				controls.append @_drawDNA( id, key, value )
+				
+			when 'population'
+				controls.append @_drawPopulation( id, key, value )
 			
 			when 'compounds'
 				#controls.append @_drawCompound( id, key, v ) for v in value
@@ -235,6 +240,15 @@ class View.ModuleProperties extends View.HTMLPopOver
 	#
 	_drawDNA: ( id, key, value ) ->
 		return $('<span class="badge badge-important">' + value + '</span> ')
+		
+	# Draws the input for Cell (Growth)
+	#
+	# @param id [String] the form id
+	# @param key [String] property to set
+	# @param value [any] the current value
+	#
+	_drawPopulation: ( id, key, value ) ->
+		return $('<span class="badge badge-inverse">' + value + '</span> ')
 		
 	# Draws the input for a compound
 	#

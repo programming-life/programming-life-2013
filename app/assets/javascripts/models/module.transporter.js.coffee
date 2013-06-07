@@ -241,6 +241,7 @@ class Model.Transporter extends Model.Module
 					}
 				]
 				dna: [ 'dna' ]
+				cell: [ 'cell' ]
 				
 			tests:
 				compounds: [ 'name', 'dna', 'consume', 'cell', 'orig', 'dest' ]
