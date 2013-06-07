@@ -101,7 +101,7 @@ class View.LoadModal extends View.HTMLModal
 			
 			load_dropdown.append( load_action = $ '<li><a href="#" data-dismiss="modal" data-action="load" aria-hidden="true" data-id="' + cell.id + '" ><i class="icon-circle-arrow-down"></i> Load</a></li>' )
 			load_dropdown.append( clone_action = $ '<li><a href="#" data-dismiss="modal" data-action="clone" aria-hidden="true" data-id="' + cell.id + '" ><i class="icon-plus-sign"></i> Clone</a></li>' )
-			load_dropdown.append( merge_action = $ '<li><a href="#" data-dismiss="modal" data-action="merge" aria-hidden="true" data-id="' + cell.id + '" ><i class="icon-random"></i> Merge</a></li>' )
+			#load_dropdown.append( merge_action = $ '<li><a href="#" data-dismiss="modal" data-action="merge" aria-hidden="true" data-id="' + cell.id + '" ><i class="icon-random"></i> Merge</a></li>' )
 			
 			# The load data set action
 			load_group.on( 'click', '[data-action]', ( event ) => 
