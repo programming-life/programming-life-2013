@@ -395,11 +395,11 @@ class Controller.Cell extends Controller.Base
 	# @options ode_options [Integer] iterations 
 	# @return [ Tuple<CancelToken, jQuery.Promise> ] tuple of token and promise
 	#
-	startSimulation: ( simulate_options, callback, ode_options ) ->
+	startSimulation: ( simulate_options = {}, callback, ode_options = {} ) ->
 	
 		defaults = @getDefaultOptions()	
 		simulate_options = _( simulate_options ).defaults( defaults.simulate )
-		ode_options =  _( ode_options ).defaults( defaults.ode )
+		ode_options = _( ode_options ).defaults( defaults.ode )
 		
 		@_running = on
 		@_token = numeric.asynccancel()
