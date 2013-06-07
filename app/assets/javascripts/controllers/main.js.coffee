@@ -144,8 +144,8 @@ class Controller.Main extends Controller.Base
 		action = target.data( 'action' )
 		action = action.charAt(0).toUpperCase() + action.slice(1)
 		
-		if @[ 'on' + action ]?
-			@[ 'on' + action ]( btn_target, enable, success, error )
+		if @[ '_on' + action ]?
+			@[ '_on' + action ]( btn_target, enable, success, error )
 		else
 			enable()
 				
@@ -156,23 +156,30 @@ class Controller.Main extends Controller.Base
 	# @param succes [Function] function to run on success
 	# @param error [Function] function to run on error
 	#
-	onSave: ( target, enable, success, error ) ->
+	_onSave: ( target, enable, success, error ) ->
 		@view.setButtonState target, 'loading'
 		@view.setNotificationsOn( @controller('cell').model, 'button[data-action="save"]' )
 		@save().always( enable )
 			.done( success )
 			.fail( error )
-			.fail( @onSaveError )
+			.fail( @_onSaveError )
 		
+	# On Save error occurred
 	#
-	#
-	onSaveError: ( data ) =>
+	_onSaveError: ( data ) =>
+		console.log data
 		[ error, cell ] = data
 		switch error.status
 			when 404
 				button = $ '<button id="solution" class="btn btn-small" data-action="saveAs">Save As</button>'
 				button.on( 'click', => $( '#actions [data-action="saveAs"]' ).click() )
 				message = 'It seems like the cell you are trying to save was deleted. You can try to "save as" a new cell.'
+				@view.setSolutionNotification( message, button )
+			when 0
+				button = $ '<button id="solution" class="btn btn-small" data-action="load">Open Load</button>'
+				button.on( 'click', => $( '#actions [data-action="load"]' ).click() )
+				message = "The server could not be reached. Your cell is local stored and you can find it under load. When" +
+				" a connection is established, I will try to save your cell. You don't need to do anything."
 				@view.setSolutionNotification( message, button )
 		
 	# On Save As Button clicked
@@ -182,7 +189,7 @@ class Controller.Main extends Controller.Base
 	# @param succes [Function] function to run on success
 	# @param error [Function] function to run on error
 	#
-	onSaveAs: ( target, enable, success, error ) ->
+	_onSaveAs: ( target, enable, success, error ) ->
 		@view.setButtonState target, 'loading'
 		@view.setNotificationsOn( @controller('cell').model, 'button[data-action="save"]' )
 		@save( true ).always( enable )
@@ -196,7 +203,7 @@ class Controller.Main extends Controller.Base
 	# @param succes [Function] function to run on success
 	# @param error [Function] function to run on error
 	#
-	onLoad: ( target, enable, success, error ) ->
+	_onLoad: ( target, enable, success, error ) ->
 		@view.setButtonState target, 'loading'
 		confirm = ( id ) =>
 			callback = ( res ) => @view.setNotificationsOn( res, 'button[data-action="load"]' )
@@ -231,7 +238,7 @@ class Controller.Main extends Controller.Base
 	# @param succes [Function] function to run on success
 	# @param error [Function] function to run on error
 	#
-	onReport: ( target, enable, success, error ) ->
+	_onReport: ( target, enable, success, error ) ->
 		@view.setButtonState target, 'loading'
 		@save().then( ( cell ) =>
 				cell = cell[0] if _( cell ).isArray()
@@ -244,6 +251,18 @@ class Controller.Main extends Controller.Base
 			.done( success )
 			.fail( error )
 			.always( enable )
+			
+	# On Options Button clicked
+	#
+	# @param target [jQuery.Elem] target element
+	# @param enable [Function] function to re-enable buttons
+	# @param succes [Function] function to run on success
+	# @param error [Function] function to run on error
+	# @todo action should be more dynamic for child controllers and views
+	#
+	_onOptions: ( target, enable, success, error ) ->
+		@view.resetActionButtonState()
+		@view.showOptions()
 	
 	# On Reset Button clicked
 	#
@@ -253,7 +272,7 @@ class Controller.Main extends Controller.Base
 	# @param error [Function] function to run on error
 	# @todo action should be more dynamic for child controllers and views
 	#
-	onReset: ( target, enable, success, error ) ->
+	_onReset: ( target, enable, success, error ) ->
 		@view.resetActionButtonState()
 		
 		action = () =>
@@ -275,7 +294,7 @@ class Controller.Main extends Controller.Base
 	#
 	# @todo hack remove
 	#
-	onSimulate: ( target, enable, success, error ) ->
+	_onSimulate: ( target, enable, success, error ) ->
 		target.attr( 'disabled', false )
 		startSimulateFlag = not target.hasClass( 'active' )
 		
