@@ -72,7 +72,6 @@ class Controller.Cell extends Controller.Base
 			func( event ) if func?
 		)
 
-
 	# On Action click
 	#
 	# @param event [jQuery.Event] the event raised
@@ -227,9 +226,10 @@ class Controller.Cell extends Controller.Base
 	#
 	_onModuleCreationStarted: ( source, module ) ->
 		type = source.getFullType()
-		if source in @view.viewsByType[type]
+		if _( @view.viewsByType[type] ).contains( source )
 			@_creating = on
 			@preview( module )
+			
 
 	# Gets called on module.creation.aborted
 	#
@@ -237,7 +237,7 @@ class Controller.Cell extends Controller.Base
 	#
 	_onModuleCreationAborted: ( source ) ->
 		type = source.getFullType()
-		if source in @view.viewsByType[type]
+		if _( @view.viewsByType[type] ).contains( source )
 			@_creating = off
 			@killPreviews()
 		
@@ -248,7 +248,7 @@ class Controller.Cell extends Controller.Base
 	#
 	_onModuleCreated: ( source, module ) ->
 		type = source.getFullType()
-		if source in @view.viewsByType[type] 
+		if _( @view.viewsByType[type] ).contains( source )
 			@_creating = off
 			@killPreviews()
 

@@ -25,6 +25,7 @@ class View.HTMLPopOver extends Helper.Mixable
 		@_bind('view.drawn', @, @onViewPositioned)
 		@_bind('view.moved', @, @onViewPositioned)
 		@draw()
+		@_setSelected off
 		
 	# Creates the popover element
 	#
@@ -62,8 +63,6 @@ class View.HTMLPopOver extends Helper.Mixable
 		@_elem.append header if header?
 		@_elem.append @_createBody()
 		@_elem.append footer if footer?	
-
-		@_setSelected(off)
 		
 	# Nullifies the header
 	#
