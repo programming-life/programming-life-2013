@@ -1,3 +1,12 @@
+@-webkit-keyframes rotate-dash {
+  from {
+    stroke-dashoffset: 10;
+  }
+  to { 
+    stroke-dashoffset: 0;
+  }
+}
+
 .cell {
 	stroke: #cacaca;
 	stroke-width: 40px;
@@ -26,6 +35,17 @@ rect, circle:not(.cell) {
 	
 	&.selected {
 		stroke: rgba(82, 168, 236, 0.8);
+	}
+
+	&.module-preview {
+		opacity:.8;
+		stroke-dasharray: 5,5;
+		stroke: #52a8ec;
+
+		-webkit-animation-name: rotate-dash; 
+		-webkit-animation-duration: 0.5s; 
+		-webkit-animation-iteration-count: infinite;
+		-webkit-animation-timing-function: linear;
 	}
 }
 
@@ -66,6 +86,10 @@ text, tspan {
 	&.selected {
 		opacity:.182 !important;
 	}
+
+	&.module-preview {
+		opacity: .1 !important;
+	}
 }
 
 [class$='-substrate-circle'] {
@@ -95,4 +119,14 @@ text, tspan {
 	fill: #000;
 	stroke: #333;
 	stroke-width: 1px;
+}
+
+.spline-preview {
+		opacity:.8;
+		stroke-dasharray: 5,5;
+
+		-webkit-animation-name: rotate-dash; 
+		-webkit-animation-duration: 0.5s; 
+		-webkit-animation-iteration-count: infinite;
+		-webkit-animation-timing-function: linear;
 }

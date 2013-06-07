@@ -19,3 +19,9 @@ class View.ModulePreview extends View.Module
 	_createSpline: ( orig, dest ) ->
 		if orig? and dest?
 			new View.SplinePreview(@paper, @_parent, @_cell, orig, dest)
+
+	draw: ( x = null, y = null ) ->
+		super(x, y)
+		
+		$(@_box.node).addClass('module-preview')
+		@_shadow.forEach( (line) => $(line.node).addClass('module-preview'))

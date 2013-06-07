@@ -19,6 +19,11 @@ class View.SplinePreview extends View.Spline
 	addInteraction: ( ) ->
 		super()
 		@_bind "module.preview.ended", @, @_onModuleCreationEnded
+
+	draw: ( ) ->
+		super()
+
+		$(@_contents.node).addClass('spline-preview')
 	
 	# Gets called when module preview ends
 	#
