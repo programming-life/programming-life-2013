@@ -210,7 +210,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 	# @param value [any] the current value
 	#
 	_drawParameter: ( id, key, value ) ->
-		input = $('<input required type="number" step="0.01" id="' + id + '" class="input-small" value="' + value + '" />')
+		input = $('<input required type="number" step="0.001" id="' + id + '" class="input-small" value="' + value + '" />')
 		@_bindOnChange( key, input )
 		return input
 				
@@ -261,6 +261,9 @@ class View.ModuleProperties extends View.HTMLPopOver
 			select.append option
 			
 		@_bindOnChange( key, select )
+		if key is 'placement' or key is 'direction'
+			select.prop( 'disabled', true )
+			select.addClass( 'disabled' )
 		return select
 		
 	# Binds an on change event to the given input that sets the key

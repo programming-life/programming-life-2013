@@ -83,7 +83,6 @@ class View.DummyModuleProperties extends View.ModuleProperties
 	_drawName: ( id, key, value ) ->
 		elem = super(id, key, value)
 		elem.prop('disabled', false).removeClass('disabled')
-		
 		return elem
 
 	# Draws a certain property
@@ -94,7 +93,22 @@ class View.DummyModuleProperties extends View.ModuleProperties
 	# @return [jQuery.elem] elements
 	#
 	_drawProperty: ( key, type, params = {} ) ->
-		return @_drawInput( type, key, @_changes[ key ] ? undefined, params )		
+		return @_drawInput( type, key, @_changes[ key ] ? undefined, params )
+		
+	# Draws the input for an enumeration
+	#
+	# @param id [String] the form id
+	# @param key [String] property to set
+	# @param value [any] the current value
+	#
+	# @todo on clear/kill remove property from option
+	#
+	_drawEnumeration: ( id, key, value, params ) ->
+		select = super( id, key, value, params )
+		if key is 'placement' or key is 'direction'
+			select.prop( 'disabled', false )
+			select.removeClass( 'disabled' )
+		return select
 
 	# Returns the properties of our module to be
 	#
