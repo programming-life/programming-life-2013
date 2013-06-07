@@ -7,6 +7,42 @@
   }
 }
 
+@-moz-keyframes rotate-dash {
+  from {
+    stroke-dashoffset: 10;
+  }
+  to { 
+    stroke-dashoffset: 0;
+  }
+}
+
+@-o-keyframes rotate-dash {
+  from {
+    stroke-dashoffset: 10;
+  }
+  to { 
+    stroke-dashoffset: 0;
+  }
+}
+
+@-ms-keyframes rotate-dash {
+  from {
+    stroke-dashoffset: 10;
+  }
+  to { 
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes rotate-dash {
+  from {
+    stroke-dashoffset: 10;
+  }
+  to { 
+    stroke-dashoffset: 0;
+  }
+}
+
 .cell {
 	stroke: #cacaca;
 	stroke-width: 40px;
@@ -35,10 +71,10 @@ rect, circle:not(.cell) {
 	&.hovered {
 		stroke: rgb( 100, 200, 100 );
 		
-		-webkit-animation: rotate-dash 2s infinite linear;
-		   -moz-animation: rotate-dash 2s infinite linear;
-		     -o-animation: rotate-dash 2s infinite linear;
-			    animation: rotate-dash 2s infinite linear;
+		-webkit-animation: rotate-dash 2s linear 0 infinite;
+		   -moz-animation: rotate-dash 2s linear 0 infinite;
+		     -o-animation: rotate-dash 2s linear 0 infinite;
+			    animation: rotate-dash 2s linear 0 infinite;
 	}
 	
 	&.selected {
@@ -54,10 +90,10 @@ rect, circle:not(.cell) {
 		stroke-dasharray: 5,5;
 		stroke: #52a8ec;
 
-		-webkit-animation: rotate-dash 0.5s infinite linear;
-		   -moz-animation: rotate-dash 0.5s infinite linear;
-		     -o-animation: rotate-dash 0.5s infinite linear;
-			    animation: rotate-dash 0.5s infinite linear;
+		-webkit-animation: rotate-dash 0.5s linear 0 infinite;
+		   -moz-animation: rotate-dash 0.5s linear 0 infinite;
+		     -o-animation: rotate-dash 0.5s linear 0 infinite;
+			    animation: rotate-dash 0.5s linear 0 infinite;
 	}
 }
 
@@ -141,8 +177,8 @@ text, tspan {
 	opacity: .8;
 	stroke-dasharray: 5,5;
 
-	-webkit-animation: rotate-dash 0.5s infinite linear;
-	   -moz-animation: rotate-dash 0.5s infinite linear;
-		 -o-animation: rotate-dash 0.5s infinite linear;
-			animation: rotate-dash 0.5s infinite linear;
+	-webkit-animation: rotate-dash 0.5s linear 0 infinite;
+	   -moz-animation: rotate-dash 0.5s linear 0 infinite;
+		 -o-animation: rotate-dash 0.5s linear 0 infinite;
+			animation: rotate-dash 0.5s linear 0 infinite;
 }
