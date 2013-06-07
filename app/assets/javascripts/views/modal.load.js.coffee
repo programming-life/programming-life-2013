@@ -1,7 +1,5 @@
 # Provides an HTML Modal
 #
-# @concern Mixin.EventBindings
-#
 class View.LoadModal extends View.HTMLModal
 
 	# Constructs a new Modal view.
