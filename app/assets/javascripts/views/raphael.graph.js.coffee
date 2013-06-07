@@ -24,7 +24,7 @@ class View.Graph extends View.RaphaelBase
 	#
 	constructor: ( id , @_titletext, parent, @_width = 240, @_height = 175 ) ->
 		
-		unless $( "##{id}" ).length
+		unless ( @_container = $( "##{id}" ) ).length
 			$( parent.container[0] ).append( @_container = $('<div id="' + id + '" class="graph"></div>') )
 		
 		super Raphael( id, @_width + Graph.AXISPADDING, @_height + Graph.AXISPADDING), parent
