@@ -118,6 +118,7 @@ class Controller.Cell extends Controller.Base
 	_onModuleAdd: ( cell, module ) ->
 		return if cell isnt @model
 		@view.addModule module
+		@stopSimulation()
 			
 	# Runs after module is added
 	#
@@ -138,6 +139,7 @@ class Controller.Cell extends Controller.Base
 	_onModuleRemove: ( cell, module ) ->
 		return if cell isnt @model
 		@view.removeModule module
+		@stopSimulation()
 		
 	# Runs when spline is added
 	#
