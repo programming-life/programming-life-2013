@@ -573,5 +573,5 @@ class View.ModuleProperties extends View.HTMLPopOver
 	# Gets called when a module creation process has started
 	#
 	_onModuleCreationStarted: ( ) ->
-		@_setSelected off if @_selected
+		@_close() if @_selected
 			
