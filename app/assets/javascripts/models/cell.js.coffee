@@ -483,6 +483,9 @@ class Model.Cell extends Helper.Mixable
 	#
 	run : ( from, to, base_values = [], callback, token, options = {} ) ->
 	
+		if not @module
+			throw Error 'I need a module CellGrowth (cell) to simulate the population.'
+	
 		defaults = {
 			tolerance: 1e-9
 			iterations: 4000
