@@ -209,7 +209,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 	# @param value [any] the current value
 	#
 	_drawParameter: ( id, key, value ) ->
-		input = $('<input required type="text" id="' + id + '" class="input-small" value="' + value + '" />')
+		input = $('<input required type="number" step="0.01" id="' + id + '" class="input-small" value="' + value + '" />')
 		@_bindOnChange( key, input )
 		return input
 				
@@ -292,6 +292,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 	# @return [any] the value
 	#
 	_getCurrentValueFor: ( key ) ->
+		return @_changes[ key ]  if @_changes[ key ]?
 		return _( @module[ key ] ).clone( true )
 
 	# Binds an on change event to a selectable input that sets the key
@@ -306,7 +307,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 				if ( selectable.closest('[data-multiple]').data( 'multiple' ) is on )
 					@_changes[ key ] = @_getCurrentValueFor( key )
 					if event.target.checked
-						@_changes[ key ].push value
+						@_changes[ key ].push value if @_changes[ key ].indexOf( value ) is -1
 					else
 						@_changes[ key ] = _( @_changes[ key ] ).without value
 				else
@@ -452,9 +453,10 @@ class View.ModuleProperties extends View.HTMLPopOver
 	# Closes the module
 	#
 	_close: ( ) =>
+		@_reset()
 		@_trigger( 'module.selected.changed', @module, [ off ] )
 		@_changes = {}
-		@_reset()
+		
 
 	# Resets this view
 	#
@@ -477,10 +479,28 @@ class View.ModuleProperties extends View.HTMLPopOver
 	#
 	@catchable
 		_saveChanges: () ->
+			result = true
+			missing_keys = []
+			wrong_keys = []
 			for key, value of @_changes
-				if value is undefined
-					throw new Error "I need #{key}."
-					return false
+				input = $( '#' + @getInputId( key ) )
+				input.closest( '.control-group' ).removeClass( 'error')
+				if not value?
+					result = false
+					missing_keys.push key
+					input.closest( '.control-group' ).addClass( 'error' )
+				else if isNaN( value ) and input.attr( 'type', 'number' )
+					result = false
+					wrong_keys.push key
+					input.closest( '.control-group' ).addClass( 'error' )
+				
+			if not result
+				message = ''
+				message += "I need #{missing_keys}. " if missing_keys.length
+				message += "I need valid values for #{wrong_keys}." if wrong_keys.length
+				throw new Error message
+			
+			for key, value of @_changes
 				@module[ key ] = value
 			return true
 			

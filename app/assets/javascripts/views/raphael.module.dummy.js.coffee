@@ -21,7 +21,7 @@ class View.DummyModule extends View.RaphaelBase
 
 		@_visible = @_number is -1 or @_count < @_number
 
-		@_createBindings()
+		@addBindings()
 
 		@_propertiesView = new View.DummyModuleProperties( @, @_parent, @_cell, @_modulector, @_params )
 		@_notificationsView = new View.ModuleNotification( @, @_parent, @_cell, @ )
@@ -38,7 +38,7 @@ class View.DummyModule extends View.RaphaelBase
 	
 	# Creates event bindings
 	#
-	_createBindings: ( ) ->
+	addBindings: ( ) ->
 		@_bind( 'cell.module.added', @, @_onModuleAdd )
 		@_bind( 'cell.module.removed', @, @_onModuleRemove )
 		@_bind( 'cell.metabolite.added', @, @_onModuleAdd )		

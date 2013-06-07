@@ -85,6 +85,7 @@ class View.DummyModuleProperties extends View.ModuleProperties
 	_drawName: ( id, key, value ) ->
 		elem = super(id, key, value)
 		elem.prop('disabled', false).removeClass('disabled')
+		
 		return elem
 
 	# Draws a certain property
@@ -125,13 +126,41 @@ class View.DummyModuleProperties extends View.ModuleProperties
 		@_trigger( 'module.creation.aborted', @_parent )
 		@_elem.find('input').blur()
 		@_reset()
-
+		
 	# Saves all changed properties to the module.
 	#
 	_save: ( ) =>
+		return if not @_validateCreation()
+	
 		@_trigger('module.creation.finished', @_parent, [ @_changes ])
 		@_elem.find('input').blur()
 		@_reset()
+		
+	# Validates creation
+	#
+	#
+	@catchable	
+		_validateCreation: () ->
+			form = $( '#' + @getFormId() )
+			
+			result = true
+			message = 'I need valid input values'
+			for input in form.find( 'input[type="number"]' )
+				input = $( input )
+				input.closest( '.control-group' ).removeClass( 'error')
+				if not input.val() or isNaN( input.val() )
+					input.closest( '.control-group' ).addClass( 'error')
+					result = false
+			throw Error( message ) if not result
+			return true
+			
+	# Catcher function for Mixin.Catcher that will notificate any thrown Error on catchable methods
+	#
+	# @param e [Error] the error to notificate
+	#
+	_catcher: ( source, e ) =>
+		text = if _( e ).isObject() then e.message ? 'no message' else e 
+		@_notificate( @, @_parent, text , text, [], View.RaphaelBase.Notification.Error)
 		
 	# Resets the popover module
 	# 

@@ -622,6 +622,7 @@ class View.Module extends View.RaphaelBase
 		if module is @model 
 			if @_selected isnt selected
 				@_setSelected selected 
+				@_notificationsView.hide()
 		else if @_selected isnt off
 			@_setSelected off
 
