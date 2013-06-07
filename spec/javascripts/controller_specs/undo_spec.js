@@ -1,4 +1,4 @@
-describe("Undo", function() {
+xdescribe("Undo", function() {
 	var model, view;
 
 	beforeEach( function() {
