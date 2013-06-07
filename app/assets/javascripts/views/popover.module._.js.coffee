@@ -483,7 +483,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 					result = false
 					missing_keys.push key
 					input.closest( '.control-group' ).addClass( 'error' )
-				else if isNaN( value ) and input.attr( 'type', 'number' )
+				else if isNaN( value ) and input.attr( 'type') is 'number'
 					result = false
 					wrong_keys.push key
 					input.closest( '.control-group' ).addClass( 'error' )
