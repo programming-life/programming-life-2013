@@ -18,6 +18,7 @@ class View.Main extends View.RaphaelBase
 		@_createSidebars()
 		@_createConfirmReset()
 		@_createLoadModal()
+		@_createOptionsModal()
 		@_createBindings()
 		
 		@resize()
@@ -45,6 +46,11 @@ class View.Main extends View.RaphaelBase
 	#
 	_createLoadModal: () ->
 		@_loadModal = new View.LoadModal()
+		
+	# Creates the options modal
+	#
+	_createOptionsModal: () ->
+		@_optionsModal = new View.OptionsModal()
 	
 	# Creates event bindings for the view
 	#
@@ -116,8 +122,10 @@ class View.Main extends View.RaphaelBase
 	#
 	clear: () ->
 		super()
-		@_resetModal.clear()
-		@_loadModal.clear()
+		@_resetModal?.clear()
+		@_loadModal?.clear()
+		@_optionsModal?.clear()
+		@_notifications?.clear()
 		return this
 	
 	# Kills the main view
@@ -127,9 +135,10 @@ class View.Main extends View.RaphaelBase
 	kill: ( ) ->
 		super()
 		@paper.remove()
-		@_resetModal.kill()
-		@_loadModal.kill()
+		@_resetModal?.kill()
+		@_loadModal?.kill()
 		@_notifications?.kill()
+		@_optionsModal?.kill()
 		@getActionButtons().removeProp( 'disabled' )
 		$( window ).off( 'resize' )
 		$( '#actions' ).off( 'click', '[data-action]' )
@@ -266,6 +275,14 @@ class View.Main extends View.RaphaelBase
 			
 		@_resetModal.onClosed( @, func )
 		@_resetModal.show()
+		return this
+		
+	# Show options
+	#
+	# @return [self] chainable self
+	#
+	showOptions: ( ) ->
+		@_optionsModal.show()
 		return this
 		
 	# Call modal for load
