@@ -27,6 +27,8 @@ class Model.Tree extends Helper.Mixable
 
 		@root = root
 		@root.replace( root )
+
+		@_trigger( "tree.root.set", this, [ root ])
 	
 	# Add an object to the tree
 	#

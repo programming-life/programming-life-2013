@@ -18,6 +18,7 @@ class Controller.Main extends Controller.Base
 	
 		@_createChildren()
 		@_createBindings()
+		@_createTimeMachine()
 		
 		
 	# Creates children
@@ -25,16 +26,32 @@ class Controller.Main extends Controller.Base
 	_createChildren: () ->
 	
 		@addChild 'cell', new Controller.Cell( @view.paper, @view, @cellFromCache( 'main.cell' ) )
-		@timemachines.push @controller("cell").model.timemachine
-		@timemachine.setRoot new Model.Node(@controller("cell").model.tree.root.object)
+
+
 		@addChild 'graphs', new Controller.Graphs( "#graphs" )
 		@addChild 'undo', new Controller.Undo( @timemachine )
-		
+
 		@view.add @controller('cell').view
 		@view.add @controller('graphs').view
 		@view.addToLeftPane @controller('undo').view
 		
 		@_setCellNameActionField( if @controller( 'cell' ).model.isLocal() then '' else  @controller( 'cell' ).model.name )
+	
+	# Creates the timemachine for the main controller
+	#
+	#
+	_createTimeMachine: ( ) ->
+		console.log "Creating tree"
+		@timemachines = []
+		@timemachine.setRoot new Model.Node(@controller("cell").model.tree.root.object)
+
+		modules =  @controller("cell").model._getModules()
+		modules.unshift @controller("cell").model
+		for module in modules
+			timemachine = @addTimeMachine @controller("cell").model, module
+			for node in timemachine.iterator()
+				@_onNodeAdd timemachine, node
+
 		
 	# Creates bindings
 	#
@@ -55,11 +72,19 @@ class Controller.Main extends Controller.Base
 		)
 		@_bind( 'cell.metabolite.added', @, @addTimeMachine )
 		@_bind( 'cell.module.added', @, @addTimeMachine )
-		@_bind( 'tree.node.added', @, 
-			( tree, node ) => 
-				if tree in @timemachines
-					@addUndoableEvent(node.object)
-		)
+
+		@_bind( 'tree.node.added', @, @_onNodeAdd )
+	
+	# Gets called when a node is added to a tree
+	#
+	# @param tree [Model.Tree] The tree that the node was added to
+	# @param node [Model.Node] The node
+	#
+	_onNodeAdd: ( tree, node ) ->
+		if tree in @timemachines and node isnt tree.root
+			console.log "Adding node", node.object
+			@addUndoableEvent(node.object)
+
 		
 	# Load cell from cache
 	#
@@ -79,6 +104,9 @@ class Controller.Main extends Controller.Base
 	load: ( cell_id, callback, clone = off ) ->
 		promise =  @controller('cell').load cell_id, callback, clone
 		promise.always( () => @_setCellNameActionField( @controller('cell').model.name ) )
+		promise.done( () =>
+			@_createTimeMachine()
+		)
 		return promise
 		
 	# Saves the main view cell
@@ -214,6 +242,7 @@ class Controller.Main extends Controller.Base
 			enable()
 		
 		@view.showLoad( confirm, other, cancel )
+
 		
 	# On Report Button clicked
 	#
@@ -254,6 +283,7 @@ class Controller.Main extends Controller.Base
 			@view = new View.Main @container
 			@_createChildren()
 			@_createBindings()
+			@_createTimeMachine()
 			
 		@view.confirmReset action
 		
@@ -271,7 +301,6 @@ class Controller.Main extends Controller.Base
 		startSimulateFlag = not target.hasClass( 'active' )
 		
 		iterationDone = ( results, from, to ) =>
-			console.log results.datasets
 			@controller( 'graphs' ).show( results.datasets, @_currentIteration > 0 )
 			@_currentIteration++
 			@_setProgressBar 0
@@ -295,10 +324,12 @@ class Controller.Main extends Controller.Base
 	#
 	# @param cell [Model.Cell] The source of the event
 	# @param tm [Mixin.TimeMachine] The object containing the timemachine
+	# @returns [Mixin.TimeMachine] The timemachine
 	#
 	addTimeMachine: ( cell, tm ) ->
 		if cell is @controller("cell").model
 			@timemachines.push tm.timemachine
+		return tm.timemachine
 	
 	# Time to store any unstored files
 	#
