@@ -162,7 +162,7 @@ class Model.Module extends Helper.Mixable
 		
 		setter = ( action, compound, value ) ->
 			@starts[ compound ] = value
-			@_trigger( 'module.set.compound', @, [ action, compound, value ] )	
+			@_trigger( 'module.compound.changed', @, [ action, compound, value ] )	
 			
 		action = new Model.Action( 
 			@, undefined, undefined, 

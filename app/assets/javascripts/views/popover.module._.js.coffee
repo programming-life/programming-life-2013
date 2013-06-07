@@ -26,7 +26,8 @@ class View.ModuleProperties extends View.HTMLPopOver
 		@_bind('module.hovered.changed', @, @_onModuleHovered)
 		@_bind('module.selected.changed', @, @_onModuleSelected)
 		@_bind('module.property.changed', @, @_onModuleInvalidated)
-
+		@_bind('module.compound.changed', @, @_onModuleInvalidated)
+		
 		@_bind('module.creation.started', @, @_onModuleCreationStarted)
 
 		@_bind('cell.module.added', @, @_onCompoundsChanged)
@@ -568,7 +569,8 @@ class View.ModuleProperties extends View.HTMLPopOver
 	# @param module [Module] the module that has changed
 	#
 	_onModuleInvalidated: ( module, action ) ->
-		@_reset() if module is @module
+		if module is @module
+			@_reset()
 
 	# Gets called when a module creation process has started
 	#

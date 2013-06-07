@@ -66,6 +66,7 @@ class View.Module extends View.RaphaelBase
 	#
 	addBindings: () ->
 		@_bind( 'module.property.changed', @, @_onModuleInvalidated )
+		@_bind( 'module.compound.changed', @, @_onModuleInvalidated )
 		@_bind( 'cell.module.added', @, @_onModuleAdded )
 		@_bind( 'cell.module.removed', @, @_onModuleRemoved )
 		@_bind( 'cell.metabolite.added', @, @_onMetaboliteAdded )
