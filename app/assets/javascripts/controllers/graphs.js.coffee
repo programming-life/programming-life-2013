@@ -10,6 +10,12 @@ class Controller.Graphs extends Controller.Base
 	constructor: ( id ) ->
 		super new View.Collection( id )
 	
+	# Clears the view
+	#
+	clear: () ->
+		@each( ( child ) => @removeChild child, on )
+		@view.kill()
+			
 	# Shows the graphs with the data from the datasets
 	#
 	# @param datasets [Object] An object of datasets

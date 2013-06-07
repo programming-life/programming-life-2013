@@ -73,6 +73,7 @@ class Controller.Main extends Controller.Base
 	_onCellViewSet: ( view, model, created = false ) ->
 		if view is @controller("cell").view	
 			@controller('undo').setTimeMachine( @timemachine ) 
+			@controller('graphs').clear()
 			if created
 				action = model._createAction "Created cell"
 			else

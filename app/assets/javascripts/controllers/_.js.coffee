@@ -31,9 +31,14 @@ class Controller.Base extends Helper.Mixable
 	# @return [self] the chainable self
 	#
 	removeChild: ( id, kill = on ) ->
-		@_children[ id ].kill() if kill
+		@_children[ id ]?.kill() if kill
 		delete @_children[ id ] 
 		return this
+		
+	#
+	#
+	each: ( func ) ->
+		_( @_children ).each func
 		
 	# Gets the controller with the id
 	# 
