@@ -18,7 +18,6 @@ class View.Main extends View.RaphaelBase
 		@_createSidebars()
 		@_createConfirmReset()
 		@_createLoadModal()
-		@_createOptionsModal()
 		@_createBindings()
 		
 		@resize()
@@ -46,11 +45,6 @@ class View.Main extends View.RaphaelBase
 	#
 	_createLoadModal: () ->
 		@_loadModal = new View.LoadModal()
-		
-	# Creates the options modal
-	#
-	_createOptionsModal: () ->
-		@_optionsModal = new View.OptionsModal()
 	
 	# Creates event bindings for the view
 	#
@@ -275,14 +269,6 @@ class View.Main extends View.RaphaelBase
 			
 		@_resetModal.onClosed( @, func )
 		@_resetModal.show()
-		return this
-		
-	# Show options
-	#
-	# @return [self] chainable self
-	#
-	showOptions: ( ) ->
-		@_optionsModal.show()
 		return this
 		
 	# Call modal for load

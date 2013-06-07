@@ -19,20 +19,11 @@ class Controller.Main extends Controller.Base
 		@_createChildren()
 		@_createBindings()
 		
-		@_options =
-			simulate:
-				iterations: locache.get( 'option.simulate.iterations' ) ? 4
-				iteration_length: locache.get( 'option.simulate.iteration_length' ) ? 20
-			ode:
-				tolerance: locache.get( 'option.ode.tolerance' )
-				iterations: locache.get( 'option.ode.iterations' ) 
-				dt: locache.get( 'option.ode.dt' )
-				interpolate: locache.get( 'option.ode.interpolate' )
-		
 	# Creates children
 	#
 	_createChildren: () ->
 	
+		@addChild 'settings', new Controller.Settings()
 		@addChild 'cell', new Controller.Cell( @view.paper, @view, @cellFromCache( 'main.cell' ) )
 		@timemachines.push @controller("cell").model.timemachine
 		@timemachine.setRoot new Model.Node(@controller("cell").model.tree.root.object)
@@ -262,7 +253,7 @@ class Controller.Main extends Controller.Base
 	#
 	_onOptions: ( target, enable, success, error ) ->
 		@view.resetActionButtonState()
-		@view.showOptions()
+		@controller( 'settings' ).show( )
 	
 	# On Reset Button clicked
 	#
@@ -303,9 +294,9 @@ class Controller.Main extends Controller.Base
 			@_currentIteration++
 			@_setProgressBar 0
 			
-		@_iterations = @_options.simulate.iterations
+		@_iterations = @controller( 'settings' ).options.simulate.iterations
 		@_currentIteration = 0
-		[ token, progress_promise ] = @controller('cell').setSimulationState startSimulateFlag, iterationDone, @_options
+		[ token, progress_promise ] = @controller('cell').setSimulationState startSimulateFlag, iterationDone, @controller( 'settings' ).options
 		if startSimulateFlag is on
 			@_token = token
 			@view.showProgressBar()
