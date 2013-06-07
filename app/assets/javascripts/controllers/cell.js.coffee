@@ -188,9 +188,10 @@ class Controller.Cell extends Controller.Base
 		
 		# Create a new module
 		module = new source.model.constructor( _( _( params ).clone( true ) ).defaults( currents ) )
-
+		@_trigger "module.preview.ended", source
+		
 		@killPreviews()
-		@previewChange module
+		@previewChange module, source
 
 	# Kill and remove all previews
 	#
@@ -262,7 +263,7 @@ class Controller.Cell extends Controller.Base
 		if _( @view.viewsByType[type] ).contains( source )
 			@_updating = on
 			@_creating = off
-			@previewChange module
+			@previewChange module ,source
 
 	# Gets called on module.creation.aborted
 	#
@@ -279,6 +280,7 @@ class Controller.Cell extends Controller.Base
 	_onModuleUpdateAborted: ( source, model ) ->
 		return if source instanceof View.DummyModule
 		return if not @_updating or not source
+		@_trigger "module.preview.ended", source
 		type = source.getFullType()
 		if _( @view.viewsByType[type] ).contains( source )
 			@_updating = off
@@ -300,6 +302,7 @@ class Controller.Cell extends Controller.Base
 	# 
 	#
 	_onModuleUpdated: ( source, module ) ->
+		@_trigger "module.preview.ended", source
 		type = source.getFullType()
 		if _( @view.viewsByType[type] ).contains( source )
 			@_updating = off
@@ -549,5 +552,6 @@ class Controller.Cell extends Controller.Base
 		
 	#
 	#
-	previewChange: ( module ) ->
+	previewChange: ( module, source ) ->
 		@_automagicAdd module
+		source.createSplines( module, on )
