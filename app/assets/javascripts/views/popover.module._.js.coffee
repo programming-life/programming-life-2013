@@ -34,8 +34,6 @@ class View.ModuleProperties extends View.HTMLPopOver
 		@_bind('cell.metabolite.added', @, @_onMetabolitesChanged)
 		@_bind('cell.metabolite.removed', @, @_onMetabolitesChanged)
 		
-		@_setSelected off
-		
 	# Gets the id for this popover
 	#
 	getFormId: () ->
@@ -442,8 +440,9 @@ class View.ModuleProperties extends View.HTMLPopOver
 						@_save()
 			)
 		else
-			@_elem.find('input').blur()
-			@_elem.off('keyup')
+			@_elem.find( 'input' ).blur()
+			@_elem.off( 'keyup' )
+			@_reset()
 
 	# Returns the properties of our module
 	#
@@ -453,10 +452,8 @@ class View.ModuleProperties extends View.HTMLPopOver
 	# Closes the module
 	#
 	_close: ( ) =>
-		@_reset()
-		@_trigger( 'module.selected.changed', @module, [ off ] )
 		@_changes = {}
-		
+		@_trigger( 'module.selected.changed', @module, [ off ] )
 
 	# Resets this view
 	#
@@ -469,11 +466,8 @@ class View.ModuleProperties extends View.HTMLPopOver
 	#
 	_save: ( ) =>	
 		return if not @_saveChanges()
-			
 		@_changes = {}
-		@_reset()
 		@_trigger( 'module.selected.changed', @module, [ off ] )
-		@_trigger( 'module.hovered.changed', @module, [ off ] )
 		
 	# Saves the changes
 	#
@@ -554,7 +548,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 		if module is @module 
 			if @_selected isnt selected
 				@_setSelected selected 
-		else if @_selected isnt off
+		else if selected and @_selected is on
 			@_setSelected off
 
 	# Gets called when a module view hovered.
@@ -566,7 +560,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 		if module is @module 
 			if @_hovered isnt hovered
 				@_setHovered hovered
-		else if @_hovered isnt off
+		else if hovered and @_hovered is on
 			@_setHovered off
 
 	# Gets called when a module's parameters have changed
@@ -574,11 +568,10 @@ class View.ModuleProperties extends View.HTMLPopOver
 	# @param module [Module] the module that has changed
 	#
 	_onModuleInvalidated: ( module, action ) ->
-		if module is @module
-			@_reset()
+		@_reset() if module is @module
 
 	# Gets called when a module creation process has started
 	#
 	_onModuleCreationStarted: ( ) ->
-		@_setSelected off
+		@_close() if @_selected
 			

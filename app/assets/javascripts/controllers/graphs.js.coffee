@@ -8,7 +8,6 @@ class Controller.Graphs extends Controller.Base
 	# @param id [String] A string id for the container of the graphs
 	#
 	constructor: ( id ) ->
-		console.log id
 		super new View.Collection( id )
 	
 	# Shows the graphs with the data from the datasets

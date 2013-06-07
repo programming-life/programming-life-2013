@@ -18,7 +18,6 @@ class Controller.Main extends Controller.Base
 	
 		@_createChildren()
 		@_createBindings()
-		@_createTimeMachine()
 		
 		
 	# Creates children
@@ -36,12 +35,13 @@ class Controller.Main extends Controller.Base
 		@view.addToLeftPane @controller('undo').view
 		
 		@_setCellNameActionField( if @controller( 'cell' ).model.isLocal() then '' else  @controller( 'cell' ).model.name )
+
+		@_onCellViewSet( @controller("cell").view, @controller("cell").model, true )
 	
 	# Creates the timemachine for the main controller
 	#
 	#
 	_createTimeMachine: ( ) ->
-		console.log "Creating tree"
 		@timemachines = []
 		@timemachine.setRoot new Model.Node(@controller("cell").model.tree.root.object)
 
@@ -51,7 +51,22 @@ class Controller.Main extends Controller.Base
 			timemachine = @addTimeMachine @controller("cell").model, module
 			for node in timemachine.iterator()
 				@_onNodeAdd timemachine, node
-
+	
+	# Gets called on view set
+	#
+	# @param view [View.Cell] The view that was set
+	# @param model [Model.Cell] The new cell model of the view
+	# @param created [Boolean] True if the cell was created, false if it was loaded
+	#
+	_onCellViewSet: ( view, model, created = false ) ->
+		if view is @controller("cell").view	
+			@controller('undo').setTimeMachine( @timemachine ) 
+			if created
+				action = model._createAction "Created cell"
+			else
+				action = model._createAction "Loaded cell"
+			model.timemachine.setRoot new Model.Node( action )
+			@_createTimeMachine()
 		
 	# Creates bindings
 	#
@@ -59,9 +74,7 @@ class Controller.Main extends Controller.Base
 		
 		@view.bindActionButtonClick( () => @onAction( arguments... ) ) 
 	
-		@_bind( 'view.cell.set', @, 
-			( cell ) => @controller('undo').setTimeMachine( @timemachine ) 
-		)
+		@_bind( 'view.cell.set', @, @_onCellViewSet )
 		
 		@_bind( 'module.selected.changed', @, 
 			(module, selected) => 
@@ -82,7 +95,6 @@ class Controller.Main extends Controller.Base
 	#
 	_onNodeAdd: ( tree, node ) ->
 		if tree in @timemachines and node isnt tree.root
-			console.log "Adding node", node.object
 			@addUndoableEvent(node.object)
 
 		
@@ -104,9 +116,6 @@ class Controller.Main extends Controller.Base
 	load: ( cell_id, callback, clone = off ) ->
 		promise =  @controller('cell').load cell_id, callback, clone
 		promise.always( () => @_setCellNameActionField( @controller('cell').model.name ) )
-		promise.done( () =>
-			@_createTimeMachine()
-		)
 		return promise
 		
 	# Saves the main view cell
@@ -283,7 +292,6 @@ class Controller.Main extends Controller.Base
 			@view = new View.Main @container
 			@_createChildren()
 			@_createBindings()
-			@_createTimeMachine()
 			
 		@view.confirmReset action
 		

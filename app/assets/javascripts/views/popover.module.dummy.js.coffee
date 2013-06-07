@@ -33,8 +33,6 @@ class View.DummyModuleProperties extends View.ModuleProperties
 		@_bind( 'cell.metabolite.added', @, @_onMetabolitesChanged )
 		@_bind( 'cell.metabolite.removed', @, @_onMetabolitesChanged )
 
-		@_setSelected off
-
 	# Gets the id for this popover
 	#
 	getFormId: ( ) ->
@@ -125,7 +123,6 @@ class View.DummyModuleProperties extends View.ModuleProperties
 	_close: ( ) =>
 		@_trigger( 'module.creation.aborted', @_parent )
 		@_elem.find('input').blur()
-		@_reset()
 		
 	# Saves all changed properties to the module.
 	#
@@ -193,25 +190,23 @@ class View.DummyModuleProperties extends View.ModuleProperties
 		if dummy is @_parent
 			@setPosition()
 			@_setSelected on
-		else
-			@_setSelected off
+		else if @_selected
+			@_setSelected off 
 
 	# Will be called when the creation process of a module has aborted
 	#
 	# @param dummy [DummyModule] the dummy module for which to abort the creation
 	#
 	_onModuleCreationAborted: ( dummy ) ->
-		if dummy is @_parent
+		if dummy is @_parent and @_selected
 			@_setSelected off
-			@_reset()
 
 	# Will be called when the creation process of a module has finished
 	#
 	# @param dummy [DummyModule] the dummy module for which to finish the creation
 	#
 	_onModuleCreationFinished: ( dummy ) ->
-		if dummy is @_parent
+		if dummy is @_parent and @_selected
 			@_setSelected off
-			@_reset()
 
 

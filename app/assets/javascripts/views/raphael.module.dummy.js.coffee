@@ -43,22 +43,27 @@ class View.DummyModule extends View.RaphaelBase
 		@_bind( 'cell.module.removed', @, @_onModuleRemove )
 		@_bind( 'cell.metabolite.added', @, @_onModuleAdd )		
 		@_bind( 'cell.metabolite.removed', @, @_onModuleRemove )
-		@_bind( 'module.creation.started', @, @_onModuleCreationStarted)
+		@_bind( 'module.creation.start', @, @_onModuleCreationStart )
+		@_bind( 'module.creation.started', @, @_onModuleCreationStarted )
 		@_bind( 'module.creation.aborted', @, @_onModuleCreationAborted )
 		@_bind( 'module.creation.finished', @, @_onModuleCreationFinished )
 		@_bind( 'module.properties.change', @, @_onModulePropertiesChange )
 		@_bind( 'module.selected.changed', @, @_onModuleSelected )
 
-	# Gets called when a module creation has started
+	# Gets called when a module creation hase beend started
 	#
-	# @param dummy [View.DummyModule] the dummy for which the module creation has started
+	# @param dummy [View.DummyModule] the dummy for which the module creation has been started
 	#
-	_onModuleCreationStarted: ( dummy ) ->
-		if dummy is @
-			@_setSelected on
-		else
-			if @_selected
-				@_setSelected off
+	_onModuleCreationStarted: ( dummy, module ) ->
+		@_setSelected on if dummy is @
+			
+	# Gets called when a module creation is begin started
+	#
+	# @param dummy [View.DummyModule] the dummy for which the module creation is begin started
+	#
+	_onModuleCreationStart: ( dummy , module ) ->
+		if dummy isnt @
+			@_setSelected off if @_selected
 		
 		
 	# Gets called when a module creation was aborted
@@ -68,7 +73,6 @@ class View.DummyModule extends View.RaphaelBase
 	_onModuleCreationAborted: ( dummy ) ->
 		if dummy is @
 			@_setSelected off
-			@_notificationsView.hide()
 	
 	# Gets called on a change in the module properties
 	#
@@ -188,6 +192,7 @@ class View.DummyModule extends View.RaphaelBase
 		hitbox.click =>
 			unless @_selected
 				module = new @_modulector( _( @_params ).clone( true ) )
+				@_trigger 'module.creation.start', @, [ module ]
 				@_trigger 'module.creation.started', @, [ module ]
 			else
 				@_trigger 'module.creation.aborted', @, []
@@ -256,6 +261,7 @@ class View.DummyModule extends View.RaphaelBase
 			else
 				$(@_box.node).removeClass('selected')
 				@_trigger "module.creation.aborted", @, []
+				@_notificationsView.hide()
 
 		return this
 
@@ -325,5 +331,4 @@ class View.DummyModule extends View.RaphaelBase
 	#
 	_onModuleSelected: ( module, selected ) ->
 		unless module is @module
-			if @_selected
-				@_setSelected off
+			@_setSelected off if @_selected

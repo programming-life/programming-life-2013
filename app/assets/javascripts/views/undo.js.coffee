@@ -138,7 +138,6 @@ class View.Undo extends Helper.Mixable
 	#
 	_onNodeAdd: ( tree, node ) ->
 		if tree is @timemachine
-			console.log "Drawing", node.object
 			if @_list.scrollTop() == @_list[0].scrollHeight - @_list.height()
 				doScroll = true
 

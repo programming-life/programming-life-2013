@@ -779,11 +779,11 @@ class Model.Cell extends Helper.Mixable
 		result = new fn[serialized.type]( undefined, undefined, serialized.parameters  )
 		
 		for module in result._modules
-			result.remove module
+			result.remove module, false
 
 		for module in serialized.modules
 			result.add Model.Module.deserialize( module )
-			
+
 		return result
 		
 	# Loads a cell
