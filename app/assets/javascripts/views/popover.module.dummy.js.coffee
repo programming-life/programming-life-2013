@@ -15,8 +15,8 @@ class View.DummyModuleProperties extends View.ModuleProperties
 
 		@_compounds = @_cell.getCompoundNames()
 		@_metabolites = @_cell.getMetaboliteNames()
-		@_params = _( _( @_override_params ).clone( true ) ).defaults( @_getModuleDefaults() )
-		@_changes = _( @_params ).clone( true )
+		@_params = _( @_override_params ).clone( true )
+		@_changes = _( _( @_params ).clone( true ) ).defaults( @_getModuleDefaults() )
 		@_selectables = []
 
 		# Behold, the mighty super constructor train! Reminds me of some super plumber called Mario.
@@ -162,7 +162,7 @@ class View.DummyModuleProperties extends View.ModuleProperties
 	# Resets the popover module
 	# 
 	_reset: () =>
-		@_changes = _( @_params ).clone( true )
+		@_changes = _( _( @_params ).clone( true ) ).defaults( @_getModuleDefaults() )
 		super()
 
 	# Gets the current value for a key
