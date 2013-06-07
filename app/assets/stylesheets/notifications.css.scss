@@ -45,8 +45,8 @@
 		width: 16px;
 		height: 16px;
 		-webkit-animation: spin 1s infinite linear;
-		-moz-animation: spin 1s infinite linear;
-		animation: spin 1s infinite linear;
+		   -moz-animation: spin 1s infinite linear;
+		        animation: spin 1s infinite linear;
 	}
 	
 	&.active {
@@ -58,5 +58,18 @@
 	small {
 		font-size: .7rem;
 		color: grey;
+	}
+	
+	&.global {
+		max-width: 700px;
+		
+		&.active {
+			display: block;
+			opacity: .75;
+			
+			&:hover {
+				opacity: .9;
+			}
+		}
 	}
 }

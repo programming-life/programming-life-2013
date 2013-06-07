@@ -2,7 +2,7 @@
 <html>
   <head>
   <meta charset='UTF-8'>
-  <title>CoffeeScript API Documentation</title>
+  <title>Broyologramming Life API Documentation</title>
   <link rel='stylesheet' href='../../assets/codo.css' type='text/css'>
   <script src='../../assets/codo.js'></script>
   <script src='../../assets/search_data.js'></script>
@@ -28,6 +28,7 @@
     <div id='search'>
       <a id='class_list_link' href='../../class_list.html'>Classes</a>
       <a id='mixin_list_link' href='../../mixin_list.html'>Mixins</a>
+      <a id='file_list_link' href='../../file_list.html'>Files</a>
       <a id='method_list_link' href='../../method_list.html'>Methods</a>
       <a id='extra_list_link' href='../../extra_list.html'>Extras</a>
     </div>
@@ -134,12 +135,62 @@ A cell and allows interaction on this cell.</p>
   <li>
     <span class='signature'>
       <a href='#constructor-instance'>
-        - (void) <strong>constructor</strong>(container = "#paper")
+        - (void) <strong>constructor</strong>(container = "#paper", _target = window)
       </a>
     </span>
     <span class='constructor note title'>Constructor</span>
     <span class='desc'>
       Creates a new Main view
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_createSidebars-instance'>
+        - (void) <strong>_createSidebars</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Creates sidebars
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_createConfirmReset-instance'>
+        - (void) <strong>_createConfirmReset</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Creates the confirmation for reset modal
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_createLoadModal-instance'>
+        - (void) <strong>_createLoadModal</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Creates the load modal
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_createBindings-instance'>
+        - (void) <strong>_createBindings</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Creates event bindings for the view
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#addToLeftPane-instance'>
+        - (void) <strong>addToLeftPane</strong>(view)
+      </a>
+    </span>
+    <span class='desc'>
+      
     </span>
   </li>
   <li>
@@ -150,7 +201,7 @@ A cell and allows interaction on this cell.</p>
     </span>
     <span class='bound note title'>Bound</span>
     <span class='desc'>
-      Resizes the cell to the window size
+      Resizes the cell to the target size
     </span>
   </li>
   <li>
@@ -165,12 +216,172 @@ A cell and allows interaction on this cell.</p>
   </li>
   <li>
     <span class='signature'>
+      <a href='#getAbsoluteCoords-instance'>
+        - ([float, float) <strong>getAbsoluteCoords</strong>(x, y)
+      </a>
+    </span>
+    <span class='desc'>
+      Returns the absolute (document) coordinates of a point within the paper
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#clear-instance'>
+        - (self) <strong>clear</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Clears this view
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
       <a href='#kill-instance'>
-        - (void) <strong>kill</strong>()
+        - (self) <strong>kill</strong>()
       </a>
     </span>
     <span class='desc'>
       Kills the main view
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#getCellName-instance'>
+        - (String, null) <strong>getCellName</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Gets the cell name
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#setCellName-instance'>
+        - (self) <strong>setCellName</strong>(name)
+      </a>
+    </span>
+    <span class='desc'>
+      Sets the cell name
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#getProgressBar-instance'>
+        - (jQuery.Elem) <strong>getProgressBar</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Gets the progress bar
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#setProgressBar-instance'>
+        - (self) <strong>setProgressBar</strong>(value)
+      </a>
+    </span>
+    <span class='desc'>
+      Sets the progress bar
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#hideProgressBar-instance'>
+        - (self) <strong>hideProgressBar</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Hides the progress bar
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#showProgressBar-instance'>
+        - (self) <strong>showProgressBar</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Shows the progress bar
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#bindActionButtonClick-instance'>
+        - (self) <strong>bindActionButtonClick</strong>(action)
+      </a>
+    </span>
+    <span class='desc'>
+      Binds an action on the action buttons
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#getActionButtons-instance'>
+        - (jQuery.Collection) <strong>getActionButtons</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Gets the action buttons
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#resetActionButtons-instance'>
+        - (self) <strong>resetActionButtons</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Resets the action buttons visual state
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#resetActionButtonState-instance'>
+        - (self) <strong>resetActionButtonState</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Resets the action button button state
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#enableActionButtons-instance'>
+        - (self) <strong>enableActionButtons</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Enable the action buttons (undisable)
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#setButtonState-instance'>
+        - (self) <strong>setButtonState</strong>(elem, state, classname)
+      </a>
+    </span>
+    <span class='desc'>
+      Sets a button statr
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#confirmReset-instance'>
+        - (self) <strong>confirmReset</strong>(confirm, close, always)
+      </a>
+    </span>
+    <span class='desc'>
+      Call confirmation for reset
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#showLoad-instance'>
+        - (self) <strong>showLoad</strong>(load, close, always)
+      </a>
+    </span>
+    <span class='desc'>
+      Call modal for load
     </span>
   </li>
 </ul>
@@ -183,13 +394,29 @@ A cell and allows interaction on this cell.</p>
       </h3>
       <p class='inherited'>
                 <a href='../../classes/View/RaphaelBase.html#constructor-instance'>#constructor</a>,
+                <a href='../../classes/View/RaphaelBase.html#_catcher-instance'>#_catcher</a>,
+                <a href='../../classes/View/RaphaelBase.html#getBBox-instance'>#getBBox</a>,
                 <a href='../../classes/View/RaphaelBase.html#clear-instance'>#clear</a>,
+                <a href='../../classes/View/RaphaelBase.html#kill-instance'>#kill</a>,
+                <a href='../../classes/View/RaphaelBase.html#setPosition-instance'>#setPosition</a>,
+                <a href='../../classes/View/RaphaelBase.html#moveTo-instance'>#moveTo</a>,
+                <a href='../../classes/View/RaphaelBase.html#move-instance'>#move</a>,
                 <a href='../../classes/View/RaphaelBase.html#draw-instance'>#draw</a>,
                 <a href='../../classes/View/RaphaelBase.html#redraw-instance'>#redraw</a>,
-                <a href='../../classes/View/RaphaelBase.html#addView-instance'>#addView</a>,
-                <a href='../../classes/View/RaphaelBase.html#removeView-instance'>#removeView</a>,
-                <a href='../../classes/View/RaphaelBase.html#resize-instance'>#resize</a>,
-        <a href='../../classes/View/RaphaelBase.html#kill-instance'>#kill</a>
+        <a href='../../classes/View/RaphaelBase.html#getAbsoluteCoords-instance'>#getAbsoluteCoords</a>
+      </p>
+      <h3 class='inherited'>
+        Methods inherited from
+        <a href='../../classes/View/Collection.html'>View.Collection</a>
+      </h3>
+      <p class='inherited'>
+                <a href='../../classes/View/Collection.html#constructor-instance'>#constructor</a>,
+                <a href='../../classes/View/Collection.html#clear-instance'>#clear</a>,
+                <a href='../../classes/View/Collection.html#kill-instance'>#kill</a>,
+                <a href='../../classes/View/Collection.html#add-instance'>#add</a>,
+                <a href='../../classes/View/Collection.html#remove-instance'>#remove</a>,
+                <a href='../../classes/View/Collection.html#draw-instance'>#draw</a>,
+        <a href='../../classes/View/Collection.html#redraw-instance'>#redraw</a>
       </p>
       <h3 class='inherited'>
         Methods inherited from
@@ -204,7 +431,7 @@ A cell and allows interaction on this cell.</p>
       <div class='methods'>
   <div class='method_details'>
     <p class='signature' id='constructor-instance'>
-      - (void) <strong>constructor</strong>(container = "#paper")
+      - (void) <strong>constructor</strong>(container = "#paper", _target = window)
     </p>
     <div class='docstring'>
   <div class='note todo'>
@@ -231,12 +458,59 @@ A cell and allows interaction on this cell.</p>
       <h2>Instance Method Details</h2>
       <div class='methods'>
   <div class='method_details'>
+    <p class='signature' id='_createSidebars-instance'>
+      - (void) <strong>_createSidebars</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Creates sidebars</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_createConfirmReset-instance'>
+      - (void) <strong>_createConfirmReset</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Creates the confirmation for reset modal</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_createLoadModal-instance'>
+      - (void) <strong>_createLoadModal</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Creates the load modal</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_createBindings-instance'>
+      - (void) <strong>_createBindings</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Creates event bindings for the view</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='addToLeftPane-instance'>
+      - (void) <strong>addToLeftPane</strong>(view)
+    </p>
+    <div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
     <p class='signature' id='resize-instance'>
       - (void) <strong>resize</strong>()
       (bound)
     </p>
     <div class='docstring'>
-  <p>Resizes the cell to the window size</p>
+  <p>Resizes the cell to the target size</p>
 </div>
 <div class='tags'>
 </div>
@@ -252,20 +526,449 @@ A cell and allows interaction on this cell.</p>
 </div>
   </div>
   <div class='method_details'>
+    <p class='signature' id='getAbsoluteCoords-instance'>
+      - ([float, float) <strong>getAbsoluteCoords</strong>(x, y)
+    </p>
+    <div class='docstring'>
+  <p>Returns the absolute (document) coordinates of a point within the paper</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>x</span>
+      <span class='type'>
+        (<tt>float</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the x position of the paper point</span>
+    </li>
+    <li>
+      <span class='name'>y</span>
+      <span class='type'>
+        (<tt>float</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the y position of the paper point</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span><tt>[float, float</tt></li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='clear-instance'>
+      - (self) <strong>clear</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Clears this view</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>self</tt>)
+      &mdash;
+      <span class='desc'>chainable self</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
     <p class='signature' id='kill-instance'>
-      - (void) <strong>kill</strong>()
+      - (self) <strong>kill</strong>()
     </p>
     <div class='docstring'>
   <p>Kills the main view</p>
 </div>
 <div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>self</tt>)
+      &mdash;
+      <span class='desc'>chainable self</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='getCellName-instance'>
+      - (String, null) <strong>getCellName</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Gets the cell name</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>String, null</tt>)
+      &mdash;
+      <span class='desc'>the cell name</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='setCellName-instance'>
+      - (self) <strong>setCellName</strong>(name)
+    </p>
+    <div class='docstring'>
+  <p>Sets the cell name</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>name</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the cell name</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>self</tt>)
+      &mdash;
+      <span class='desc'>chainable self</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='getProgressBar-instance'>
+      - (jQuery.Elem) <strong>getProgressBar</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Gets the progress bar</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>jQuery.Elem</tt>)
+      &mdash;
+      <span class='desc'>the progress bar</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='setProgressBar-instance'>
+      - (self) <strong>setProgressBar</strong>(value)
+    </p>
+    <div class='docstring'>
+  <p>Sets the progress bar</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>value</span>
+      <span class='type'>
+        (<tt>Float</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>range 0..1 percentage filled</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>self</tt>)
+      &mdash;
+      <span class='desc'>chainable self</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='hideProgressBar-instance'>
+      - (self) <strong>hideProgressBar</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Hides the progress bar</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>self</tt>)
+      &mdash;
+      <span class='desc'>chainable self</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='showProgressBar-instance'>
+      - (self) <strong>showProgressBar</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Shows the progress bar</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>self</tt>)
+      &mdash;
+      <span class='desc'>chainable self</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='bindActionButtonClick-instance'>
+      - (self) <strong>bindActionButtonClick</strong>(action)
+    </p>
+    <div class='docstring'>
+  <p>Binds an action on the action buttons</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>self</tt>)
+      &mdash;
+      <span class='desc'>chainable self</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='getActionButtons-instance'>
+      - (jQuery.Collection) <strong>getActionButtons</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Gets the action buttons</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>jQuery.Collection</tt>)
+      &mdash;
+      <span class='desc'>the action button elements</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='resetActionButtons-instance'>
+      - (self) <strong>resetActionButtons</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Resets the action buttons visual state</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>self</tt>)
+      &mdash;
+      <span class='desc'>chainable self</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='resetActionButtonState-instance'>
+      - (self) <strong>resetActionButtonState</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Resets the action button button state</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>self</tt>)
+      &mdash;
+      <span class='desc'>chainable self</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='enableActionButtons-instance'>
+      - (self) <strong>enableActionButtons</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Enable the action buttons (undisable)</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>self</tt>)
+      &mdash;
+      <span class='desc'>chainable self</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='setButtonState-instance'>
+      - (self) <strong>setButtonState</strong>(elem, state, classname)
+    </p>
+    <div class='docstring'>
+  <p>Sets a button statr</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>elem</span>
+      <span class='type'>
+        (<tt>jQuery.elem</tt>)
+      </span>
+    </li>
+    <li>
+      <span class='name'>state</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the button state</span>
+    </li>
+    <li>
+      <span class='name'>className</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the class to add</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>self</tt>)
+      &mdash;
+      <span class='desc'>chainable self</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='confirmReset-instance'>
+      - (self) <strong>confirmReset</strong>(confirm, close, always)
+    </p>
+    <div class='docstring'>
+  <p>Call confirmation for reset</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>confirm</span>
+      <span class='type'>
+        (<tt>Function</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>action on confirmed</span>
+    </li>
+    <li>
+      <span class='name'>close</span>
+      <span class='type'>
+        (<tt>Function</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>action on closed</span>
+    </li>
+    <li>
+      <span class='name'>always</span>
+      <span class='type'>
+        (<tt>Function</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>action always</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>self</tt>)
+      &mdash;
+      <span class='desc'>chainable self</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='showLoad-instance'>
+      - (self) <strong>showLoad</strong>(load, close, always)
+    </p>
+    <div class='docstring'>
+  <p>Call modal for load</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>load</span>
+      <span class='type'>
+        (<tt>Function</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>action on confirmed</span>
+    </li>
+    <li>
+      <span class='name'>close</span>
+      <span class='type'>
+        (<tt>Function</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>action on closed</span>
+    </li>
+    <li>
+      <span class='name'>always</span>
+      <span class='type'>
+        (<tt>Function</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>action always</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>self</tt>)
+      &mdash;
+      <span class='desc'>chainable self</span>
+    </li>
+  </ul>
 </div>
   </div>
 </div>
     </div>
     <div id='footer'>
   Generated on
-  Sun May 19 2013 15:38:42 GMT+0200 (W. Europe Daylight Time)
+  Sun Jun 02 2013 15:47:57 GMT+0200 (W. Europe Daylight Time)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

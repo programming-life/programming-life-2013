@@ -1,7 +1,7 @@
 /**
  * @license
  * Lo-Dash 1.2.1 (Custom Build) <http://lodash.com/>
- * Build: `lodash underscore exports="amd,commonjs,global,node" -o ./dist/lodash.underscore.js`
+ * Build: `lodash underscore plus="clone,cloneDeep" -d`
  * Copyright 2012-2013 The Dojo Foundation <http://dojofoundation.org/>
  * Based on Underscore.js 1.4.4 <http://underscorejs.org/>
  * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud Inc.
@@ -79,6 +79,14 @@
       regexpClass = '[object RegExp]',
       stringClass = '[object String]';
 
+  /** Used to identify object classifications that `_.clone` supports */
+  var cloneableClasses = {};
+  cloneableClasses[funcClass] = false;
+  cloneableClasses[argsClass] = cloneableClasses[arrayClass] =
+  cloneableClasses[boolClass] = cloneableClasses[dateClass] =
+  cloneableClasses[numberClass] = cloneableClasses[objectClass] =
+  cloneableClasses[regexpClass] = cloneableClasses[stringClass] = true;
+
   /** Used to determine if values are of the language type Object */
   var objectTypes = {
     'boolean': false,
@@ -140,6 +148,16 @@
   /** Detect various environments */
   var isIeOpera = reNative.test(window.attachEvent),
       isV8 = nativeBind && !/\n|true/.test(nativeBind + isIeOpera);
+
+  /** Used to lookup a built-in constructor by [[Class]] */
+  var ctorByClass = {};
+  ctorByClass[arrayClass] = Array;
+  ctorByClass[boolClass] = Boolean;
+  ctorByClass[dateClass] = Date;
+  ctorByClass[objectClass] = Object;
+  ctorByClass[numberClass] = Number;
+  ctorByClass[regexpClass] = RegExp;
+  ctorByClass[stringClass] = String;
 
   /*--------------------------------------------------------------------------*/
 
@@ -645,10 +663,133 @@
    * clone.childNodes.length;
    * // => 0
    */
-  function clone(value) {
-    return isObject(value)
-      ? (isArray(value) ? nativeSlice.call(value) : assign({}, value))
-      : value;
+  function clone(value, deep, callback, thisArg, stackA, stackB) {
+    var result = value;
+
+    // allows working with "Collections" methods without using their `callback`
+    // argument, `index|key`, for this method's `callback`
+    if (typeof deep == 'function') {
+      thisArg = callback;
+      callback = deep;
+      deep = false;
+    }
+    if (typeof callback == 'function') {
+      callback = (typeof thisArg == 'undefined')
+        ? callback
+        : createCallback(callback, thisArg, 1);
+
+      result = callback(result);
+      if (typeof result != 'undefined') {
+        return result;
+      }
+      result = value;
+    }
+    // inspect [[Class]]
+    var isObj = isObject(result);
+    if (isObj) {
+      var className = toString.call(result);
+      if (!cloneableClasses[className]) {
+        return result;
+      }
+      var isArr = isArray(result);
+    }
+    // shallow clone
+    if (!isObj || !deep) {
+      return isObj
+        ? (isArr ? nativeSlice.call(result) : assign({}, result))
+        : result;
+    }
+    var ctor = ctorByClass[className];
+    switch (className) {
+      case boolClass:
+      case dateClass:
+        return new ctor(+result);
+
+      case numberClass:
+      case stringClass:
+        return new ctor(result);
+
+      case regexpClass:
+        return ctor(result.source, reFlags.exec(result));
+    }
+    // check for circular references and return corresponding clone
+    stackA || (stackA = []);
+    stackB || (stackB = []);
+
+    var length = stackA.length;
+    while (length--) {
+      if (stackA[length] == value) {
+        return stackB[length];
+      }
+    }
+    // init cloned object
+    result = isArr ? ctor(result.length) : {};
+
+    // add array properties assigned by `RegExp#exec`
+    if (isArr) {
+      if (hasOwnProperty.call(value, 'index')) {
+        result.index = value.index;
+      }
+      if (hasOwnProperty.call(value, 'input')) {
+        result.input = value.input;
+      }
+    }
+    // add the source value to the stack of traversed objects
+    // and associate it with its clone
+    stackA.push(value);
+    stackB.push(result);
+
+    // recursively populate clone (susceptible to call stack limits)
+    (isArr ? forEach : forOwn)(value, function(objValue, key) {
+      result[key] = clone(objValue, deep, callback, undefined, stackA, stackB);
+    });
+
+    return result;
+  }
+
+  /**
+   * Creates a deep clone of `value`. If a `callback` function is passed,
+   * it will be executed to produce the cloned values. If `callback` returns
+   * `undefined`, cloning will be handled by the method instead. The `callback`
+   * is bound to `thisArg` and invoked with one argument; (value).
+   *
+   * Note: This function is loosely based on the structured clone algorithm. Functions
+   * and DOM nodes are **not** cloned. The enumerable properties of `arguments` objects and
+   * objects created by constructors other than `Object` are cloned to plain `Object` objects.
+   * See http://www.w3.org/TR/html5/infrastructure.html#internal-structured-cloning-algorithm.
+   *
+   * @static
+   * @memberOf _
+   * @category Objects
+   * @param {Mixed} value The value to deep clone.
+   * @param {Function} [callback] The function to customize cloning values.
+   * @param {Mixed} [thisArg] The `this` binding of `callback`.
+   * @returns {Mixed} Returns the deep cloned `value`.
+   * @example
+   *
+   * var stooges = [
+   *   { 'name': 'moe', 'age': 40 },
+   *   { 'name': 'larry', 'age': 50 }
+   * ];
+   *
+   * var deep = _.cloneDeep(stooges);
+   * deep[0] === stooges[0];
+   * // => false
+   *
+   * var view = {
+   *   'label': 'docs',
+   *   'node': element
+   * };
+   *
+   * var clone = _.cloneDeep(view, function(value) {
+   *   return _.isElement(value) ? value.cloneNode(true) : undefined;
+   * });
+   *
+   * clone.node == view.node;
+   * // => false
+   */
+  function cloneDeep(value, callback, thisArg) {
+    return clone(value, true, callback, thisArg);
   }
 
   /**
@@ -4264,6 +4405,7 @@
 
   // add functions that return unwrapped values when chaining
   lodash.clone = clone;
+  lodash.cloneDeep = cloneDeep;
   lodash.contains = contains;
   lodash.escape = escape;
   lodash.every = every;
@@ -4374,23 +4516,7 @@
 
   /*--------------------------------------------------------------------------*/
 
-  // expose Lo-Dash
-  // some AMD build optimizers, like r.js, check for specific condition patterns like the following:
-  if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) {
-    // Expose Lo-Dash to the global object even when an AMD loader is present in
-    // case Lo-Dash was injected by a third-party script and not intended to be
-    // loaded as a module. The global assignment can be reverted in the Lo-Dash
-    // module via its `noConflict()` method.
-    window._ = lodash;
-
-    // define as an anonymous module so, through path mapping, it can be
-    // referenced as the "underscore" module
-    define(function() {
-      return lodash;
-    });
-  }
-  // check for `exports` after `define` in case a build optimizer adds an `exports` object
-  else if (freeExports && !freeExports.nodeType) {
+  if (freeExports && !freeExports.nodeType) {
     // in Node.js or RingoJS v0.8.0+
     if (freeModule) {
       (freeModule.exports = lodash)._ = lodash;

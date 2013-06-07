@@ -1,4 +1,5 @@
-class HookController < ApplicationController
+class HookController < ApplicationController	
+	before_filter :set_cache_buster
 	
 	def index
 		@version = `git describe`
@@ -6,21 +7,39 @@ class HookController < ApplicationController
 	end
 
 	def post
-		# TODO check if this is really from Travis CI
-		# Check if the branch name is master
-		# Check if it built correctly
-				
-		`cd /var/www/life/`
-		`git fetch --tags`
-		`git checkout master`
-		`git reset --hard HEAD`
-		`git pull origin master`
-		@version = `git describe --abbrev=0`
+		@host  = `host #{request.remote_ip}`
+		@branch = params[:branch]
+		@status = params[:status_message]
 
-		`bundle install --deployment`
-		
-		# Delete tmp directory?
-		# chmod 774 ?
-		# permissions?
+		if (
+			@host.include? "amazonaws.com" and
+			@branch == "master" and 
+			@status == "Passed"
+		)
+			@command = "cd /var/www/life/ && " +
+			"git fetch --tags && " + 
+			"git checkout master && " +
+			"git reset --hard HEAD && " + 
+			"git pull origin master"
+
+			`#{@command}`
+			@exitcode = $?.exitstatus
+			@version = `git describe --abbrev=0`
+			
+			`bundle install --deployment`
+			`rake db:migrate`
+		end
+	end
+	
+	def version
+		respond_to do | format |
+			format.json { render json: { major: 1, minor: 5, revision: 0, full: '1.5.0' } }
+		end
+	end
+
+	def set_cache_buster
+		response.headers["Cache-Control"] = "no-cache, no-store, max-age=0, must-revalidate"
+		response.headers["Pragma"] = "no-cache"
+		response.headers["Expires"] = "Fri, 01 Jan 1990 00:00:00 GMT"
 	end
 end

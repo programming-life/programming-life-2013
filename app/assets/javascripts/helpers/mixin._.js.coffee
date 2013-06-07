@@ -11,7 +11,7 @@ class Helper.Mixable
 	@extend: ( classmixins... ) ->
 	
 		for mixin in classmixins
-			for key, value of mixin when key not in Helper.Mixable.ModuleKeyWords
+			for key, value of mixin when key not in Mixable.ModuleKeyWords
 				@[ key ] = value
 			
 			mixin.extended?.apply( @ )
@@ -23,7 +23,7 @@ class Helper.Mixable
 	#
 	@include: ( instancemixins... ) ->
 		for mixin in instancemixins
-			for key, value of mixin when key not in Helper.Mixable.ModuleKeyWords
+			for key, value of mixin when key not in Mixable.ModuleKeyWords
 				# Assign properties to the prototype
 				@::[ key ] = value
 
@@ -41,3 +41,39 @@ class Helper.Mixable
 			@extend concern.ClassMethods
 			
 		return this
+		
+	# Extracts id plus metadata
+	# 
+	# @param id [String,Integer,Object] the id
+	# @return [Object] the id plus metadata
+	#
+	@extractId: ( id ) ->
+		return id if _( id ).isObject()
+		return { id: id, origin: "server" } if _( id ).isNumber()
+		return null unless _( id ).isString()
+		data = id.split( ':' )
+		return { id: parseInt( data[0] ), origin: "server" } if data.length is 1
+		return { id: parseInt( data[2] ), origin: data[0] }
+		
+	# Returns true if this is a local instance
+	# 
+	# @return [Boolean] true if local, false if synced instance
+	#
+	isLocal : () ->
+		return Helper.Mixable.extractId( @id ).origin isnt "server"
+
+	# Parses a date with or without timezone offset to a javascript date
+	#
+	# @param data [String] the date in ISO-something format
+	# @return [Date] the parsed date
+	# 
+	@parseDate: ( date ) ->
+		unless _( date ).isString()
+			return new Date( date )
+		matchOffset = /(Z|([+-])(\d\d):(\d\d))$/
+		offset = matchOffset.exec date
+		result = new Date( date.replace( 'T', 'T' ).replace( matchOffset, 'Z' ) )
+		unless offset[ 1 ] is 'Z' 
+			timezone = ( if offset[ 2 ] is '+' then -1 else 1 ) * ( offset[ 3 ] * 60 + Number( offset[ 3 ] ) )
+			result.setMinutes( result.getMinutes() + timezone ) #- result.getTimezoneOffset() 
+		return result

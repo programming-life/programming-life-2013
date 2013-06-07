@@ -1,8 +1,68 @@
+###
+Deferred version of the ODEsolver by numericjs
+27-05-2013 Derk-Jan Karrenbeld 
+###
+
+# Defers a function
+#
+# @param func [Function] the function to defer
+# @param args... [any] the arguments to push
+# @return [Integer] the timer id
+#
 numeric.defer = ( func, args... ) ->
 	return setTimeout( ( () -> func.apply( undefined, args ) ), 1)
 
+
+# Cancel token class provides metadata for async operations
+#	
+class CancelToken
+	
+	# Creates a new token
+	#
+	constructor: () ->
+		@_running = on
+		@_bindings = []
+		
+		Object.defineProperty( @, 'cancelled',
+			get: -> not @_running
+		)
+		
+	# Runs on cancellation
+	#
+	# @param func [Function] the function to run
+	# @param context [Context] the context of the function
+	#
+	on: ( func, context = @ ) ->
+		@_bindings.push [ func, context ]
+		return this
+	
+	# Cancels the token
+	#
+	cancel: () -> 
+		@_running = off
+		binding[0].call( binding[1] ) for binding in @_bindings
+		return this
+	
+# Creates a cancellation token
+#
+# @return [CancelToken] the token 
+#
+numeric.asynccancel = () -> return new CancelToken()
+	
+# Runs the ODE solver deffered
+#
+# @param x0 [Integer] t0, the start time
+# @param x1 [Integer] tn, the end time
+# @param y0 [Integer, Array<Integer>] the start value(s)
+# @param f [Function] the step function (ODE)
+# @param tol [Integer] the tolerance for step size (stiffness)
+# @param maxit [Integer] the maximum number of iterations
+# @param event [Function] the event that stops the ODE solver when going from negative to positive
+# @param token [CancelToken] the token to cancel the event
+# @return [Dopri] the results
+#
 numeric.asyncdopri = 
-	( x0, x1, y0, f, tol = 1e-6, maxit = 1000 ) ->
+	( x0, x1, y0, f, tol = 1e-6, maxit = 1000, event, token = numeric.asynccancel() ) ->
     
 		# Initial values
 		xs = [ x0 ]
@@ -67,7 +127,7 @@ numeric.asyncdopri =
 			k7 = f( x0 + h, y1 )
 			
 			# Error estimation
-			er = add(add(add(add(add(mul(k1[i],h*e[0]),mul(k3,h*e[2])),mul(k4,h*e[3])),mul(k5,h*e[4])),mul(k6,h*e[5])),mul(k7,h*e[6]));
+			er = add( add( add( add( add( mul( k1[ i ], h * e[ 0 ] ), mul( k3, h * e[ 2 ] ) ), mul( k4, h * e[ 3 ] ) ), mul( k5, h * e[ 4 ] ) ), mul( k6, h * e[ 5 ] ) ), mul( k7, h * e[ 6 ] ) )
 			erinf = if typeof er is "number" then abs er else norminf er
 			
 			# Reject when tolerance ( min step size ) reached
@@ -90,8 +150,66 @@ numeric.asyncdopri =
 			ys[ i ] = y1
 			
 			# Last step is first step value
-			k1[ i ] = k7            
-			
+			k1[ i ] = k7         
+
+			# Check that event
+			if event?
+				xl = x0
+				xr = x0 + 0.5 * h
+				e1 = event( xr, ymid[ i - 1 ] )
+				ev = numand( lt( e0, 0 ), lt( 0, e1 ) )
+				if not any ev
+					xl = xr
+					xr = x0 + h
+					e0 = e1
+					e1 = event( xr, y1 )
+					ev = numand( lt( e0, 0 ), lt( 0, e1 ) )
+				if any ev
+					side = 0
+					sl = 1.0
+					sr = 1.0
+					while on
+						if _( e0 ).isNumber() 
+							xi = ( sr * e1 * xl - sl * e0 *xr )/( sr * e1 - sl * e0 )
+						else
+							xi = xr
+							for j in [e0.length...-1] 
+								if e0[ j ] < 0 and e1[ j ] > 0 
+									xi = min( xi, ( sr * e1[ j ] * xl - sl * e0[ j ] * xr )/( sr * e1[ j ] - sl * e0[ j ] ) )
+                    
+						break if xi <= xl or xi >= xr
+						yi = ret._at( xi, i - 1 )
+						ei = event( xi, yi )
+						en = numand( lt( e0, 0 ), lt( 0,ei ) )
+						if any en
+							xr = xi
+							e1 = ei
+							ev = en
+							sr = 1.0
+							if side is -1 
+								sl *= 0.5
+							else 
+								sl = 1.0
+							side = -1
+						else
+							xl = xi
+							e0 = ei
+							sl = 1.0
+							if side is 1 
+								sr *= 0.5
+							else 
+								sr = 1.0
+							side = 1;
+					
+					y1 = ret._at( 0.5 * ( x0 + xi ), i - 1 )
+					ret.f[ i ] = f( xi, yi )
+					ret.x[ i ] = xi
+					ret.y[ i ] = yi
+					ret.ymid[ i - 1 ] = y1
+					ret.events = ev
+					ret.iterations = it
+					return false
+					
 			x0 = x0 + h
 			y0 = y1
 			h  = min( 0.8 * h * pow( tol / erinf, 0.25 ), 4 * h )
@@ -99,7 +217,6 @@ numeric.asyncdopri =
 			
 		# The asyncloop
 		dopriloop = ( ) =>
-			#console.log "loop enter #{x0} < #{x1} and #{it} < #{maxit}"
 			
 			# While looping
 			if x0 < x1 and it < maxit
@@ -107,9 +224,10 @@ numeric.asyncdopri =
 				# Defer the next step
 				numeric.defer () => 
 					promise.notify( Math.max( x0 / x1, it / maxit ) )
-					if dopristep() 
+					if dopristep() and not token.cancelled
 						dopriloop() 
 					else
+						ret.msg = 'cancelled' if token.cancelled
 						ret.iterations = it
 						promise.reject ret
 						
@@ -118,7 +236,7 @@ numeric.asyncdopri =
 			# When done
 			done = () =>
 				promise.notify( Math.max( x0 / x1, it / maxit ) )
-				#console.log "loop end #{it}"
+				
 				ret.iterations = it
 				promise.resolve ret
 				
@@ -126,6 +244,4 @@ numeric.asyncdopri =
 			return
 			
 		promise = $.Deferred dopriloop
-		console.log "after create"
-		
 		return promise.promise()

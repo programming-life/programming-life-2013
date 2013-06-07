@@ -9,14 +9,16 @@ class View.Undo extends Helper.Mixable
 	#
 	# @param tree [Model.UndoTree] The UndoTree to visualize
 	#
-	constructor: ( @_tree ) ->
+	constructor: ( @timemachine ) ->
 		@_allowEventBindings()
-
-		@_bind("tree.add.node", @, @_onNodeAdd)
-		@_bind("tree.remove.node", @, @_onNodeRemove)
-		@_bind("tree.select.node", @, @_onNodeSelect)
+		@_createBindings()
 
 		@_rows = {}
+	
+	_createBindings: ( ) ->
+		@_bind("tree.node.added", @, @_onNodeAdd)
+		@_bind("tree.root.set", @, @_onRootSet )
+		@_bind("controller.undo.branch.finished", @, @_onBranch )
 
 	# Clears this view
 	#
@@ -54,7 +56,7 @@ class View.Undo extends Helper.Mixable
 
 		body = $('<div class="undo-body"></div>')
 		@_list = $('<div class="undo-list"></div>')
-		@_list.append(@_getTreeView(@_tree._root))
+		@_list.append(@_getTreeView(@timemachine.root))
 
 		body.append(@_list)
 		@_contents.append(body)
@@ -63,15 +65,19 @@ class View.Undo extends Helper.Mixable
 		leftBranchButton = $('<div class="branch-button pull-left"><i class="icon-chevron-left"></i></div>')
 		rightBranchButton = $('<div class="branch-button pull-right"><i class="icon-chevron-right"></i></div>')
 
-		leftBranchButton.click(@_branchLeft)
-		rightBranchButton.click(@_branchRight)
+		leftBranchButton.click( () =>
+			@_trigger "view.undo.branch", @, [ -1 ]
+		)
+		rightBranchButton.click( () =>
+			@_trigger "view.undo.branch", @, [ 1 ]
+		)
 		
 		@_footer.find('.navbar-inner').append(leftBranchButton)
 		@_footer.find('.navbar-inner').append(rightBranchButton)
 		@_contents.append(@_footer)
 		container.append(@_contents)
 
-		@_selectNode(@_tree._current)
+		@selectNode(@timemachine.current)
 	
 	# Gets the view for the node
 	#
@@ -80,7 +86,7 @@ class View.Undo extends Helper.Mixable
 	_getTreeView: ( node ) ->
 		contents = [@_getNodeView(node)]
 
-		child = node._branch
+		child = node.branch
 		if child?
 			return contents.concat(@_getTreeView(child))
 
@@ -93,19 +99,21 @@ class View.Undo extends Helper.Mixable
 	# @return [jQuery] the drawn jQuery element
 	#
 	_getNodeView: ( node ) ->
+		unless node.object instanceof Model.Action
+			return
 		row = $('<div class="undo-row"></div>')
 
 		dl = $('<dl class="undo-node"></dl>')
-		dl.append('<dt>' + node._object._description + '</dt>')
+		dl.append('<dt>' + node.object._description + '</dt>')
 
-		alternatives = (node._parent?._children.length ? 1) - 1
+		alternatives = (node.parent?.children.length ? 1) - 1
 		dl.append('<dd>' + alternatives + ' alternative actions</dd>')
 
 		row.append(dl)
 
 		((node) =>
 			row.click( node, ( event ) =>
-				@_trigger('tree.select.node', @_tree, [ event.data ])
+				@_trigger('view.undo.node.selected', @, [ event.data ])
 			)
 		) node
 		
@@ -129,61 +137,50 @@ class View.Undo extends Helper.Mixable
 	# @param node [Model.Node] The node that was added
 	#
 	_onNodeAdd: ( tree, node ) ->
-		if tree is @_tree
+		if tree is @timemachine
 			if @_list.scrollTop() == @_list[0].scrollHeight - @_list.height()
 				doScroll = true
 
-			if node._parent?._children.length - 1 > 0
+			if node.parent?.children.length - 1 > 0
 				@_drawContents()
 			else
 				@_list.append(@_getNodeView(node))
-				@_selectNode(@_tree._current)
+				@selectNode(@timemachine.current)
 
 			if doScroll
 				@_scrollToBottom()
 
-	# Is called when a node is removed from the tree
+	# Gets called when the root of the tree is set
 	#
-	# @param tree [Model.Tree] The tree the node was removed from
-	# @param node [Model.Node] The node that was removed
+	# @param tree [Model.Tree] The tree
+	# @param node [Model.Node] The new root
 	#
-	_onNodeRemove: ( tree, node ) ->
-		if tree is @_tree
-			@_list.append(@_getNodeView(node))
-			@_selectNode(@_tree._current)
+	_onRootSet: ( tree, node ) ->
+		if tree is @timemachine
+			@_drawContents()
 	
-	# Is called when a node is selected
+	# Gets called when branching occurs
 	#
-	# @param tree [Model.Tree] The tree in which the node was selected
-	# @param node [Model.Node] The node that was selected
+	# @param direction [String] The direction of the branching
 	#
-	_onNodeSelect: ( tree, node ) ->
-		if tree is @_tree
-			Model.EventManager.trigger( 'paper.lock', @_paper )
-
-			nodes = @_tree.jump( node )
-			for undo in nodes.reverse
-				undo._object.undo()
-			for redo in nodes.forward
-				redo._object.redo()
-
-			Model.EventManager.trigger( 'paper.unlock', @_paper )
-
-			@_selectNode(node)
+	_onBranch: ( ) ->
+		if @_elem?
+			@_drawContents()
 
 	# Mark a node in the list as selected
 	#
 	# @param node [Model.Node] the node to mark
 	#
-	_selectNode: ( node ) ->
+	selectNode: ( node ) ->
 		row = @_rows[node.id]
 
 		@_elem.find('.undo-row').removeClass('selected')
-		row.addClass('selected')
+		if row?
+			row.addClass('selected')
 
-		alternatives = (node._parent?._children.length ? 1) - 1
+		alternatives = (node.parent?.children.length ? 1) - 1
 		if alternatives > 0
-			@_branchIndex = node._parent._children.indexOf node
+			@_branchIndex = node.parent.children.indexOf node
 			@_showButtons()
 		else
 			@_hideButtons()
@@ -202,43 +199,30 @@ class View.Undo extends Helper.Mixable
 		else
 			@_list.scrollTop = @_list[0].scrollHeight - @_list.height()
 
-	# Move one branch to the left
-	#
-	_branchLeft: ( ) =>
-		@_branch(-1)
-
-	# Move one branch to the right
-	#
-	_branchRight: ( ) =>
-		@_branch(1)
-
-	# Move one branch to either direction
-	#
-	# @param direction [int] the direction (-1 or 1) in which to move
-	#
-	_branch: ( direction ) ->
-		length = @_tree._current._parent?._children?.length
-		return unless length?
-		
-		switch length
-			when 1
-				index = 0
-			when 2
-				index = !@_branchIndex + 0
-			else
-				index = (@_branchIndex + direction + length) % length
-		node = @_tree._current._parent._children[index]
-		old = @_tree.switchBranch( node )
-		old._object.undo()
-		node._object.redo()
-		@_drawContents()
-
 	# Sets the tree of the view
 	#
 	# @param tree [Model.UndoTree] The tree to view
 	#
 	setTree: ( tree ) ->
-		@_tree = tree
+		@timemachine = tree
 		@_drawContents()
+	
+	# Sets the view of node to active
+	#
+	# @param node [Model.Node] The node
+	#
+	setActive: ( node ) ->
+		view = @_rows[node.id]
+		if view?
+			view.addClass("active")
+			view.removeClass("inactive")
 
-(exports ? this).View.Undo = View.Undo
+	# Sets the view of node to inactive
+	#
+	# @param node [Model.Node] The node
+	#
+	setInactive: ( node ) ->
+		view = @_rows[node.id]
+		if view?
+			view.removeClass("active")
+			view.addClass("inactive")

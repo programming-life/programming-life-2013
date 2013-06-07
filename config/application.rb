@@ -24,6 +24,7 @@ module ProgrammingLife
 
     # Activate observers that should always be running.
     # config.active_record.observers = :cacher, :garbage_collector, :forum_observer
+	config.active_record.observers = :module_instance_observer, :module_value_observer
 
     # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.
     # Run "rake -D time" for a list of tasks for finding time zone names. Default is UTC.
@@ -57,6 +58,7 @@ module ProgrammingLife
     config.assets.enabled = true
 
     # Version of your assets, change this if you want to expire all your assets
-    config.assets.version = '1.0'
+    config.assets.version = '1.5.0'
+
   end
 end

@@ -21,8 +21,11 @@ class View.HTMLPopOver extends Helper.Mixable
 
 		@_allowEventBindings()
 		@_bind('paper.resize', @, @setPosition)
-		@_bind('module.drawn', @, @setPosition)
+
+		@_bind('view.drawn', @, @onViewPositioned)
+		@_bind('view.moved', @, @onViewPositioned)
 		@draw()
+		@_setSelected off
 		
 	# Creates the popover element
 	#
@@ -30,7 +33,7 @@ class View.HTMLPopOver extends Helper.Mixable
 	# @return [jQuery.Elem] the popover element
 	#
 	_create: ( classname ) ->	
-		elem = $('<div class="popover"></div>')
+		elem = $('<div class="popover" tabindex="-1"></div>')
 		elem.addClass(@placement).addClass(classname)
 		$('body').append elem
 		return elem
@@ -106,6 +109,12 @@ class View.HTMLPopOver extends Helper.Mixable
 			when 'right'
 				left = x
 				top = y - height / 2 - 1
+			when 'global'
+				top = y
+				left = x - width / 2
+			else
+				top = y
+				left = x
 				
 		@_elem.css( { left: left, top: top } )
 		return this
@@ -121,7 +130,7 @@ class View.HTMLPopOver extends Helper.Mixable
 				@_elem.addClass('selected')
 			else
 				@_elem.removeClass('selected')
-
+				
 		@_selected = selected
 		return this
 
@@ -138,3 +147,7 @@ class View.HTMLPopOver extends Helper.Mixable
 
 		@_hovered = hovered
 		return this
+
+	onViewPositioned: ( view ) ->
+		if view is @_parent
+			@setPosition()

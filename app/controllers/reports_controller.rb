@@ -15,7 +15,7 @@ class ReportsController < ApplicationController
 		@report = Report.find(params[:id])
 		@module_instances = @report.cell.module_instances
 		@isPDF = false
-		@controller = 'View.Report'
+		@controller = 'Controller.Report'
 
 		respond_to do |format|
 			format.html

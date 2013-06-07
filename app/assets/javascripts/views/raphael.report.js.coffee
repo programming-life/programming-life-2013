@@ -3,48 +3,56 @@
 class View.Report extends View.RaphaelBase
 
 	# Constructor for this view
-	# 
-	# @param cell_id [Integer] the cell id
 	# 	
-	constructor: (cell_id, container = "#paper" ) ->
-		container = $(container)[0]
-		super( Raphael(container,750,500))
+	constructor: ( container = "#paper", @_target = container ) ->
+		super( Raphael( $(container)[0], 900, 567 ) )
 
-		cell = new Model.Cell()
-		@_views.push new View.Cell( @_paper, @, cell, '#graphs', off)
-		@_draw()
-		@load( cell_id )
-
-
-	# Draws the cell
+		@paper.setViewBox(-750, -500, 1500, 1000)
+		
+		$( window ).on( 'resize', => _( @resize() ).debounce( 100 ) )
+		@resize()
+		
+	# Resizes the cell to the target size
 	#
-	_draw: () ->
-		for view in @_views
-			switch view.constructor.name
-				when "Cell"
-					view.draw(375, 250)
-				else
-					view.draw()
-
-	# Loads the cell, then serializes the SVG
+	resize: ( ) =>	
+		width = $( @_target ).width()
+		height = $( @_target ).height() 
+		
+		edge = Math.min( width / 1.5, height)
+		@paper.setSize( edge * 1.5 , edge )
+		@_trigger( 'paper.resize', @paper )	
+		
+	# Gets the progress bar
 	#
-	# @param cell_id [Integer] the cell id
+	# @return [jQuery.Elem] the progress bar
 	#
-	load: ( cell_id ) ->
-		@_views[0].load( cell_id )
-			.done ( () => 
-
-				# Serialize the SVG and set it as hidden value in the form
-				cell_svg = (new XMLSerializer).serializeToString($('#paper').children('svg')[0])
-				$('#report_data').attr("value", cell_svg)
-
-				# Start the simulation
-				document.mvc._views[0].startSimulation(25, 10, 25).done( () =>
-					graphs = $('#graphs').find('.graph').each( (i, graph) -> 
-						$("#graph-#{$( graph ).find( 'h2' ).text().replace('#', '_')}").append $ graph		
-					)
-					
-					# Enable the pdf generation button
-					$('#create-pdf').removeProp('disabled')
-				)
-			)
+	getProgressBar: () ->
+		return $( '#progress' )
+		
+	# Sets the progress bar
+	#
+	# @param value [Float] range 0..1 percentage filled
+	# @return [self] chainable self
+	#
+	setProgressBar: ( value ) ->
+		@getProgressBar()
+			.find( '.bar' )
+			.css( 'width', "#{value * 100}%" )
+		return this
+		
+	# Hides the progress bar
+	#
+	# @return [self] chainable self
+	#
+	hideProgressBar: ( ) ->
+		@getProgressBar().css( 'opacity', 0 )
+		return this
+		
+	# Shows the progress bar
+	#
+	# @return [self] chainable self
+	#
+	showProgressBar: () ->
+		@getProgressBar().css( 'visibility', 'visible' )
+		@getProgressBar().css( 'opacity', 1 )
+		return this

@@ -9,6 +9,7 @@
 #
 
 class Cell < ActiveRecord::Base
+	default_scope order('updated_at DESC')
 	attr_accessible :id, :name, :module_instances_attributes
   
 	has_many :module_instances, :dependent => :destroy

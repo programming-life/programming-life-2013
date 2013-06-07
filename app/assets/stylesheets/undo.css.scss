@@ -9,55 +9,6 @@
 			top:41px;
 			bottom:41px;
 			width:100%;			
-
-			.undo-list {
-				position:relative;
-				height:100%;
-				width:100%;
-				overflow-y:auto;				
-
-				.undo-row {
-					padding:8px 8px 8px 20px;
-					line-height:20px;
-
-					border-bottom:1px solid #ddd;
-
-					cursor:pointer;
-					
-					transition: background-color 0.2s ease-in-out;
-
-					dl {
-						margin:0;
-
-						dt {
-							font-weight:normal;
-							font-size:14px;
-						}
-
-						dd {
-							text-align: right;
-							color:#aaa;
-						}
-					}
-
-					&:nth-child(odd):not(.selected) {
-						background-color: #f9f9f9;
-					}
-
-					&:nth-child(even):not(.selected) {
-						background-color:  lighten( #f9f9f9, 2% );
-					}
-
-					&:hover:not(.selected) {
-						background-color: darken( #f9f9f9, 5% );
-					}
-
-					&.selected {
-						background-color: darken( #f9f9f9, 5% );
-						//border-bottom: 2px rgba( 100, 100, 255, 1) solid;
-					}
-				}
-			}
 		}
 
 		.pane-footer {
@@ -71,7 +22,10 @@
 
 					border:0px solid #ccc;
 	
-					transition: opacity 0.2s ease-in-out;
+					-webkit-transition: opacity 0.3s ease-in-out;
+					   -moz-transition: opacity 0.3s ease-in-out;
+						 -o-transition: opacity 0.3s ease-in-out;
+							transition: opacity 0.3s ease-in-out;
 					
 					&.pull-left {
 						border-right-width:1px;
@@ -91,5 +45,61 @@
 				}
 			}		
 		}	
+	}
+}
+
+.undo-list {
+	position:relative;
+	height:100%;
+	width:100%;
+	overflow-y:auto;				
+
+	.undo-row {
+		padding:8px 8px 8px 20px;
+		line-height:20px;
+
+		border-bottom:1px solid #ddd;
+
+		cursor:pointer;
+		
+		-webkit-transition: all 0.15s ease-in-out;
+		   -moz-transition: all 0.15s ease-in-out;
+			 -o-transition: all 0.15s ease-in-out;
+				transition: all 0.15s ease-in-out;
+		
+		dl {
+			margin:0;
+
+			dt {
+				font-weight:normal;
+				font-size:14px;
+			}
+
+			dd {
+				text-align: right;
+				color:#aaa;
+			}
+		}
+
+		&.inactive {
+			opacity: .5;
+		}
+		
+		&:nth-child(odd):not(.selected) {
+			background-color: #f9f9f9;
+		}
+
+		&:nth-child(even):not(.selected) {
+			background-color:  lighten( #f9f9f9, 2% );
+		}
+
+		&:hover:not(.selected) {
+			background-color: darken( #f9f9f9, 5% );
+		}
+
+		&.selected {
+			background-color: darken( #f9f9f9, 5% );
+			//border-bottom: 2px rgba( 100, 100, 255, 1) solid;
+		}
 	}
 }

@@ -1,13 +1,21 @@
 
 .module-properties {
 	max-width: 251px;
+	width: 251px;
 	position: absolute;
 	display: none;
+	outline: none;
 
 	&.selected {
 		display: block;
 		opacity: 1;
 		z-index: 999;
+	}
+
+	&:not(.selected) {
+		input[type=checkbox], input[type=radio] {
+			display:none;
+		}
 	}
 
 	.control-group {
@@ -21,10 +29,48 @@
 	.controls {
 		margin-left: 119px;
 
-		input[disabled], select[disabled] {
-			background: none;
-			border-color: rgba(0, 0, 0, 0);
-			box-shadow: none;
+		label {
+			display:block;
+			min-height: 0px;
+			height:20px;
+			transition: opacity .3s ease-in-out, height .3s ease-in-out, margin .3s ease-in-out, padding .3s ease-in-out;
+
+			&.selectable-hide {
+				opacity: 0;
+				
+				height:0px;
+				margin-top:0px;
+				margin-bottom:0px;
+
+				input {
+					display:none !important;
+				}				
+			}
+		}
+
+		input, select{
+			transition: opacity 1s ease-in-out;
+
+			&[disabled] {
+				border-color: rgba(0, 0, 0, 0);
+				box-shadow: none;
+				background:none;
+
+				&[type=checkbox], &[type=radio] {
+					
+					& + .badge {
+						margin-left:-18px;
+					}
+				}
+			}
+		}
+
+		.badge {
+			transition: margin-left .3s ease-in-out;
+
+			&.compounds {
+				border-radius:2px;
+			}
 		}
 
 		.badge-metabolite {

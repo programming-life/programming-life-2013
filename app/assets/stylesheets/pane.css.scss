@@ -11,8 +11,15 @@
 	border:1px solid #ddd;
 	border-width:0;
 
-	box-shadow:0 0 5px rgba(0, 1px, 5px, .1);
-	transition: left .5s ease-in-out, right .5s ease-in-out, width .5s ease-in-out;
+	-webkit-box-shadow:0 0 5px rgba(0, 1px, 5px, .1);
+	   -moz-box-shadow:0 0 5px rgba(0, 1px, 5px, .1);
+	     -o-box-shadow:0 0 5px rgba(0, 1px, 5px, .1);
+	        box-shadow:0 0 5px rgba(0, 1px, 5px, .1);
+	
+	-webkit-transition: left 0.5s ease-in-out, right 0.5s ease-in-out,  width 0.5s ease-in-out;
+	   -moz-transition: left 0.5s ease-in-out, right 0.5s ease-in-out,  width 0.5s ease-in-out;
+		 -o-transition: left 0.5s ease-in-out, right 0.5s ease-in-out,  width 0.5s ease-in-out;
+			transition: left 0.5s ease-in-out, right 0.5s ease-in-out,  width 0.5s ease-in-out;
 
 	.pane-button {
 		width:18px;
@@ -33,7 +40,10 @@
 		box-shadow:0 1px 5px rgba(0, 0, 5px, .1);
 		cursor:pointer;
 		
-		transition: left .5s ease-in-out, right .5s ease-in-out;
+		-webkit-transition: left 0.5s ease-in-out, right 0.5s ease-in-out;
+		   -moz-transition: left 0.5s ease-in-out, right 0.5s ease-in-out;
+			 -o-transition: left 0.5s ease-in-out, right 0.5s ease-in-out;
+				transition: left 0.5s ease-in-out, right 0.5s ease-in-out;
 	}
 
 	&.pane-left {
@@ -49,7 +59,7 @@
 			border-bottom-right-radius: 9px;
 
 			&:after {
-				content:url('/assets/icon-chevron-right.png');
+				content:url('/img/icon-chevron-right.png');
 				opacity:.3;
 			}
 		}
@@ -64,7 +74,7 @@
 
 			.pane-button {
 				&:after {
-					content:url('/assets/icon-chevron-left.png');
+					content:url('/img/icon-chevron-left.png');
 					opacity:.3;
 				}
 			}
@@ -84,7 +94,7 @@
 			border-bottom-left-radius: 9px;
 
 			&:after {
-				content:url('/assets/icon-chevron-left.png');
+				content:url('/img/icon-chevron-left.png');
 				opacity:.3;
 			}
 		}
@@ -98,7 +108,7 @@
 
 			.pane-button {
 				&:after {
-					content:url('/assets/icon-chevron-right.png');
+					content:url('/img/icon-chevron-right.png');
 					opacity:.3;
 				}
 			}
@@ -140,6 +150,7 @@
 
 @media (max-width: 980px) and (min-width: 770px) {
 	.pane {
+		
 		width: 200px;
 		
 		&.pane-left {
@@ -162,6 +173,7 @@
 
 @media (max-width: 769px) and (min-width: 481px) {
 	.pane {
+
 		width: 100px;
 		
 		&.pane-left {
