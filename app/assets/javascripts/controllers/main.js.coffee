@@ -271,7 +271,6 @@ class Controller.Main extends Controller.Base
 		startSimulateFlag = not target.hasClass( 'active' )
 		
 		iterationDone = ( results, from, to ) =>
-			console.log results.datasets
 			@controller( 'graphs' ).show( results.datasets, @_currentIteration > 0 )
 			@_currentIteration++
 			@_setProgressBar 0
