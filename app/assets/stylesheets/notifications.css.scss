@@ -59,4 +59,17 @@
 		font-size: .7rem;
 		color: grey;
 	}
+	
+	&.global {
+		max-width: 700px;
+		
+		&.active {
+			display: block;
+			opacity: .75;
+			
+			&:hover {
+				opacity: .9;
+			}
+		}
+	}
 }

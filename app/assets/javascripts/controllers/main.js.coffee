@@ -4,6 +4,10 @@
 class Controller.Main extends Controller.Base
 	
 	@concern Mixin.TimeMachine
+	
+	#
+	#
+	@NOTIFICATION_TIMEOUT: 1000 * 15
 
 	# Creates a new instance of Main
 	#
@@ -23,17 +27,26 @@ class Controller.Main extends Controller.Base
 	#
 	_createChildren: () ->
 	
+		# Unobtrusive notifications view
+		parent =
+			getAbsolutePoint: ( location ) ->
+				console.log location
+				return [ $( window ).width() / 2, 20 ]
+				
+		@view.add ( @_globalNotifications = new View.Notification( parent, 'global', 'global' ) )
+	
+		# Child Controllers
 		@addChild 'settings', new Controller.Settings()
 		@addChild 'cell', new Controller.Cell( @view.paper, @view, @cellFromCache( 'main.cell' ) )
-
-
 		@addChild 'graphs', new Controller.Graphs( "#graphs" )
 		@addChild 'undo', new Controller.Undo( @timemachine )
 
+		# Child Views
 		@view.add @controller('cell').view
 		@view.add @controller('graphs').view
 		@view.addToLeftPane @controller('undo').view
 		
+		# Update view
 		@_setCellNameActionField( if @controller( 'cell' ).model.isLocal() then '' else  @controller( 'cell' ).model.name )
 
 		@_onCellViewSet( @controller("cell").view, @controller("cell").model, true )
@@ -71,11 +84,8 @@ class Controller.Main extends Controller.Base
 	# Creates bindings
 	#
 	_createBindings: () ->
-		
 		@view.bindActionButtonClick( () => @onAction( arguments... ) ) 
-	
 		@_bind( 'view.cell.set', @, @_onCellViewSet )
-		
 		@_bind( 'module.selected.changed', @, 
 			(module, selected) => 
 				@controller('undo').focusTimeMachine if selected
@@ -85,8 +95,8 @@ class Controller.Main extends Controller.Base
 		)
 		@_bind( 'cell.metabolite.added', @, @addTimeMachine )
 		@_bind( 'cell.module.added', @, @addTimeMachine )
-
 		@_bind( 'tree.node.added', @, @_onNodeAdd )
+		@_onNotificate( @, 'global', _( () -> @_globalNotifications?.hide() ).debounce( Main.NOTIFICATION_TIMEOUT ) )
 	
 	# Gets called when a node is added to a tree
 	#
@@ -431,8 +441,11 @@ class Controller.Main extends Controller.Base
 				)
 				@view.add view
 				view.show()
-			#else
-			#	# show as notification, not modal
+			else if ( version.revision > GIGABASE_VERSION.revision )
+				@_notificate( this, 'global', 'upgrade', 
+					'Update available. <a href="#" class="btn btn-mini" data-action="refresh" onclick="document.location.reload(true);">Refres' +
+					'h</a> this page to upgrade to version ' + version.full + '.' 
+				)
 		)
 				
 	# Flushes the cache

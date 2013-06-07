@@ -9,6 +9,7 @@ class View.Module extends View.RaphaelBase
 		Bottom: 3
 		Left: 0
 		Right: 1
+		Global: -1
 
 
 	@Direction:

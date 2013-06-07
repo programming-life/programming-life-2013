@@ -109,6 +109,12 @@ class View.HTMLPopOver extends Helper.Mixable
 			when 'right'
 				left = x
 				top = y - height / 2 - 1
+			when 'global'
+				top = y
+				left = x - width / 2
+			else
+				top = y
+				left = x
 				
 		@_elem.css( { left: left, top: top } )
 		return this
@@ -124,7 +130,7 @@ class View.HTMLPopOver extends Helper.Mixable
 				@_elem.addClass('selected')
 			else
 				@_elem.removeClass('selected')
-
+				
 		@_selected = selected
 		return this
 
