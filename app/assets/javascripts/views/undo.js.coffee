@@ -18,7 +18,7 @@ class View.Undo extends Helper.Mixable
 	_createBindings: ( ) ->
 		@_bind("tree.node.added", @, @_onNodeAdd)
 		@_bind("tree.root.set", @, @_onRootSet )
-		@_bind("view.undo.branch", @, @_onBranch )
+		@_bind("controller.undo.branch.finished", @, @_onBranch )
 
 	# Clears this view
 	#
