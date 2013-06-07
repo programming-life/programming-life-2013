@@ -23,6 +23,7 @@ class View.SettingsModal extends View.HTMLModal
 			form.append @_createControlSection section, options
 				
 		body.append form
+		return body
 		
 	# Create section
 	# 
