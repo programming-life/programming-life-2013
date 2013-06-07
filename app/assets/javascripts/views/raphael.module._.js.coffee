@@ -597,8 +597,8 @@ class View.Module extends View.RaphaelBase
 	# @return [View.Spline] the created spline
 	#
 	_createSpline: ( orig, dest ) ->
+		return if orig instanceof View.ModulePreview or dest instanceof View.ModulePreview
 		new View.Spline(@paper, @_parent, @_cell, orig, dest)
-		#return 
 
 	# Runs if module is invalidated
 	# 

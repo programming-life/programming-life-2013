@@ -94,11 +94,15 @@ class Controller.Cell extends Controller.Base
 		@_bind( 'cell.metabolite.remove', @, @_onModuleRemove )
 		@_bind( 'cell.spline.add', @, @onSplineAdd)
 		@_bind( 'cell.spline.remove', @, @onSplineRemove)
-		@_bind( "module.creation.started", @, @_onModuleCreationStarted )
-		@_bind( "module.creation.aborted", @, @_onModuleCreationAborted )
-		@_bind( "module.created", @, @_onModuleCreated )
+		@_bind( 'module.creation.started', @, @_onModuleCreationStarted )
+		@_bind( 'module.creation.aborted', @, @_onModuleCreationAborted )
+		@_bind( 'module.update.started', @, @_onModuleUpdateStarted )
+		@_bind( 'module.update.aborted', @, @_onModuleUpdateAborted )
+		@_bind( 'module.created', @, @_onModuleCreated )
+		@_bind( 'module.updated', @, @_onModuleUpdated )
 		@_bind( 'cell.module.added', @, @_onModuleAdded )
 		@_bind( 'dummy.properties.change', @, @_onDummyModuleChanged)
+		@_bind( 'module.properties.change', @, @_onModuleChanged )
 		
 	# Kills this controller
 	#
@@ -169,15 +173,33 @@ class Controller.Cell extends Controller.Base
 
 		@killPreviews()
 		@preview module
+		
+	# On Module property changed add missing metabolites
+	# 
+	# @param module [Model.Module] the module changed
+	# @param params [Array] The keys and values
+	# @param key [String] the actual changed key
+	# @param value [any] the new value
+	# @param modulector [Constructor] the contstructor for this dummy module
+	#
+	_onModuleChanged: ( source, params, key, value, currents ) ->
+		return unless @_automagically
+		@_updating = on
+		
+		# Create a new module
+		module = new source.model.constructor( _( _( params ).clone( true ) ).defaults( currents ) )
+
+		@killPreviews()
+		@previewChange module
 
 	# Kill and remove all previews
 	#
 	killPreviews: ( ) ->
 		@_previews.each( (preview) =>
-			@view.remove preview
+			@view.remove preview.kill()
 			@_trigger "module.preview.ended", preview
 		)
-		@_previews.kill(on)
+		@_previews.kill on
 	
 	# Automagically adds the metabolite modules requires to the cell view or model
 	#
@@ -205,13 +227,14 @@ class Controller.Cell extends Controller.Base
 		missing = _( names ).filter( ( name ) => not _( @model._getModules() ).any( ( m ) -> name is m.name ) )
 
 		for name in missing
+			console.log 'missing: ' + name
 			is_product = 
 				( module instanceof Model.Transporter and module.direction is Model.Transporter.Outward ) or
 				( module instanceof Model.Metabolism and name in module['dest'] )
 
 			is_inside = name.split( '#' )[1] is 'int'
 			
-			if @_creating
+			if @_creating or @_updating
 				type = if is_product then Model.Metabolite.Product else Model.Metabolite.Substrate
 				placement = if is_inside then Model.Metabolite.Inside else Model.Metabolite.Outside
 				metabolite = new Model.Metabolite( { supply: 0, placement: placement, type: type }, 0, name )
@@ -228,8 +251,18 @@ class Controller.Cell extends Controller.Base
 		type = source.getFullType()
 		if _( @view.viewsByType[type] ).contains( source )
 			@_creating = on
-			@preview( module )
+			@_updating = off
+			@preview module
 			
+	#
+	#
+	_onModuleUpdateStarted: ( source, module ) ->
+		return if source instanceof View.DummyModule
+		type = source.getFullType()
+		if _( @view.viewsByType[type] ).contains( source )
+			@_updating = on
+			@_creating = off
+			@previewChange module
 
 	# Gets called on module.creation.aborted
 	#
@@ -239,6 +272,16 @@ class Controller.Cell extends Controller.Base
 		type = source.getFullType()
 		if _( @view.viewsByType[type] ).contains( source )
 			@_creating = off
+			@killPreviews()
+			
+	#
+	#
+	_onModuleUpdateAborted: ( source, model ) ->
+		return if source instanceof View.DummyModule
+		return if not @_updating or not source
+		type = source.getFullType()
+		if _( @view.viewsByType[type] ).contains( source )
+			@_updating = off
 			@killPreviews()
 		
 	# Gets called on module.creation.finished
@@ -253,6 +296,16 @@ class Controller.Cell extends Controller.Base
 			@killPreviews()
 
 			@model.add module
+			
+	# 
+	#
+	_onModuleUpdated: ( source, module ) ->
+		type = source.getFullType()
+		if _( @view.viewsByType[type] ).contains( source )
+			@_updating = off
+			@killPreviews()
+
+			@_automagicAdd module if module
 			
 	# Loads a new cell into the view
 	#
@@ -493,3 +546,8 @@ class Controller.Cell extends Controller.Base
 	preview: ( module ) ->
 		@_automagicAdd module
 		@_previews.add @view.previewModule( @view , module, on )
+		
+	#
+	#
+	previewChange: ( module ) ->
+		@_automagicAdd module

@@ -96,11 +96,13 @@ class View.ModuleProperties extends View.HTMLPopOver
 	#
 	_drawProperty: ( key, type, params = {} ) ->
 		value = @module[ key ]
+		@_currents[ key ] = value
 		return @_drawInput( type, key, value, params )			
 
 	# Populates the popover body with the required forms to reflect the module.
 	#
 	_drawForm: ( ) ->
+		@_currents = {}
 		
 		form = $('<div class="form-horizontal" id="' + @getFormId() + '"></div>')
 		sections = []
@@ -323,7 +325,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 	#
 	_triggerChange: ( key, value ) ->
 		console.debug "trigger change #{key} to #{value}"
-		@_trigger( 'module.properties.change', @_parent, [ @_changes, key, value ] )
+		@_trigger( 'module.properties.change', @_parent, [ @_changes, key, value, @_currents ] )
 		
 	# Draws the selectable selection for
 	#
@@ -430,6 +432,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 		@_setSelectablesVisibility( selected )
 
 		if selected	
+		
 			@_elem.focus()
 			@_elem.find('input[type=text]:enabled').first().select()
 
@@ -440,7 +443,11 @@ class View.ModuleProperties extends View.HTMLPopOver
 					when 13
 						@_save()
 			)
+						
+			@_trigger( 'module.update.started', @_parent, [ @module ] )
 		else
+			@_trigger( 'module.update.aborted',  @_parent, [ @module ] )
+			
 			@_elem.find( 'input' ).blur()
 			@_elem.off( 'keyup' )
 			@_reset()
@@ -467,6 +474,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 	#
 	_save: ( ) =>	
 		return if not @_saveChanges()
+		@_trigger( 'module.updated', @_parent, [ @module ] )
 		@_changes = {}
 		@_trigger( 'module.selected.changed', @module, [ off ] )
 		
