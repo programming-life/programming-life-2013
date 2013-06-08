@@ -6,8 +6,8 @@
 (exports ? this).GIGABASE_VERSION = 
 	major: 1
 	minor: 5
-	revision: 2
-	full: '1.5.2'
+	revision: 3
+	full: '1.5.3'
 
 document.mvc = null
 

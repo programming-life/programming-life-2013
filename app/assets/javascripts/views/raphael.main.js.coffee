@@ -133,7 +133,6 @@ class View.Main extends View.RaphaelBase
 		@_loadModal?.kill()
 		@_notifications?.kill()
 		@_optionsModal?.kill()
-		@getActionButtons().removeProp( 'disabled' )
 		$( window ).off( 'resize' )
 		$( '#actions' ).off( 'click', '[data-action]' )
 		return this
@@ -198,6 +197,7 @@ class View.Main extends View.RaphaelBase
 	bindActionButtonClick: ( action ) ->
 		$( '#actions' ).off( 'click', '[data-action]' )
 		$( '#actions' ).on( 'click', '[data-action]', action )
+		@enableActionButtons()
 		return this
 		
 	# Gets the action buttons
@@ -215,7 +215,7 @@ class View.Main extends View.RaphaelBase
 		@getActionButtons()
 			.removeClass( 'btn-success' )
 			.removeClass( 'btn-danger' )
-			.prop( { disabled :  true } )
+			.prop( { 'disabled': true } )
 			.filter( ':not([data-toggle])' )
 				.filter( ':not([class*="btn-warning"])' )
 				.find( 'i' )

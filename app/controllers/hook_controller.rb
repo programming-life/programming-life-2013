@@ -33,7 +33,7 @@ class HookController < ApplicationController
 	
 	def version
 		respond_to do | format |
-			format.json { render json: { major: 1, minor: 5, revision: 2, full: '1.5.2' } }
+			format.json { render json: { major: 1, minor: 5, revision: 3, full: '1.5.3' } }
 		end
 	end
 
