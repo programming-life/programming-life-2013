@@ -286,9 +286,8 @@ class View.Cell extends View.RaphaelBase
 	addSpline: ( spline ) =>
 		return if spline in @_splines
 		
-		if _(@_splines).find( ( s ) -> 
-			( s.orig is spline.orig and s.dest is spline.dest ) or 
-			( s.dest is spline.orig and s.orig is spline.dest )	)?
+		if _(@_splines).find( ( s ) -> ( s.orig is spline.orig and s.dest is spline.dest ) )?
+			console.log @_splines, spline
 			spline.kill()
 			return
 		
