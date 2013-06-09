@@ -99,7 +99,7 @@ describe("Numeric", function() {
 		
 		it("should have cancelled messages", function() {
 			runs( function() {
-				expect( results.msg ).toMatch( 'cancelled' );
+				expect( results.msg ).toMatch( 'Cancelled' );
 			});
 		});
 		
