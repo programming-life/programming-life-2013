@@ -13,17 +13,20 @@ class View.SplinePreview extends View.Spline
 	#
 	constructor: ( paper, parent, cell, orig, dest, interaction ) ->
 		super paper, parent, cell, orig, dest, interaction
-
 	
 	# Adds interaction to the spline
 	#
 	addInteraction: ( ) ->
 		super()
-		@_bind "module.preview.ended", @, @_onModuleCreationEnded
+		@_bind "module.preview.ended", @, @_onModulePreviewEnded
+
+	draw: ( ) ->
+		super()
+
+		$(@_contents.node).addClass('spline-preview')
 	
 	# Gets called when module preview ends
 	#
-	_onModuleCreationEnded: ( preview ) ->
+	_onModulePreviewEnded: ( preview ) ->
 		if preview.model is @orig.model or preview.model is @dest.model
 			@_die()
-

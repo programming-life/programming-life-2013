@@ -15,7 +15,7 @@ class ReportsViewTests < ActionDispatch::IntegrationTest
 	end
 
 	test "navigate to new-report view" do
-		button = @driver.find_element(:class, "icon-plus-sign")
+		button = @wait.until { @driver.find_element(:class, "icon-plus-sign") }
 		button.click
 		url = @driver.current_url
 		assert_equal url, "http://life.jstfy.com/reports/new"

@@ -9,6 +9,7 @@ class View.Module extends View.RaphaelBase
 		Bottom: 3
 		Left: 0
 		Right: 1
+		Global: -1
 
 
 	@Direction:
@@ -50,25 +51,28 @@ class View.Module extends View.RaphaelBase
 	
 		@_bind( 'module.selected.changed', @, @onModuleSelected )
 		@_bind( 'module.hovered.changed', @, @onModuleHovered )
+		@_bind( 'module.properties.change', @, @_onModuleChanged )
+		@_bind( 'module.update.aborted', @, @_onModuleUpdateEnded )
 
-		@_onNotificate( @, @model, @onNotificate)
+		@_onNotificate( @, @model, @_onNotificate)
 		return this
 
 
 	# Forwards any notification from the model
 	#
-	onNotificate: ( context, source, identifier, type, message, args ) ->
+	_onNotificate: ( context, source, identifier, type, message, args ) ->
 		@_notificate( @, @, identifier, message, args, type )
 
 		
 	# Adds bindings to the module (non-interaction)
 	#
 	addBindings: () ->
-		@_bind( 'module.property.changed', @, @onModuleInvalidated )
-		@_bind( 'cell.module.added', @, @onModuleAdded )
-		@_bind( 'cell.module.removed', @, @onModuleRemoved )
-		@_bind( 'cell.metabolite.added', @, @onMetaboliteAdded )
-		@_bind( 'cell.metabolite.removed', @, @onMetaboliteRemoved )
+		@_bind( 'module.property.changed', @, @_onModuleInvalidated )
+		@_bind( 'module.compound.changed', @, @_onModuleInvalidated )
+		@_bind( 'cell.module.added', @, @_onModuleAdded )
+		@_bind( 'cell.module.removed', @, @_onModuleRemoved )
+		@_bind( 'cell.metabolite.added', @, @_onMetaboliteAdded )
+		@_bind( 'cell.metabolite.removed', @, @_onMetaboliteRemoved )
 		
 	# Adds hitbox interaction (click, mouseout, mouseover)
 	#
@@ -230,9 +234,9 @@ class View.Module extends View.RaphaelBase
 	# @param metabolitePlacement [Placement] the placement of the metabolite
 	# @return [View.Module.Direction] the direction of the spline
 	#
-	_getSplineDirection: ( metabolitePlacement ) ->
+	_getSplineDirection: ( metabolitePlacement, model = @model ) ->
 		if @_type is 'Transporter'
-			switch @model.direction
+			switch model.direction
 				when Model.Transporter.Inward
 					switch metabolitePlacement
 						when Model.Metabolite.Inside
@@ -268,7 +272,7 @@ class View.Module extends View.RaphaelBase
 		contents = @drawContents()
 		@_contents.push @drawMetaContents( contents )
 		@_contents.push contents		
-		
+
 		@createSplines()
 
 		@_trigger( 'view.drawn', @ )
@@ -414,29 +418,33 @@ class View.Module extends View.RaphaelBase
 		
 	# Creates splines for this module
 	#
-	createSplines: () ->
+	# @param model [Model] the module to create for
+	# @param preview [Boolean] the preview flag
+	#
+	createSplines: ( model = @model, preview = off ) ->
 		if @type is 'Transporter'
-			for property in [ 'orig', 'dest' ]
-				#metabolite = @_cell.getMetabolite @model[ property ]
-				view = @_parent.getViewByName @model[ property ]
-				console.log view
+			for property in [ model["transported"] ]
+				for location in ["int", "ext"]
+					view = @_parent.getViewByName "#{property}##{location}"
+					if view
+						placement = view.model.placement
+						direction = @_getSplineDirection(placement)
+
+						if direction is View.Module.Direction.Inward
+							@_createSpline( view, @, preview )
+						else if direction is View.Module.Direction.Outward
+							@_createSpline( @, view, preview )
+		else if @type is 'Metabolism'
+			for property in _( model["orig"] ).concat( model["dest"] )
+				view = @_parent.getViewByName property
 				if view
 					placement = view.model.placement
 					direction = @_getSplineDirection(placement)
 
-					if direction is View.Module.Direction.Inward
-						@_createSpline view, @
-					else if direction is View.Module.Direction.Outward
-						@_createSpline @, view
-
-		else if @type is 'Metabolism'
-			for metabolite in @model.orig.map( ( name ) => @_cell.getMetabolite name ) when metabolite?
-				view = @_parent.getView(metabolite)
-				@_createSpline view, @
-
-			for metabolite in @model.dest.map( ( name ) => @_cell.getMetabolite name ) when metabolite?
-				view = @_parent.getView(metabolite)
-				@_createSpline @, view
+					if property in model["orig"]
+						@_createSpline( view, @, preview )
+					else if property in model["dest"]
+						@_createSpline( @, view, preview )
 		return this
 
 	# Draws this view shadow
@@ -490,7 +498,7 @@ class View.Module extends View.RaphaelBase
 			when 'SubstrateCircle'
 			
 				# This is the circle in which we show the substrate
-				substrate = params.substrate
+				substrate = _.escape params.substrate
 				substrateText = _.escape _( substrate ).first()
 				if ( params.useFullName? and params.useFullName )
 					substrateText = substrate
@@ -528,6 +536,7 @@ class View.Module extends View.RaphaelBase
 			
 				# This is the circle in which we show the conversion
 				
+				origFullTexts = []
 				origTexts = []
 				enzymOrigCircles = []
 				
@@ -540,13 +549,15 @@ class View.Module extends View.RaphaelBase
 					from = min + origTexts.length * d 
 					to = max - ( params.orig.length - origTexts.length - 1 ) * d
 					
+					origFullTexts.push _.escape orig
 					origTexts.push _.escape _( orig ).first()
 					
 					[ enzymOrigCircle ] = @drawComponent( 'enzym', 'Sector', x - 2, y, { r: 20, from: from, to: to } )
 					enzymOrigCircle.attr
-						'fill': @hashColor origTexts[ origTexts.length - 1 ]
+						'fill': @hashColor origFullTexts[ origTexts.length - 1 ]
 					enzymOrigCircles.push enzymOrigCircle
 					
+				destFullTexts = []
 				destTexts = []
 				enzymDestCircles = []
 				
@@ -559,31 +570,16 @@ class View.Module extends View.RaphaelBase
 					from = min - ( params.dest.length - destTexts.length - 1 ) * d 
 					to = max + destTexts.length * d 
 					
+					destFullTexts.push _.escape dest
 					destTexts.push _.escape _( dest ).first()
 					
 					[ enzymDestCircle ] = @drawComponent( 'enzym', 'Sector', x + 2, y, { r: 20, from: from, to: to } )
 					enzymDestCircle.attr
-						'fill': @hashColor destTexts[ destTexts.length - 1 ]
+						'fill': @hashColor destFullTexts[ destTexts.length - 1 ]
 					enzymDestCircles.push enzymDestCircle
 				
-				destText = _.escape _( params.dest ).first()
-				
-				if ( params.showText )
-				
-					substrateTextShadow = @paper.text( x, y - 1, substrateText )
-					substrateTextShadow.node.setAttribute('class', "#{module}-substrate-text-shadow" )
-					substrateTextShadow.attr
-						'font-size': 18 
 
-					substrateTextActual = @paper.text( x, y, substrateText )
-					substrateTextActual.node.setAttribute('class', "#{module}-substrate-text" )
-					substrateTextActual.attr
-						'font-size': 18
-
-					substrateText = @paper.set()
-					substrateText.push(substrateTextShadow, substrateTextActual)
-				
-				return [ enzymOrigCircles, enzymDestCircles, substrateText ]
+				return [ enzymOrigCircles, enzymDestCircles ]
 								
 		return []
 
@@ -593,18 +589,37 @@ class View.Module extends View.RaphaelBase
 	# @param dest [View.Module] the destination module view
 	# @return [View.Spline] the created spline
 	#
-	_createSpline: ( orig, dest ) ->
+	_createSpline: ( orig, dest, preview = off ) ->
+		return @_createPreviewSpline( orig, dest ) if preview
+		return if orig instanceof View.ModulePreview or dest instanceof View.ModulePreview
 		new View.Spline(@paper, @_parent, @_cell, orig, dest)
-		#return 
+
+	# Creates a spline preview
+	#
+	_createPreviewSpline: ( orig, dest ) ->
+		new View.SplinePreview(@paper, @_parent, @_cell, orig, dest)
 
 	# Runs if module is invalidated
 	# 
 	# @param module [Model.Module] the module invalidated
 	#
-	onModuleInvalidated: ( module ) =>
+	_onModuleInvalidated: ( module ) =>
 		if module is @model
-			console.log 'onModuleInvalidated'
 			@redraw()
+			
+	# Runs if module is changed
+	#
+	_onModuleChanged: ( source, params, key, value, currents ) =>
+		if source.model is @model
+			@_notificationsView.hide()
+			module = new source.model.constructor( _( _( params ).clone( true ) ).defaults( currents ) )
+			@createSplines( module, on )
+			
+	# Runs if module is no longer updated
+	#
+	_onModuleUpdateEnded: ( source ) =>
+		if source.model is @model
+			@createSplines( @model, off )
 	
 	# Gets called when a module view selected.
 	#
@@ -615,6 +630,7 @@ class View.Module extends View.RaphaelBase
 		if module is @model 
 			if @_selected isnt selected
 				@_setSelected selected 
+				@_notificationsView.hide()
 		else if @_selected isnt off
 			@_setSelected off
 
@@ -635,7 +651,7 @@ class View.Module extends View.RaphaelBase
 	# @param cell [Model.Cell] the cell to which the module was added
 	# @param module [Module] the module that was added
 	#
-	onModuleAdded: ( cell, module ) ->
+	_onModuleAdded: ( cell, module ) ->
 		return if cell isnt @_cell
 
 	# Gets called when a module is removed from a cell
@@ -643,7 +659,7 @@ class View.Module extends View.RaphaelBase
 	# @param cell [Model.Cell] the cell from which the module was removed
 	# @param module [Module] the module that was removed
 	#
-	onModuleRemoved: ( cell, module ) ->
+	_onModuleRemoved: ( cell, module ) ->
 		return if cell isnt @_cell
 		if @getFullType() is module.getFullType() and module isnt @model
 			@setPosition()
@@ -653,24 +669,16 @@ class View.Module extends View.RaphaelBase
 	# @param cell [Model.Cell] the cell to which the metabolite was added
 	# @param metabolite [Metabolite] the metabolite that was added
 	#
-	onMetaboliteAdded: ( cell, metabolite ) ->
+	_onMetaboliteAdded: ( cell, metabolite ) ->
 		return if cell isnt @_cell
-		if @type is 'Transporter'
-			if metabolite.name is @model.orig
-				@_createSpline @_parent.getView(metabolite), @
-			else if metabolite.name is @model.dest
-				@_createSpline @, @_parent.getView(metabolite)
-		else if @type is 'Metabolism'
-			if metabolite.name in @model.orig
-				@_createSpline @_parent.getView(metabolite), @
-			else if metabolite.name in @model.dest
-				@_createSpline @, @_parent.getView(metabolite)
+		@createSplines()
+		return
 
 	# Gets called when a metabolite is removed from a cell
 	#
 	# @param cell [Model.Cell] the cell from which the metabolite was removed
 	# @param metabolite [Metabolite] the metabolite that was removed
 	#
-	onMetaboliteRemoved: ( cell, metabolite ) ->
+	_onMetaboliteRemoved: ( cell, metabolite ) ->
 		if @getFullType() is metabolite.getFullType() and metabolite isnt @model
 			@setPosition()		

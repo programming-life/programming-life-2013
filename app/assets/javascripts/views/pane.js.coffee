@@ -11,7 +11,7 @@ class View.Pane extends Helper.Mixable
 	# @param position [View.Pane.Position] The side the pane needs to be on
 	#
 	constructor: ( @position ) ->
-		@_extended = off
+		@_extended = on
 		@_buttonWidth = 40
 
 		@_containerOptions = {}
@@ -49,6 +49,11 @@ class View.Pane extends Helper.Mixable
 			@_elem.append(view.draw())
 
 		$('body').append(@_elem)
+
+		if @_extended
+			@extend()
+		else
+			@retract()
 
 	# Add a view to draw in the container
 	#

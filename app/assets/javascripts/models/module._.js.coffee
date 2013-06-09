@@ -31,9 +31,9 @@ class Model.Module extends Helper.Mixable
 		
 		action = @_createAction( "Created #{this.constructor.name}:#{this.name}")
 		@tree.setRoot( new Model.Node(action, null) )
-					
-		@_bind( 'module.property.changed', @, @onActionDo )
-		@_bind( 'module.set.compound', @, @onActionDo )
+			
+		@_bind( 'module.property.action', @, @onActionDo )
+		@_bind( 'module.compound.action', @, @onActionDo )
 		@_trigger( 'module.creation', @, [ @creation, @id ] )	
 		
 	# Defines All the properties
@@ -97,7 +97,8 @@ class Model.Module extends Helper.Mixable
 				creation: Date.now()
 				starts: {}
 			} ),
-			'module.property.changed'
+			'module.property.changed',
+			'module.property.action'
 		)
 		return this
 		
@@ -159,16 +160,21 @@ class Model.Module extends Helper.Mixable
 	setCompound: ( compound, value ) ->
 		return this if  @starts[ compound ] is value
 		
-		todo = _( ( compound, value ) -> @starts[ compound ] = value ).bind( @, compound, value )
-		undo = _( ( compound, value ) -> @starts[ compound ] = value ).bind( @, compound, @starts[ compound ] )
-		
+		setter = ( action, compound, value ) ->
+			@starts[ compound ] = value
+			@_trigger( 'module.compound.changed', @, [ action, compound, value ] )	
+			
 		action = new Model.Action( 
-			@, todo, undo, 
+			@, undefined, undefined, 
 			"Change initial value for #{@[compound] ? compound} from #{ @starts[ compound ] } to #{value}" 
 		)
+		
+		todo = _( setter ).bind( @, action, compound, value )
+		undo = _( setter ).bind( @, action, compound, @starts[ compound ] )
+		action.set( todo, undo )
 		action.do()
 		
-		@_trigger( 'module.set.compound', @, [ action ] )	
+		@_trigger( 'module.compound.action', @, [ action ] )
 		
 		return this
 		
@@ -399,7 +405,8 @@ class Model.Module extends Helper.Mixable
 				"Succesfully saved #{ @name }",
 				[ 'update parameters' ],
 				Model.Module.Notification.Success
-			)		
+			)	
+			return this
 		)
 			
 		promise.fail( ( data ) => 		
@@ -413,6 +420,7 @@ class Model.Module extends Helper.Mixable
 				],
 				Model.Module.Notification.Error
 			)		
+			return [ data, this ]
 		)
 		
 		return promise
@@ -449,6 +457,7 @@ class Model.Module extends Helper.Mixable
 					[ 'create instance' ],
 					Model.Module.Notification.Success
 				)		
+				return this
 				
 			# Fail
 			, ( data ) => 		
@@ -462,6 +471,7 @@ class Model.Module extends Helper.Mixable
 					],
 					Model.Module.Notification.Error
 				)		
+				return [ data, this ]
 			)
 		
 		return promise
@@ -505,7 +515,8 @@ class Model.Module extends Helper.Mixable
 						serialized_data
 					],
 					Model.Module.Notification.Error
-				)		
+				)
+				return [ data, this ]
 			)
 		
 		return promise
@@ -556,7 +567,8 @@ class Model.Module extends Helper.Mixable
 					"Succesfully loaded #{module.name}",
 					[ 'load' ],
 					Model.Module.Notification.Success
-				)	
+				)
+				return module
 				
 			# Fail
 			( data ) =>
@@ -573,6 +585,8 @@ class Model.Module extends Helper.Mixable
 					],
 					Model.Module.Notification.Error
 				)	
+				
+				return [ data, module ]
 			)
 			
 		return promise

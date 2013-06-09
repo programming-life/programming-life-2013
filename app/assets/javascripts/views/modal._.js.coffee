@@ -1,3 +1,4 @@
+'use strict'
 # Provides an HTML Modal
 #
 # @concern Mixin.EventBindings
@@ -103,12 +104,16 @@ class View.HTMLModal extends Helper.Mixable
 		@_elem.append @_createBody()
 		@_elem.append footer if footer?	
 		
-		@_elem.on( 'click', '[data-dismiss="modal"]', ( event ) =>
-				@_action = $( event.currentTarget ).data( 'action' )
-			)
+		@_elem.off( 'click', '[data-dismiss="modal"]', @_setAction )
+		@_elem.on( 'click', '[data-dismiss="modal"]', @_setAction )
 			
 		@_elem.on( 'hide', () => @_trigger( 'modal.confirm.close', @, [ @_action ] ) )
 		@_elem.on( 'hidden', () => @_trigger( 'modal.confirm.closed', @, [ @_action ] ) )
+		
+	#
+	#
+	_setAction: ( event ) =>
+		@_action = $( event.currentTarget ).data( 'action' )	
 		
 	# Create the modal header
 	#

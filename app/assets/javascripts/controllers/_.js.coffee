@@ -1,10 +1,12 @@
-# The controller for the Undo view
+# The base of all controllers
 #
 # @concern Mixin.EventBindings
+# @concern Mixin.Catcher
 #
 class Controller.Base extends Helper.Mixable
 
 	@concern Mixin.EventBindings
+	@concern Mixin.Catcher
 	
 	# Creates the controller
 	#
@@ -31,9 +33,14 @@ class Controller.Base extends Helper.Mixable
 	# @return [self] the chainable self
 	#
 	removeChild: ( id, kill = on ) ->
-		@_children[ id ].kill() if kill
+		@_children[ id ]?.kill() if kill
 		delete @_children[ id ] 
 		return this
+		
+	#
+	#
+	each: ( func ) ->
+		_( @_children ).each func
 		
 	# Gets the controller with the id
 	# 
@@ -57,3 +64,24 @@ class Controller.Base extends Helper.Mixable
 		@view.kill()
 		@_unbindAll()
 		return this
+		
+	# Runs when the user comes online
+	#
+	onUpdate: () ->
+		return $.Deferred().promise()
+		
+	# Runs when the user tries to unload the page
+	#
+	beforeUnload: () ->
+		return undefined
+		
+	# Runs when the user has unloaded the page
+	#
+	onUnload: () ->
+		return undefined
+		
+	# Catcher for the cell controller errors
+	#
+	_catcher: ( source, e ) ->
+		text = if _( e ).isObject() then e.message ? 'no message' else e 
+		@_notificate( @, 'global', text , text, [], View.RaphaelBase.Notification.Error)

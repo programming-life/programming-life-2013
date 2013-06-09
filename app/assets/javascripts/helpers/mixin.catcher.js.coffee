@@ -10,11 +10,12 @@ class Mixin.Catcher
 	@ClassMethods:		
 		catchable: ( fns ) ->
 			for name, fn of fns
-				@::[name] = ( ) ->
+				@::[ name ] = ( ) ->
 					try
-						fn.apply( @, arguments )
+						return fn.apply( @, arguments )
 					catch e
-						@_catcher.apply( @, [e] )
+						@_catcher.apply( @, [ @, e ] )
+						return undefined
 
 	@InstanceMethods: {}
 

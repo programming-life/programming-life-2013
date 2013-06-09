@@ -45,7 +45,7 @@ class ModuleInstancesController < ApplicationController
 		@module_values = @module_instance.module_values
 		@module_hash = Hash[ ( @module_parameters.map { |p| p.key } ).zip( 
 			@module_parameters.map { |p| 
-					( found = ( @module_values.select{ |v| v.module_parameter == p } ).first ).nil? ? nil : found.value.nil? ? "" : JSON.parse( "[#{found.value}]" )[0]
+					( found = ( @module_values.select{ |v| v.module_parameter == p } ).first ).nil? ? nil : ( found.value.nil? or found.value.empty? ? "[]" : JSON.parse( found.value )[0] )
 				} 
 			)
 		]
@@ -97,7 +97,7 @@ class ModuleInstancesController < ApplicationController
 		@module_values = @module_instance.module_values
 		@module_hash = Hash[ ( @module_parameters.map { |p| p.key } ).zip( 
 			@module_parameters.map { |p| 
-					( found = ( @module_values.select{ |v| v.module_parameter == p } ).first ).nil? ? nil : found.value.nil? ? "" : JSON.parse( "[#{found.value}]" )[0]
+					( found = ( @module_values.select{ |v| v.module_parameter == p } ).first ).nil? ? nil : ( found.value.nil? or found.value.empty? ? "[]" : JSON.parse( found.value )[0] )
 				} 
 			)
 		]
@@ -192,6 +192,9 @@ class ModuleInstancesController < ApplicationController
 					updated_parameter = nil
 					parameters.each do |i,u| 
 						updated_parameter = u if u[:key] == p.key
+						if u.nil? or updated_parameter.nil? or not updated_parameter[:value]
+							updated_parameter = { :value => [] }
+						end
 					end
 					
 					if ( !updated_parameter.nil? )
@@ -200,11 +203,11 @@ class ModuleInstancesController < ApplicationController
 							value = ModuleValue.create( {
 								module_instance_id: @module_instance.id, 
 								module_parameter_id: p.id,
-								value: ActiveSupport::JSON.encode(updated_parameter[:value])
+								value: [updated_parameter[:value]].to_json
 							})
 							value.save
 						else
-							current_parameter.update_attributes( { value: ActiveSupport::JSON.encode(updated_parameter[:value]) } )
+							current_parameter.update_attributes( { value: [updated_parameter[:value]].to_json } )
 						end
 					end
 				end

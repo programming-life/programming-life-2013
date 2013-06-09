@@ -1,3 +1,4 @@
+'use strict'
 # This is the model of a cell. It holds modules and substrates and is capable
 # of simulating the modules for a timespan. A cell comes with one default 
 # module which is the Cell Growth.
@@ -12,6 +13,10 @@ class Model.Cell extends Helper.Mixable
 	@concern Mixin.EventBindings
 	@concern Mixin.TimeMachine
 
+	# The cache timeout ( 1 week )
+	# 
+	@CACHE_TIMEOUT = 60 * 60 * 24 * 7
+	
 	# Constructor for cell
 	#
 	# @param params [Object] parameters for the cellgrowth module
@@ -35,7 +40,7 @@ class Model.Cell extends Helper.Mixable
 		@_defineProperties( paramscell )
 		
 		@_trigger( 'cell.creation', @, [ @creation, @id ] )
-		@_bind( 'cell.property.changed', @, @onPropertySet )
+		@_bind( 'cell.property.action', @, @opPropertyAction )
 		@add new Model.CellGrowth( params, start ), false
 		
 	# Defines All the properties
@@ -49,15 +54,23 @@ class Model.Cell extends Helper.Mixable
 		
 		@_propertiesFromParams(  
 			_( params ).defaults( {
-				id: _.uniqueId "client:#{this.constructor.name}:"
-				creation: Date.now()
+				id: Cell.getUniqueId()
+				creation: new Date()
 				name: null
 			} ),
-			'cell.property.changed'
+			'cell.property.changed',
+			'cell.property.action'
 		)
 		
 		Object.seal @ 
 		return this
+		
+	# Gets a new unique id for a cell
+	#
+	# @return [String] the new id
+	#
+	@getUniqueId: () ->
+		return _.uniqueId "client:#{this.constructor.name}:"
 		
 	# Defines the value properties
 	#
@@ -81,7 +94,7 @@ class Model.Cell extends Helper.Mixable
 		)
 		
 		@_nonEnumerableGetter( 'url', () ->
-				data = Model.Cell.extractId( @id )
+				data = Cell.extractId( @id )
 				return "/cells/#{ data.id }.json" if data.origin is "server"
 				return '/cells.json'
 		)
@@ -93,7 +106,7 @@ class Model.Cell extends Helper.Mixable
 	# @param caller [any] the originating property
 	# @param action [Model.Action] the action invoked
 	#
-	onPropertySet: ( caller, action ) =>
+	opPropertyAction: ( caller, action ) =>
 		if caller is @
 			@addUndoableEvent( action )
 		
@@ -455,7 +468,7 @@ class Model.Cell extends Helper.Mixable
 					values,
 					base_values
 				],
-				Model.Cell.Notification.Info
+				Cell.Notification.Info
 			)
 			return [ values, off ]
 			
@@ -468,7 +481,16 @@ class Model.Cell extends Helper.Mixable
 	# @param base_values [Array] the base values to try
 	# @return [self] chainable instance
 	#
-	run : ( from, to, base_values = [], callback, token, stepsize = 1e-9, iterations = 4000 ) ->
+	run : ( from, to, base_values = [], callback, token, options = {} ) ->
+	
+		if not @module
+			throw Error 'I need a module CellGrowth (cell) to simulate the population.'
+	
+		defaults = {
+			tolerance: 1e-9
+			iterations: 4000
+		}
+		options = _( options ).defaults( defaults )
 		
 		@_trigger( 'cell.before.run', @, [ to - from ] )			
 		@generateWarnings()
@@ -496,7 +518,7 @@ class Model.Cell extends Helper.Mixable
 			from = 0
 			to =  to - from
 		
-		promise = numeric.asyncdopri( 0, to - from, values, @_step( modules, mapping, map ), stepsize, iterations, undefined, token )
+		promise = numeric.asyncdopri( 0, to - from, values, @_step( modules, mapping, map ), options.tolerance, options.iterations, undefined, token )
 		promise = promise.then( ( ret ) =>
 		
 			@_trigger( 'cell.after.run', @, [ to - from, ret, mapping ] )
@@ -519,7 +541,7 @@ class Model.Cell extends Helper.Mixable
 	# @return [self] chainable self
 	#
 	generateWarnings: () ->
-		# Show some warnings
+		
 		exclude = []
 		while not ( finished ? off )
 		
@@ -595,8 +617,11 @@ class Model.Cell extends Helper.Mixable
 			parameters: parameters
 			type: type
 			modules: modules
+			name: @name
 		}
 		
+		parameters.name = 'Cell [' + @creation.getTime() + ']' unless parameters.name
+		parameters.creation = @creation.getTime()
 		return JSON.stringify( result ) if to_string
 		return result
 		
@@ -622,12 +647,20 @@ class Model.Cell extends Helper.Mixable
 			'cell.save',
 			"Saving this cell...",
 			[],
-			Model.Cell.Notification.Info
+			Cell.Notification.Info
 		)	
 		
+		# Update that creation date
+		@_creation = new Date()
 		
-		@_id = {} if clone
 		if @isLocal() or clone
+			
+			if @isLocal()
+				locache.remove( 'cell.' + @id )
+				
+			if clone
+				@_id = Cell.getUniqueId()
+				
 			promise = @_create()
 		else 
 			promise = @_update()
@@ -637,8 +670,21 @@ class Model.Cell extends Helper.Mixable
 				'cell.save',
 				"Successfully saved this cell",
 				[]
-				Model.Cell.Notification.Success
+				Cell.Notification.Success
 			)	
+			
+			return data
+		)
+		
+		promise.always( ( data ) =>
+			
+			locache.async
+				.set( 'cell.' + @id, @serialize(), Cell.CACHE_TIMEOUT )
+				.finished( () =>
+					cells = locache.get( 'cells' ) ? []
+					cells.push 'cell.' + @id
+					locache.async.set( 'cells', _( cells ).uniq() )
+				)
 		)
 		
 		return promise
@@ -657,7 +703,7 @@ class Model.Cell extends Helper.Mixable
 		
 		result = {
 			cell:
-				name: @name ? 'Cell [' + @creation + ']'
+				name: @name ? 'Cell [' + @creation.getTime() + ']'
 			modules: modules
 				
 		}
@@ -689,8 +735,9 @@ class Model.Cell extends Helper.Mixable
 						data, 
 						cell_data 
 					],
-					Model.Cell.Notification.Error
-				)	
+					Cell.Notification.Error
+				)
+				return [ data, cell_data ]
 			)
 
 		return promise
@@ -720,8 +767,9 @@ class Model.Cell extends Helper.Mixable
 							data, 
 							cell_data  
 					],
-					Model.Cell.Notification.Error
-				)	
+					Cell.Notification.Error
+				)
+				return [ data, cell_data ]
 			)
 		
 		return promise
@@ -732,18 +780,19 @@ class Model.Cell extends Helper.Mixable
 	# @return [Model.Cell] the cell
 	#
 	@deserialize : ( serialized = {} ) ->
-		
+
 		serialized = JSON.parse( serialized ) if _( serialized ).isString()
+		serialized.parameters.creation = new Date( serialized.parameters.creation )
 		fn = ( window || @ )["Model"]
 		
 		result = new fn[serialized.type]( undefined, undefined, serialized.parameters  )
 		
 		for module in result._modules
-			result.remove module
+			result.remove module, false
 
 		for module in serialized.modules
 			result.add Model.Module.deserialize( module )
-			
+
 		return result
 		
 	# Loads a cell
@@ -754,6 +803,9 @@ class Model.Cell extends Helper.Mixable
 	@load : ( cell_id, callback, clone = off ) ->
 	
 		result = undefined
+		if Helper.Mixable.extractId( cell_id ).origin isnt "server"
+			return Cell.loadLocal( cell_id, callback, clone )
+		
 		cell = new Model.Cell( undefined, undefined, { id: cell_id } )
 		promise = $.get( cell.url, { all: true } )
 		promise = promise.then( 
@@ -779,7 +831,7 @@ class Model.Cell extends Helper.Mixable
 					'cell.load',
 					'Loading cell...',
 					[ 'load' ],
-					Model.Cell.Notification.Info
+					Cell.Notification.Info
 				);
 				
 				promises = []
@@ -793,11 +845,23 @@ class Model.Cell extends Helper.Mixable
 						clone
 					)
 				
-				return $.when.apply( $, promises )
+				promise = $.when.apply( $, promises )
+				promise.done( ( data ) => 
+					unless clone
+						locache.async.set( 'cell.' + result.id, result.serialize(), Cell.CACHE_TIMEOUT )
+							.finished( () =>
+								cells = locache.get( 'cells' ) ? []
+								cells.push 'cell.' + result.id
+								locache.async.set( 'cells', _( cells ).uniq() )
+							)
+					return data
+				)
+				return promise
 				
 			# Fail
 			, ( data ) => 
 			
+				
 				if not result?
 					result = cell
 					for module in result._modules
@@ -812,8 +876,11 @@ class Model.Cell extends Helper.Mixable
 						data, 
 						cell_id 
 					],
-					Model.Cell.Notification.Error
-				)	
+					Cell.Notification.Error
+				)
+				
+				Cell.loadLocal( cell_id, callback, clone )
+				return [ data, result ]
 			)
 			
 		promise.done( ( data ) => 
@@ -822,16 +889,108 @@ class Model.Cell extends Helper.Mixable
 				'cell.load',
 				"Successfully loaded the cell #{ result.name }",
 				[ 'load' ],
-				Model.Cell.Notification.Success
+				Cell.Notification.Success
 			)	
 		)
 		
 		return promise
+	
+	# Loads a local cell
+	#
+	# @param cell_id [String] id of cell to load
+	# @param callback [Function] callback function
+	# @param clone [Boolean] clone flag
+	# @return [jQuery.Promise] the promise
+	#
+	@loadLocal: ( cell_id, callback, clone = off ) ->
 		
-	@loadList: ( callback ) ->
+		promise = $.Deferred( () ->
+			locache.async.get( 'cell.' + cell_id )
+				.finished( ( cell ) =>
+
+					unless cell?
+						promise.reject 'Cell was not found'
+						return
+					
+					cell = Cell.deserialize cell
+					unless cell?
+						promise.reject 'Cell could not be loaded'
+						return
+						
+					if clone
+						cell._id = Cell.getUniqueId()
+						cell._name = "#{cell.name}-clone"
+					
+					callback?( cell )
+					
+					cell._notificate( @, cell, 
+						'cell.load',
+						"Loaded the cell #{ cell.name } from local cache.",
+						[ 'load' ],
+						Cell.Notification.Success
+					)	
+					
+					promise.resolve cell
+				)
+			
+		)
+	
+		return promise.promise()
+		
+	# Loads the whole list of cells
+	#
+	# @return [jQuery.Promise] the promise
+	#
+	@loadList: ( ) ->
 	
 		cell = new Model.Cell()
-		promise = $.get( cell.url, {} )
+		promise = $.Deferred( () => 
 		
-		return promise
-		
+			retrieve = $.get( cell.url, {} )
+			
+			# Got it from online
+			retrieve.done( ( data ) =>
+				promise.resolve [ data, 'server' ]
+			)
+			
+			# Fallback
+			retrieve.fail( ( data ) => 
+				@loadLocalList promise 
+			)
+		)
+		return promise.promise()
+			
+	# Loads a local list of cells
+	#
+	# @param promise [jQuery.Deferred] deferred to resolve (or reject)
+	#
+	@loadLocalList: ( promise, only_local = off ) ->
+	
+		locache.async.get( 'cells' )
+			.finished( ( cell_ids ) =>
+				cells = []
+				
+				unless cell_ids?
+					promise.resolve cells
+					return cells
+					
+				counter = cell_ids.length
+				for id in cell_ids
+					( ( cell_id ) ->
+						locache.async.get( cell_id )
+							.finished( ( cell ) -> 
+							
+								if cell 
+									if not only_local or Helper.Mixable.extractId( cell_id ).origin isnt "server"
+										cells.push Model.Cell.deserialize( cell )
+								else
+									cell_ids = _( cell_ids ).without cell_id
+									locache.set( 'cells', cell_ids )
+									
+								if --counter is 0
+									cells = _( cells ).sortBy( 'creation' ).reverse()
+									promise.resolve [ cells, 'local' ]
+							)
+					)( id )
+			)
+		return promise.promise()

@@ -1,4 +1,8 @@
 # Base class for views that use Raphael
+#
+# @concern Mixin.EventBindings
+# @concern Mixin.Catcher
+# @concern Mixin.DynamicProperties
 # 
 class View.RaphaelBase extends View.Collection
 	
@@ -29,13 +33,14 @@ class View.RaphaelBase extends View.Collection
 				return @_anchor?.getBBox()?.cy ? 0
 			paper: ( ) -> 
 				return @_paper
+	
 	# Catcher function for Mixin.Catcher that will notificate any thrown Error on catchable methods
 	#
 	# @param e [Error] the error to notificate
 	#
-	_catcher: ( e ) =>
-		text = e.message
-		@_notificate(@, @, '', text, [], View.RaphaelBase.Notification.Error)
+	_catcher: ( source, e ) =>
+		text = if _( e ).isObject() then e.message ? 'no message' else e 
+		@_notificate( @, source, _( 'catched-' ).uniqueId() , text, [], View.RaphaelBase.Notification.Error)
 
 		
 	# Gets the Bounding Box for this view

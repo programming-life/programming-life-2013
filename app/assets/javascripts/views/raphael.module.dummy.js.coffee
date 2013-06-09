@@ -21,10 +21,10 @@ class View.DummyModule extends View.RaphaelBase
 
 		@_visible = @_number is -1 or @_count < @_number
 
-		@_createBindings()
+		@addBindings()
 
 		@_propertiesView = new View.DummyModuleProperties( @, @_parent, @_cell, @_modulector, @_params )
-		@_notificationsView = new View.ModuleNotification( @, @_parent, @_cell, @_modulector )
+		@_notificationsView = new View.ModuleNotification( @, @_parent, @_cell, @ )
 		
 		Object.defineProperty( @, 'visible',
 			get: ->
@@ -38,51 +38,50 @@ class View.DummyModule extends View.RaphaelBase
 	
 	# Creates event bindings
 	#
-	_createBindings: ( ) ->
-		@_bind( 'cell.module.added', @, @onModuleAdd )
-		@_bind( 'cell.module.removed', @, @onModuleRemove )
-		@_bind( 'cell.metabolite.added', @, @onModuleAdd )		
-		@_bind( 'cell.metabolite.removed', @, @onModuleRemove )
-		@_bind( 'module.creation.started', @, @onModuleCreationStarted)
-		@_bind( 'module.creation.aborted', @, @onModuleCreationAborted )
-		@_bind( 'module.creation.finished', @, @onModuleCreationFinished )
-		@_bind "module.properties.change", @, @onModulePropertiesChange
-		@_bind "module.selected.changed", @, @onModuleSelected
+	addBindings: ( ) ->
+		@_bind( 'cell.module.added', @, @_onModuleAdd )
+		@_bind( 'cell.module.removed', @, @_onModuleRemove )
+		@_bind( 'cell.metabolite.added', @, @_onModuleAdd )		
+		@_bind( 'cell.metabolite.removed', @, @_onModuleRemove )
+		@_bind( 'module.creation.start', @, @_onModuleCreationStart )
+		@_bind( 'module.creation.started', @, @_onModuleCreationStarted )
+		@_bind( 'module.creation.aborted', @, @_onModuleCreationAborted )
+		@_bind( 'module.creation.finished', @, @_onModuleCreationFinished )
+		@_bind( 'module.properties.change', @, @_onModulePropertiesChange )
+		@_bind( 'module.selected.changed', @, @_onModuleSelected )
 
-	# Gets called when a module creation has started
+	# Gets called when a module creation hase beend started
 	#
-	# @param dummy [View.DummyModule] the dummy for which the module creation has started
+	# @param dummy [View.DummyModule] the dummy for which the module creation has been started
 	#
-	onModuleCreationStarted: ( dummy ) ->
-		if dummy is @
-			@_setSelected on
-		else
-			if @_selected
-				@_setSelected off
+	_onModuleCreationStarted: ( dummy, module ) ->
+		@_setSelected on if dummy is @
+			
+	# Gets called when a module creation is begin started
+	#
+	# @param dummy [View.DummyModule] the dummy for which the module creation is begin started
+	#
+	_onModuleCreationStart: ( dummy , module ) ->
+		if dummy isnt @
+			@_setSelected off if @_selected
 		
 		
 	# Gets called when a module creation was aborted
 	#
 	# @param dummy [View.DummyModule] the dummy for which the module creation was aborted
 	#
-	onModuleCreationAborted: ( dummy ) ->
+	_onModuleCreationAborted: ( dummy ) ->
 		if dummy is @
 			@_setSelected off
-			@_notificationsView.hide()
 	
 	# Gets called on a change in the module properties
 	#
-	# @param source [View.DummyModule] The source of the change
-	# @param key [String] The property
-	# @oaram value [Object] The new value
+	# @param source [View.ModuleDummy] The source of the change
+	# @param params [Array] The keys and values
 	#
 	@catchable
-		onModulePropertiesChange:( source, key, value ) ->
-			if source is @
-				@module[ key ] = value
-				@_notificationsView.hide()
-
-				@_trigger "module.creation.changed", @, [@module]
+		_onModulePropertiesChange:( source, params, key, value, module ) ->
+			@_notificationsView.hide() if source is @
 
 	# Clicked the add button
 	#
@@ -91,23 +90,22 @@ class View.DummyModule extends View.RaphaelBase
 	# @params params [Object] the params to pass to the constructor
 	#
 	@catchable
-		onModuleCreationFinished : ( dummy, params ) ->
+		_onModuleCreationFinished : ( dummy, params ) ->
 			if dummy isnt this
 				return
-
 			@_setSelected off
 
 			params = _( params ).defaults( @_params )
-			@module = new @_modulector( _( params ).clone( true ) )
+			module = new @_modulector( _( params ).clone( true ) )
 
-			@_trigger "module.created", @, [ @module ]
+			@_trigger "module.created", @, [ module ]
 	
 	# On Module Added to the Cell
 	#
 	# @param cell [Model.Cell] the cell added to
 	# @param module [Model.Module] the module added
 	#
-	onModuleAdd : ( cell, module ) ->
+	_onModuleAdd : ( cell, module ) ->
 		if cell is @_cell and module instanceof @_modulector 
 			@_count += 1
 			if @_number isnt -1 and @_number <= @_count
@@ -120,7 +118,7 @@ class View.DummyModule extends View.RaphaelBase
 	# @param cell [Model.Cell] the cell removed from
 	# @param module [Model.Module] the module removed
 	#
-	onModuleRemove : ( cell, module ) ->
+	_onModuleRemove : ( cell, module ) ->
 		if cell is @_cell and module instanceof @_modulector 
 			@_count -= 1
 			if @_number > @_count
@@ -193,10 +191,11 @@ class View.DummyModule extends View.RaphaelBase
 
 		hitbox.click =>
 			unless @_selected
-				@module = new @_modulector( _( @_params ).clone( true ) )
-				@_trigger 'module.creation.started', @, [ @module ]
+				module = new @_modulector( _( @_params ).clone( true ) )
+				@_trigger 'module.creation.start', @, [ module ]
+				@_trigger 'module.creation.started', @, [ module ]
 			else
-				@_trigger 'module.creation.aborted', @, [ @module ]
+				@_trigger 'module.creation.aborted', @, []
 		
 		@_contents.push hitbox
 		@_contents.push contents
@@ -261,7 +260,8 @@ class View.DummyModule extends View.RaphaelBase
 				$(@_box.node).addClass('selected')
 			else
 				$(@_box.node).removeClass('selected')
-				@_trigger "module.creation.aborted", @, [@module]
+				@_trigger "module.creation.aborted", @, []
+				@_notificationsView.hide()
 
 		return this
 
@@ -329,7 +329,6 @@ class View.DummyModule extends View.RaphaelBase
 	# @param module [Module] the module that is being selected
 	# @param selected [Boolean] the selection state of the module
 	#
-	onModuleSelected: ( module, selected ) ->
+	_onModuleSelected: ( module, selected ) ->
 		unless module is @module
-			if @_selected
-				@_setSelected off
+			@_setSelected off if @_selected

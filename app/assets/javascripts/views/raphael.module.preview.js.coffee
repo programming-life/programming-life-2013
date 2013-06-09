@@ -17,5 +17,13 @@ class View.ModulePreview extends View.Module
 	# @return [View.Spline] the created spline
 	#
 	_createSpline: ( orig, dest ) ->
-		if orig? and dest?
-			new View.SplinePreview(@paper, @_parent, @_cell, orig, dest)
+		return unless orig? and dest?
+		new View.SplinePreview( @paper, @_parent, @_cell, orig, dest )
+
+	#
+	#
+	draw: ( x = null, y = null ) ->
+		super(x, y)
+		
+		$(@_box.node).addClass('module-preview')
+		@_shadow.forEach( (line) => $(line.node).addClass('module-preview'))
