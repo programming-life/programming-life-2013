@@ -287,7 +287,6 @@ class View.Cell extends View.RaphaelBase
 		return if spline in @_splines
 		
 		if _(@_splines).find( ( s ) -> ( s.orig is spline.orig and s.dest is spline.dest ) )?
-			console.log @_splines, spline
 			spline.kill()
 			return
 		
