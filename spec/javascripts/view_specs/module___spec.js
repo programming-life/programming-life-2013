@@ -16,6 +16,10 @@ describe("Module", function() {
 			module = new View.Module(paper, parent, cell, model);
 		});
 
+		afterEach( function() {
+			//module.kill();
+		});
+
 		it("should be defined", function() {
 			expect(module).toBeDefined();
 		});
@@ -37,6 +41,7 @@ describe("Module", function() {
 		});
 
 		describe("when drawing as a specific module", function() {
+
 			it("should be able to draw as a transporter", function() {
 				expect(module.drawAsTransporter()).toBeDefined();
 			});
@@ -93,6 +98,10 @@ describe("Module", function() {
 		describe("without interaction", function() {
 			beforeEach( function() {
 				module = new View.Module(paper, parent, cell, model, false);
+			});
+
+			afterEach( function() {
+				//module.kill();
 			});
 
 			it("should be defined", function() {
