@@ -2,7 +2,7 @@
 <html>
   <head>
   <meta charset='UTF-8'>
-  <title>Broyologramming Life API Documentation</title>
+  <title>CoffeeScript API Documentation</title>
   <link rel='stylesheet' href='../../assets/codo.css' type='text/css'>
   <script src='../../assets/codo.js'></script>
   <script src='../../assets/search_data.js'></script>
@@ -162,6 +162,39 @@
       Concerns automagically include and extend a class
     </span>
   </li>
+  <li>
+    <span class='signature'>
+      <a href='#extractId-class'>
+        + (Object) <strong>extractId</strong>(id)
+      </a>
+    </span>
+    <span class='desc'>
+      Extracts id plus metadata
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#parseDate-class'>
+        + (Date) <strong>parseDate</strong>(date)
+      </a>
+    </span>
+    <span class='desc'>
+      Parses a date with or without timezone offset to a javascript date
+    </span>
+  </li>
+</ul>
+      <h2>Instance Method Summary</h2>
+      <ul class='summary'>
+  <li>
+    <span class='signature'>
+      <a href='#isLocal-instance'>
+        - (Boolean) <strong>isLocal</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Returns true if this is a local instance
+    </span>
+  </li>
 </ul>
       <h2>Class Method Details</h2>
       <div class='methods'>
@@ -228,11 +261,93 @@
   </ul>
 </div>
   </div>
+  <div class='method_details'>
+    <p class='signature' id='extractId-class'>
+      + (Object) <strong>extractId</strong>(id)
+    </p>
+    <div class='docstring'>
+  <p>Extracts id plus metadata</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>id</span>
+      <span class='type'>
+        (<tt>String, Integer, Object</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the id</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Object</tt>)
+      &mdash;
+      <span class='desc'>the id plus metadata</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='parseDate-class'>
+      + (Date) <strong>parseDate</strong>(date)
+    </p>
+    <div class='docstring'>
+  <p>Parses a date with or without timezone offset to a javascript date</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>data</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the date in ISO-something format</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Date</tt>)
+      &mdash;
+      <span class='desc'>the parsed date</span>
+    </li>
+  </ul>
+</div>
+  </div>
+</div>
+      <h2>Instance Method Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='isLocal-instance'>
+      - (Boolean) <strong>isLocal</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Returns true if this is a local instance</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Boolean</tt>)
+      &mdash;
+      <span class='desc'>true if local, false if synced instance</span>
+    </li>
+  </ul>
+</div>
+  </div>
 </div>
     </div>
     <div id='footer'>
   Generated on
-  Sun Jun 02 2013 15:47:57 GMT+0200 (W. Europe Daylight Time)
+  Tue Jun 11 2013 00:05:30 GMT+0200 (W. Europe Daylight Time)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

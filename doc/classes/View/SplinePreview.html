@@ -17,7 +17,7 @@
     &raquo;
     <span class='title'>View</span>
     &raquo;
-    <span class='title'>Graph</span>
+    <span class='title'>SplinePreview</span>
     <nav>
       <ul>
         <li class='noframes'>
@@ -109,17 +109,17 @@
     <div id='content'>
       <h1>
         Class:
-        View.Graph
+        View.SplinePreview
       </h1>
       <table class='box'>
         <tr>
           <td>Defined in:</td>
-          <td>app&#47;assets&#47;javascripts&#47;views&#47;raphael.graph.js.coffee</td>
+          <td>app&#47;assets&#47;javascripts&#47;views&#47;raphael.spline.preview.js.coffee</td>
         </tr>
         <tr>
           <td>Inherits:</td>
           <td>
-            <a href='../../classes/View/RaphaelBase.html'>View.RaphaelBase</a>
+            <a href='../../classes/View/Spline.html'>View.Spline</a>
           </td>
         </tr>
         <tr>
@@ -133,148 +133,74 @@
       </table>
       <h2>Overview</h2>
       <div class='docstring'>
-  <p>Class to generate graphs from a set of data points</p>
+  <p>Spline preview class</p>
 </div>
 <div class='tags'>
 </div>
-      <h2>Constant Summary</h2>
-      <dl class='constants'>
-        <dt id='MAX_DATASETS-constant'>
-          MAX_DATASETS
-          =
-          <div class='docstring'>
-  <p>Maximum number of simultaneously displayed data sets</p>
-</div>
-<div class='tags'>
-</div>
-        </dt>
-        <dd>
-          <pre><code class='coffee'>3</code></pre>
-        </dd>
-        <dt id='DEFAULTS-constant'>
-          DEFAULTS
-          =
-          <div class='docstring'>
-  <p>The default options for this graph</p>
-</div>
-<div class='tags'>
-</div>
-        </dt>
-        <dd>
-          <pre><code class='coffee'>{
-  smooth: true,
-  axis: '0 0 1 1',
-  shade: true,
-  colors: ["rgba(140, 137, 132, 0.3)", "rgba(1, 145, 200, 0.5)", "rgba(0, 91, 154, 0.85)"]
-}</code></pre>
-        </dd>
-        <dt id='AXISPADDING-constant'>
-          AXISPADDING
-          =
-          <div class='tags'>
-</div>
-        </dt>
-        <dd>
-          <pre><code class='coffee'>20</code></pre>
-        </dd>
-      </dl>
       <h2>Instance Method Summary</h2>
       <ul class='summary'>
   <li>
     <span class='signature'>
       <a href='#constructor-instance'>
-        - (void) <strong>constructor</strong>(id, _titletext, parent, _width = 240, _height = 175)
+        - (void) <strong>constructor</strong>(paper, parent, cell, orig, dest, interaction)
       </a>
     </span>
     <span class='constructor note title'>Constructor</span>
     <span class='desc'>
-      Construct a new Graph object
+      Creates a new spline
     </span>
   </li>
   <li>
     <span class='signature'>
-      <a href='#clear-instance'>
-        - (void) <strong>clear</strong>()
+      <a href='#addInteraction-instance'>
+        - (void) <strong>addInteraction</strong>()
       </a>
     </span>
     <span class='desc'>
-      Clears the view
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#kill-instance'>
-        - (void) <strong>kill</strong>()
-      </a>
-    </span>
-    <span class='desc'>
-      Kills the view
+      Adds interaction to the spline
     </span>
   </li>
   <li>
     <span class='signature'>
       <a href='#draw-instance'>
-        - (void) <strong>draw</strong>(datasets)
+        - (void) <strong>draw</strong>()
       </a>
     </span>
     <span class='desc'>
-      Draws the graph
+      
     </span>
   </li>
   <li>
     <span class='signature'>
-      <a href='#drawChart-instance'>
-        - (void) <strong>drawChart</strong>(datasets)
+      <a href='#_onModulePreviewEnded-instance'>
+        - (void) <strong>_onModulePreviewEnded</strong>(preview)
       </a>
     </span>
     <span class='desc'>
-      Draws the chart @retun [Raphael] The chart object
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#moveViewBox-instance'>
-        - (void) <strong>moveViewBox</strong>(x)
-      </a>
-    </span>
-    <span class='desc'>
-      Move the viewbox of the chart
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#play-instance'>
-        - (void) <strong>play</strong>(x = @_width, time = 500)
-      </a>
-    </span>
-    <span class='desc'>
-      Plays the graphs forward over a timespan
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#drawTitle-instance'>
-        - (JQuery) <strong>drawTitle</strong>()
-      </a>
-    </span>
-    <span class='desc'>
-      Draws the title
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#drawRedLine-instance'>
-        - (void) <strong>drawRedLine</strong>(x)
-      </a>
-    </span>
-    <span class='desc'>
-      Draws a red line over the chart
+      Gets called when module preview ends
     </span>
   </li>
 </ul>
       <h2>
         <small>Inherited Method Summary</small>
       </h2>
+      <h3 class='inherited'>
+        Methods inherited from
+        <a href='../../classes/View/Spline.html'>View.Spline</a>
+      </h3>
+      <p class='inherited'>
+                <a href='../../classes/View/Spline.html#constructor-instance'>#constructor</a>,
+                <a href='../../classes/View/Spline.html#_die-instance'>#_die</a>,
+                <a href='../../classes/View/Spline.html#addInteraction-instance'>#addInteraction</a>,
+                <a href='../../classes/View/Spline.html#setColor-instance'>#setColor</a>,
+                <a href='../../classes/View/Spline.html#draw-instance'>#draw</a>,
+                <a href='../../classes/View/Spline.html#_getPathString-instance'>#_getPathString</a>,
+                <a href='../../classes/View/Spline.html#_onModuleRemoved-instance'>#_onModuleRemoved</a>,
+                <a href='../../classes/View/Spline.html#_onModuleInvalidated-instance'>#_onModuleInvalidated</a>,
+                <a href='../../classes/View/Spline.html#_onViewMoving-instance'>#_onViewMoving</a>,
+                <a href='../../classes/View/Spline.html#_onViewMoved-instance'>#_onViewMoved</a>,
+        <a href='../../classes/View/Spline.html#_onViewDrawn-instance'>#_onViewDrawn</a>
+      </p>
       <h3 class='inherited'>
         Methods inherited from
         <a href='../../classes/View/RaphaelBase.html'>View.RaphaelBase</a>
@@ -358,45 +284,61 @@
       <div class='methods'>
   <div class='method_details'>
     <p class='signature' id='constructor-instance'>
-      - (void) <strong>constructor</strong>(id, _titletext, parent, _width = 240, _height = 175)
+      - (void) <strong>constructor</strong>(paper, parent, cell, orig, dest, interaction)
     </p>
     <div class='docstring'>
-  <p>Construct a new Graph object</p>
+  <p>Creates a new spline</p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
   <ul class='param'>
     <li>
-      <span class='name'>title</span>
+      <span class='name'>paper</span>
       <span class='type'>
-        (<tt>String</tt>)
+        (<tt>Raphael.Paper</tt>)
       </span>
       &mdash;
-      <span class='desc'>The title of the graph    </span>
+      <span class='desc'>the raphael paper</span>
     </li>
     <li>
       <span class='name'>parent</span>
       <span class='type'>
-        (<tt><a href='../../classes/View/Collection.html'>View.Collection</a></tt>)
+        (<tt><a href='../../classes/View/Cell.html'>View.Cell</a></tt>)
       </span>
       &mdash;
-      <span class='desc'>The view this graph belongs to</span>
+      <span class='desc'>the cell view this dummy belongs to</span>
     </li>
     <li>
-      <span class='name'>width</span>
+      <span class='name'>_cell</span>
       <span class='type'>
-        (<tt>Integer</tt>)
+        (<tt><a href='../../classes/Model/Cell.html'>Model.Cell</a></tt>)
       </span>
       &mdash;
-      <span class='desc'>The width of the graph</span>
+      <span class='desc'>the cell model displayed in the parent</span>
     </li>
     <li>
-      <span class='name'>height</span>
+      <span class='name'>orig</span>
       <span class='type'>
-        (<tt>Integer</tt>)
+        (<tt><a href='../../classes/View/Module.html'>View.Module</a></tt>)
       </span>
       &mdash;
-      <span class='desc'>The height of the graph</span>
+      <span class='desc'>the origin of the spline</span>
+    </li>
+    <li>
+      <span class='name'>dest</span>
+      <span class='type'>
+        (<tt><a href='../../classes/View/Module.html'>View.Module</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the destination of the spline</span>
+    </li>
+    <li>
+      <span class='name'>interaction</span>
+      <span class='type'>
+        (<tt>Boolean</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>wether to add interaction to the splines or not</span>
     </li>
   </ul>
 </div>
@@ -405,187 +347,30 @@
       <h2>Instance Method Details</h2>
       <div class='methods'>
   <div class='method_details'>
-    <p class='signature' id='clear-instance'>
-      - (void) <strong>clear</strong>()
+    <p class='signature' id='addInteraction-instance'>
+      - (void) <strong>addInteraction</strong>()
     </p>
     <div class='docstring'>
-  <p>Clears the view</p>
-</div>
-<div class='tags'>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='kill-instance'>
-      - (void) <strong>kill</strong>()
-    </p>
-    <div class='docstring'>
-  <p>Kills the view</p>
+  <p>Adds interaction to the spline</p>
 </div>
 <div class='tags'>
 </div>
   </div>
   <div class='method_details'>
     <p class='signature' id='draw-instance'>
-      - (void) <strong>draw</strong>(datasets)
+      - (void) <strong>draw</strong>()
     </p>
-    <div class='docstring'>
-  <p>Draws the graph</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>x</span>
-      <span class='type'>
-        (<tt>Integer</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>The x coordinate</span>
-    </li>
-    <li>
-      <span class='name'>y</span>
-      <span class='type'>
-        (<tt>Integer</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>The y coordinate</span>
-    </li>
-    <li>
-      <span class='name'>scale</span>
-      <span class='type'>
-        (<tt>Integer</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>The scale</span>
-    </li>
-  </ul>
+    <div class='tags'>
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='drawChart-instance'>
-      - (void) <strong>drawChart</strong>(datasets)
+    <p class='signature' id='_onModulePreviewEnded-instance'>
+      - (void) <strong>_onModulePreviewEnded</strong>(preview)
     </p>
     <div class='docstring'>
-  <p>Draws the chart</p><p>@retun [Raphael] The chart object</p>
+  <p>Gets called when module preview ends</p>
 </div>
 <div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>x</span>
-      <span class='type'>
-        (<tt>Integer</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the x position</span>
-    </li>
-    <li>
-      <span class='name'>y</span>
-      <span class='type'>
-        (<tt>Integer</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the y position</span>
-    </li>
-    <li>
-      <span class='name'>scale</span>
-      <span class='type'>
-        (<tt>Float</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the scale</span>
-    </li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='moveViewBox-instance'>
-      - (void) <strong>moveViewBox</strong>(x)
-    </p>
-    <div class='docstring'>
-  <p>Move the viewbox of the chart</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>x</span>
-      <span class='type'>
-        (<tt>Integer</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>The amount of pixels to move the viewbox to the right</span>
-    </li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='play-instance'>
-      - (void) <strong>play</strong>(x = @_width, time = 500)
-    </p>
-    <div class='docstring'>
-  <p>Plays the graphs forward over a timespan</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>x</span>
-      <span class='type'>
-        (<tt>Integer</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>The x to move to</span>
-    </li>
-    <li>
-      <span class='name'>time</span>
-      <span class='type'>
-        (<tt>Integer</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>The timespan to animate over</span>
-    </li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='drawTitle-instance'>
-      - (JQuery) <strong>drawTitle</strong>()
-    </p>
-    <div class='docstring'>
-  <p>Draws the title</p>
-</div>
-<div class='tags'>
-  <h3>Returns:</h3>
-  <ul class='return'>
-    <li>
-      <span class='type'></span>
-      (<tt>JQuery</tt>)
-      &mdash;
-      <span class='desc'>the text object</span>
-    </li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='drawRedLine-instance'>
-      - (void) <strong>drawRedLine</strong>(x)
-    </p>
-    <div class='docstring'>
-  <p>Draws a red line over the chart</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>x</span>
-      <span class='type'>
-        (<tt>Integer</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>The x position of the line, relative to the offset of the chart</span>
-    </li>
-  </ul>
 </div>
   </div>
 </div>

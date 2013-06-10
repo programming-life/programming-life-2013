@@ -17,7 +17,7 @@
     &raquo;
     <span class='title'>Controller</span>
     &raquo;
-    <span class='title'>Graphs</span>
+    <span class='title'>Settings</span>
     <nav>
       <ul>
         <li class='noframes'>
@@ -109,12 +109,12 @@
     <div id='content'>
       <h1>
         Class:
-        Controller.Graphs
+        Controller.Settings
       </h1>
       <table class='box'>
         <tr>
           <td>Defined in:</td>
-          <td>app&#47;assets&#47;javascripts&#47;controllers&#47;graphs.js.coffee</td>
+          <td>app&#47;assets&#47;javascripts&#47;controllers&#47;settings.js.coffee</td>
         </tr>
         <tr>
           <td>Inherits:</td>
@@ -146,27 +146,37 @@
     </span>
     <span class='constructor note title'>Constructor</span>
     <span class='desc'>
-      Creates a new instance of graph controller
+      Creates a new instance of settings controller
     </span>
   </li>
   <li>
     <span class='signature'>
-      <a href='#clear-instance'>
-        - (void) <strong>clear</strong>()
+      <a href='#_loadOptions-instance'>
+        - (void) <strong>_loadOptions</strong>()
       </a>
     </span>
     <span class='desc'>
-      Clears the view
+      Load the options
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_saveOptions-instance'>
+        - (void) <strong>_saveOptions</strong>(modal)
+      </a>
+    </span>
+    <span class='desc'>
+      Save options
     </span>
   </li>
   <li>
     <span class='signature'>
       <a href='#show-instance'>
-        - (Object) <strong>show</strong>(datasets, append = false, id = 'id')
+        - (void) <strong>show</strong>(_callback)
       </a>
     </span>
     <span class='desc'>
-      Shows the graphs with the data from the datasets
+      Show the modal
     </span>
   </li>
 </ul>
@@ -232,71 +242,42 @@
       - (void) <strong>constructor</strong>(id)
     </p>
     <div class='docstring'>
-  <p>Creates a new instance of graph controller</p>
+  <p>Creates a new instance of settings controller</p>
 </div>
 <div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>view</span>
-      <span class='type'>
-        (<tt><a href='../../classes/View/Collection.html'>View.Collection</a></tt>)
-      </span>
-      &mdash;
-      <span class='desc'>The view to contain the graphs controller by this</span>
-    </li>
-    <li>
-      <span class='name'>id</span>
-      <span class='type'>
-        (<tt>String</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>A string id for the container of the graphs</span>
-    </li>
-  </ul>
 </div>
   </div>
 </div>
       <h2>Instance Method Details</h2>
       <div class='methods'>
   <div class='method_details'>
-    <p class='signature' id='clear-instance'>
-      - (void) <strong>clear</strong>()
+    <p class='signature' id='_loadOptions-instance'>
+      - (void) <strong>_loadOptions</strong>()
     </p>
     <div class='docstring'>
-  <p>Clears the view</p>
+  <p>Load the options</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_saveOptions-instance'>
+      - (void) <strong>_saveOptions</strong>(modal)
+    </p>
+    <div class='docstring'>
+  <p>Save options</p>
 </div>
 <div class='tags'>
 </div>
   </div>
   <div class='method_details'>
     <p class='signature' id='show-instance'>
-      - (Object) <strong>show</strong>(datasets, append = false, id = 'id')
+      - (void) <strong>show</strong>(_callback)
     </p>
     <div class='docstring'>
-  <p>Shows the graphs with the data from the datasets</p>
+  <p>Show the modal</p>
 </div>
 <div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>datasets</span>
-      <span class='type'>
-        (<tt>Object</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>An object of datasets</span>
-    </li>
-  </ul>
-  <h3>Returns:</h3>
-  <ul class='return'>
-    <li>
-      <span class='type'></span>
-      (<tt>Object</tt>)
-      &mdash;
-      <span class='desc'>graphs</span>
-    </li>
-  </ul>
 </div>
   </div>
 </div>

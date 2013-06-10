@@ -5,9 +5,9 @@
 #
 # @mixin
 #
-class Mixin.Catcher
+Mixin.Catcher =
 
-	@ClassMethods:		
+	ClassMethods:		
 		catchable: ( fns ) ->
 			for name, fn of fns
 				@::[ name ] = ( ) ->
@@ -17,13 +17,4 @@ class Mixin.Catcher
 						@_catcher.apply( @, [ @, e ] )
 						return undefined
 
-	@InstanceMethods: {}
-
-		
-
-
-
-
-
-
-
+	InstanceMethods: {}
