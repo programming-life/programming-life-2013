@@ -4,6 +4,10 @@
 class Controller.Main extends Controller.Base
 	
 	@concern Mixin.TimeMachine
+	
+	#
+	#
+	@NOTIFICATION_TIMEOUT: 1000 * 15
 
 	# Creates a new instance of Main
 	#
@@ -19,35 +23,72 @@ class Controller.Main extends Controller.Base
 		@_createChildren()
 		@_createBindings()
 		
-		
 	# Creates children
 	#
 	_createChildren: () ->
 	
+		# Unobtrusive notifications view
+		parent =
+			getAbsolutePoint: ( location ) ->
+				return [ $( window ).width() / 2, 20 ]
+				
+		@view.add ( @_globalNotifications = new View.Notification( parent, 'global', 'global' ) )
+	
+		# Child Controllers
+		@addChild 'settings', new Controller.Settings()
 		@addChild 'cell', new Controller.Cell( @view.paper, @view, @cellFromCache( 'main.cell' ) )
-		@timemachines.push @controller("cell").model.timemachine
-		@timemachine.setRoot new Model.Node(@controller("cell").model.tree.root.object)
-		@addChild 'graphs', new Controller.Graphs( @view.paper )
+		@addChild 'graphs', new Controller.Graphs( "#graphs" )
 		@addChild 'undo', new Controller.Undo( @timemachine )
-		
+
+		# Child Views
 		@view.add @controller('cell').view
 		@view.add @controller('graphs').view
 		@view.addToLeftPane @controller('undo').view
 		
+		# Update view
 		@_setCellNameActionField( if @controller( 'cell' ).model.isLocal() then '' else  @controller( 'cell' ).model.name )
+
+		@_onCellViewSet( @controller("cell").view, @controller("cell").model, true )
+	
+	# Creates the timemachine for the main controller
+	#
+	#
+	_createTimeMachine: ( ) ->
+		@timemachines = []
+		@timemachine.setRoot new Model.Node(@controller("cell").model.tree.root.object)
+
+		modules =  @controller("cell").model._getModules()
+		modules.unshift @controller("cell").model
+		for module in modules
+			timemachine = @addTimeMachine @controller("cell").model, module
+			for node in timemachine.iterator()
+				@_onNodeAdd timemachine, node
+	
+	# Gets called on view set
+	#
+	# @param view [View.Cell] The view that was set
+	# @param model [Model.Cell] The new cell model of the view
+	# @param created [Boolean] True if the cell was created, false if it was loaded
+	#
+	_onCellViewSet: ( view, model, created = false ) ->
+		if view is @controller("cell").view	
+			@controller('undo').setTimeMachine( @timemachine ) 
+			@controller('graphs').clear()
+			if created
+				action = model._createAction "Created cell"
+			else
+				action = model._createAction "Loaded cell"
+			model.timemachine.setRoot new Model.Node( action )
+			@_createTimeMachine()
 		
 	# Creates bindings
 	#
 	_createBindings: () ->
-		
 		@view.bindActionButtonClick( () => @onAction( arguments... ) ) 
-	
-		@_bind( 'view.cell.set', @, 
-			( cell ) => @controller('undo').setTimeMachine( @timemachine ) 
-		)
-		
+		@_bind( 'view.cell.set', @, @_onCellViewSet )
 		@_bind( 'module.selected.changed', @, 
 			(module, selected) => 
+				console.log "test"
 				@controller('undo').focusTimeMachine if selected
 					module.timemachine 
 				else 
@@ -55,11 +96,18 @@ class Controller.Main extends Controller.Base
 		)
 		@_bind( 'cell.metabolite.added', @, @addTimeMachine )
 		@_bind( 'cell.module.added', @, @addTimeMachine )
-		@_bind( 'tree.node.added', @, 
-			( tree, node ) => 
-				if tree in @timemachines
-					@addUndoableEvent(node.object)
-		)
+		@_bind( 'tree.node.added', @, @_onNodeAdd )
+		@_onNotificate( @, 'global', _( () -> @_globalNotifications?.hide() ).debounce( Main.NOTIFICATION_TIMEOUT ) )
+	
+	# Gets called when a node is added to a tree
+	#
+	# @param tree [Model.Tree] The tree that the node was added to
+	# @param node [Model.Node] The node
+	#
+	_onNodeAdd: ( tree, node ) ->
+		if tree in @timemachines and node isnt tree.root
+			@addUndoableEvent(node.object)
+
 		
 	# Load cell from cache
 	#
@@ -135,8 +183,8 @@ class Controller.Main extends Controller.Base
 		action = target.data( 'action' )
 		action = action.charAt(0).toUpperCase() + action.slice(1)
 		
-		if @[ 'on' + action ]?
-			@[ 'on' + action ]( btn_target, enable, success, error )
+		if @[ '_on' + action ]?
+			@[ '_on' + action ]( btn_target, enable, success, error )
 		else
 			enable()
 				
@@ -147,23 +195,29 @@ class Controller.Main extends Controller.Base
 	# @param succes [Function] function to run on success
 	# @param error [Function] function to run on error
 	#
-	onSave: ( target, enable, success, error ) ->
+	_onSave: ( target, enable, success, error ) ->
 		@view.setButtonState target, 'loading'
 		@view.setNotificationsOn( @controller('cell').model, 'button[data-action="save"]' )
 		@save().always( enable )
 			.done( success )
 			.fail( error )
-			.fail( @onSaveError )
+			.fail( @_onSaveError )
 		
+	# On Save error occurred
 	#
-	#
-	onSaveError: ( data ) =>
+	_onSaveError: ( data ) =>
 		[ error, cell ] = data
 		switch error.status
 			when 404
 				button = $ '<button id="solution" class="btn btn-small" data-action="saveAs">Save As</button>'
 				button.on( 'click', => $( '#actions [data-action="saveAs"]' ).click() )
 				message = 'It seems like the cell you are trying to save was deleted. You can try to "save as" a new cell.'
+				@view.setSolutionNotification( message, button )
+			when 0
+				button = $ '<button id="solution" class="btn btn-small" data-action="load">Open Load</button>'
+				button.on( 'click', => $( '#actions [data-action="load"]' ).click() )
+				message = "The server could not be reached. Your cell is local stored and you can find it under load. When" +
+				" a connection is established, I will try to save your cell. You don't need to do anything."
 				@view.setSolutionNotification( message, button )
 		
 	# On Save As Button clicked
@@ -173,7 +227,7 @@ class Controller.Main extends Controller.Base
 	# @param succes [Function] function to run on success
 	# @param error [Function] function to run on error
 	#
-	onSaveAs: ( target, enable, success, error ) ->
+	_onSaveAs: ( target, enable, success, error ) ->
 		@view.setButtonState target, 'loading'
 		@view.setNotificationsOn( @controller('cell').model, 'button[data-action="save"]' )
 		@save( true ).always( enable )
@@ -187,7 +241,7 @@ class Controller.Main extends Controller.Base
 	# @param succes [Function] function to run on success
 	# @param error [Function] function to run on error
 	#
-	onLoad: ( target, enable, success, error ) ->
+	_onLoad: ( target, enable, success, error ) ->
 		@view.setButtonState target, 'loading'
 		confirm = ( id ) =>
 			callback = ( res ) => @view.setNotificationsOn( res, 'button[data-action="load"]' )
@@ -214,6 +268,7 @@ class Controller.Main extends Controller.Base
 			enable()
 		
 		@view.showLoad( confirm, other, cancel )
+
 		
 	# On Report Button clicked
 	#
@@ -222,7 +277,7 @@ class Controller.Main extends Controller.Base
 	# @param succes [Function] function to run on success
 	# @param error [Function] function to run on error
 	#
-	onReport: ( target, enable, success, error ) ->
+	_onReport: ( target, enable, success, error ) ->
 		@view.setButtonState target, 'loading'
 		@save().then( ( cell ) =>
 				cell = cell[0] if _( cell ).isArray()
@@ -235,6 +290,18 @@ class Controller.Main extends Controller.Base
 			.done( success )
 			.fail( error )
 			.always( enable )
+			
+	# On Options Button clicked
+	#
+	# @param target [jQuery.Elem] target element
+	# @param enable [Function] function to re-enable buttons
+	# @param succes [Function] function to run on success
+	# @param error [Function] function to run on error
+	# @todo action should be more dynamic for child controllers and views
+	#
+	_onOptions: ( target, enable, success, error ) ->
+		@view.resetActionButtonState()
+		@controller( 'settings' ).show( )
 	
 	# On Reset Button clicked
 	#
@@ -244,16 +311,18 @@ class Controller.Main extends Controller.Base
 	# @param error [Function] function to run on error
 	# @todo action should be more dynamic for child controllers and views
 	#
-	onReset: ( target, enable, success, error ) ->
+	_onReset: ( target, enable, success, error ) ->
 		@view.resetActionButtonState()
 		
 		action = () =>
 			@kill()
 			@flush()
 			Model.EventManager.clear()
+
 			@view = new View.Main @container
 			@_createChildren()
 			@_createBindings()
+			@_createTimeMachine()
 			
 		@view.confirmReset action
 		
@@ -266,7 +335,7 @@ class Controller.Main extends Controller.Base
 	#
 	# @todo hack remove
 	#
-	onSimulate: ( target, enable, success, error ) ->
+	_onSimulate: ( target, enable, success, error ) ->
 		target.attr( 'disabled', false )
 		startSimulateFlag = not target.hasClass( 'active' )
 		
@@ -275,9 +344,9 @@ class Controller.Main extends Controller.Base
 			@_currentIteration++
 			@_setProgressBar 0
 			
-		@_iterations = 4
+		@_iterations = @controller( 'settings' ).options.simulate.iterations
 		@_currentIteration = 0
-		[ token, progress_promise ] = @controller('cell').setSimulationState startSimulateFlag, iterationDone, 20, @_iterations
+		[ token, progress_promise ] = @controller('cell').setSimulationState startSimulateFlag, iterationDone, @controller( 'settings' ).options
 		if startSimulateFlag is on
 			@_token = token
 			@view.showProgressBar()
@@ -294,10 +363,12 @@ class Controller.Main extends Controller.Base
 	#
 	# @param cell [Model.Cell] The source of the event
 	# @param tm [Mixin.TimeMachine] The object containing the timemachine
+	# @returns [Mixin.TimeMachine] The timemachine
 	#
 	addTimeMachine: ( cell, tm ) ->
 		if cell is @controller("cell").model
 			@timemachines.push tm.timemachine
+		return tm.timemachine
 	
 	# Time to store any unstored files
 	#
@@ -335,6 +406,7 @@ class Controller.Main extends Controller.Base
 		return promise.promise()
 	
 	# On Upgrade resy
+	# @todo show notification, not modal on revision
 	#
 	onUpgrade: () ->
 		
@@ -371,8 +443,11 @@ class Controller.Main extends Controller.Base
 				)
 				@view.add view
 				view.show()
-			#else
-			#	# show as notification, not modal
+			else if ( version.revision > GIGABASE_VERSION.revision )
+				@_notificate( this, 'global', 'upgrade', 
+					'Update available. <a href="#" class="btn btn-mini" data-action="refresh" onclick="document.location.reload(true);">Refres' +
+					'h</a> this page to upgrade to version ' + version.full + '.' 
+				)
 		)
 				
 	# Flushes the cache

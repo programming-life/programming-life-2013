@@ -24,14 +24,15 @@ class View.Spline extends View.RaphaelBase
 	# Adds interaction to the spline
 	#
 	addInteraction: ( ) ->
-		@_bind( 'cell.module.removed', @, @onModuleRemoved )
-		@_bind( 'cell.metabolite.removed', @, @onModuleRemoved )
+		@_bind( 'cell.module.removed', @, @_onModuleRemoved )
+		@_bind( 'cell.metabolite.removed', @, @_onModuleRemoved )
 
-		@_bind( 'module.property.changed', @, @onModuleInvalidated )
+		@_bind( 'module.property.changed', @, @_onModuleInvalidated )
+		@_bind( 'module.compound.changed', @, @_onModuleInvalidated )
 
-		@_bind( 'view.moving', @, @onViewMoving )
-		@_bind( 'view.moved', @, @onViewMoved )
-		@_bind( 'view.drawn', @, @onViewDrawn )
+		@_bind( 'view.moving', @, @_onViewMoving )
+		@_bind( 'view.moved', @, @_onViewMoved )
+		@_bind( 'view.drawn', @, @_onViewDrawn )
 
 		@_trigger( 'cell.spline.add', @_parent , [ @ ] )
 
@@ -92,7 +93,7 @@ class View.Spline extends View.RaphaelBase
 	# @param cell [Model.Cell] the cell from which the module was removed
 	# @param module [Module] the module that was removed
 	#
-	onModuleRemoved: ( cell, module ) =>
+	_onModuleRemoved: ( cell, module ) =>
 		if cell is @_cell and ( module is @orig.model or module is @dest.model )
 			@_die()
 
@@ -100,7 +101,7 @@ class View.Spline extends View.RaphaelBase
 	#
 	# @param module [Module] the module that was invalidated
 	#
-	onModuleInvalidated: ( module ) =>
+	_onModuleInvalidated: ( module ) =>
 		if module.constructor.name is 'Transporter'
 			if (module is @orig.model and @orig.model.transported isnt @dest.model.name.split('#')[0]) or
 					(module is @dest.model and @dest.model.transported isnt @orig.model.name.split('#')[0])
@@ -120,7 +121,7 @@ class View.Spline extends View.RaphaelBase
 	# @param dt [float] the amount of milliseconds for which to animate
 	# @param ease [String] the easing transition being used
 	#
-	onViewMoving: ( view, dx, dy, dt, ease ) =>
+	_onViewMoving: ( view, dx, dy, dt, ease ) =>
 		if view is @orig
 			path = @_getPathString(dx, dy, 0, 0)
 		else if view is @dest
@@ -136,7 +137,7 @@ class View.Spline extends View.RaphaelBase
 	#
 	# @param view [Raphael] the view which has moved
 	#
-	onViewMoved: ( module ) =>
+	_onViewMoved: ( module ) =>
 		if module is @orig.model or module is @dest.model
 			@draw()
 
@@ -144,7 +145,7 @@ class View.Spline extends View.RaphaelBase
 	#
 	# @param view [Raphael] the view that was drawn
 	#
-	onViewDrawn: ( module ) =>
+	_onViewDrawn: ( module ) =>
 		if module is @orig.model or module is @dest.model
 			@draw()
 

@@ -14,7 +14,7 @@
 #= require jquery_ujs
 #= require jquery_nested_form
 #= require json2
-#= require lodash
+#= require lodash.custom
 #= require locache
 #= require big.min
 #= require jquery.svg.js

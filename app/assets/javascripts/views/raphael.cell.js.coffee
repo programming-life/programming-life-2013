@@ -131,16 +131,17 @@ class View.Cell extends View.RaphaelBase
 		@viewsByType[type].push(view)
 		@viewsByType[type] = _(@viewsByType[type]).difference(dummies).concat(dummies)
 		view.draw()
+		@_notificationsView?.hide()
 
 	# Removes a view from the container
 	#
 	# @param [View.Base] The view to remove
 	#
-	remove: ( view ) ->
+	remove: ( view, kill = on ) ->
 		type = view.getFullType()
 		@viewsByType[type] = _( @viewsByType[type] ? [] ).without view
-
-		view.kill()
+		view.kill() if kill
+		@_notificationsView?.hide()
 
 	# Get module view for the given module
 	#
@@ -150,8 +151,8 @@ class View.Cell extends View.RaphaelBase
 	getView: ( module ) ->
 		for type, views of @viewsByType
 			view = _( views ).find( (view) -> view.model is module )
-			if view?
-				return view
+			return view if view?
+		return null
 
 	# Get module view by name
 	#
@@ -161,8 +162,8 @@ class View.Cell extends View.RaphaelBase
 	getViewByName: ( name ) ->
 		for type, views of @viewsByType
 			view = _( views ).find( (view) -> view.model?.name is name )
-			if view?
-				return view
+			return view if view?
+		return null
 
 	# Draws the cell
 	#
@@ -283,20 +284,24 @@ class View.Cell extends View.RaphaelBase
 	# @param spline [View.Spline] spline added
 	#
 	addSpline: ( spline ) =>
-			if _(@_splines).find( ( s ) -> (s.orig is spline.orig and s.dest is spline.dest) )?
-				spline.kill()
-				return
-
-			@_splines.push( spline )
-			spline.draw()
+		return if spline in @_splines
+		
+		if _(@_splines).find( ( s ) -> 
+			( s.orig is spline.orig and s.dest is spline.dest ) or 
+			( s.dest is spline.orig and s.orig is spline.dest )	)?
+			spline.kill()
+			return
+		
+		@_splines.push spline
+		spline.draw()
 
 	# On spline removed, remove it from the cell and kill it
 	# 
 	# @param spline [View.Spline] spline removed
 	#
 	removeSpline: ( spline ) =>
-			@_splines = _( @_splines ).without spline
-			spline.kill()
+		@_splines = _( @_splines ).without spline
+		spline.kill()
 	
 	# Creates or removes a preview view for a module
 	#

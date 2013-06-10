@@ -64,13 +64,15 @@ Mixin.DynamicProperties =
 		# @param params [Object] properties to define
 		# @param event [String] the event name to push
 		#
-		_propertiesFromParams: ( params, event ) ->
+		_propertiesFromParams: ( params, event, actionevent ) ->
 		
 			@_dynamicProperties = []
 			
-			setter = ( key, value ) => 
+			setter = ( action, key, value ) => 
 				@["_#{key}"] = value
-			
+				func = @_trigger ? Model.EventManager.trigger
+				func( event, @, [ action, key, value ] )
+								
 			for key, value of params
 				value = parseFloat( value ) if _( value ).isString() and not isNaN(parseFloat(value)) and isFinite(value)
 				
@@ -89,19 +91,20 @@ Mixin.DynamicProperties =
 						set: ( param ) ->
 							
 							return if ( @[ "#{key}" ] is param )
-							
-							todo = _( setter ).bind( @, key, param )
-							undo = _( setter ).bind( @, key, @[ "#{key}" ] )
-							
+
 							action = new Model.Action( 
-								@, todo, undo, 
+								@, undefined, undefined, 
 								"Change #{key} from #{ @[ "#{key}" ] } to #{param}" 
 							)
+							
+							todo = _( setter ).bind( @, action, key, param )
+							undo = _( setter ).bind( @, action, key, @[ "#{key}" ] )
+							action.set todo, undo
 							action.do()
 							
-							if event?
+							if actionevent?
 								func = @_trigger ? Model.EventManager.trigger
-								func( event, @, [ action, key, param ] )
+								func( actionevent, @, [ action ] )
 							
 						get: ->
 							return @["_#{key}"]
