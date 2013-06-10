@@ -88,6 +88,7 @@ class Controller.Main extends Controller.Base
 		@_bind( 'view.cell.set', @, @_onCellViewSet )
 		@_bind( 'module.selected.changed', @, 
 			(module, selected) => 
+				console.log "test"
 				@controller('undo').focusTimeMachine if selected
 					module.timemachine 
 				else 
@@ -317,9 +318,11 @@ class Controller.Main extends Controller.Base
 			@kill()
 			@flush()
 			Model.EventManager.clear()
+
 			@view = new View.Main @container
 			@_createChildren()
 			@_createBindings()
+			@_createTimeMachine()
 			
 		@view.confirmReset action
 		
