@@ -212,6 +212,7 @@ class View.Undo extends Helper.Mixable
 	# @param node [Model.Node] The node
 	#
 	setActive: ( node ) ->
+		console.log "Active",node.object
 		view = @_rows[node.id]
 		if view?
 			view.addClass("active")
@@ -222,6 +223,7 @@ class View.Undo extends Helper.Mixable
 	# @param node [Model.Node] The node
 	#
 	setInactive: ( node ) ->
+		console.log "Inactive",node.object
 		view = @_rows[node.id]
 		if view?
 			view.removeClass("active")
