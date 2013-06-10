@@ -17,7 +17,7 @@ describe("Module", function() {
 		});
 
 		afterEach( function() {
-			module.kill();
+			//module.kill();
 		});
 
 		it("should be defined", function() {
@@ -101,7 +101,7 @@ describe("Module", function() {
 			});
 
 			afterEach( function() {
-				module.kill();
+				//module.kill();
 			});
 
 			it("should be defined", function() {
