@@ -92,7 +92,6 @@ class Controller.Cell extends Controller.Base
 		return if cell isnt @model
 		@addChild( _( 'module-' ).uniqueId(), controller = new Controller.Module( @, module, off, @_interaction ) )
 		@view.add controller.view
-		console.log controller
 		
 		@stopSimulation()
 			

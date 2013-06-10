@@ -21,27 +21,11 @@ class Controller.Module extends Controller.Base
 		@getter
 			model: -> @view.model
 			
-	# Kill the controller
-	#
-	kill: () ->
-		$( "##{ @view.id }-properties" ).off( 'click', "[data-action]" )
-		$( "##{ @view.id }-button" ).off( 'click' )
-		$( "##{ @view.id }-button" ).off( 'mouseenter' )
-		$( "##{ @view.id }-button" ).off( 'mouseleave' )
-		super()
-	
 	# Create bindings for the buttons
 	#
 	_createBindings: () ->
-		console.log "##{ @view.id }-button"
-
-		$( "##{ @view.id }-properties" ).on( 'click', "[data-action]", @_onAction )
-		$( "##{ @view.id }-button" ).on( 'click', => console.log 'parseInt(str, radix)'; @_trigger( 'view.module.selected', @, @view, [ on ] ) )
-		$( "##{ @view.id }-button" ).on( 'mouseenter', => @_trigger( 'view.module.hovered', @, @view, [ on ] ) )
-		$( "##{ @view.id }-button" ).on( 'mouseleave', => @_trigger( 'view.module.hovered', @, @view, [ off ] ) )
-		
-		@_bind( 'view.module.hovered', @, @_setHovered )
-		@_bind( 'view.module.selected', @, @_setSelected )
+		@_bind( 'view.module.clicked', @view, @_setSelected )
+		@_bind( 'view.module.hovered', @view, @_setHovered )
 		
 	# On action button clicked
 	# 
@@ -49,6 +33,7 @@ class Controller.Module extends Controller.Base
 	#
 	_onAction: ( event ) =>
 	
+		console.log 'hi'
 		action = event.target.data( 'action' )
 		action = action.charAt(0).toUpperCase() + action.slice(1)
 		
@@ -80,8 +65,7 @@ class Controller.Module extends Controller.Base
 	
 	#
 	#
-	_setSelected: ( view, state ) =>
-		console.log 'yolo'
+	_setSelected: ( view, event, state = not @_selected ) =>
 		if view isnt @view and state
 			state = off
 			
@@ -91,7 +75,7 @@ class Controller.Module extends Controller.Base
 		
 	#
 	#
-	_setHovered: ( view, state ) =>
+	_setHovered: ( view, event, state = not @_hovered ) =>
 		if view isnt @view and state
 			state = off
 			
