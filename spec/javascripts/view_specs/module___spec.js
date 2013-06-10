@@ -17,7 +17,9 @@ describe("Module", function() {
 		});
 
 		afterEach( function() {
-			//module.kill();
+			module._propertiesView = undefined;
+			module._notificationsView = undefined;
+			module.kill();
 		});
 
 		it("should be defined", function() {
@@ -101,8 +103,10 @@ describe("Module", function() {
 			});
 
 			afterEach( function() {
-				//module.kill();
-			});
+				module._propertiesView = undefined;
+				module._notificationsView = undefined;
+				module.kill();
+			})
 
 			it("should be defined", function() {
 				expect(module).toBeDefined();
