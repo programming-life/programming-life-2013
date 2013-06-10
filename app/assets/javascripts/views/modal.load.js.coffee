@@ -76,7 +76,11 @@ class View.LoadModal extends View.HTMLModal
 			.fail( () -> body.text( 'Error.' ) )
 		return this
 		
+	# Lists the cells from the origin in the tbody
 	#
+	# @param tbody [JQuery] The tbody
+	# @param cells [Array] The list of cells
+	# @param origin [String] The origin of the cells, either or some other origin
 	#
 	_listCells: ( tbody, cells, origin ) ->
 	
