@@ -723,3 +723,7 @@ class View.Module extends View.RaphaelBase
 	_onMetaboliteRemoved: ( cell, metabolite ) ->
 		if @getFullType() is metabolite.getFullType() and metabolite isnt @model
 			@setPosition()
+
+		for view in @_views when view instanceof View.Spline
+			if metabolite is view.orig.model or metabolite is view.dest.model
+				view.kill()

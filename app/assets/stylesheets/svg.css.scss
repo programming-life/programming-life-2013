@@ -157,7 +157,7 @@ text, tspan {
 	fill: #333;
 }
 
-[class$='-substrate-text'], [class$='-substrate-text-shadow'] {
+[class*='-substrate-text'], [class*='-substrate-text-shadow'] {
 	font-weight: bolder !important;
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
 	font-size:18px !important
@@ -195,21 +195,21 @@ text, tspan {
 	}
 }
 
-[class$='-substrate-circle'] {
+[class*='-substrate-circle'] {
 	stroke-width: 1px;
 	stroke:rgba(0, 0, 0, .5);
 }
 
-[class$='-substrate-sector'] {
+[class*='-substrate-sector'] {
 	stroke-width: 1px;
 	stroke:rgba(0, 0, 0, .5);
 }
 
-[class$='-substrate-text'] {
+[class*='-substrate-text'] {
 	fill: #fff;
 }
 
-[class$='-substrate-text-shadow'] {
+[class*='-substrate-text-shadow'] {
 	fill: rgba(0, 0, 0, .25);
 }
 
