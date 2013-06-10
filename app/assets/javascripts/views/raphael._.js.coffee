@@ -95,7 +95,7 @@ class View.RaphaelBase extends View.Collection
 	# @param dy [float] the amount to move in the y direction
 	# @param animate [Boolean] wether or not to animate the move
 	#
-	move: (dx, dy, animate = on, moveViews = on) ->
+	move: (dx, dy, animate = on, moveViews = off) ->
 		done = ( ) =>
 			@_trigger( 'view.moved', @ )			
 

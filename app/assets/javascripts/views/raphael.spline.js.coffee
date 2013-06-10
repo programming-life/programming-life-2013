@@ -11,7 +11,7 @@ class View.Spline extends View.RaphaelBase
 	# @param dest [View.Module] the destination of the spline
 	# @param interaction [Boolean] wether to add interaction to the splines or not
 	#
-	constructor: ( paper, parent, @_cell, @orig, @dest, @_interaction = on ) ->
+	constructor: ( paper, parent, @_cell, @orig, @dest, @_preview = off, @_interaction = on ) ->
 		super paper, parent
 
 		@addInteraction() if @_interaction is on		
@@ -25,8 +25,8 @@ class View.Spline extends View.RaphaelBase
 		# @_bind( 'module.property.changed', @, @_onModuleInvalidated )
 		# @_bind( 'module.compound.changed', @, @_onModuleInvalidated )
 
-		# @_bind( 'view.moving', @, @_onViewMoving )
-		# @_bind( 'view.moved', @, @_onViewMoved )
+		@_bind( 'view.moving', @, @_onViewMoving )
+		@_bind( 'view.moved', @, @_onViewMoved )
 		# @_bind( 'view.drawn', @, @_onViewDrawn )
 
 		return this
@@ -99,7 +99,7 @@ class View.Spline extends View.RaphaelBase
 	# @param dt [float] the amount of milliseconds for which to animate
 	# @param ease [String] the easing transition being used
 	#
-	_onViewMoving: ( view, dx, dy, dt, ease ) =>
+	_onViewMoving: ( view, dx, dy, dt, ease ) =>		
 		if view is @orig
 			path = @_getPathString(dx, dy, 0, 0)
 		else if view is @dest
@@ -111,13 +111,13 @@ class View.Spline extends View.RaphaelBase
 				path: path
 			, dt, ease
 
-	# # Gets called when a view has moved
-	# #
-	# # @param view [Raphael] the view which has moved
-	# #
-	# _onViewMoved: ( module ) =>
-	# 	if module is @orig.model or module is @dest.model
-	# 		@draw()
+	# Gets called when a view has moved
+	#
+	# @param view [Raphael] the view which has moved
+	#
+	_onViewMoved: ( module ) =>
+		if module is @orig.model or module is @dest.model
+			@draw()
 
 	# # Gets called when a view view was drawn
 	# #
