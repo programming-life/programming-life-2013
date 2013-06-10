@@ -131,8 +131,6 @@ class View.Module extends View.RaphaelBase
 	# @param selected [Boolean] selection state
 
 	setSelected: ( selected ) ->
-		console.log 'hello'
-
 		if selected isnt @_selected
 			if selected
 				@_setHovered off
@@ -235,8 +233,8 @@ class View.Module extends View.RaphaelBase
 
 	clear: ( ) ->
 		super()
-		@each ( view ) ->
-			@remove view.kill() if view instanceof Spline				
+		@each ( view ) =>
+			@remove view.kill() if view instanceof View.Spline				
 
 	# Redraws this view iff it has been drawn before
 	#

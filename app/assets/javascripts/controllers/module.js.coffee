@@ -40,8 +40,8 @@ class Controller.Module extends Controller.Base
 		$( "##{ @view.id }-button" ).on( 'mouseenter', => @_trigger( 'view.module.hovered', @, @view, [ on ] ) )
 		$( "##{ @view.id }-button" ).on( 'mouseleave', => @_trigger( 'view.module.hovered', @, @view, [ off ] ) )
 		
-		@_bind( 'view.module.hovered', @, @view, @_setHovered )
-		@_bind( 'view.module.selected', @, @view, @_setSelected )
+		@_bind( 'view.module.hovered', @, @_setHovered )
+		@_bind( 'view.module.selected', @, @_setSelected )
 		
 	# On action button clicked
 	# 
