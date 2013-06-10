@@ -2,11 +2,13 @@
 #
 # @concern Mixin.EventBindings
 # @concern Mixin.Catcher
+# @concern Mixin.DynamicProperties
 #
 class Controller.Base extends Helper.Mixable
 
 	@concern Mixin.EventBindings
 	@concern Mixin.Catcher
+	@concern Mixin.DynamicProperties
 	
 	# Creates the controller
 	#

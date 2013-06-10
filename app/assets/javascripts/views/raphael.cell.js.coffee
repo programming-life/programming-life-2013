@@ -17,7 +17,6 @@ class View.Cell extends View.RaphaelBase
 	constructor: ( paper, parent, cell, @_interaction = on ) ->
 		super paper, parent
 		
-		@_drawn = []
 		@viewsByType = {}
 		@_splines = []
 
@@ -63,14 +62,8 @@ class View.Cell extends View.RaphaelBase
 		@kill()
 		
 		@_model = value
-		for module in @_model._getModules()
-			view = new View.Module( @paper, @, @_model, module, @_interaction )
-			@add view
-			@_drawn.push { model: module, view: view } 
-		
 		@_addInteraction() if @_interaction
-		
-		
+			
 		@_trigger( 'view.cell.set', @, [ @model ] )
 
 		@redraw() if @x? and @y?
@@ -82,8 +75,6 @@ class View.Cell extends View.RaphaelBase
 		super()
 		
 		@_notificationsView?.kill()
-		
-		@_drawn = []
 		@viewsByType = {}
 		
 	# Returns the bounding box of this view
@@ -294,7 +285,6 @@ class View.Cell extends View.RaphaelBase
 		if source is @
 			if selected
 				preview = new View.ModulePreview( @_paper, @, @model, module, off )
-				@_drawn.push({view: preview, model: module})
 				@add preview
 			else
 				preview = @getView( module )

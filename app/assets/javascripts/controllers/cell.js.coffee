@@ -36,12 +36,12 @@ class Controller.Cell extends Controller.Base
 		Object.defineProperty( @, 'model', 
 			get: () -> 
 				return @view.model
-			set: ( value ) -> 
-				@view.model = value
+			set: @setCell
 		)
 
 		@_previews = new View.Collection()
-
+		
+		@model = @view.model
 		@_createBindings()
 		@_addInteraction() if @_interaction
 
@@ -75,6 +75,13 @@ class Controller.Cell extends Controller.Base
 		@_bind( 'cell.module.remove', @, @_onModuleRemove )
 		@_bind( 'cell.metabolite.add', @, @_onModuleAdd )
 		@_bind( 'cell.metabolite.remove', @, @_onModuleRemove )
+		
+	#
+	#
+	setCell: ( value ) ->
+		@view.model = value
+		for module in @view.model.getModules()
+			@_onModuleAdd( value, module )
 			
 	# Runs when module is added
 	#
@@ -83,8 +90,9 @@ class Controller.Cell extends Controller.Base
 	#
 	_onModuleAdd: ( cell, module ) ->
 		return if cell isnt @model
-		@addChild( _( 'module-' ).uniqueId(), controller = new Module( @, module, off, @_interaction ) )
+		@addChild( _( 'module-' ).uniqueId(), controller = new Controller.Module( @, module, off, @_interaction ) )
 		@view.add controller.view
+		console.log controller
 		
 		@stopSimulation()
 			
@@ -135,7 +143,7 @@ class Controller.Cell extends Controller.Base
 		names = _( names ).unique()
 
 		# Find missing metabolites
-		missing = _( names ).filter( ( name ) => not _( @model._getModules() ).any( ( m ) -> name is m.name ) )
+		missing = _( names ).filter( ( name ) => not _( @model.getModules() ).any( ( m ) -> name is m.name ) )
 
 		for name in missing
 			is_product = 
