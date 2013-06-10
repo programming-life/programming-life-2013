@@ -14,7 +14,9 @@ class View.Undo extends Helper.Mixable
 		@_createBindings()
 
 		@_rows = {}
-	
+
+	# Creates bindings for the view
+	#
 	_createBindings: ( ) ->
 		@_bind("tree.node.added", @, @_onNodeAdd)
 		@_bind("tree.root.set", @, @_onRootSet )
@@ -22,13 +24,19 @@ class View.Undo extends Helper.Mixable
 
 	# Clears this view
 	#
+	# @return [self] For chaining
+	#
 	clear: ( ) ->
-		@_contents?.remove?()
+		@_contents?.remove()
+		return @
 
 	# Removes this view
 	#
+	# @return [self] For chaining
+	#
 	kill: ( ) ->
-		@_elem?.remove?()
+		@_elem?.remove()
+		return @
 
 	# Draws this view
 	#
@@ -124,7 +132,7 @@ class View.Undo extends Helper.Mixable
 	# Shows the buttons
 	#
 	_showButtons: ( ) ->
-		@_footer.addClass('active-buttons')
+		@_footer?.addClass('active-buttons')
 	
 	# Hides the buttons
 	#
@@ -135,33 +143,36 @@ class View.Undo extends Helper.Mixable
 	#
 	# @param tree [Model.Tree] The tree the node was added to
 	# @param node [Model.Node] The node that was added
+	# @return [Boolean] True is the tree was our timachine, false otherwise
 	#
 	_onNodeAdd: ( tree, node ) ->
 		if tree is @timemachine
 			if @_list.scrollTop() == @_list[0].scrollHeight - @_list.height()
 				doScroll = true
 
-			if node.parent?.children.length - 1 > 0
-				@_drawContents()
-			else
+			if node.parent?.children.length <= 1
 				@_list.append(@_getNodeView(node))
 				@selectNode(@timemachine.current)
+			else
+				@_drawContents()
 
 			if doScroll
 				@_scrollToBottom()
+
+		return tree is @timemachine
 
 	# Gets called when the root of the tree is set
 	#
 	# @param tree [Model.Tree] The tree
 	# @param node [Model.Node] The new root
+	# @return [Boolean] True is the tree was our timachine, false otherwise
 	#
 	_onRootSet: ( tree, node ) ->
 		if tree is @timemachine
 			@_drawContents()
+		return tree is @timemachine
 	
 	# Gets called when branching occurs
-	#
-	# @param direction [String] The direction of the branching
 	#
 	_onBranch: ( ) ->
 		if @_elem?
@@ -179,6 +190,7 @@ class View.Undo extends Helper.Mixable
 			row.addClass('selected')
 
 		alternatives = (node.parent?.children.length ? 1) - 1
+		console.log node, alternatives
 		if alternatives > 0
 			@_branchIndex = node.parent.children.indexOf node
 			@_showButtons()
@@ -212,7 +224,6 @@ class View.Undo extends Helper.Mixable
 	# @param node [Model.Node] The node
 	#
 	setActive: ( node ) ->
-		console.log "Active",node.object
 		view = @_rows[node.id]
 		if view?
 			view.addClass("active")
@@ -223,7 +234,6 @@ class View.Undo extends Helper.Mixable
 	# @param node [Model.Node] The node
 	#
 	setInactive: ( node ) ->
-		console.log "Inactive",node.object
 		view = @_rows[node.id]
 		if view?
 			view.removeClass("active")
