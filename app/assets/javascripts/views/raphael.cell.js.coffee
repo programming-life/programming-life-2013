@@ -259,25 +259,6 @@ class View.Cell extends View.RaphaelBase
 
 		return [x, y]
 	
-	# On module added, add it to the cell
-	#
-	# @param module [Model.Module] module added
-	#
-	addModule: ( module ) =>
-		unless ( _( @_drawn ).find( ( d ) -> d.model is module ) )?
-			view = new View.Module( @paper, @, @model, module, @_interaction )
-			@_drawn.push({view: view, model: module})
-			@add view
-			
-	# On module removed, remove it from the cell
-	# 
-	# @param module [Model.Module] module removed
-	#
-	removeModule: ( module ) =>
-		if ( drawn = _( @_drawn ).find( ( d ) -> d.model is module ) )?
-			view = drawn.view.kill()				
-			@_drawn = _( @_drawn ).without drawn
-			@remove view
 
 	# On spline added, add it to the cell and draw
 	# 
