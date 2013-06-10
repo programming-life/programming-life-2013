@@ -19,17 +19,15 @@ class View.Spline extends View.RaphaelBase
 	# Adds interaction to the spline
 	#
 	addInteraction: ( ) ->
-		@_bind( 'cell.module.removed', @, @_onModuleRemoved )
-		@_bind( 'cell.metabolite.removed', @, @_onModuleRemoved )
+		# @_bind( 'cell.module.removed', @, @_onModuleRemoved )
+		# @_bind( 'cell.metabolite.removed', @, @_onModuleRemoved )
 
-		@_bind( 'module.property.changed', @, @_onModuleInvalidated )
-		@_bind( 'module.compound.changed', @, @_onModuleInvalidated )
+		# @_bind( 'module.property.changed', @, @_onModuleInvalidated )
+		# @_bind( 'module.compound.changed', @, @_onModuleInvalidated )
 
-		@_bind( 'view.moving', @, @_onViewMoving )
-		@_bind( 'view.moved', @, @_onViewMoved )
-		@_bind( 'view.drawn', @, @_onViewDrawn )
-
-		@_trigger( 'cell.spline.add', @_parent , [ @ ] )
+		# @_bind( 'view.moving', @, @_onViewMoving )
+		# @_bind( 'view.moved', @, @_onViewMoved )
+		# @_bind( 'view.drawn', @, @_onViewDrawn )
 
 		return this
 
@@ -50,8 +48,6 @@ class View.Spline extends View.RaphaelBase
 	# Draws the spline
 	#
 	draw: ( ) ->
-		@clear()
-
 		path = @_getPathString()
 		
 		@_contents = @paper.set()
@@ -95,31 +91,6 @@ class View.Spline extends View.RaphaelBase
 
 		return "m#{origX},#{origY}C#{x1},#{y1} #{x2},#{y2} #{destX},#{destY}"
 
-	# Gets called when a module is removed from a cell
-	#
-	# @param cell [Model.Cell] the cell from which the module was removed
-	# @param module [Module] the module that was removed
-	#
-	_onModuleRemoved: ( cell, module ) =>
-		#if cell is @_cell and ( module is @orig.model or module is @dest.model )
-		#	@_die()
-
-	# Gets called when a module is invalidated (had its properties changed)
-	#
-	# @param module [Module] the module that was invalidated
-	#
-	_onModuleInvalidated: ( module ) =>
-		#if module.constructor.name is 'Transporter'
-		#	if (module is @orig.model and @orig.model.transported isnt @dest.model.name.split('#')[0]) or
-		#			(module is @dest.model and @dest.model.transported isnt @orig.model.name.split('#')[0])
-		#		@_die()
-		#else if module.constructor.name is 'Metabolism'
-		#	if (module is @orig.model and @dest.model.name not in @orig.model.dest) or
-		#			(module is @dest.model and @orig.model.name not in @dest.model.orig)
-		#		@_die()
-		#
-		#@setColor()
-
 	# Gets called when a view is about to move (animated)
 	#
 	# @param view [Raphael] the view will be moving
@@ -140,21 +111,21 @@ class View.Spline extends View.RaphaelBase
 				path: path
 			, dt, ease
 
-	# Gets called when a view has moved
-	#
-	# @param view [Raphael] the view which has moved
-	#
-	_onViewMoved: ( module ) =>
-		if module is @orig.model or module is @dest.model
-			@draw()
+	# # Gets called when a view has moved
+	# #
+	# # @param view [Raphael] the view which has moved
+	# #
+	# _onViewMoved: ( module ) =>
+	# 	if module is @orig.model or module is @dest.model
+	# 		@draw()
 
-	# Gets called when a view view was drawn
-	#
-	# @param view [Raphael] the view that was drawn
-	#
-	_onViewDrawn: ( module ) =>
-		if module is @orig.model or module is @dest.model
-			@draw()
+	# # Gets called when a view view was drawn
+	# #
+	# # @param view [Raphael] the view that was drawn
+	# #
+	# _onViewDrawn: ( module ) =>
+	# 	if module is @orig.model or module is @dest.model
+	# 		@draw()
 
 
 

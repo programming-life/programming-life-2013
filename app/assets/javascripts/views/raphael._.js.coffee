@@ -143,6 +143,30 @@ class View.RaphaelBase extends View.Collection
 	redraw: ( ) ->
 		return @draw( @x, @y )
 
+	# Add a css class to all content elements
+	#
+	# @param class [String] the css class to add
+	# @param contents [Raphael] the contents to which to apply the class
+	#
+	_addClass: ( class, contents = @_contents ) ->
+		for elem in contents
+			if _.isArray(elem)
+				@_addClass(class, elem)
+			else
+				$(elem.node).addClass(class)
+
+	# Remove a css class to all content elements
+	#
+	# @param class [String] the css class to remove
+	# @param contents [Raphael] the contents from which to remove the class
+	#
+	_removeClass: ( class, contents = @_contents ) ->
+		for elem in contents
+			if _.isArray(elem)
+				@_removeClass(class, elem)
+			else
+				$(elem.node).removeClass(class)
+
 	# Returns the absolute (document) coordinates of a point within the paper
 	#
 	# @param x [float] the x position of the paper point

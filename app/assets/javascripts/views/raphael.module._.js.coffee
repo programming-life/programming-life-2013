@@ -21,8 +21,10 @@ class View.Module extends View.RaphaelBase
 	# @param paper [Raphael.Paper] the raphael paper
 	# @param module [Model.Module] the module to show
 	#
-	constructor: ( paper, parent, @_cell, @model, @_interaction = on ) ->
+	constructor: ( paper, parent, @_cell, @model, @_preview = off, @_interaction = on ) ->
 		super paper, parent
+
+		@id = _.uniqueId('view-module-')
 	
 		@_type = @model.constructor.name
 		@_name = @model.name
@@ -33,35 +35,28 @@ class View.Module extends View.RaphaelBase
 		@addBindings()
 		@addInteraction() if @_interaction is on
 				
-		Object.defineProperty( @, 'visible',
-			get: ->
-				return @_visible
-		)
+		@getter
+			type: -> @_type
 		
-		Object.defineProperty( @, 'type',
-			get: ->
-				return @_type
-		)
-		
-	# Adds interaction to the module ( popovers )
-	#
+	# # Adds interaction to the module ( popovers )
+	# #
 	addInteraction: () ->
 		@_propertiesView = new View.ModuleProperties( @, @_parent, @_cell, @model )
 		@_notificationsView = new View.ModuleNotification( @, @_parent, @_cell, @model )
 	
-		@_bind( 'module.selected.changed', @, @onModuleSelected )
-		@_bind( 'module.hovered.changed', @, @onModuleHovered )
-		@_bind( 'module.properties.change', @, @_onModuleChanged )
-		@_bind( 'module.update.aborted', @, @_onModuleUpdateEnded )
+	# 	@_bind( 'module.selected.changed', @, @onModuleSelected )
+	# 	@_bind( 'module.hovered.changed', @, @onModuleHovered )
+	# 	@_bind( 'module.properties.change', @, @_onModuleChanged )
+	# 	@_bind( 'module.update.aborted', @, @_onModuleUpdateEnded )
 
-		@_onNotificate( @, @model, @_onNotificate)
-		return this
+	# 	@_onNotificate( @, @model, @_onNotificate)
+	# 	return this
 
 
-	# Forwards any notification from the model
-	#
-	_onNotificate: ( context, source, identifier, type, message, args ) ->
-		@_notificate( @, @, identifier, message, args, type )
+	# # Forwards any notification from the model
+	# #
+	# _onNotificate: ( context, source, identifier, type, message, args ) ->
+	# 	@_notificate( @, @, identifier, message, args, type )
 
 		
 	# Adds bindings to the module (non-interaction)
@@ -76,74 +71,72 @@ class View.Module extends View.RaphaelBase
 		
 	# Adds hitbox interaction (click, mouseout, mouseover)
 	#
-	addHitBoxInteraction: () ->
-		@_hitbox.click =>
-			unless @_selected
-				_( @_trigger( 'module.selected.changed', @model, [ on ]) ).debounce( 100 )
-			else
-				_( @_trigger( 'module.selected.changed', @model, [ off ]) ).debounce( 100 )
+	# addHitBoxInteraction: () ->
+	# 	@_hitbox.click =>
+	# 		unless @_selected
+	# 			_( @_trigger( 'module.selected.changed', @model, [ on ]) ).debounce( 100 )
+	# 		else
+	# 			_( @_trigger( 'module.selected.changed', @model, [ off ]) ).debounce( 100 )
 
-		@_hitbox.mouseout =>
-			_( @_trigger( 'module.hovered.changed', @model, [ off, @_selected ]) ).debounce( 100 )
+	# 	@_hitbox.mouseout =>
+	# 		_( @_trigger( 'module.hovered.changed', @model, [ off, @_selected ]) ).debounce( 100 )
 		
-		@_hitbox.mouseover =>
-			_( @_trigger( 'module.hovered.changed', @model, [ on, @_selected ]) ).debounce( 100 )
-		return this
+	# 	@_hitbox.mouseover =>
+	# 		_( @_trigger( 'module.hovered.changed', @model, [ on, @_selected ]) ).debounce( 100 )
+	# 	return this
 		
 	# Generates a hashcode based on the module name
 	#
 	# @param hashee [String] the name to use as hash
 	# @return [Integer] the hashcode
 	#
-	hashCode : ( hashee = @_name ) ->
-		hash = 0
-		return hash if ( hashee.length is 0 )
-		for i in [ 0...hashee.length ]
-			char = hashee.charCodeAt i
-			hash = ( (hash << 5) - hash ) + char;
-			hash = hash & hash # cast to 32 bit int
-		return hash
+	# hashCode : ( hashee = @_name ) ->
+	# 	hash = 0
+	# 	return hash if ( hashee.length is 0 )
+	# 	for i in [ 0...hashee.length ]
+	# 		char = hashee.charCodeAt i
+	# 		hash = ( (hash << 5) - hash ) + char;
+	# 		hash = hash & hash # cast to 32 bit int
+	# 	return hash
 	
-	# Generates a colour based on the module name
-	#
-	# @param hashee [String] the name to use as hash
-	# @return [String] the CSS color
-	#
-	hashColor : ( hashee = @_name ) ->
-		hashee = hashee.split('#')[0]
-		return '#' + md5( hashee ).slice(0, 6) #@numToColor @hashCode hashee
+	# # Generates a colour based on the module name
+	# #
+	# # @param hashee [String] the name to use as hash
+	# # @return [String] the CSS color
+	# #
+	# hashColor : ( hashee = @_name ) ->
+	# 	hashee = hashee.split('#')[0]
+	# 	return '#' + md5( hashee ).slice(0, 6) #@numToColor @hashCode hashee
 
-	# Generates a colour based on a numer
-	#
-	# @param num [Integer] the seed for the colour
-	# @param alpha [Boolean] if on, uses rgba, else rgb defaults to off
-	# @param minalpha [Integer] the minimum alpha if on, defaults to 127
-	# @return [String] the CSS color
-	#
-	numToColor : ( num, alpha = off, minalpha = 127 ) ->
-		num >>>= 0
-		# TODO use higher order bytes too when no alpha
-		b = ( num & 0xFF )
-		g = ( num & 0xFF00 ) >>> 8
-		r = ( num & 0xFF0000 ) >>> 16
-		a = ( minalpha ) / 255 + ( ( ( num & 0xFF000000 ) >>> 24 ) / 255 * ( 255 - minalpha ) )
-		a = 1 unless alpha
-		# (0.2126*R) + (0.7152*G) + (0.0722*B) << luminance
-		return "rgba(#{[r, g, b, a].join ','})"
+	# # Generates a colour based on a numer
+	# #
+	# # @param num [Integer] the seed for the colour
+	# # @param alpha [Boolean] if on, uses rgba, else rgb defaults to off
+	# # @param minalpha [Integer] the minimum alpha if on, defaults to 127
+	# # @return [String] the CSS color
+	# #
+	# numToColor : ( num, alpha = off, minalpha = 127 ) ->
+	# 	num >>>= 0
+	# 	# TODO use higher order bytes too when no alpha
+	# 	b = ( num & 0xFF )
+	# 	g = ( num & 0xFF00 ) >>> 8
+	# 	r = ( num & 0xFF0000 ) >>> 16
+	# 	a = ( minalpha ) / 255 + ( ( ( num & 0xFF000000 ) >>> 24 ) / 255 * ( 255 - minalpha ) )
+	# 	a = 1 unless alpha
+	# 	# (0.2126*R) + (0.7152*G) + (0.0722*B) << luminance
+	# 	return "rgba(#{[r, g, b, a].join ','})"
 
 	# Sets wether or not the module is selected
 	#
 	# @param selected [Boolean] selection state
-	#
-	_setSelected: ( selected ) ->
+
+	setSelected: ( selected ) ->
 		if selected isnt @_selected
 			if selected
 				@_setHovered off
-				$(@_box.node).addClass('selected')
-				@_shadow.forEach(( e ) -> $(e.node).addClass('selected'))
+				@_addClass('selected')
 			else
-				$(@_box.node).removeClass('selected')
-				@_shadow.forEach(( e ) -> $(e.node).removeClass('selected'))
+				@_removeClass('selected')
 
 		@_selected = selected
 		return this
@@ -152,34 +145,36 @@ class View.Module extends View.RaphaelBase
 	#
 	# @param hovered [Boolean] hover state
 	#
-	_setHovered: ( hovered ) ->
+	setHovered: ( hovered ) ->
 		if hovered isnt @_hovered 
 			if hovered and not @_selected
-				$(@_box.node).addClass('hovered')
+				@_addClass('hovered')
 			else
-				$(@_box.node).removeClass('hovered')
+				@_removeClass('hovered')
 
 		@_hovered = hovered
 		return this
+
+	setPreview: ( preview ) ->
+		if preview
+			@_addClass('preview')
+		else
+			@_removeClass('preview')
+
+		@_preview = preview
+
 		
 	# Returns the full type of this view's module.
-	#
-	# @return [String] the full type string
-	#
-	getFullType: ( ) ->
-		return @model.getFullType()
+	# #
+	# # @return [String] the full type string
+	# #
+	# getFullType: ( ) ->
+	# 	return @model.getFullType()
 				
 	# Kills the module view
 	#
-	# @return [self] chainable self
-	#
-	kill: () ->
-		@_propertiesView?.kill()
-		@_notificationsView?.kill()	
 
-		super()
-
-		return this
+	# 	return this
 
 	# Returns the bounding box of this view
 	#
@@ -220,21 +215,26 @@ class View.Module extends View.RaphaelBase
 	# @param metabolitePlacement [Placement] the placement of the metabolite
 	# @return [View.Module.Direction] the direction of the spline
 	#
-	_getSplineDirection: ( metabolitePlacement, model = @model ) ->
-		if @_type is 'Transporter'
-			switch model.direction
-				when Model.Transporter.Inward
-					switch metabolitePlacement
-						when Model.Metabolite.Inside
-							return View.Module.Direction.Outward
-						when Model.Metabolite.Outside
-							return View.Module.Direction.Inward
-				when Model.Transporter.Outward
-					switch metabolitePlacement
-						when Model.Metabolite.Inside
-							return View.Module.Direction.Inward
-						when Model.Metabolite.Outside
-							return View.Module.Direction.Outward
+	# _getSplineDirection: ( metabolitePlacement, model = @model ) ->
+	# 	if @type is 'Transporter'
+	# 		switch model.direction
+	# 			when Model.Transporter.Inward
+	# 				switch metabolitePlacement
+	# 					when Model.Metabolite.Inside
+	# 						return View.Module.Direction.Outward
+	# 					when Model.Metabolite.Outside
+	# 						return View.Module.Direction.Inward
+	# 			when Model.Transporter.Outward
+	# 				switch metabolitePlacement
+	# 					when Model.Metabolite.Inside
+	# 						return View.Module.Direction.Inward
+	# 					when Model.Metabolite.Outside
+	# 						return View.Module.Direction.Outward
+
+	clear: ( ) ->
+		super()
+		@each ( view ) ->
+			@remove view.kill() if view instanceof Spline				
 
 	# Redraws this view iff it has been drawn before
 	#
@@ -253,7 +253,7 @@ class View.Module extends View.RaphaelBase
 		unless @_visible
 			return
 		
-		@color = @hashColor( _.escape @model.name )
+		@color = @::hashColor( _.escape @model.name )
 		
 		contents = @drawContents()
 		@_contents.push @drawMetaContents( contents )
@@ -261,11 +261,11 @@ class View.Module extends View.RaphaelBase
 
 		@createSplines()
 
-		@_trigger( 'view.drawn', @ )
+		@setPreview(@_preview)
 
 		@_contents.transform('S.1').animate Raphael.animation(
 			transform: 'S1'
-		, 900 + Math.random() * 100, 'elastic'
+		, 900, 'elastic'
 		)
 
 	# Draws the contents (module)
@@ -440,9 +440,20 @@ class View.Module extends View.RaphaelBase
 	# @param preview [Boolean] the preview flag
 	#
 	createSplines: ( model = @model, preview = off ) ->
-		if @type is 'Transporter'
-			for property in [ model["transported"] ]
-				for location in ["int", "ext"]
+		if @type in ['Transporter', 'Metabolism']
+
+			orig = [].concat(model.orig)
+			dest = [].concat(model.dest)
+
+			for metabolite in orig
+				if view = @_parent.getViewByName metabolite
+					@add(new View.Spline(@paper, @_parent, @_cell, view, @, preview))
+
+			for metabolite in dest
+				if view = @_parent.getViewByName metabolite
+					@add(new View.Spline(@paper, @_parent, @_cell, @, view, preview))
+
+				###for location in ["int", "ext"]
 					view = @_parent.getViewByName "#{property}##{location}"
 					if view
 						placement = view.model.placement
@@ -451,8 +462,8 @@ class View.Module extends View.RaphaelBase
 						if direction is View.Module.Direction.Inward
 							@_createSpline( view, @, preview )
 						else if direction is View.Module.Direction.Outward
-							@_createSpline( @, view, preview )
-		else if @type is 'Metabolism'
+							@_createSpline( @, view, preview )###
+		###else if @type is 'Metabolism'
 			for property in _( model["orig"] ).concat( model["dest"] )
 				view = @_parent.getViewByName property
 				if view
@@ -462,7 +473,7 @@ class View.Module extends View.RaphaelBase
 					if property in model["orig"]
 						@_createSpline( view, @, preview )
 					else if property in model["dest"]
-						@_createSpline( @, view, preview )
+						@_createSpline( @, view, preview )###
 		return this
 
 	# Draws this view shadow
@@ -489,7 +500,8 @@ class View.Module extends View.RaphaelBase
 	drawHitbox : ( elem ) ->
 		rect = elem.getBBox()
 		hitbox = @paper.rect(rect.x, rect.y, rect.width, rect.height)
-		hitbox.node.setAttribute( 'class', 'module-hitbox ' + @type.toLowerCase() + '-hitbox' )	
+		$(hitbox.node).addClass('module-hitbox ' + @type.toLowerCase() + '-hitbox' )	
+		$(hitbox.node).attr('id', "#{@id}-button")
 		return hitbox
 
 	# Draw a component
@@ -606,16 +618,16 @@ class View.Module extends View.RaphaelBase
 	# @param orig [View.Module] the origin module view
 	# @param dest [View.Module] the destination module view
 	# @return [View.Spline] the created spline
-	#
-	_createSpline: ( orig, dest, preview = off ) ->
-		return @_createPreviewSpline( orig, dest ) if preview
-		return if orig instanceof View.ModulePreview or dest instanceof View.ModulePreview
-		new View.Spline(@paper, @_parent, @_cell, orig, dest)
+	# #
+	# _createSpline: ( orig, dest, preview = off ) ->
+	# 	#return @_createPreviewSpline( orig, dest ) if preview
+	# 	#return if orig instanceof View.ModulePreview or dest instanceof View.ModulePreview
+		
 
 	# Creates a spline preview
 	#
-	_createPreviewSpline: ( orig, dest ) ->
-		new View.SplinePreview(@paper, @_parent, @_cell, orig, dest)
+	# _createPreviewSpline: ( orig, dest ) ->
+	# 	new View.SplinePreview(@paper, @_parent, @_cell, orig, dest)
 
 	# Runs if module is invalidated
 	# 
@@ -639,38 +651,38 @@ class View.Module extends View.RaphaelBase
 		if source.model is @model
 			@createSplines( @model, off )
 	
-	# Gets called when a module view selected.
-	#
-	# @param module [Module] the module that is being selected
-	# @param selected [Boolean] the selection state of the module
-	#
-	onModuleSelected: ( module, selected ) ->
-		if module is @model 
-			if @_selected isnt selected
-				@_setSelected selected 
-				@_notificationsView.hide()
-		else if @_selected isnt off
-			@_setSelected off
+	# # Gets called when a module view selected.
+	# #
+	# # @param module [Module] the module that is being selected
+	# # @param selected [Boolean] the selection state of the module
+	# #
+	# onModuleSelected: ( module, selected ) ->
+	# 	if module is @model 
+	# 		if @_selected isnt selected
+	# 			@_setSelected selected 
+	# 			@_notificationsView.hide()
+	# 	else if @_selected isnt off
+	# 		@_setSelected off
 
-	# Gets called when a module view hovered.
-	#
-	# @param module [Module] the module that is being hovered
-	# @param selected [Boolean] the hover state of the module
-	#
-	onModuleHovered: ( module, hovered ) ->
-		if module is @model 
-			if @_hovered isnt hovered
-				@_setHovered hovered
-		else if @_hovered isnt off
-			@_setHovered off
+	# # Gets called when a module view hovered.
+	# #
+	# # @param module [Module] the module that is being hovered
+	# # @param selected [Boolean] the hover state of the module
+	# #
+	# onModuleHovered: ( module, hovered ) ->
+	# 	if module is @model 
+	# 		if @_hovered isnt hovered
+	# 			@_setHovered hovered
+	# 	else if @_hovered isnt off
+	# 		@_setHovered off
 
-	# Gets called when a module is added to a cell
-	#
-	# @param cell [Model.Cell] the cell to which the module was added
-	# @param module [Module] the module that was added
-	#
-	_onModuleAdded: ( cell, module ) ->
-		return if cell isnt @_cell
+	# # Gets called when a module is added to a cell
+	# #
+	# # @param cell [Model.Cell] the cell to which the module was added
+	# # @param module [Module] the module that was added
+	# #
+	# _onModuleAdded: ( cell, module ) ->
+	# 	return if cell isnt @_cell
 
 	# Gets called when a module is removed from a cell
 	#
