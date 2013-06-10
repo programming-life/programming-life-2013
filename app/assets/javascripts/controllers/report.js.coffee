@@ -81,7 +81,7 @@ class Controller.Report extends Controller.Base
 			@_setProgressBar 0
 
 		@view.showProgressBar()
-		[ token, promise ] = @controller('cell').startSimulation( 20, @_iterations, iterationDone )
+		[ token, promise ] = @controller('cell').startSimulation( { iterations: @_iterations, iteration_length: 20 }, iterationDone )
 		promise.done () => $('#create-pdf').removeProp 'disabled'
 		promise.done () => @view.hideProgressBar()
 		promise.progress @_setProgressBar

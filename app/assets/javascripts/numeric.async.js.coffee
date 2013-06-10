@@ -68,7 +68,7 @@ numeric.asyncdopri =
 		xs = [ x0 ]
 		ys = [ y0 ]
 		ymid = []
-		h = ( x1 - x0 ) / 10
+		h = Math.min( ( x1 - x0 ), Math.max( ( x1 - x0 ) / maxit, tol ) )
 		
 		# Butchers tableau
 		A2 = 1/5
@@ -130,6 +130,14 @@ numeric.asyncdopri =
 			er = add( add( add( add( add( mul( k1[ i ], h * e[ 0 ] ), mul( k3, h * e[ 2 ] ) ), mul( k4, h * e[ 3 ] ) ), mul( k5, h * e[ 4 ] ) ), mul( k6, h * e[ 5 ] ) ), mul( k7, h * e[ 6 ] ) )
 			erinf = if typeof er is "number" then abs er else norminf er
 			
+			infinite = if typeof erinf is "number" then ( not isFinite( erinf ) ) else ( any erinif ( ( x ) -> not isFinite x ) )
+
+			if infinite
+				ret.msg = "Found infinite numbers. ODE might be too stiff. Increase maxit or decrease t.";
+				console.error ret.msg
+				return false
+				
+			
 			# Reject when tolerance ( min step size ) reached
 			if erinf > tol
 				h = 0.2 * h * pow( tol/erinf, 0.25 )
@@ -137,6 +145,7 @@ numeric.asyncdopri =
 				# If we didn't find any new values for this step
 				if x0 + h is x0
 					ret.msg = "Step size became too small";
+					console.error ret.msg
 					return false
 					
 				return true
@@ -169,7 +178,7 @@ numeric.asyncdopri =
 					sl = 1.0
 					sr = 1.0
 					while on
-						if _( e0 ).isNumber() 
+						if typeof e0 is 'number'
 							xi = ( sr * e1 * xl - sl * e0 *xr )/( sr * e1 - sl * e0 )
 						else
 							xi = xr
@@ -227,11 +236,17 @@ numeric.asyncdopri =
 					if dopristep() and not token.cancelled
 						dopriloop() 
 					else
-						ret.msg = 'cancelled' if token.cancelled
+						if token.cancelled
+							ret.msg = 'Cancelled' 
+							console.warn ret.msg
 						ret.iterations = it
 						promise.reject ret
 						
 				return
+			
+			if it >= maxit and x0 < x1
+				ret.msg = 'Could not complete solving in maximum number of iterations' 
+				console.warn ret.msg
 			
 			# When done
 			done = () =>

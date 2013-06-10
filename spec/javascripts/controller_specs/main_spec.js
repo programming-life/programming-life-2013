@@ -14,7 +14,7 @@ describe("Main", function() {
 		});
 			
 		afterEach( function() {
-			controller.view.kill()
+			controller.kill()
 			
 			if ( container.remove )
 				container.remove()

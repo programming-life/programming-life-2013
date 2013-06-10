@@ -7,11 +7,11 @@ class View.Notification extends View.HTMLPopOver
 	# @param parent [View.Cell,View.Module] the accompanying view
 	# @param model [any] the subject to display stuff for
 	#
-	constructor: ( parent, subject ) ->
+	constructor: ( parent, subject, position = 'top' ) ->
 		
 		@_messages = {}
 		
-		super parent, parent.getFullType?() ? '', 'notification', 'top'
+		super parent, parent.getFullType?() ? '', 'notification', position
 		
 		@_visible = off
 		@_onNotificate( @, subject, @display )
@@ -44,7 +44,6 @@ class View.Notification extends View.HTMLPopOver
 			@setPosition()
 			elem = $ @_elem 
 			unless @_visible is on
-				elem.hide() 
 				@show()
 		else if @_visible is on
 			@hide()
@@ -53,14 +52,14 @@ class View.Notification extends View.HTMLPopOver
 	#
 	show: () ->
 		elem = $ @_elem
-		elem.fadeIn('fast')
+		elem.fadeIn()
 		@_visible = on
 		
 	#
 	#
 	hide: () ->
 		elem = $ @_elem
-		elem.fadeOut('fast')
+		elem.fadeOut()
 		@_visible = off
 		@_messages = {}
 	

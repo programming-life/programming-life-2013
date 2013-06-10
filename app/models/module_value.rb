@@ -3,7 +3,7 @@
 # Table name: module_values
 #
 #  id                  :integer          not null, primary key
-#  value               :text(255)
+#  value               :text
 #  created_at          :datetime         not null
 #  updated_at          :datetime         not null
 #  module_parameter_id :integer

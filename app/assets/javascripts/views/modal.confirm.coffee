@@ -1,10 +1,6 @@
 # Provides an HTML Modal
 #
-# @concern Mixin.EventBindings
-#
 class View.ConfirmModal extends View.HTMLModal
-
-	@concern Mixin.EventBindings
 
 	#  Create the modal footer
 	#

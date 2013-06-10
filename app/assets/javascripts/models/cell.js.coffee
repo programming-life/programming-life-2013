@@ -40,7 +40,7 @@ class Model.Cell extends Helper.Mixable
 		@_defineProperties( paramscell )
 		
 		@_trigger( 'cell.creation', @, [ @creation, @id ] )
-		@_bind( 'cell.property.changed', @, @onPropertySet )
+		@_bind( 'cell.property.action', @, @opPropertyAction )
 		@add new Model.CellGrowth( params, start ), false
 		
 	# Defines All the properties
@@ -58,7 +58,8 @@ class Model.Cell extends Helper.Mixable
 				creation: new Date()
 				name: null
 			} ),
-			'cell.property.changed'
+			'cell.property.changed',
+			'cell.property.action'
 		)
 		
 		Object.seal @ 
@@ -105,7 +106,7 @@ class Model.Cell extends Helper.Mixable
 	# @param caller [any] the originating property
 	# @param action [Model.Action] the action invoked
 	#
-	onPropertySet: ( caller, action ) =>
+	opPropertyAction: ( caller, action ) =>
 		if caller is @
 			@addUndoableEvent( action )
 		
@@ -480,7 +481,16 @@ class Model.Cell extends Helper.Mixable
 	# @param base_values [Array] the base values to try
 	# @return [self] chainable instance
 	#
-	run : ( from, to, base_values = [], callback, token, stepsize = 1e-9, iterations = 4000 ) ->
+	run : ( from, to, base_values = [], callback, token, options = {} ) ->
+	
+		if not @module
+			throw Error 'I need a module CellGrowth (cell) to simulate the population.'
+	
+		defaults = {
+			tolerance: 1e-9
+			iterations: 4000
+		}
+		options = _( options ).defaults( defaults )
 		
 		@_trigger( 'cell.before.run', @, [ to - from ] )			
 		@generateWarnings()
@@ -508,7 +518,7 @@ class Model.Cell extends Helper.Mixable
 			from = 0
 			to =  to - from
 		
-		promise = numeric.asyncdopri( 0, to - from, values, @_step( modules, mapping, map ), stepsize, iterations, undefined, token )
+		promise = numeric.asyncdopri( 0, to - from, values, @_step( modules, mapping, map ), options.tolerance, options.iterations, undefined, token )
 		promise = promise.then( ( ret ) =>
 		
 			@_trigger( 'cell.after.run', @, [ to - from, ret, mapping ] )
@@ -770,7 +780,7 @@ class Model.Cell extends Helper.Mixable
 	# @return [Model.Cell] the cell
 	#
 	@deserialize : ( serialized = {} ) ->
-		
+
 		serialized = JSON.parse( serialized ) if _( serialized ).isString()
 		serialized.parameters.creation = new Date( serialized.parameters.creation )
 		fn = ( window || @ )["Model"]
@@ -778,11 +788,11 @@ class Model.Cell extends Helper.Mixable
 		result = new fn[serialized.type]( undefined, undefined, serialized.parameters  )
 		
 		for module in result._modules
-			result.remove module
+			result.remove module, false
 
 		for module in serialized.modules
 			result.add Model.Module.deserialize( module )
-			
+
 		return result
 		
 	# Loads a cell
