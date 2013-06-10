@@ -122,7 +122,7 @@ class View.Cell extends View.RaphaelBase
 	# @param view [View.Base] The view to add
 	#
 	add: ( view ) ->
-		type = view.getFullType()
+		type = view.model.getFullType()
 
 		unless @viewsByType[type]?
 			@viewsByType[type] = []
@@ -138,7 +138,7 @@ class View.Cell extends View.RaphaelBase
 	# @param [View.Base] The view to remove
 	#
 	remove: ( view, kill = on ) ->
-		type = view.getFullType()
+		type = view.model.getFullType()
 		@viewsByType[type] = _( @viewsByType[type] ? [] ).without view
 		view.kill() if kill
 		@_notificationsView?.hide()
@@ -200,7 +200,7 @@ class View.Cell extends View.RaphaelBase
 	# @return [[float, float]] a type of the x and y coordinates
 	#
 	getViewPlacement: ( view ) ->
-		type = view.getFullType()
+		type = view.model.getFullType()
 		views = @viewsByType[type] ? []
 
 		index = views.indexOf(view)

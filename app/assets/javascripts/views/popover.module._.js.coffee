@@ -227,7 +227,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 	#
 	_drawMetabolite: ( id, key, value ) ->
 		text = value?.split( '#' )[0]
-		color = View.Module::hashColor text				
+		color = @::hashColor text				
 		label = $('<div class="badge badge-metabolite" data-selectable-value="' + key + '">' + text + '</div> ')
 		label.css( 'background-color', color )
 		return label
@@ -396,7 +396,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 			@_bindOnSelectableChange( selectable.key, elem )
 
 			text = option?.split( '#' )[0]
-			color = View.Module::hashColor text	
+			color = Helper.Mixable.hashColor text	
 			
 			display_name = option.replace( /#(.*)/, '' )
 			labeltext = $("<span class='badge #{selectable.drawtype} #{if !options.contains(option) then 'unknown' else ''}'>#{display_name}</span>")

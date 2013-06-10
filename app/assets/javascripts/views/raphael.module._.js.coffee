@@ -64,7 +64,7 @@ class View.Module extends View.RaphaelBase
 	addBindings: () ->
 		@_bind( 'module.property.changed', @, @_onModuleInvalidated )
 		@_bind( 'module.compound.changed', @, @_onModuleInvalidated )
-		@_bind( 'cell.module.added', @, @_onModuleAdded )
+		#@_bind( 'cell.module.added', @, @_onModuleAdded )
 		@_bind( 'cell.module.removed', @, @_onModuleRemoved )
 		@_bind( 'cell.metabolite.added', @, @_onMetaboliteAdded )
 		@_bind( 'cell.metabolite.removed', @, @_onMetaboliteRemoved )
@@ -131,6 +131,8 @@ class View.Module extends View.RaphaelBase
 	# @param selected [Boolean] selection state
 
 	setSelected: ( selected ) ->
+		console.log 'hello'
+
 		if selected isnt @_selected
 			if selected
 				@_setHovered off
@@ -253,7 +255,7 @@ class View.Module extends View.RaphaelBase
 		unless @_visible
 			return
 		
-		@color = @::hashColor( _.escape @model.name )
+		@color = Helper.Mixable.hashColor( _.escape @model.name )
 		
 		contents = @drawContents()
 		@_contents.push @drawMetaContents( contents )
@@ -289,7 +291,7 @@ class View.Module extends View.RaphaelBase
 		@_box.insertBefore contents
 		@_shadow = @drawShadow @_box
 		@_hitbox = @drawHitbox @_box
-		@addHitBoxInteraction() if @_interaction is on
+		#@addHitBoxInteraction() if @_interaction is on
 		return @paper.setFinish()
 		
 	# Draws this view with basic visualisation
@@ -535,7 +537,7 @@ class View.Module extends View.RaphaelBase
 				substrateCircle = @paper.circle( x, y, params.r ? 20 )
 				substrateCircle.node.setAttribute('class', "#{module}-substrate-circle" )
 				substrateCircle.attr
-					'fill': @hashColor substrate
+					'fill': Helper.Mixable.hashColor substrate
 				
 				if ( params.showText )
 					substrateTextShadow = @paper.text( x, y - 1, substrateText )
@@ -584,7 +586,7 @@ class View.Module extends View.RaphaelBase
 					
 					[ enzymOrigCircle ] = @drawComponent( 'enzym', 'Sector', x - 2, y, { r: 20, from: from, to: to } )
 					enzymOrigCircle.attr
-						'fill': @hashColor origFullTexts[ origTexts.length - 1 ]
+						'fill': Helper.Mixable.hashColor origFullTexts[ origTexts.length - 1 ]
 					enzymOrigCircles.push enzymOrigCircle
 					
 				destFullTexts = []
@@ -605,7 +607,7 @@ class View.Module extends View.RaphaelBase
 					
 					[ enzymDestCircle ] = @drawComponent( 'enzym', 'Sector', x + 2, y, { r: 20, from: from, to: to } )
 					enzymDestCircle.attr
-						'fill': @hashColor destFullTexts[ destTexts.length - 1 ]
+						'fill': Helper.Mixable.hashColor destFullTexts[ destTexts.length - 1 ]
 					enzymDestCircles.push enzymDestCircle
 				
 
