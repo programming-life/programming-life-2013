@@ -37,7 +37,7 @@ gem 'will_paginate', '~> 3.0'
 gem 'nested_form'
 gem 'jquery-rails'
 gem 'wicked_pdf'
-gem 'wkhtmltopdf-binary', '~> 0.9.9', require: false
+gem 'wkhtmltopdf-binary', '~> 0.9.9'
 gem 'json'
 
 # To use ActiveModel has_secure_password
