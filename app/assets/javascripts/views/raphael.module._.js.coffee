@@ -138,6 +138,7 @@ class View.Module extends View.RaphaelBase
 			else
 				@_removeClass('selected')
 
+		@_propertiesView.setSelected selected
 		@_selected = selected
 		return this
 
@@ -148,10 +149,11 @@ class View.Module extends View.RaphaelBase
 	setHovered: ( hovered ) ->
 		if hovered isnt @_hovered 
 			if hovered and not @_selected
-				@_addClass('hovered')
+				@_addClass( 'hovered' )
 			else
-				@_removeClass('hovered')
+				@_removeClass( 'hovered' )
 
+		@_propertiesView.setHovered hovered
 		@_hovered = hovered
 		return this
 
@@ -261,11 +263,11 @@ class View.Module extends View.RaphaelBase
 
 		@createSplines()
 
-		@setPreview(@_preview)
-
+		@setPreview @_preview
+		@_propertiesView.setPosition()
 		@_contents.transform('S.1').animate Raphael.animation(
 			transform: 'S1'
-		, 900, 'elastic'
+		, 900, 'elastic', => @_propertiesView.setPosition()
 		)
 
 	# Draws the contents (module)
