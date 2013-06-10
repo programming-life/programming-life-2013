@@ -11,6 +11,7 @@ describe( "popover module view", function() {
 			};
 			model = {
 				id : "mockId",
+				mockKey : "mockValue",
 				metadata : {
 					properties : {}
 				},
@@ -75,11 +76,62 @@ describe( "popover module view", function() {
 			expect( returnValue ).toBeDefined();
 		});
 
-		it( "should be able to return key values", function() {
-			view._triggerChange( "mockKey", "mockValue" );
-			expect( view._getCurrentValueFor( "mockKey" ) ).toBeDefined();
+		// it( "should be able to draw selectables", function() {
+		// 	returnValue = view._drawSelectable();
+		// 	expect( returnValue ).toBeDefined();
+		// });
+
+		describe( "when handling changes", function(){
+
+			beforeEach( function() {
+				view._triggerChange( "mockKey", "mockValue" );
+			});
+
+			it( "should be able to return key values", function() {
+				expect( view._getCurrentValueFor( "mockKey" ) ).toBe( "mockValue" );
+			});
+
+			it( "should be able to draw custom selections", function(){
+				expect( view._drawSelectionFor ).toBeDefined();
+			});
 		});
 
+		it( "should be able to get module properties", function() {
+			expect( view._getModuleProperties() ).toBeDefined();
+		});
 
+		it( "should be able to catch errors", function() {
+			expect( view._catcher( {}, {message: "error caught"} ) ).toBeDefined();
+		});
+
+		it( "should be able to remove modules", function(){
+			expect( view._remove ).toBeDefined();
+		});
+
+		it( "should be able to change compounds", function(){
+			expect( view._onCompoundsChanged( cell, model ) ).toBeDefined();
+		});
+		
+		it( "should be able to change metabolites", function(){
+			expect( view._onMetabolitesChanged( cell, model ) ).toBeDefined();
+		});
+
+		it( "should be able to select modules", function(){
+			view._onModuleSelected( cell, true );
+			expect( cell._selected ).toBe( true );
+		});
+
+		it( "should be able to hover over modules", function(){
+			view._onModuleHovered( cell, true );
+			expect( cell._hovered ).toBe( true );
+		});
+
+		it( "should be able to invalidate modules", function(){
+			expect( view._onModuleInvalidated ).toBeDefined();
+		});
+
+		it( "should be able to create modules", function(){
+			expect( view._onModuleCreationStarted ).toBeDefined();
+		});
 	});
 });
