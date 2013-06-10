@@ -39,10 +39,8 @@ class View.Graph extends View.RaphaelBase
 	#
 	clear: () ->
 		@_chart?.remove()
-		@_line?.remove()
 		@_title?.remove()
-		
-		@_line = null
+
 		super()
 		
 	# Kills the view
@@ -109,21 +107,3 @@ class View.Graph extends View.RaphaelBase
 		@_container.prepend @_title
 		return @_title
 	
-	# Draws a red line over the chart
-	#
-	# @param x [Integer] The x position of the line, relative to the offset of the chart
-	#
-	drawRedLine: ( x ) ->
-		unless @_line?	
-			@_line = @paper
-				.path( [ 'M', 0 + x,0, 'V', @_height ] )
-				.attr
-					stroke : '#F00'
-				.toFront()
-			@_line.x = x + @paper.canvas.offsetLeft
-			@_line.toFront()
-		else
-			translation = (x + @paper.canvas.offsetLeft - @_line.x)
-			@_line.x = @_line.x + translation
-			@_line.translate( translation )
-			@_line.toFront()

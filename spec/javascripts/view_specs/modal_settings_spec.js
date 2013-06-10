@@ -9,6 +9,10 @@ describe("Modal settings", function() {
 			view = new View.SettingsModal(settings, id, classname);
 		});
 
+		afterEach( function() {
+			view.kill()
+		})
+
 		it( "should have set all the properties", function() {
 			expect( view._header ).toBe( 'Settings' );
 			expect( view.id ).toBe( id );

@@ -13,6 +13,7 @@ describe("Base", function() {
 	});
 
 	afterEach( function() {
+		view._paper = raphael;
 		view.kill();
 	});
 
