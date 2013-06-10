@@ -190,7 +190,6 @@ class View.Undo extends Helper.Mixable
 			row.addClass('selected')
 
 		alternatives = (node.parent?.children.length ? 1) - 1
-		console.log node, alternatives
 		if alternatives > 0
 			@_branchIndex = node.parent.children.indexOf node
 			@_showButtons()

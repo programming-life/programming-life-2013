@@ -252,7 +252,7 @@ describe("Undo", function() {
 				});
 			});
 
-			xdescribe("when selecting a node", function() {
+			describe("when selecting a node", function() {
 				describe("when the node is in our nodes", function() {
 					beforeEach( function() {
 						node = {
@@ -263,7 +263,7 @@ describe("Undo", function() {
 					});
 				});
 
-				describe("when the node has no alternatives", function() {
+				xdescribe("when the node has no alternatives", function() {
 					beforeEach( function() {
 						node = {
 						}
@@ -277,15 +277,13 @@ describe("Undo", function() {
 					});
 				});
 
-				describe("when the node has alternatives", function() {
+				xdescribe("when the node has alternatives", function() {
 					beforeEach( function() {
 						node = {
 							parent: {
 								children : [1,2,3]
 							}
 						}
-
-						console.log("test", node)
 
 						spyOn( view, "_showButtons" );
 						view.selectNode( node );
@@ -296,6 +294,20 @@ describe("Undo", function() {
 					});
 				});
 
+			});
+
+			xdescribe("when setting a node to active", function() {
+				beforeEach( function() {
+					node = {
+						id : 1,
+					};
+					view._rows[1] = node;
+					view.setActive( node );
+				});
+
+				it("should have added the active class", function() {
+					
+				});
 			});
 		});
 
@@ -348,7 +360,20 @@ describe("Undo", function() {
 			});
 		});
 
+		describe("when setting the tree of the view", function() {
+			beforeEach( function() {
+				newTree = {};
+				spyOn( view, "_drawContents" );
+				view.setTree( newTree );
+			});
 
-		
+			it("should have set the tree", function() {
+				expect( view.timemachine ).toBe( newTree );
+			});
+
+			it("should have redrawn the contents", function() {
+				expect( view._drawContents ).toHaveBeenCalled();
+			});
+		});
 	});
 });
