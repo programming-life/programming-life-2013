@@ -169,13 +169,18 @@ class View.Module extends View.RaphaelBase
 	# #
 	# # @return [String] the full type string
 	# #
-	# getFullType: ( ) ->
-	# 	return @model.getFullType()
+	getFullType: ( ) ->
+	 	return @model.getFullType()
 				
 	# Kills the module view
 	#
-
-	# 	return this
+	# @return [self] chainable self
+	#
+	kill: () ->
+		@_propertiesView?.kill()
+		@_notificationsView?.kill()	
+		super()
+		return this
 
 	# Returns the bounding box of this view
 	#
@@ -717,4 +722,4 @@ class View.Module extends View.RaphaelBase
 	#
 	_onMetaboliteRemoved: ( cell, metabolite ) ->
 		if @getFullType() is metabolite.getFullType() and metabolite isnt @model
-			@setPosition()		
+			@setPosition()

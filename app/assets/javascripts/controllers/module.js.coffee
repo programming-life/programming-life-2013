@@ -10,8 +10,8 @@ class Controller.Module extends Controller.Base
 	# @param _preview [Boolean] is this a preview module
 	# @param _interaction [Boolean] has this interaction enabled
 	#
-	constructor: ( parent, @model, @_preview = off, @_interaction = on ) ->
-		super new View.Module( parent.view.paper, parent.view, parent.model, @model, @_preview, @_interaction )
+	constructor: ( @_parent, @model, @_preview = off, @_interaction = on ) ->
+		super new View.Module( @_parent.view.paper, @_parent.view, @_parent.model, @model, @_preview, @_interaction )
 		
 		@_selected = off
 		@_hovered = off
@@ -20,12 +20,13 @@ class Controller.Module extends Controller.Base
 
 		@getter
 			model: -> @view.model
-			
+	
 	# Create bindings for the buttons
 	#
 	_createBindings: () ->
 		@_bind( 'view.module.selected', @view, @_setSelected )
 		@_bind( 'view.module.hovered', @view, @_setHovered )
+		@_bind( 'view.module.removed', @view, @_setRemoved )
 		
 	# On action button clicked
 	# 
@@ -46,7 +47,7 @@ class Controller.Module extends Controller.Base
 	#
 	_onComplete: ( event ) =>
 		if @_preview
-			parent.model.add @model
+			@_parent.model.add @model
 			@_preview = false
 			@view.setPreview off
 		console.log 'completed'
@@ -55,7 +56,7 @@ class Controller.Module extends Controller.Base
 	#
 	_onCancel: ( event ) =>
 		if @_preview
-			parent.remove this
+			@_parent.remove this
 		console.log 'cancelled'
 		
 	#
@@ -82,3 +83,10 @@ class Controller.Module extends Controller.Base
 		if @_hovered isnt state
 			@view.setHovered state
 			@_hovered = state
+
+	#
+	#
+	_setRemoved: ( view, event ) =>
+		if view is @view
+			@_parent.removeChild @kill()
+			@_parent.model.remove @model

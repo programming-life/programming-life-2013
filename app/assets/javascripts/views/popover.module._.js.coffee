@@ -156,8 +156,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 		controlGroup.append('<label class="control-label" for="' + id + '">' + keyLabel + '</label>')
 
 		controls = $('<div class="controls"></div>')
-		
-
+	
 		drawtype = type
 		if drawtype is 'metabolite' or drawtype is 'compound'
 			value =  if value? then [ value ] else ['']
@@ -169,24 +168,16 @@ class View.ModuleProperties extends View.HTMLPopOver
 		switch drawtype
 			when 'name'
 				controls.append @_drawName( id, key, value )
-
 			when 'parameter'
 				controls.append @_drawParameter( id, key, value )
-
 			when 'metabolites'
-				#controls.append @_drawMetabolite( id, key, v ) for v in value
 				controls.append @_drawSelectionFor( type, drawtype, id, key, value )
-					
 			when 'dna'
 				controls.append @_drawDNA( id, key, value )
-				
 			when 'population'
 				controls.append @_drawPopulation( id, key, value )
-			
 			when 'compounds'
-				#controls.append @_drawCompound( id, key, v ) for v in value
 				controls.append @_drawSelectionFor( type, drawtype, id, key, value )
-
 			when 'enumeration'
 				controls.append @_drawEnumeration( id, key, value, params )
 
@@ -420,8 +411,6 @@ class View.ModuleProperties extends View.HTMLPopOver
 			@_getThisForm().find( '[data-selectable]').find('input').parent().removeClass('selectable-hide')
 		else
 			@_getThisForm().find( '[data-selectable]').find('input:not(:checked)').parent().addClass('selectable-hide')			
-			
-		#.css( 'display', if selected then 'inline-block' else 'none' )
 		
 	# Gets this form element
 	#
@@ -488,7 +477,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 	#
 	#
 	_remove: () =>
-		@_parent.remove()
+		@_trigger( 'view.module.removed', @_parent, [] )
 		
 	# Saves the changes
 	#
