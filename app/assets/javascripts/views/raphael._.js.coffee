@@ -145,27 +145,27 @@ class View.RaphaelBase extends View.Collection
 
 	# Add a css class to all content elements
 	#
-	# @param class [String] the css class to add
+	# @param className [String] the css class to add
 	# @param contents [Raphael] the contents to which to apply the class
 	#
-	_addClass: ( class, contents = @_contents ) ->
+	_addClass: ( className, contents = @_contents ) ->
 		for elem in contents
 			if _.isArray(elem)
-				@_addClass(class, elem)
+				@_addClass(className, elem)
 			else
-				$(elem.node).addClass(class)
+				$(elem.node).addClass(className)
 
 	# Remove a css class to all content elements
 	#
-	# @param class [String] the css class to remove
+	# @param className [String] the css class to remove
 	# @param contents [Raphael] the contents from which to remove the class
 	#
-	_removeClass: ( class, contents = @_contents ) ->
+	_removeClass: ( className, contents = @_contents ) ->
 		for elem in contents
 			if _.isArray(elem)
-				@_removeClass(class, elem)
+				@_removeClass(className, elem)
 			else
-				$(elem.node).removeClass(class)
+				$(elem.node).removeClass(className)
 
 	# Returns the absolute (document) coordinates of a point within the paper
 	#
