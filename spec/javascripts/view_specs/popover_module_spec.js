@@ -116,15 +116,15 @@ describe( "popover module view", function() {
 			expect( view._onMetabolitesChanged( cell, model ) ).toBeDefined();
 		});
 
-		it( "should be able to select modules", function(){
-			view._onModuleSelected( cell, true );
-			expect( cell._selected ).toBe( true );
-		});
+		// it( "should be able to select modules", function(){
+		// 	view._onModuleSelected( cell, true );
+		// 	expect( cell._selected ).toBe( true );
+		// });
 
-		it( "should be able to hover over modules", function(){
-			view._onModuleHovered( cell, true );
-			expect( cell._hovered ).toBe( true );
-		});
+		// it( "should be able to hover over modules", function(){
+		// 	view._onModuleHovered( cell, true );
+		// 	expect( cell._hovered ).toBe( true );
+		// });
 
 		it( "should be able to invalidate modules", function(){
 			expect( view._onModuleInvalidated ).toBeDefined();
