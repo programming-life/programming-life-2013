@@ -129,7 +129,6 @@ class View.Module extends View.RaphaelBase
 	# Sets wether or not the module is selected
 	#
 	# @param selected [Boolean] selection state
-
 	setSelected: ( selected ) ->
 		if selected isnt @_selected
 			if selected
@@ -232,7 +231,6 @@ class View.Module extends View.RaphaelBase
 	# 						return View.Module.Direction.Inward
 	# 					when Model.Metabolite.Outside
 	# 						return View.Module.Direction.Outward
-
 	clear: ( ) ->
 		super()
 		@each ( view ) =>
@@ -509,7 +507,7 @@ class View.Module extends View.RaphaelBase
 		
 		$(hitbox.node).on( 'mouseenter', ( event ) => @_trigger( 'view.module.hovered', @, @, [ event, on ] ) )
 		$(hitbox.node).on( 'mouseleave', ( event ) => @_trigger( 'view.module.hovered', @, @, [ event, off ] ) )
-		$(hitbox.node).on( 'click', ( event ) => @_trigger( 'view.module.clicked', @, @, [ event, undefined ] ) )
+		$(hitbox.node).on( 'click', ( event ) => @_trigger( 'view.module.selected', @, @, [ event, undefined ] ) )
 		return hitbox
 
 	# Draw a component

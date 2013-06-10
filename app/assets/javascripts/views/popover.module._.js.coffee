@@ -23,12 +23,8 @@ class View.ModuleProperties extends View.HTMLPopOver
 
 		super parent, module.constructor.name, 'module-properties', 'bottom'
 		
-		@_bind('module.hovered.changed', @, @_onModuleHovered)
-		@_bind('module.selected.changed', @, @_onModuleSelected)
 		@_bind('module.property.changed', @, @_onModuleInvalidated)
 		@_bind('module.compound.changed', @, @_onModuleInvalidated)
-		
-		@_bind('module.creation.started', @, @_onModuleCreationStarted)
 
 		@_bind('cell.module.added', @, @_onCompoundsChanged)
 		@_bind('cell.module.removed', @, @_onCompoundsChanged)
@@ -449,7 +445,6 @@ class View.ModuleProperties extends View.HTMLPopOver
 		@_setSelectablesVisibility( selected )
 
 		if selected	
-		
 			@_elem.focus()
 			@_elem.find('input[type=text]:enabled').first().select()
 
@@ -460,11 +455,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 					when 13
 						@_save()
 			)
-						
-			@_trigger( 'module.update.started', @_parent, [ @module ] )
 		else
-			@_trigger( 'module.update.aborted',  @_parent, [ @module ] )
-			
 			@_elem.find( 'input' ).blur()
 			@_elem.off( 'keyup' )
 			@_reset()
@@ -478,7 +469,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 	#
 	_close: ( ) =>
 		@_changes = {}
-		@_trigger( 'module.selected.changed', @module, [ off ] )
+		@_trigger( 'view.module.selected', @_parent, [ undefined, off ] )
 
 	# Resets this view
 	#
@@ -491,9 +482,13 @@ class View.ModuleProperties extends View.HTMLPopOver
 	#
 	_save: ( ) =>	
 		return if not @_saveChanges()
-		@_trigger( 'module.updated', @_parent, [ @module ] )
 		@_changes = {}
-		@_trigger( 'module.selected.changed', @module, [ off ] )
+		@_trigger( 'view.module.selected', @_parent, [ undefined, off ] )
+		
+	#
+	#
+	_remove: () =>
+		@_parent.remove()
 		
 	# Saves the changes
 	#
@@ -531,12 +526,6 @@ class View.ModuleProperties extends View.HTMLPopOver
 	_catcher: ( source, e ) =>
 		text = if _( e ).isObject() then e.message ? 'no message' else e 
 		@_notificate( @, @module, text , text, [], View.RaphaelBase.Notification.Error)
-	
-	# Removes this module from the cell
-	#
-	_remove: ( ) =>	
-		@_trigger('module.selected.changed', @module, [ off ])
-		@_cell.remove @module
 			
 	# Runs when a compound is changed (added/removed)
 	#
@@ -565,40 +554,9 @@ class View.ModuleProperties extends View.HTMLPopOver
 	_onModuleDrawn: ( module ) ->
 		@setPosition() if module is @module
 
-	# Gets called when a module view selected.
-	#
-	# @param module [Module] the module that is being selected
-	# @param selected [Boolean] the selection state of the module
-	#
-	_onModuleSelected: ( module, selected ) ->
-		if module is @module 
-			if @_selected isnt selected
-				@_setSelected selected 
-		else if selected and @_selected is on
-			@_setSelected off
-
-	# Gets called when a module view hovered.
-	#
-	# @param module [Module] the module that is being hovered
-	# @param selected [Boolean] the hover state of the module
-	#
-	_onModuleHovered: ( module, hovered ) ->
-		if module is @module 
-			if @_hovered isnt hovered
-				@_setHovered hovered
-		else if hovered and @_hovered is on
-			@_setHovered off
-
 	# Gets called when a module's parameters have changed
 	#
 	# @param module [Module] the module that has changed
 	#
 	_onModuleInvalidated: ( module, action ) ->
-		if module is @module
-			@_reset()
-
-	# Gets called when a module creation process has started
-	#
-	_onModuleCreationStarted: ( ) ->
-		@_close() if @_selected
-			
+		@_reset() if module is @module

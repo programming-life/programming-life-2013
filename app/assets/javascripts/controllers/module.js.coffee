@@ -24,7 +24,7 @@ class Controller.Module extends Controller.Base
 	# Create bindings for the buttons
 	#
 	_createBindings: () ->
-		@_bind( 'view.module.clicked', @view, @_setSelected )
+		@_bind( 'view.module.selected', @view, @_setSelected )
 		@_bind( 'view.module.hovered', @view, @_setHovered )
 		
 	# On action button clicked
