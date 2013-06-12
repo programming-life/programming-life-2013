@@ -2,7 +2,7 @@
 <html>
   <head>
   <meta charset='UTF-8'>
-  <title>Broyologramming Life API Documentation</title>
+  <title>CoffeeScript API Documentation</title>
   <link rel='stylesheet' href='../../assets/codo.css' type='text/css'>
   <script src='../../assets/codo.js'></script>
   <script src='../../assets/search_data.js'></script>
@@ -122,6 +122,14 @@
             <a href='../../classes/View/RaphaelBase.html'>View.RaphaelBase</a>
           </td>
         </tr>
+        <tr>
+          <td>Concerns:</td>
+          <td>
+                        <a href='../../mixins/Mixin/EventBindings.html'>Mixin.EventBindings</a>,
+                        <a href='../../mixins/Mixin/Catcher.html'>Mixin.Catcher</a>,
+            <a href='../../mixins/Mixin/DynamicProperties.html'>Mixin.DynamicProperties</a>
+          </td>
+        </tr>
       </table>
       <h2>Overview</h2>
       <div class='docstring'>
@@ -151,6 +159,46 @@
     <span class='bound note title'>Bound</span>
     <span class='desc'>
       Resizes the cell to the target size
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#getProgressBar-instance'>
+        - (jQuery.Elem) <strong>getProgressBar</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Gets the progress bar
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#setProgressBar-instance'>
+        - (self) <strong>setProgressBar</strong>(value)
+      </a>
+    </span>
+    <span class='desc'>
+      Sets the progress bar
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#hideProgressBar-instance'>
+        - (self) <strong>hideProgressBar</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Hides the progress bar
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#showProgressBar-instance'>
+        - (self) <strong>showProgressBar</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Shows the progress bar
     </span>
   </li>
 </ul>
@@ -185,7 +233,8 @@
                 <a href='../../classes/View/Collection.html#add-instance'>#add</a>,
                 <a href='../../classes/View/Collection.html#remove-instance'>#remove</a>,
                 <a href='../../classes/View/Collection.html#draw-instance'>#draw</a>,
-        <a href='../../classes/View/Collection.html#redraw-instance'>#redraw</a>
+                <a href='../../classes/View/Collection.html#redraw-instance'>#redraw</a>,
+        <a href='../../classes/View/Collection.html#each-instance'>#each</a>
       </p>
       <h3 class='inherited'>
         Methods inherited from
@@ -194,7 +243,46 @@
       <p class='inherited'>
                 <a href='../../classes/Helper/Mixable.html#extend-class'>.extend</a>,
                 <a href='../../classes/Helper/Mixable.html#include-class'>.include</a>,
-        <a href='../../classes/Helper/Mixable.html#concern-class'>.concern</a>
+                <a href='../../classes/Helper/Mixable.html#concern-class'>.concern</a>,
+                <a href='../../classes/Helper/Mixable.html#extractId-class'>.extractId</a>,
+                <a href='../../classes/Helper/Mixable.html#isLocal-instance'>#isLocal</a>,
+        <a href='../../classes/Helper/Mixable.html#parseDate-class'>.parseDate</a>
+      </p>
+      <h2>
+        <small>Concern Method Summary</small>
+      </h2>
+      <h3 class='included'>
+        Methods mixed in from
+        <a href='../../mixins/Mixin/EventBindings.html'>Mixin.EventBindings</a>
+      </h3>
+      <p class='included'>
+                <a href='../../mixins/Mixin/EventBindings.html#_allowEventBindings-instance'>#_allowEventBindings</a>,
+                <a href='../../mixins/Mixin/EventBindings.html#_unbindAll-instance'>#_unbindAll</a>,
+                <a href='../../mixins/Mixin/EventBindings.html#_bind-instance'>#_bind</a>,
+                <a href='../../mixins/Mixin/EventBindings.html#_unbind-instance'>#_unbind</a>,
+                <a href='../../mixins/Mixin/EventBindings.html#_trigger-instance'>#_trigger</a>,
+                <a href='../../mixins/Mixin/EventBindings.html#_onNotificate-instance'>#_onNotificate</a>,
+        <a href='../../mixins/Mixin/EventBindings.html#_notificate-instance'>#_notificate</a>
+      </p>
+      <h3 class='included'>
+        Methods mixed in from
+        <a href='../../mixins/Mixin/Catcher.html'>Mixin.Catcher</a>
+      </h3>
+      <p class='included'>
+        <a href='../../mixins/Mixin/Catcher.html#catchable-class'>.catchable</a>
+      </p>
+      <h3 class='included'>
+        Methods mixed in from
+        <a href='../../mixins/Mixin/DynamicProperties.html'>Mixin.DynamicProperties</a>
+      </h3>
+      <p class='included'>
+                <a href='../../mixins/Mixin/DynamicProperties.html#setter-instance'>#setter</a>,
+                <a href='../../mixins/Mixin/DynamicProperties.html#getter-instance'>#getter</a>,
+                <a href='../../mixins/Mixin/DynamicProperties.html#property-instance'>#property</a>,
+                <a href='../../mixins/Mixin/DynamicProperties.html#_defineProperty-instance'>#_defineProperty</a>,
+                <a href='../../mixins/Mixin/DynamicProperties.html#_propertiesFromParams-instance'>#_propertiesFromParams</a>,
+                <a href='../../mixins/Mixin/DynamicProperties.html#_nonEnumerableValue-instance'>#_nonEnumerableValue</a>,
+        <a href='../../mixins/Mixin/DynamicProperties.html#_nonEnumerableGetter-instance'>#_nonEnumerableGetter</a>
       </p>
       <h2>Constructor Details</h2>
       <div class='methods'>
@@ -222,11 +310,98 @@
 <div class='tags'>
 </div>
   </div>
+  <div class='method_details'>
+    <p class='signature' id='getProgressBar-instance'>
+      - (jQuery.Elem) <strong>getProgressBar</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Gets the progress bar</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>jQuery.Elem</tt>)
+      &mdash;
+      <span class='desc'>the progress bar</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='setProgressBar-instance'>
+      - (self) <strong>setProgressBar</strong>(value)
+    </p>
+    <div class='docstring'>
+  <p>Sets the progress bar</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>value</span>
+      <span class='type'>
+        (<tt>Float</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>range 0..1 percentage filled</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>self</tt>)
+      &mdash;
+      <span class='desc'>chainable self</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='hideProgressBar-instance'>
+      - (self) <strong>hideProgressBar</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Hides the progress bar</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>self</tt>)
+      &mdash;
+      <span class='desc'>chainable self</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='showProgressBar-instance'>
+      - (self) <strong>showProgressBar</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Shows the progress bar</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>self</tt>)
+      &mdash;
+      <span class='desc'>chainable self</span>
+    </li>
+  </ul>
+</div>
+  </div>
 </div>
     </div>
     <div id='footer'>
   Generated on
-  Sun Jun 02 2013 15:47:57 GMT+0200 (W. Europe Daylight Time)
+  Tue Jun 11 2013 00:05:30 GMT+0200 (W. Europe Daylight Time)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

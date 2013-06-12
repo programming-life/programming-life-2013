@@ -17,7 +17,7 @@
     &raquo;
     <span class='title'>Mixin</span>
     &raquo;
-    <span class='title'>TimeMachine</span>
+    <span class='title'>Catcher</span>
     <nav>
       <ul>
         <li class='noframes'>
@@ -109,13 +109,13 @@
     <div id='content'>
       <h1>
         Mixin:
-        Mixin.TimeMachine
+        Mixin.Catcher
         <span class='concern note'>Concern</span>
       </h1>
       <table class='box'>
         <tr>
           <td>Defined in:</td>
-          <td>app&#47;assets&#47;javascripts&#47;helpers&#47;mixin.timemachine.js.coffee</td>
+          <td>app&#47;assets&#47;javascripts&#47;helpers&#47;mixin.catcher.js.coffee</td>
         </tr>
       </table>
       <h2>Overview</h2>
@@ -133,146 +133,26 @@
     </li>
   </ul>
 </div>
-      <h2>Instance Method Summary</h2>
+      <h2>Class Method Summary</h2>
       <ul class='summary'>
   <li>
     <span class='signature'>
-      <a href='#_allowTimeMachine-instance'>
-        - (void) <strong>_allowTimeMachine</strong>()
+      <a href='#catchable-class'>
+        + (void) <strong>catchable</strong>(fns)
       </a>
     </span>
     <span class='desc'>
-      Intializes the timemachine
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#addUndoableEvent-instance'>
-        - (Model.Node) <strong>addUndoableEvent</strong>(action)
-      </a>
-    </span>
-    <span class='desc'>
-      Adds an undoable event to the tree @params action [Model.Action] action that is undoable
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#undo-instance'>
-        - (void) <strong>undo</strong>()
-      </a>
-    </span>
-    <span class='desc'>
-      Undoes the last action
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#redo-instance'>
-        - (void) <strong>redo</strong>()
-      </a>
-    </span>
-    <span class='desc'>
-      Redoes the last action
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#_createAction-instance'>
-        - (Model.Action) <strong>_createAction</strong>(description, context = @undefined)
-      </a>
-    </span>
-    <span class='desc'>
-      Creates an empty action
+      
     </span>
   </li>
 </ul>
-      <h2>Instance Method Details</h2>
+      <h2>Class Method Details</h2>
       <div class='methods'>
   <div class='method_details'>
-    <p class='signature' id='_allowTimeMachine-instance'>
-      - (void) <strong>_allowTimeMachine</strong>()
+    <p class='signature' id='catchable-class'>
+      + (void) <strong>catchable</strong>(fns)
     </p>
-    <div class='docstring'>
-  <p>Intializes the timemachine</p>
-</div>
-<div class='tags'>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='addUndoableEvent-instance'>
-      - (Model.Node) <strong>addUndoableEvent</strong>(action)
-    </p>
-    <div class='docstring'>
-  <p>Adds an undoable event to the tree</p><p>@params action [Model.Action] action that is undoable</p>
-</div>
-<div class='tags'>
-  <h3>Returns:</h3>
-  <ul class='return'>
-    <li>
-      <span class='type'></span>
-      (<tt><a href='../../classes/Model/Node.html'>Model.Node</a></tt>)
-      &mdash;
-      <span class='desc'>the tree node returned</span>
-    </li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='undo-instance'>
-      - (void) <strong>undo</strong>()
-    </p>
-    <div class='docstring'>
-  <p>Undoes the last action</p>
-</div>
-<div class='tags'>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='redo-instance'>
-      - (void) <strong>redo</strong>()
-    </p>
-    <div class='docstring'>
-  <p>Redoes the last action</p>
-</div>
-<div class='tags'>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='_createAction-instance'>
-      - (Model.Action) <strong>_createAction</strong>(description, context = @undefined)
-    </p>
-    <div class='docstring'>
-  <p>Creates an empty action</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>description</span>
-      <span class='type'>
-        (<tt>String</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the description for the action</span>
-    </li>
-    <li>
-      <span class='name'>context</span>
-      <span class='type'>
-        (<tt>Context</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>defaults to this</span>
-    </li>
-  </ul>
-  <h3>Returns:</h3>
-  <ul class='return'>
-    <li>
-      <span class='type'></span>
-      (<tt><a href='../../classes/Model/Action.html'>Model.Action</a></tt>)
-      &mdash;
-      <span class='desc'>the action</span>
-    </li>
-  </ul>
+    <div class='tags'>
 </div>
   </div>
 </div>

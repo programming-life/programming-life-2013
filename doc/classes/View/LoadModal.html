@@ -2,7 +2,7 @@
 <html>
   <head>
   <meta charset='UTF-8'>
-  <title>Broyologramming Life API Documentation</title>
+  <title>CoffeeScript API Documentation</title>
   <link rel='stylesheet' href='../../assets/codo.css' type='text/css'>
   <script src='../../assets/codo.js'></script>
   <script src='../../assets/search_data.js'></script>
@@ -160,12 +160,32 @@
   </li>
   <li>
     <span class='signature'>
+      <a href='#_resetButton-instance'>
+        - (void) <strong>_resetButton</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Resets local button
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
       <a href='#show-instance'>
         - (void) <strong>show</strong>()
       </a>
     </span>
     <span class='desc'>
       Shows the modal
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_listCells-instance'>
+        - (void) <strong>_listCells</strong>(tbody, cells, origin)
+      </a>
+    </span>
+    <span class='desc'>
+      Lists the cells from the origin in the tbody
     </span>
   </li>
   <li>
@@ -181,11 +201,11 @@
   <li>
     <span class='signature'>
       <a href='#_prettifyDate-instance'>
-        - (void) <strong>_prettifyDate</strong>(date)
+        - (String) <strong>_prettifyDate</strong>(date)
       </a>
     </span>
     <span class='desc'>
-      
+      Prettifies date to say x seconds, minutes, hours ago
     </span>
   </li>
 </ul>
@@ -209,6 +229,7 @@
                 <a href='../../classes/View/HTMLModal.html#kill-instance'>#kill</a>,
                 <a href='../../classes/View/HTMLModal.html#clear-instance'>#clear</a>,
                 <a href='../../classes/View/HTMLModal.html#draw-instance'>#draw</a>,
+                <a href='../../classes/View/HTMLModal.html#_setAction-instance'>#_setAction</a>,
                 <a href='../../classes/View/HTMLModal.html#_createHeader-instance'>#_createHeader</a>,
                 <a href='../../classes/View/HTMLModal.html#_createBody-instance'>#_createBody</a>,
         <a href='../../classes/View/HTMLModal.html#_createFooter-instance'>#_createFooter</a>
@@ -220,7 +241,10 @@
       <p class='inherited'>
                 <a href='../../classes/Helper/Mixable.html#extend-class'>.extend</a>,
                 <a href='../../classes/Helper/Mixable.html#include-class'>.include</a>,
-        <a href='../../classes/Helper/Mixable.html#concern-class'>.concern</a>
+                <a href='../../classes/Helper/Mixable.html#concern-class'>.concern</a>,
+                <a href='../../classes/Helper/Mixable.html#extractId-class'>.extractId</a>,
+                <a href='../../classes/Helper/Mixable.html#isLocal-instance'>#isLocal</a>,
+        <a href='../../classes/Helper/Mixable.html#parseDate-class'>.parseDate</a>
       </p>
       <h2>
         <small>Concern Method Summary</small>
@@ -299,6 +323,16 @@
 </div>
   </div>
   <div class='method_details'>
+    <p class='signature' id='_resetButton-instance'>
+      - (void) <strong>_resetButton</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Resets local button</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
     <p class='signature' id='show-instance'>
       - (void) <strong>show</strong>()
     </p>
@@ -306,6 +340,43 @@
   <p>Shows the modal</p>
 </div>
 <div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_listCells-instance'>
+      - (void) <strong>_listCells</strong>(tbody, cells, origin)
+    </p>
+    <div class='docstring'>
+  <p>Lists the cells from the origin in the tbody</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>tbody</span>
+      <span class='type'>
+        (<tt>JQuery</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The tbody</span>
+    </li>
+    <li>
+      <span class='name'>cells</span>
+      <span class='type'>
+        (<tt>Array</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The list of cells</span>
+    </li>
+    <li>
+      <span class='name'>origin</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The origin of the cells, either or some other origin</span>
+    </li>
+  </ul>
 </div>
   </div>
   <div class='method_details'>
@@ -336,16 +407,39 @@
   </div>
   <div class='method_details'>
     <p class='signature' id='_prettifyDate-instance'>
-      - (void) <strong>_prettifyDate</strong>(date)
+      - (String) <strong>_prettifyDate</strong>(date)
     </p>
-    <div class='tags'>
+    <div class='docstring'>
+  <p>Prettifies date to say x seconds, minutes, hours ago</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>date</span>
+      <span class='type'>
+        (<tt>Date</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the date</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>String</tt>)
+      &mdash;
+      <span class='desc'>pretty formatted string</span>
+    </li>
+  </ul>
 </div>
   </div>
 </div>
     </div>
     <div id='footer'>
   Generated on
-  Sun Jun 02 2013 15:47:57 GMT+0200 (W. Europe Daylight Time)
+  Tue Jun 11 2013 00:05:30 GMT+0200 (W. Europe Daylight Time)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6
