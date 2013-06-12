@@ -60,17 +60,16 @@ describe("Module", function() {
 				expect(module.drawAsProtein()).toBeDefined();
 			});
 
-			describe("when drawing as a DNA, lipid or cell growth", function() {
-				beforeEach( function() {
-					spyOn(module, 'drawAsBasic');
-					module.drawAsDNA();
-					module.drawAsLipid();
-					module.drawAsCellGrowth();
-				});
+			it("should be able to draw as a DNA", function() {
+				expect(module.drawAsDNA()).toBeDefined();
+			});
 
-				it("should draw the basic module", function() {
-					expect(module.drawAsBasic.callCount).toEqual(3);
-				});
+			it("should be able to draw as a lipid", function() {
+				expect(module.drawAsLipid()).toBeDefined();
+			});
+
+			it("should be able to draw as a cellgrowth", function() {
+				expect(module.drawAsCellGrowth()).toBeDefined();
 			});
 		});
 		

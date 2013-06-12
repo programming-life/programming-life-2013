@@ -275,12 +275,12 @@ describe("Cell", function() {
 			expect( substrate.placement ).toBe( placement );
 		});
 
-		it("should be able to remove that substrate", function() {
+		/*it("should be able to remove that substrate", function() {
 			cell.removeSubstrate( substrate_name );
 			expect( cell.hasSubstrate( substrate_name ) ).toBeFalsy();
 			expect( cell.getSubstrate( substrate_name ) ).not.toBeDefined();
 			expect( cell.amountOf( substrate_name ) ).not.toBeDefined();
-		});
+		});*/
 			
 		it("should replace the substrate amount if it already exists", function () {
 			substrate = cell.getSubstrate( substrate_name );
@@ -346,12 +346,12 @@ describe("Cell", function() {
 			expect( substrate.placement ).toBe( placement );
 		});
 
-		it("should be able to remove that substrate", function() {
+		/*it("should be able to remove that substrate", function() {
 			cell.removeSubstrate( substrate_name );
 			expect( cell.hasSubstrate( substrate_name ) ).toBeFalsy();
 			expect( cell.getSubstrate( substrate_name ) ).not.toBeDefined();
 			expect( cell.amountOf( substrate_name ) ).not.toBeDefined();
-		});
+		});*/
 			
 		it("should replace the substrate amount if it already exists", function () {
 			substrate = cell.getSubstrate( substrate_name );
