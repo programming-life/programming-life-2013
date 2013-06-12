@@ -377,7 +377,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 				
 		values = _( selectable.value() )
 		options = _( options )
-		options = _( options.map( ( v ) -> v.split('#')[0] ) )
+		options = _( options.map( ( v ) -> v.split('#')[0] ) ) if selectable.key is 'transported'
 		options = _( options.filter( ( v ) -> not /#ext$/.test v ) )
 		
 		for option in _( _(options.concat values.value()).filter( ( v ) -> v? and v.length > 0) ).uniq()
