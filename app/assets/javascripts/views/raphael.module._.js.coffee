@@ -287,7 +287,7 @@ class View.Module extends View.RaphaelBase
 			orig: @model.orig ? [ "..." ]
 			dest: @model.dest ? [ "..." ]
 			showText: off
-		[ enzymCirclesOrig, enzymCircleDests ] = @_drawEnzymCircle( 'enzym', @x, @y, params )
+		[ enzymCirclesOrig, enzymCircleDests ] = @_drawEnzymeCircle( 'enzym', @x, @y, params )
 		return [ enzymCirclesOrig, enzymCircleDests, arrow ]
 		
 	# Draws this view as a protein
@@ -552,7 +552,7 @@ class View.Module extends View.RaphaelBase
 			origFullTexts.push _.escape orig
 			origTexts.push _.escape _( orig ).first()
 			
-			[ enzymOrigCircle ] = @drawComponent( 'enzym', 'Sector', x - 2, y, { r: 20, from: from, to: to } )
+			[ enzymOrigCircle ] = @_drawSector( 'enzym', x - 2, y, { r: 20, from: from, to: to } )
 			enzymOrigCircle.attr
 				'fill': Helper.Mixable.hashColor origFullTexts[ origTexts.length - 1 ]
 			enzymOrigCircles.push enzymOrigCircle
@@ -573,7 +573,7 @@ class View.Module extends View.RaphaelBase
 			destFullTexts.push _.escape dest
 			destTexts.push _.escape _( dest ).first()
 			
-			[ enzymDestCircle ] = @drawComponent( 'enzym', 'Sector', x + 2, y, { r: 20, from: from, to: to } )
+			[ enzymDestCircle ] = @_drawSector( 'enzym', x + 2, y, { r: 20, from: from, to: to } )
 			enzymDestCircle.attr
 				'fill': Helper.Mixable.hashColor destFullTexts[ destTexts.length - 1 ]
 			enzymDestCircles.push enzymDestCircle
