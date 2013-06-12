@@ -43,8 +43,10 @@ class View.Graph extends View.RaphaelBase
 		
 		@_line?.remove()
 		@_line = null
-		@_columnText?.remove()
-		@_columnText = null
+		for value in @_columnText?
+			value.remove()
+		
+		@_columnText = null;
 		super()
 		
 	# Kills the view
@@ -132,17 +134,17 @@ class View.Graph extends View.RaphaelBase
 				.toFront()
 
 		@_line.transform( "T#{x}, 0" )
+		@_line.toFront()
 	
-	_drawColumnText: (x, text ) ->
-		unless @_columnText?
-			padding = 5;
-			@_columnText = @paper.text( 0 + padding, @_height / 2, text).attr("text-anchor", "start")
-		else
-			@_columnText.attr("text", text)
-
-		@_columnText.transform( "T#{x}, 0" )
+	_drawColumnText: (text ) ->
+		unless @_columnText? 
+			@_columnText = []
+		for i,s of text
+			@_columnText.push $("<p></p>")
+			@_container.append( _(@_columnText).last() )
+			@_columnText[i].html(s)
 	
-	
+	# Shows a column
 	showColumn: ( xFactor , text ) ->
 		x = (@_width - Graph.AXISPADDING) * xFactor + Graph.AXISPADDING
 
@@ -150,4 +152,4 @@ class View.Graph extends View.RaphaelBase
 		x += 10 
 
 		@_drawRedLine(x)
-		@_drawColumnText(x, text )
+		@_drawColumnText(text )

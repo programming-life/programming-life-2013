@@ -72,8 +72,11 @@ class Controller.Graph extends Controller.Base
 	showColumnData: ( xData ) ->
 		dataset = _(@_datasets).first().xValues
 		xFactor = (xData- _( dataset ).first()) / (_( dataset ).last() - _(dataset).first())
-		dataset = _(@_datasets).first().yValues
-		index = Math.round(xFactor * (dataset.length - 1))
-		yData = dataset[index]
-		text = yData
+
+		text = []
+		for dataset in @_datasets
+			index = Math.round(xFactor * (dataset.yValues.length - 1))
+			yData = dataset.yValues[index]
+			text.push yData
+
 		@view.showColumn( xFactor, text )
