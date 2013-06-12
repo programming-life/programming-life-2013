@@ -33,10 +33,6 @@ class View.Spline extends View.RaphaelBase
 
 		return this
 
-	clear: ( ) ->
-		super
-		tinyMetabolite?.remove() for tinyMetabolite in @_tinyMetabolites
-
 	# Sets the correct color of the spline
 	#
 	setColor: ( ) ->
