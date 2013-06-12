@@ -27,6 +27,7 @@ class Controller.Module extends Controller.Base
 		@_bind( 'view.module.selected', @view, @_setSelected )
 		@_bind( 'view.module.hovered', @view, @_setHovered )
 		@_bind( 'view.module.removed', @view, @_setRemoved )
+		@_bind( 'view.module.saved', @view, @_setChanged )
 		
 	# On action button clicked
 	# 
@@ -45,11 +46,16 @@ class Controller.Module extends Controller.Base
 		
 	#
 	#
-	_onComplete: ( event ) =>
+	_setChanged: ( view, changes ) =>
+		
+		for key, value of changes
+			@model[ key ] = value
+			
 		if @_preview
 			@_parent.model.add @model
 			@_preview = false
 			@view.setPreview off
+			
 		console.log 'completed'
 	
 	#
