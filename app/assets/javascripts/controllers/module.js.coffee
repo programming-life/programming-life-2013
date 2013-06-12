@@ -47,7 +47,7 @@ class Controller.Module extends Controller.Base
 	#
 	#
 	_setChanged: ( view, changes ) =>
-		
+		return if view isnt @view
 		for key, value of changes
 			@model[ key ] = value
 			
