@@ -2,6 +2,8 @@
 #
 class View.Module extends View.RaphaelBase
 
+	# Module Location
+	#
 	@Location:
 		Entrance: 0
 		Exit: 1
@@ -11,7 +13,8 @@ class View.Module extends View.RaphaelBase
 		Right: 1
 		Global: -1
 
-
+	# Module Direction
+	#
 	@Direction:
 		Inward: -1
 		Outward: 1
@@ -38,8 +41,8 @@ class View.Module extends View.RaphaelBase
 		@getter
 			type: -> @_type
 		
-	# # Adds interaction to the module ( popovers )
-	# #
+	# Adds interaction to the module ( popovers )
+	#
 	addInteraction: () ->
 		@_propertiesView = new View.ModuleProperties( @, @_parent, @_cell, @model )
 		@_notificationsView = new View.ModuleNotification( @, @_parent, @_cell, @model )
@@ -64,68 +67,10 @@ class View.Module extends View.RaphaelBase
 	addBindings: () ->
 		@_bind( 'module.property.changed', @, @_onModuleInvalidated )
 		@_bind( 'module.compound.changed', @, @_onModuleInvalidated )
-		#@_bind( 'cell.module.added', @, @_onModuleAdded )
 		@_bind( 'cell.module.removed', @, @_onModuleRemoved )
 		@_bind( 'cell.metabolite.added', @, @_onMetaboliteAdded )
 		@_bind( 'cell.metabolite.removed', @, @_onMetaboliteRemoved )
 		
-	# Adds hitbox interaction (click, mouseout, mouseover)
-	#
-	# addHitBoxInteraction: () ->
-	# 	@_hitbox.click =>
-	# 		unless @_selected
-	# 			_( @_trigger( 'module.selected.changed', @model, [ on ]) ).debounce( 100 )
-	# 		else
-	# 			_( @_trigger( 'module.selected.changed', @model, [ off ]) ).debounce( 100 )
-
-	# 	@_hitbox.mouseout =>
-	# 		_( @_trigger( 'module.hovered.changed', @model, [ off, @_selected ]) ).debounce( 100 )
-		
-	# 	@_hitbox.mouseover =>
-	# 		_( @_trigger( 'module.hovered.changed', @model, [ on, @_selected ]) ).debounce( 100 )
-	# 	return this
-		
-	# Generates a hashcode based on the module name
-	#
-	# @param hashee [String] the name to use as hash
-	# @return [Integer] the hashcode
-	#
-	# hashCode : ( hashee = @_name ) ->
-	# 	hash = 0
-	# 	return hash if ( hashee.length is 0 )
-	# 	for i in [ 0...hashee.length ]
-	# 		char = hashee.charCodeAt i
-	# 		hash = ( (hash << 5) - hash ) + char;
-	# 		hash = hash & hash # cast to 32 bit int
-	# 	return hash
-	
-	# # Generates a colour based on the module name
-	# #
-	# # @param hashee [String] the name to use as hash
-	# # @return [String] the CSS color
-	# #
-	# hashColor : ( hashee = @_name ) ->
-	# 	hashee = hashee.split('#')[0]
-	# 	return '#' + md5( hashee ).slice(0, 6) #@numToColor @hashCode hashee
-
-	# # Generates a colour based on a numer
-	# #
-	# # @param num [Integer] the seed for the colour
-	# # @param alpha [Boolean] if on, uses rgba, else rgb defaults to off
-	# # @param minalpha [Integer] the minimum alpha if on, defaults to 127
-	# # @return [String] the CSS color
-	# #
-	# numToColor : ( num, alpha = off, minalpha = 127 ) ->
-	# 	num >>>= 0
-	# 	# TODO use higher order bytes too when no alpha
-	# 	b = ( num & 0xFF )
-	# 	g = ( num & 0xFF00 ) >>> 8
-	# 	r = ( num & 0xFF0000 ) >>> 16
-	# 	a = ( minalpha ) / 255 + ( ( ( num & 0xFF000000 ) >>> 24 ) / 255 * ( 255 - minalpha ) )
-	# 	a = 1 unless alpha
-	# 	# (0.2126*R) + (0.7152*G) + (0.0722*B) << luminance
-	# 	return "rgba(#{[r, g, b, a].join ','})"
-
 	# Sets wether or not the module is selected
 	#
 	# @param selected [Boolean] selection state
@@ -139,6 +84,7 @@ class View.Module extends View.RaphaelBase
 
 		@_propertiesView.setSelected selected
 		@_selected = selected
+		@_notificationsView.hide()
 		return this
 
 	# Sets wether or not the module is hovered
@@ -156,6 +102,8 @@ class View.Module extends View.RaphaelBase
 		@_hovered = hovered
 		return this
 
+	#
+	#
 	setPreview: ( preview ) ->
 		if preview
 			@_addClass('preview')
@@ -236,6 +184,9 @@ class View.Module extends View.RaphaelBase
 	# 						return View.Module.Direction.Inward
 	# 					when Model.Metabolite.Outside
 	# 						return View.Module.Direction.Outward
+	
+	# Clears this view
+	#
 	clear: ( ) ->
 		super()
 		@each ( view ) =>
@@ -259,14 +210,13 @@ class View.Module extends View.RaphaelBase
 			return
 		
 		@color = Helper.Mixable.hashColor( _.escape @model.name )
-		
-		contents = @drawContents()
-		@_contents.push @drawMetaContents( contents )
-		@_contents.push contents		
+		@_contents.push @drawMetaContents( contents = @drawContents() )
+		@_contents.push contents
 
 		@createSplines()
 
 		@setPreview @_preview
+		
 		@_propertiesView.setPosition()
 		@_contents.transform('S.1').animate Raphael.animation(
 			transform: 'S1'
@@ -294,7 +244,6 @@ class View.Module extends View.RaphaelBase
 		@_box.insertBefore contents
 		@_shadow = @drawShadow @_box
 		@_hitbox = @drawHitbox @_box
-		#@addHitBoxInteraction() if @_interaction is on
 		return @paper.setFinish()
 		
 	# Draws this view with basic visualisation
@@ -311,11 +260,11 @@ class View.Module extends View.RaphaelBase
 	# @return [Array<Raphael>] the contents
 	#
 	drawAsTransporter: () ->
-		[ arrow ] = @drawComponent( 'transporter', 'ProcessArrow', @x, @y, { } )
+		[ arrow ] = @_drawProcessArrow( 'transporter', @x, @y )
 		params =
 			substrate: @model.orig ? "..."
 			showText: off
-		[ substrateCircle ] = @drawComponent( 'transporter', 'SubstrateCircle', @x, @y, params )
+		[ substrateCircle ] = @_drawSubstrateCircle( 'transporter', @x, @y, params )
 		return [ substrateCircle, arrow ]
 		
 	# Draws this view as a metabolite
@@ -326,26 +275,19 @@ class View.Module extends View.RaphaelBase
 		params =
 			substrate: @model.name ? "..."
 			showText: on
-			
-		[ substrateCircle, substrateText ] = @drawComponent( 
-			'substrate', 
-			'SubstrateCircle', 
-			@x, @y, params )
-		return [ substrateCircle, substrateText ] 
+		return @_drawSubstrateCircle( 'substrate', @x, @y, params )
 		
 	# Draws this view as a metabolism
 	#
 	# @return [Array<Raphael>] the contents
 	#
 	drawAsMetabolism: () ->
-		[ arrow ] = @drawComponent( 'transporter', 'ProcessArrow', @x, @y, { } )
-				
+		[ arrow ] = @_drawProcessArrow( 'transporter', @x, @y )
 		params =
 			orig: @model.orig ? [ "..." ]
 			dest: @model.dest ? [ "..." ]
 			showText: off
-		[ enzymCirclesOrig, enzymCircleDests ] = @drawComponent( 'enzym', 'EnzymCircle', @x, @y, params )
-		
+		[ enzymCirclesOrig, enzymCircleDests ] = @_drawEnzymCircle( 'enzym', @x, @y, params )
 		return [ enzymCirclesOrig, enzymCircleDests, arrow ]
 		
 	# Draws this view as a protein
@@ -515,114 +457,129 @@ class View.Module extends View.RaphaelBase
 		$(hitbox.node).on( 'click', ( event ) => @_trigger( 'view.module.selected', @, @, [ event, undefined ] ) )
 		return hitbox
 
-	# Draw a component
+	# Draw the processing arrow
 	#
 	# @param module [String] module name for classes
-	# @param component [String] component string
+	# @param x [Integer] x position
+	# @param y [Integer] y position
+	# @param params [Object] options
+	# @return [Array<Object>] The drawn components
+	#	
+	_drawProcessArrow: ( module, x, y, params ) ->
+		arrow = @paper.path("m #{x-50},#{y} 0,4.06536 85.154735,0 -4.01409,12.19606 27.12222,-16.26142 -27.12222,-16.26141 4.01409,12.19606 -85.154735,0 z")
+		arrow.node.setAttribute( 'class', "#{module}-arrow" )
+			
+		rect = arrow.getBBox()
+		dx = rect.x - x
+		dy = rect.y - y
+		
+		return [ arrow ]
+		
+	# Draw a Substrate Circle
+	#
+	# @param module [String] module name for classes
 	# @param x [Integer] x position
 	# @param y [Integer] y position
 	# @param params [Object] options
 	# @return [Array<Object>] The drawn components
 	#
-	drawComponent : ( module, component, x, y, params = {} ) ->
-		switch component
-			when 'ProcessArrow'
-				arrow = @paper.path("m #{x-50},#{y} 0,4.06536 85.154735,0 -4.01409,12.19606 27.12222,-16.26142 -27.12222,-16.26141 4.01409,12.19606 -85.154735,0 z")
-				arrow.node.setAttribute( 'class', "#{module}-arrow" )
-					
-				rect = arrow.getBBox()
-				dx = rect.x - x
-				dy = rect.y - y
-				
-				return [ arrow ]
-				
-			when 'SubstrateCircle'
+	_drawSubstrateCircle: ( module, x, y, params ) ->
+		# This is the circle in which we show the substrate
+		substrate = _.escape params.substrate
+		substrateText = _.escape _( substrate ).first()
+		if ( params.useFullName? and params.useFullName )
+			substrateText = substrate
+		substrateCircle = @paper.circle( x, y, params.r ? 20 )
+		substrateCircle.node.setAttribute('class', "#{module}-substrate-circle" )
+		substrateCircle.attr
+			'fill': Helper.Mixable.hashColor substrate
+		
+		if ( params.showText )
+			substrateTextShadow = @paper.text( x, y - 1, substrateText )
+			substrateTextShadow.node.setAttribute('class', "#{module}-substrate-text-shadow" )
+
+			substrateTextActual = @paper.text( x, y, substrateText )
+			substrateTextActual.node.setAttribute('class', "#{module}-substrate-text" )
+
+			substrateText = @paper.set()
+			substrateText.push(substrateTextShadow, substrateTextActual)
+		
+		return [ substrateCircle, substrateText ]
+		
+	# Draw a Substrate Sector
+	#
+	# @param module [String] module name for classes
+	# @param x [Integer] x position
+	# @param y [Integer] y position
+	# @param params [Object] options
+	# @return [Array<Object>] The drawn components
+	#
+	_drawSector: ( module, x, y, params ) ->
+		r = params.r
+		startAngle = params.from
+		endAngle = params.to
+		rad = Math.PI / 180;
+		x1 = x + r * Math.cos( -startAngle * rad)
+		x2 = x + r * Math.cos( -endAngle * rad)
+		y1 = y + r * Math.sin( -startAngle * rad)
+		y2 = y + r * Math.sin( -endAngle * rad )
+		path = @paper.path( ["M", x, y, "L", x1, y1, "A", r, r, 0, +(endAngle - startAngle > 180), 0, x2, y2, "z"] )
+		path.node.setAttribute('class', "#{module}-substrate-sector")
+		return [ path ]
+		
+	# Draw an Enzyme Circle
+	#
+	# @param module [String] module name for classes
+	# @param x [Integer] x position
+	# @param y [Integer] y position
+	# @param params [Object] options
+	# @return [Array<Object>] The drawn components
+	#
+	_drawEnzymeCircle: ( module, x, y, params ) ->
+		origFullTexts = []
+		origTexts = []
+		enzymOrigCircles = []
+		
+		min = 90 
+		max = 270
+		d = ( max - min ) / params.orig.length 				
+		
+		for orig in params.orig
+		
+			from = min + origTexts.length * d 
+			to = max - ( params.orig.length - origTexts.length - 1 ) * d
 			
-				# This is the circle in which we show the substrate
-				substrate = _.escape params.substrate
-				substrateText = _.escape _( substrate ).first()
-				if ( params.useFullName? and params.useFullName )
-					substrateText = substrate
-				substrateCircle = @paper.circle( x, y, params.r ? 20 )
-				substrateCircle.node.setAttribute('class', "#{module}-substrate-circle" )
-				substrateCircle.attr
-					'fill': Helper.Mixable.hashColor substrate
-				
-				if ( params.showText )
-					substrateTextShadow = @paper.text( x, y - 1, substrateText )
-					substrateTextShadow.node.setAttribute('class', "#{module}-substrate-text-shadow" )
-
-					substrateTextActual = @paper.text( x, y, substrateText )
-					substrateTextActual.node.setAttribute('class', "#{module}-substrate-text" )
-
-					substrateText = @paper.set()
-					substrateText.push(substrateTextShadow, substrateTextActual)
-				
-				return [ substrateCircle, substrateText ]
-				
-			when 'Sector'
-				r = params.r
-				startAngle = params.from
-				endAngle = params.to
-				rad = Math.PI / 180;
-				x1 = x + r * Math.cos( -startAngle * rad)
-				x2 = x + r * Math.cos( -endAngle * rad)
-				y1 = y + r * Math.sin( -startAngle * rad)
-				y2 = y + r * Math.sin( -endAngle * rad )
-				path = @paper.path( ["M", x, y, "L", x1, y1, "A", r, r, 0, +(endAngle - startAngle > 180), 0, x2, y2, "z"] )
-				path.node.setAttribute('class', "#{module}-substrate-sector")
-				return [ path ]
-				
-			when 'EnzymCircle'
+			origFullTexts.push _.escape orig
+			origTexts.push _.escape _( orig ).first()
 			
-				# This is the circle in which we show the conversion
-				
-				origFullTexts = []
-				origTexts = []
-				enzymOrigCircles = []
-				
-				min = 90 
-				max = 270
-				d = ( max - min ) / params.orig.length 				
-				
-				for orig in params.orig
-				
-					from = min + origTexts.length * d 
-					to = max - ( params.orig.length - origTexts.length - 1 ) * d
-					
-					origFullTexts.push _.escape orig
-					origTexts.push _.escape _( orig ).first()
-					
-					[ enzymOrigCircle ] = @drawComponent( 'enzym', 'Sector', x - 2, y, { r: 20, from: from, to: to } )
-					enzymOrigCircle.attr
-						'fill': Helper.Mixable.hashColor origFullTexts[ origTexts.length - 1 ]
-					enzymOrigCircles.push enzymOrigCircle
-					
-				destFullTexts = []
-				destTexts = []
-				enzymDestCircles = []
-				
-				min = 270
-				max = 90
-				d = ( max - min ) / params.dest.length 				
-				
-				for dest in params.dest
-				
-					from = min - ( params.dest.length - destTexts.length - 1 ) * d 
-					to = max + destTexts.length * d 
-					
-					destFullTexts.push _.escape dest
-					destTexts.push _.escape _( dest ).first()
-					
-					[ enzymDestCircle ] = @drawComponent( 'enzym', 'Sector', x + 2, y, { r: 20, from: from, to: to } )
-					enzymDestCircle.attr
-						'fill': Helper.Mixable.hashColor destFullTexts[ destTexts.length - 1 ]
-					enzymDestCircles.push enzymDestCircle
-				
+			[ enzymOrigCircle ] = @drawComponent( 'enzym', 'Sector', x - 2, y, { r: 20, from: from, to: to } )
+			enzymOrigCircle.attr
+				'fill': Helper.Mixable.hashColor origFullTexts[ origTexts.length - 1 ]
+			enzymOrigCircles.push enzymOrigCircle
+			
+		destFullTexts = []
+		destTexts = []
+		enzymDestCircles = []
+		
+		min = 270
+		max = 90
+		d = ( max - min ) / params.dest.length 				
+		
+		for dest in params.dest
+		
+			from = min - ( params.dest.length - destTexts.length - 1 ) * d 
+			to = max + destTexts.length * d 
+			
+			destFullTexts.push _.escape dest
+			destTexts.push _.escape _( dest ).first()
+			
+			[ enzymDestCircle ] = @drawComponent( 'enzym', 'Sector', x + 2, y, { r: 20, from: from, to: to } )
+			enzymDestCircle.attr
+				'fill': Helper.Mixable.hashColor destFullTexts[ destTexts.length - 1 ]
+			enzymDestCircles.push enzymDestCircle
+		
 
-				return [ enzymOrigCircles, enzymDestCircles ]
-								
-		return []
+		return [ enzymOrigCircles, enzymDestCircles ]
 
 	# Creates a new spline
 	#
@@ -661,40 +618,7 @@ class View.Module extends View.RaphaelBase
 	_onModuleUpdateEnded: ( source ) =>
 		if source.model is @model
 			@createSplines( @model, off )
-	
-	# # Gets called when a module view selected.
-	# #
-	# # @param module [Module] the module that is being selected
-	# # @param selected [Boolean] the selection state of the module
-	# #
-	# onModuleSelected: ( module, selected ) ->
-	# 	if module is @model 
-	# 		if @_selected isnt selected
-	# 			@_setSelected selected 
-	# 			@_notificationsView.hide()
-	# 	else if @_selected isnt off
-	# 		@_setSelected off
-
-	# # Gets called when a module view hovered.
-	# #
-	# # @param module [Module] the module that is being hovered
-	# # @param selected [Boolean] the hover state of the module
-	# #
-	# onModuleHovered: ( module, hovered ) ->
-	# 	if module is @model 
-	# 		if @_hovered isnt hovered
-	# 			@_setHovered hovered
-	# 	else if @_hovered isnt off
-	# 		@_setHovered off
-
-	# # Gets called when a module is added to a cell
-	# #
-	# # @param cell [Model.Cell] the cell to which the module was added
-	# # @param module [Module] the module that was added
-	# #
-	# _onModuleAdded: ( cell, module ) ->
-	# 	return if cell isnt @_cell
-
+			
 	# Gets called when a module is removed from a cell
 	#
 	# @param cell [Model.Cell] the cell from which the module was removed
