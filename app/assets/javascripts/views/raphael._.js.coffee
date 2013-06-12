@@ -60,9 +60,7 @@ class View.RaphaelBase extends View.Collection
 	#
 	kill: ( ) ->
 		super()
-		@_paper?.remove()
-		$(document).remove(@_paper?.canvas)
-
+		
 		@_unbindAll()
 
 	# Sets the position of this view according to its parent's instructions
