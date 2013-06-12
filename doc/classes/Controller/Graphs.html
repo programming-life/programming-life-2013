@@ -2,7 +2,7 @@
 <html>
   <head>
   <meta charset='UTF-8'>
-  <title>Broyologramming Life API Documentation</title>
+  <title>CoffeeScript API Documentation</title>
   <link rel='stylesheet' href='../../assets/codo.css' type='text/css'>
   <script src='../../assets/codo.js'></script>
   <script src='../../assets/search_data.js'></script>
@@ -125,7 +125,8 @@
         <tr>
           <td>Concerns:</td>
           <td>
-            <a href='../../mixins/Mixin/EventBindings.html'>Mixin.EventBindings</a>
+                        <a href='../../mixins/Mixin/EventBindings.html'>Mixin.EventBindings</a>,
+            <a href='../../mixins/Mixin/Catcher.html'>Mixin.Catcher</a>
           </td>
         </tr>
       </table>
@@ -140,18 +141,28 @@
   <li>
     <span class='signature'>
       <a href='#constructor-instance'>
-        - (void) <strong>constructor</strong>(container = "#graphs")
+        - (void) <strong>constructor</strong>(id)
       </a>
     </span>
     <span class='constructor note title'>Constructor</span>
     <span class='desc'>
-      
+      Creates a new instance of graph controller
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#clear-instance'>
+        - (void) <strong>clear</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Clears the view
     </span>
   </li>
   <li>
     <span class='signature'>
       <a href='#show-instance'>
-        - (Object) <strong>show</strong>(datasets, append = false)
+        - (Object) <strong>show</strong>(datasets, append = false, id = 'id')
       </a>
     </span>
     <span class='desc'>
@@ -170,9 +181,14 @@
                 <a href='../../classes/Controller/Base.html#constructor-instance'>#constructor</a>,
                 <a href='../../classes/Controller/Base.html#addChild-instance'>#addChild</a>,
                 <a href='../../classes/Controller/Base.html#removeChild-instance'>#removeChild</a>,
+                <a href='../../classes/Controller/Base.html#each-instance'>#each</a>,
                 <a href='../../classes/Controller/Base.html#controller-instance'>#controller</a>,
                 <a href='../../classes/Controller/Base.html#controllers-instance'>#controllers</a>,
-        <a href='../../classes/Controller/Base.html#kill-instance'>#kill</a>
+                <a href='../../classes/Controller/Base.html#kill-instance'>#kill</a>,
+                <a href='../../classes/Controller/Base.html#onUpdate-instance'>#onUpdate</a>,
+                <a href='../../classes/Controller/Base.html#beforeUnload-instance'>#beforeUnload</a>,
+                <a href='../../classes/Controller/Base.html#onUnload-instance'>#onUnload</a>,
+        <a href='../../classes/Controller/Base.html#_catcher-instance'>#_catcher</a>
       </p>
       <h3 class='inherited'>
         Methods inherited from
@@ -181,7 +197,10 @@
       <p class='inherited'>
                 <a href='../../classes/Helper/Mixable.html#extend-class'>.extend</a>,
                 <a href='../../classes/Helper/Mixable.html#include-class'>.include</a>,
-        <a href='../../classes/Helper/Mixable.html#concern-class'>.concern</a>
+                <a href='../../classes/Helper/Mixable.html#concern-class'>.concern</a>,
+                <a href='../../classes/Helper/Mixable.html#extractId-class'>.extractId</a>,
+                <a href='../../classes/Helper/Mixable.html#isLocal-instance'>#isLocal</a>,
+        <a href='../../classes/Helper/Mixable.html#parseDate-class'>.parseDate</a>
       </p>
       <h2>
         <small>Concern Method Summary</small>
@@ -199,21 +218,60 @@
                 <a href='../../mixins/Mixin/EventBindings.html#_onNotificate-instance'>#_onNotificate</a>,
         <a href='../../mixins/Mixin/EventBindings.html#_notificate-instance'>#_notificate</a>
       </p>
+      <h3 class='included'>
+        Methods mixed in from
+        <a href='../../mixins/Mixin/Catcher.html'>Mixin.Catcher</a>
+      </h3>
+      <p class='included'>
+        <a href='../../mixins/Mixin/Catcher.html#catchable-class'>.catchable</a>
+      </p>
       <h2>Constructor Details</h2>
       <div class='methods'>
   <div class='method_details'>
     <p class='signature' id='constructor-instance'>
-      - (void) <strong>constructor</strong>(container = "#graphs")
+      - (void) <strong>constructor</strong>(id)
     </p>
-    <div class='tags'>
+    <div class='docstring'>
+  <p>Creates a new instance of graph controller</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>view</span>
+      <span class='type'>
+        (<tt><a href='../../classes/View/Collection.html'>View.Collection</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The view to contain the graphs controller by this</span>
+    </li>
+    <li>
+      <span class='name'>id</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>A string id for the container of the graphs</span>
+    </li>
+  </ul>
 </div>
   </div>
 </div>
       <h2>Instance Method Details</h2>
       <div class='methods'>
   <div class='method_details'>
+    <p class='signature' id='clear-instance'>
+      - (void) <strong>clear</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Clears the view</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
     <p class='signature' id='show-instance'>
-      - (Object) <strong>show</strong>(datasets, append = false)
+      - (Object) <strong>show</strong>(datasets, append = false, id = 'id')
     </p>
     <div class='docstring'>
   <p>Shows the graphs with the data from the datasets</p>
@@ -245,7 +303,7 @@
     </div>
     <div id='footer'>
   Generated on
-  Sun Jun 02 2013 15:47:57 GMT+0200 (W. Europe Daylight Time)
+  Tue Jun 11 2013 00:05:30 GMT+0200 (W. Europe Daylight Time)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

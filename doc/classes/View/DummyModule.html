@@ -2,7 +2,7 @@
 <html>
   <head>
   <meta charset='UTF-8'>
-  <title>Broyologramming Life API Documentation</title>
+  <title>CoffeeScript API Documentation</title>
   <link rel='stylesheet' href='../../assets/codo.css' type='text/css'>
   <script src='../../assets/codo.js'></script>
   <script src='../../assets/search_data.js'></script>
@@ -122,6 +122,14 @@
             <a href='../../classes/View/RaphaelBase.html'>View.RaphaelBase</a>
           </td>
         </tr>
+        <tr>
+          <td>Concerns:</td>
+          <td>
+                        <a href='../../mixins/Mixin/EventBindings.html'>Mixin.EventBindings</a>,
+                        <a href='../../mixins/Mixin/Catcher.html'>Mixin.Catcher</a>,
+            <a href='../../mixins/Mixin/DynamicProperties.html'>Mixin.DynamicProperties</a>
+          </td>
+        </tr>
       </table>
       <h2>Overview</h2>
       <div class='docstring'>
@@ -145,18 +153,38 @@ It also allows for interaction adding this potential module to a cell.</p>
   </li>
   <li>
     <span class='signature'>
-      <a href='#onModuleCreationStarted-instance'>
-        - (void) <strong>onModuleCreationStarted</strong>(dummy)
+      <a href='#addBindings-instance'>
+        - (void) <strong>addBindings</strong>()
       </a>
     </span>
     <span class='desc'>
-      Gets called when a module creation has started
+      Creates event bindings
     </span>
   </li>
   <li>
     <span class='signature'>
-      <a href='#onModuleCreationAborted-instance'>
-        - (void) <strong>onModuleCreationAborted</strong>(dummy)
+      <a href='#_onModuleCreationStarted-instance'>
+        - (void) <strong>_onModuleCreationStarted</strong>(dummy, module)
+      </a>
+    </span>
+    <span class='desc'>
+      Gets called when a module creation hase beend started
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_onModuleCreationStart-instance'>
+        - (void) <strong>_onModuleCreationStart</strong>(dummy, module)
+      </a>
+    </span>
+    <span class='desc'>
+      Gets called when a module creation is begin started
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_onModuleCreationAborted-instance'>
+        - (void) <strong>_onModuleCreationAborted</strong>(dummy)
       </a>
     </span>
     <span class='desc'>
@@ -165,18 +193,8 @@ It also allows for interaction adding this potential module to a cell.</p>
   </li>
   <li>
     <span class='signature'>
-      <a href='#onModulePropertiesChange-instance'>
-        - (void) <strong>onModulePropertiesChange</strong>(source, key, value)
-      </a>
-    </span>
-    <span class='desc'>
-      
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#onModuleAdd-instance'>
-        - (void) <strong>onModuleAdd</strong>(cell, module)
+      <a href='#_onModuleAdd-instance'>
+        - (void) <strong>_onModuleAdd</strong>(cell, module)
       </a>
     </span>
     <span class='desc'>
@@ -185,8 +203,8 @@ It also allows for interaction adding this potential module to a cell.</p>
   </li>
   <li>
     <span class='signature'>
-      <a href='#onModuleRemove-instance'>
-        - (void) <strong>onModuleRemove</strong>(cell, module)
+      <a href='#_onModuleRemove-instance'>
+        - (void) <strong>_onModuleRemove</strong>(cell, module)
       </a>
     </span>
     <span class='desc'>
@@ -325,8 +343,8 @@ It also allows for interaction adding this potential module to a cell.</p>
   </li>
   <li>
     <span class='signature'>
-      <a href='#onModuleSelected-instance'>
-        - (void) <strong>onModuleSelected</strong>(module, selected)
+      <a href='#_onModuleSelected-instance'>
+        - (void) <strong>_onModuleSelected</strong>(module, selected)
       </a>
     </span>
     <span class='desc'>
@@ -365,7 +383,8 @@ It also allows for interaction adding this potential module to a cell.</p>
                 <a href='../../classes/View/Collection.html#add-instance'>#add</a>,
                 <a href='../../classes/View/Collection.html#remove-instance'>#remove</a>,
                 <a href='../../classes/View/Collection.html#draw-instance'>#draw</a>,
-        <a href='../../classes/View/Collection.html#redraw-instance'>#redraw</a>
+                <a href='../../classes/View/Collection.html#redraw-instance'>#redraw</a>,
+        <a href='../../classes/View/Collection.html#each-instance'>#each</a>
       </p>
       <h3 class='inherited'>
         Methods inherited from
@@ -374,7 +393,46 @@ It also allows for interaction adding this potential module to a cell.</p>
       <p class='inherited'>
                 <a href='../../classes/Helper/Mixable.html#extend-class'>.extend</a>,
                 <a href='../../classes/Helper/Mixable.html#include-class'>.include</a>,
-        <a href='../../classes/Helper/Mixable.html#concern-class'>.concern</a>
+                <a href='../../classes/Helper/Mixable.html#concern-class'>.concern</a>,
+                <a href='../../classes/Helper/Mixable.html#extractId-class'>.extractId</a>,
+                <a href='../../classes/Helper/Mixable.html#isLocal-instance'>#isLocal</a>,
+        <a href='../../classes/Helper/Mixable.html#parseDate-class'>.parseDate</a>
+      </p>
+      <h2>
+        <small>Concern Method Summary</small>
+      </h2>
+      <h3 class='included'>
+        Methods mixed in from
+        <a href='../../mixins/Mixin/EventBindings.html'>Mixin.EventBindings</a>
+      </h3>
+      <p class='included'>
+                <a href='../../mixins/Mixin/EventBindings.html#_allowEventBindings-instance'>#_allowEventBindings</a>,
+                <a href='../../mixins/Mixin/EventBindings.html#_unbindAll-instance'>#_unbindAll</a>,
+                <a href='../../mixins/Mixin/EventBindings.html#_bind-instance'>#_bind</a>,
+                <a href='../../mixins/Mixin/EventBindings.html#_unbind-instance'>#_unbind</a>,
+                <a href='../../mixins/Mixin/EventBindings.html#_trigger-instance'>#_trigger</a>,
+                <a href='../../mixins/Mixin/EventBindings.html#_onNotificate-instance'>#_onNotificate</a>,
+        <a href='../../mixins/Mixin/EventBindings.html#_notificate-instance'>#_notificate</a>
+      </p>
+      <h3 class='included'>
+        Methods mixed in from
+        <a href='../../mixins/Mixin/Catcher.html'>Mixin.Catcher</a>
+      </h3>
+      <p class='included'>
+        <a href='../../mixins/Mixin/Catcher.html#catchable-class'>.catchable</a>
+      </p>
+      <h3 class='included'>
+        Methods mixed in from
+        <a href='../../mixins/Mixin/DynamicProperties.html'>Mixin.DynamicProperties</a>
+      </h3>
+      <p class='included'>
+                <a href='../../mixins/Mixin/DynamicProperties.html#setter-instance'>#setter</a>,
+                <a href='../../mixins/Mixin/DynamicProperties.html#getter-instance'>#getter</a>,
+                <a href='../../mixins/Mixin/DynamicProperties.html#property-instance'>#property</a>,
+                <a href='../../mixins/Mixin/DynamicProperties.html#_defineProperty-instance'>#_defineProperty</a>,
+                <a href='../../mixins/Mixin/DynamicProperties.html#_propertiesFromParams-instance'>#_propertiesFromParams</a>,
+                <a href='../../mixins/Mixin/DynamicProperties.html#_nonEnumerableValue-instance'>#_nonEnumerableValue</a>,
+        <a href='../../mixins/Mixin/DynamicProperties.html#_nonEnumerableGetter-instance'>#_nonEnumerableGetter</a>
       </p>
       <h2>Constructor Details</h2>
       <div class='methods'>
@@ -443,11 +501,21 @@ It also allows for interaction adding this potential module to a cell.</p>
       <h2>Instance Method Details</h2>
       <div class='methods'>
   <div class='method_details'>
-    <p class='signature' id='onModuleCreationStarted-instance'>
-      - (void) <strong>onModuleCreationStarted</strong>(dummy)
+    <p class='signature' id='addBindings-instance'>
+      - (void) <strong>addBindings</strong>()
     </p>
     <div class='docstring'>
-  <p>Gets called when a module creation has started</p>
+  <p>Creates event bindings</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_onModuleCreationStarted-instance'>
+      - (void) <strong>_onModuleCreationStarted</strong>(dummy, module)
+    </p>
+    <div class='docstring'>
+  <p>Gets called when a module creation hase beend started</p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
@@ -458,14 +526,35 @@ It also allows for interaction adding this potential module to a cell.</p>
         (<tt><a href='../../classes/View/DummyModule.html'>View.DummyModule</a></tt>)
       </span>
       &mdash;
-      <span class='desc'>the dummy for which the module creation has started</span>
+      <span class='desc'>the dummy for which the module creation has been started</span>
     </li>
   </ul>
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='onModuleCreationAborted-instance'>
-      - (void) <strong>onModuleCreationAborted</strong>(dummy)
+    <p class='signature' id='_onModuleCreationStart-instance'>
+      - (void) <strong>_onModuleCreationStart</strong>(dummy, module)
+    </p>
+    <div class='docstring'>
+  <p>Gets called when a module creation is begin started</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>dummy</span>
+      <span class='type'>
+        (<tt><a href='../../classes/View/DummyModule.html'>View.DummyModule</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the dummy for which the module creation is begin started</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_onModuleCreationAborted-instance'>
+      - (void) <strong>_onModuleCreationAborted</strong>(dummy)
     </p>
     <div class='docstring'>
   <p>Gets called when a module creation was aborted</p>
@@ -485,15 +574,8 @@ It also allows for interaction adding this potential module to a cell.</p>
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='onModulePropertiesChange-instance'>
-      - (void) <strong>onModulePropertiesChange</strong>(source, key, value)
-    </p>
-    <div class='tags'>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='onModuleAdd-instance'>
-      - (void) <strong>onModuleAdd</strong>(cell, module)
+    <p class='signature' id='_onModuleAdd-instance'>
+      - (void) <strong>_onModuleAdd</strong>(cell, module)
     </p>
     <div class='docstring'>
   <p>On Module Added to the Cell</p>
@@ -521,8 +603,8 @@ It also allows for interaction adding this potential module to a cell.</p>
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='onModuleRemove-instance'>
-      - (void) <strong>onModuleRemove</strong>(cell, module)
+    <p class='signature' id='_onModuleRemove-instance'>
+      - (void) <strong>_onModuleRemove</strong>(cell, module)
     </p>
     <div class='docstring'>
   <p>On Module Removed from the Cell</p>
@@ -789,8 +871,8 @@ It also allows for interaction adding this potential module to a cell.</p>
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='onModuleSelected-instance'>
-      - (void) <strong>onModuleSelected</strong>(module, selected)
+    <p class='signature' id='_onModuleSelected-instance'>
+      - (void) <strong>_onModuleSelected</strong>(module, selected)
     </p>
     <div class='docstring'>
   <p>Gets called when a module view selected.</p>
@@ -821,7 +903,7 @@ It also allows for interaction adding this potential module to a cell.</p>
     </div>
     <div id='footer'>
   Generated on
-  Sun Jun 02 2013 15:47:57 GMT+0200 (W. Europe Daylight Time)
+  Tue Jun 11 2013 00:05:30 GMT+0200 (W. Europe Daylight Time)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

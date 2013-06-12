@@ -2,7 +2,7 @@
 <html>
   <head>
   <meta charset='UTF-8'>
-  <title>Broyologramming Life API Documentation</title>
+  <title>CoffeeScript API Documentation</title>
   <link rel='stylesheet' href='../../assets/codo.css' type='text/css'>
   <script src='../../assets/codo.js'></script>
   <script src='../../assets/search_data.js'></script>
@@ -122,6 +122,14 @@
             <a href='../../classes/View/Module.html'>View.Module</a>
           </td>
         </tr>
+        <tr>
+          <td>Concerns:</td>
+          <td>
+                        <a href='../../mixins/Mixin/EventBindings.html'>Mixin.EventBindings</a>,
+                        <a href='../../mixins/Mixin/Catcher.html'>Mixin.Catcher</a>,
+            <a href='../../mixins/Mixin/DynamicProperties.html'>Mixin.DynamicProperties</a>
+          </td>
+        </tr>
       </table>
       <h2>Overview</h2>
       <div class='docstring'>
@@ -142,6 +150,26 @@
       Creates a new module view
     </span>
   </li>
+  <li>
+    <span class='signature'>
+      <a href='#_createSpline-instance'>
+        - (View.Spline) <strong>_createSpline</strong>(orig, dest)
+      </a>
+    </span>
+    <span class='desc'>
+      Creates a new spline
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#draw-instance'>
+        - (void) <strong>draw</strong>(x = null, y = null)
+      </a>
+    </span>
+    <span class='desc'>
+      
+    </span>
+  </li>
 </ul>
       <h2>
         <small>Inherited Method Summary</small>
@@ -153,7 +181,7 @@
       <p class='inherited'>
                 <a href='../../classes/View/Module.html#constructor-instance'>#constructor</a>,
                 <a href='../../classes/View/Module.html#addInteraction-instance'>#addInteraction</a>,
-                <a href='../../classes/View/Module.html#onNotificate-instance'>#onNotificate</a>,
+                <a href='../../classes/View/Module.html#_onNotificate-instance'>#_onNotificate</a>,
                 <a href='../../classes/View/Module.html#addBindings-instance'>#addBindings</a>,
                 <a href='../../classes/View/Module.html#addHitBoxInteraction-instance'>#addHitBoxInteraction</a>,
                 <a href='../../classes/View/Module.html#hashCode-instance'>#hashCode</a>,
@@ -175,7 +203,7 @@
                 <a href='../../classes/View/Module.html#drawAsTransporter-instance'>#drawAsTransporter</a>,
                 <a href='../../classes/View/Module.html#drawAsMetabolite-instance'>#drawAsMetabolite</a>,
                 <a href='../../classes/View/Module.html#drawAsMetabolism-instance'>#drawAsMetabolism</a>,
-                <a href='../../classes/View/Module.html#drawProtein-instance'>#drawProtein</a>,
+                <a href='../../classes/View/Module.html#drawAsProtein-instance'>#drawAsProtein</a>,
                 <a href='../../classes/View/Module.html#drawAsDNA-instance'>#drawAsDNA</a>,
                 <a href='../../classes/View/Module.html#drawAsLipid-instance'>#drawAsLipid</a>,
                 <a href='../../classes/View/Module.html#drawAsCellGrowth-instance'>#drawAsCellGrowth</a>,
@@ -185,13 +213,16 @@
                 <a href='../../classes/View/Module.html#drawHitbox-instance'>#drawHitbox</a>,
                 <a href='../../classes/View/Module.html#drawComponent-instance'>#drawComponent</a>,
                 <a href='../../classes/View/Module.html#_createSpline-instance'>#_createSpline</a>,
-                <a href='../../classes/View/Module.html#onModuleInvalidated-instance'>#onModuleInvalidated</a>,
+                <a href='../../classes/View/Module.html#_createPreviewSpline-instance'>#_createPreviewSpline</a>,
+                <a href='../../classes/View/Module.html#_onModuleInvalidated-instance'>#_onModuleInvalidated</a>,
+                <a href='../../classes/View/Module.html#_onModuleChanged-instance'>#_onModuleChanged</a>,
+                <a href='../../classes/View/Module.html#_onModuleUpdateEnded-instance'>#_onModuleUpdateEnded</a>,
                 <a href='../../classes/View/Module.html#onModuleSelected-instance'>#onModuleSelected</a>,
                 <a href='../../classes/View/Module.html#onModuleHovered-instance'>#onModuleHovered</a>,
-                <a href='../../classes/View/Module.html#onModuleAdded-instance'>#onModuleAdded</a>,
-                <a href='../../classes/View/Module.html#onModuleRemoved-instance'>#onModuleRemoved</a>,
-                <a href='../../classes/View/Module.html#onMetaboliteAdded-instance'>#onMetaboliteAdded</a>,
-        <a href='../../classes/View/Module.html#onMetaboliteRemoved-instance'>#onMetaboliteRemoved</a>
+                <a href='../../classes/View/Module.html#_onModuleAdded-instance'>#_onModuleAdded</a>,
+                <a href='../../classes/View/Module.html#_onModuleRemoved-instance'>#_onModuleRemoved</a>,
+                <a href='../../classes/View/Module.html#_onMetaboliteAdded-instance'>#_onMetaboliteAdded</a>,
+        <a href='../../classes/View/Module.html#_onMetaboliteRemoved-instance'>#_onMetaboliteRemoved</a>
       </p>
       <h3 class='inherited'>
         Methods inherited from
@@ -221,7 +252,8 @@
                 <a href='../../classes/View/Collection.html#add-instance'>#add</a>,
                 <a href='../../classes/View/Collection.html#remove-instance'>#remove</a>,
                 <a href='../../classes/View/Collection.html#draw-instance'>#draw</a>,
-        <a href='../../classes/View/Collection.html#redraw-instance'>#redraw</a>
+                <a href='../../classes/View/Collection.html#redraw-instance'>#redraw</a>,
+        <a href='../../classes/View/Collection.html#each-instance'>#each</a>
       </p>
       <h3 class='inherited'>
         Methods inherited from
@@ -230,7 +262,46 @@
       <p class='inherited'>
                 <a href='../../classes/Helper/Mixable.html#extend-class'>.extend</a>,
                 <a href='../../classes/Helper/Mixable.html#include-class'>.include</a>,
-        <a href='../../classes/Helper/Mixable.html#concern-class'>.concern</a>
+                <a href='../../classes/Helper/Mixable.html#concern-class'>.concern</a>,
+                <a href='../../classes/Helper/Mixable.html#extractId-class'>.extractId</a>,
+                <a href='../../classes/Helper/Mixable.html#isLocal-instance'>#isLocal</a>,
+        <a href='../../classes/Helper/Mixable.html#parseDate-class'>.parseDate</a>
+      </p>
+      <h2>
+        <small>Concern Method Summary</small>
+      </h2>
+      <h3 class='included'>
+        Methods mixed in from
+        <a href='../../mixins/Mixin/EventBindings.html'>Mixin.EventBindings</a>
+      </h3>
+      <p class='included'>
+                <a href='../../mixins/Mixin/EventBindings.html#_allowEventBindings-instance'>#_allowEventBindings</a>,
+                <a href='../../mixins/Mixin/EventBindings.html#_unbindAll-instance'>#_unbindAll</a>,
+                <a href='../../mixins/Mixin/EventBindings.html#_bind-instance'>#_bind</a>,
+                <a href='../../mixins/Mixin/EventBindings.html#_unbind-instance'>#_unbind</a>,
+                <a href='../../mixins/Mixin/EventBindings.html#_trigger-instance'>#_trigger</a>,
+                <a href='../../mixins/Mixin/EventBindings.html#_onNotificate-instance'>#_onNotificate</a>,
+        <a href='../../mixins/Mixin/EventBindings.html#_notificate-instance'>#_notificate</a>
+      </p>
+      <h3 class='included'>
+        Methods mixed in from
+        <a href='../../mixins/Mixin/Catcher.html'>Mixin.Catcher</a>
+      </h3>
+      <p class='included'>
+        <a href='../../mixins/Mixin/Catcher.html#catchable-class'>.catchable</a>
+      </p>
+      <h3 class='included'>
+        Methods mixed in from
+        <a href='../../mixins/Mixin/DynamicProperties.html'>Mixin.DynamicProperties</a>
+      </h3>
+      <p class='included'>
+                <a href='../../mixins/Mixin/DynamicProperties.html#setter-instance'>#setter</a>,
+                <a href='../../mixins/Mixin/DynamicProperties.html#getter-instance'>#getter</a>,
+                <a href='../../mixins/Mixin/DynamicProperties.html#property-instance'>#property</a>,
+                <a href='../../mixins/Mixin/DynamicProperties.html#_defineProperty-instance'>#_defineProperty</a>,
+                <a href='../../mixins/Mixin/DynamicProperties.html#_propertiesFromParams-instance'>#_propertiesFromParams</a>,
+                <a href='../../mixins/Mixin/DynamicProperties.html#_nonEnumerableValue-instance'>#_nonEnumerableValue</a>,
+        <a href='../../mixins/Mixin/DynamicProperties.html#_nonEnumerableGetter-instance'>#_nonEnumerableGetter</a>
       </p>
       <h2>Constructor Details</h2>
       <div class='methods'>
@@ -264,10 +335,58 @@
 </div>
   </div>
 </div>
+      <h2>Instance Method Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='_createSpline-instance'>
+      - (View.Spline) <strong>_createSpline</strong>(orig, dest)
+    </p>
+    <div class='docstring'>
+  <p>Creates a new spline</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>orig</span>
+      <span class='type'>
+        (<tt><a href='../../classes/View/Module.html'>View.Module</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the origin module view</span>
+    </li>
+    <li>
+      <span class='name'>dest</span>
+      <span class='type'>
+        (<tt><a href='../../classes/View/Module.html'>View.Module</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the destination module view</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt><a href='../../classes/View/Spline.html'>View.Spline</a></tt>)
+      &mdash;
+      <span class='desc'>the created spline</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='draw-instance'>
+      - (void) <strong>draw</strong>(x = null, y = null)
+    </p>
+    <div class='tags'>
+</div>
+  </div>
+</div>
     </div>
     <div id='footer'>
   Generated on
-  Sun Jun 02 2013 15:47:57 GMT+0200 (W. Europe Daylight Time)
+  Tue Jun 11 2013 00:05:30 GMT+0200 (W. Europe Daylight Time)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

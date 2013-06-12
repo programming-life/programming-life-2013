@@ -2,7 +2,7 @@
 <html>
   <head>
   <meta charset='UTF-8'>
-  <title>Broyologramming Life API Documentation</title>
+  <title>CoffeeScript API Documentation</title>
   <link rel='stylesheet' href='../../assets/codo.css' type='text/css'>
   <script src='../../assets/codo.js'></script>
   <script src='../../assets/search_data.js'></script>
@@ -138,6 +138,7 @@
       <h2>Direct Known Subclasses</h2>
       <p class='children'>
                 <a href='../../classes/View/CellNotification.html'>View.CellNotification</a>,
+                <a href='../../classes/View/MainNotification.html'>View.MainNotification</a>,
         <a href='../../classes/View/ModuleNotification.html'>View.ModuleNotification</a>
       </p>
       <h2>Class Method Summary</h2>
@@ -158,7 +159,7 @@
   <li>
     <span class='signature'>
       <a href='#constructor-instance'>
-        - (void) <strong>constructor</strong>(parent, module)
+        - (void) <strong>constructor</strong>(parent, subject, position = 'top')
       </a>
     </span>
     <span class='constructor note title'>Constructor</span>
@@ -235,7 +236,10 @@
       <p class='inherited'>
                 <a href='../../classes/Helper/Mixable.html#extend-class'>.extend</a>,
                 <a href='../../classes/Helper/Mixable.html#include-class'>.include</a>,
-        <a href='../../classes/Helper/Mixable.html#concern-class'>.concern</a>
+                <a href='../../classes/Helper/Mixable.html#concern-class'>.concern</a>,
+                <a href='../../classes/Helper/Mixable.html#extractId-class'>.extractId</a>,
+                <a href='../../classes/Helper/Mixable.html#isLocal-instance'>#isLocal</a>,
+        <a href='../../classes/Helper/Mixable.html#parseDate-class'>.parseDate</a>
       </p>
       <h2>
         <small>Concern Method Summary</small>
@@ -290,7 +294,7 @@
       <div class='methods'>
   <div class='method_details'>
     <p class='signature' id='constructor-instance'>
-      - (void) <strong>constructor</strong>(parent, module)
+      - (void) <strong>constructor</strong>(parent, subject, position = 'top')
     </p>
     <div class='docstring'>
   <p>Constructs a new Notifications view.</p>
@@ -309,10 +313,10 @@
     <li>
       <span class='name'>model</span>
       <span class='type'>
-        (<tt><a href='../../classes/Model/Cell.html'>Model.Cell</a>, <a href='../../classes/Model/Module.html'>Model.Module</a></tt>)
+        (<tt>any</tt>)
       </span>
       &mdash;
-      <span class='desc'>the module for which to display its properties</span>
+      <span class='desc'>the subject to display stuff for</span>
     </li>
   </ul>
 </div>
@@ -418,7 +422,7 @@
     </div>
     <div id='footer'>
   Generated on
-  Sun Jun 02 2013 15:47:57 GMT+0200 (W. Europe Daylight Time)
+  Tue Jun 11 2013 00:05:30 GMT+0200 (W. Europe Daylight Time)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

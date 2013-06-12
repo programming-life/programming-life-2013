@@ -2,7 +2,7 @@
 <html>
   <head>
   <meta charset='UTF-8'>
-  <title>Broyologramming Life API Documentation</title>
+  <title>CoffeeScript API Documentation</title>
   <link rel='stylesheet' href='../../assets/codo.css' type='text/css'>
   <script src='../../assets/codo.js'></script>
   <script src='../../assets/search_data.js'></script>
@@ -125,13 +125,14 @@
         <tr>
           <td>Concerns:</td>
           <td>
-            <a href='../../mixins/Mixin/EventBindings.html'>Mixin.EventBindings</a>
+                        <a href='../../mixins/Mixin/EventBindings.html'>Mixin.EventBindings</a>,
+            <a href='../../mixins/Mixin/Catcher.html'>Mixin.Catcher</a>
           </td>
         </tr>
       </table>
       <h2>Overview</h2>
       <div class='docstring'>
-  <p>The controller for the Undo view</p>
+  <p>The base of all controllers</p>
 </div>
 <div class='tags'>
 </div>
@@ -142,6 +143,7 @@
                 <a href='../../classes/Controller/Graphs.html'>Controller.Graphs</a>,
                 <a href='../../classes/Controller/Main.html'>Controller.Main</a>,
                 <a href='../../classes/Controller/Report.html'>Controller.Report</a>,
+                <a href='../../classes/Controller/Settings.html'>Controller.Settings</a>,
         <a href='../../classes/Controller/Undo.html'>Controller.Undo</a>
       </p>
       <h2>Instance Method Summary</h2>
@@ -179,6 +181,16 @@
   </li>
   <li>
     <span class='signature'>
+      <a href='#each-instance'>
+        - (void) <strong>each</strong>(func)
+      </a>
+    </span>
+    <span class='desc'>
+      
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
       <a href='#controller-instance'>
         - (Controller.*) <strong>controller</strong>(id)
       </a>
@@ -207,6 +219,46 @@
       Kills the controler and all subsequent views
     </span>
   </li>
+  <li>
+    <span class='signature'>
+      <a href='#onUpdate-instance'>
+        - (void) <strong>onUpdate</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Runs when the user comes online
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#beforeUnload-instance'>
+        - (void) <strong>beforeUnload</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Runs when the user tries to unload the page
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#onUnload-instance'>
+        - (void) <strong>onUnload</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Runs when the user has unloaded the page
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_catcher-instance'>
+        - (void) <strong>_catcher</strong>(source, e)
+      </a>
+    </span>
+    <span class='desc'>
+      Catcher for the cell controller errors
+    </span>
+  </li>
 </ul>
       <h2>
         <small>Inherited Method Summary</small>
@@ -218,7 +270,10 @@
       <p class='inherited'>
                 <a href='../../classes/Helper/Mixable.html#extend-class'>.extend</a>,
                 <a href='../../classes/Helper/Mixable.html#include-class'>.include</a>,
-        <a href='../../classes/Helper/Mixable.html#concern-class'>.concern</a>
+                <a href='../../classes/Helper/Mixable.html#concern-class'>.concern</a>,
+                <a href='../../classes/Helper/Mixable.html#extractId-class'>.extractId</a>,
+                <a href='../../classes/Helper/Mixable.html#isLocal-instance'>#isLocal</a>,
+        <a href='../../classes/Helper/Mixable.html#parseDate-class'>.parseDate</a>
       </p>
       <h2>
         <small>Concern Method Summary</small>
@@ -235,6 +290,13 @@
                 <a href='../../mixins/Mixin/EventBindings.html#_trigger-instance'>#_trigger</a>,
                 <a href='../../mixins/Mixin/EventBindings.html#_onNotificate-instance'>#_onNotificate</a>,
         <a href='../../mixins/Mixin/EventBindings.html#_notificate-instance'>#_notificate</a>
+      </p>
+      <h3 class='included'>
+        Methods mixed in from
+        <a href='../../mixins/Mixin/Catcher.html'>Mixin.Catcher</a>
+      </h3>
+      <p class='included'>
+        <a href='../../mixins/Mixin/Catcher.html#catchable-class'>.catchable</a>
       </p>
       <h2>Constructor Details</h2>
       <div class='methods'>
@@ -339,6 +401,13 @@
 </div>
   </div>
   <div class='method_details'>
+    <p class='signature' id='each-instance'>
+      - (void) <strong>each</strong>(func)
+    </p>
+    <div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
     <p class='signature' id='controller-instance'>
       - (Controller.*) <strong>controller</strong>(id)
     </p>
@@ -394,11 +463,51 @@
   </ul>
 </div>
   </div>
+  <div class='method_details'>
+    <p class='signature' id='onUpdate-instance'>
+      - (void) <strong>onUpdate</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Runs when the user comes online</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='beforeUnload-instance'>
+      - (void) <strong>beforeUnload</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Runs when the user tries to unload the page</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='onUnload-instance'>
+      - (void) <strong>onUnload</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Runs when the user has unloaded the page</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_catcher-instance'>
+      - (void) <strong>_catcher</strong>(source, e)
+    </p>
+    <div class='docstring'>
+  <p>Catcher for the cell controller errors</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
 </div>
     </div>
     <div id='footer'>
   Generated on
-  Sun Jun 02 2013 15:47:57 GMT+0200 (W. Europe Daylight Time)
+  Tue Jun 11 2013 00:05:30 GMT+0200 (W. Europe Daylight Time)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

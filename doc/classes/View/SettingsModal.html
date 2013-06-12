@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset='UTF-8'>
+  <title>CoffeeScript API Documentation</title>
+  <link rel='stylesheet' href='../../assets/codo.css' type='text/css'>
+  <script src='../../assets/codo.js'></script>
+  <script src='../../assets/search_data.js'></script>
+</head>
+  <body>
+    <div id='base' data-path='../../'></div>
+<div id='header'>
+  <div id='menu'>
+    <a href='../../README.md.html' title='Programming-life'>Programming-life</a>
+    &raquo;
+    <a href='../../class_index.html' title='Index'>Index</a>
+    &raquo;
+    <span class='title'>View</span>
+    &raquo;
+    <span class='title'>SettingsModal</span>
+    <nav>
+      <ul>
+        <li class='noframes'>
+          (<a class='noframes' href='#'>no frames</a>)
+        </li>
+      </ul>
+    </nav>
+    <div id='search'>
+      <a id='class_list_link' href='../../class_list.html'>Classes</a>
+      <a id='mixin_list_link' href='../../mixin_list.html'>Mixins</a>
+      <a id='file_list_link' href='../../file_list.html'>Files</a>
+      <a id='method_list_link' href='../../method_list.html'>Methods</a>
+      <a id='extra_list_link' href='../../extra_list.html'>Extras</a>
+    </div>
+  </div>
+  <iframe id='search_frame'></iframe>
+  <div id='fuzzySearch'>
+    <input type='text'>
+    <ol></ol>
+  </div>
+  <div id='help'>
+    <p>
+      Quickly fuzzy find classes, mixins, methods, file:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-T</span>
+        Open fuzzy finder dialog
+      </li>
+    </ul>
+    <p>
+      In frame mode you can toggle the list naviation frame on the left side:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-L</span>
+        Toggle list view
+      </li>
+    </ul>
+    <p>
+      You can focus a list in frame mode or toggle a tab in frameless mode:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-C</span>
+        Class list
+      </li>
+      <li>
+        <span>Ctrl-I</span>
+        Mixin list
+      </li>
+      <li>
+        <span>Ctrl-F</span>
+        File list
+      </li>
+      <li>
+        <span>Ctrl-M</span>
+        Method list
+      </li>
+      <li>
+        <span>Ctrl-E</span>
+        Extras list
+      </li>
+    </ul>
+    <p>
+      You can focus and blur the search input:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-S</span>
+        Focus search input
+      </li>
+      <li>
+        <span>Esc</span>
+        Blur search input
+      </li>
+    </ul>
+    <p>
+      In frameless mode you can close the list tab:
+    </p>
+    <ul>
+      <li>
+        <span>Esc</span>
+        Close list tab
+      </li>
+    </ul>
+  </div>
+</div>
+    <div id='content'>
+      <h1>
+        Class:
+        View.SettingsModal
+      </h1>
+      <table class='box'>
+        <tr>
+          <td>Defined in:</td>
+          <td>app&#47;assets&#47;javascripts&#47;views&#47;modal.settings.coffee</td>
+        </tr>
+        <tr>
+          <td>Inherits:</td>
+          <td>
+            <a href='../../classes/View/HTMLModal.html'>View.HTMLModal</a>
+          </td>
+        </tr>
+        <tr>
+          <td>Concerns:</td>
+          <td>
+            <a href='../../mixins/Mixin/EventBindings.html'>Mixin.EventBindings</a>
+          </td>
+        </tr>
+      </table>
+      <h2>Overview</h2>
+      <div class='docstring'>
+  <p>Provides an HTML Modal</p>
+</div>
+<div class='tags'>
+</div>
+      <h2>Instance Method Summary</h2>
+      <ul class='summary'>
+  <li>
+    <span class='signature'>
+      <a href='#constructor-instance'>
+        - (void) <strong>constructor</strong>(_settings, id, classname)
+      </a>
+    </span>
+    <span class='constructor note title'>Constructor</span>
+    <span class='desc'>
+      Constructs a new Modal view.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_createBody-instance'>
+        - (jQuery.Elem) <strong>_createBody</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Create the modal body
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_createControlSection-instance'>
+        - (jQuery.Elem) <strong>_createControlSection</strong>(section, options)
+      </a>
+    </span>
+    <span class='desc'>
+      Create section
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_createControlGroup-instance'>
+        - (void) <strong>_createControlGroup</strong>(section, label, key, meta_data)
+      </a>
+    </span>
+    <span class='desc'>
+      Create control group for an options @options meta_data [String] type the type of the data @options meta_data [any] value the value of the data @options meta_data [Integer] min the minumum value @options meta_data [Integer] max the maximum value @options meta_data [Integer] step the step value @options meta_data [String] active the active discriptor
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#getInput-instance'>
+        - (jQuery.Collection) <strong>getInput</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Gets all the input fields
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_createFooter-instance'>
+        - (void) <strong>_createFooter</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Create the modal footer
+    </span>
+  </li>
+</ul>
+      <h2>
+        <small>Inherited Method Summary</small>
+      </h2>
+      <h3 class='inherited'>
+        Methods inherited from
+        <a href='../../classes/View/HTMLModal.html'>View.HTMLModal</a>
+      </h3>
+      <p class='inherited'>
+                <a href='../../classes/View/HTMLModal.html#constructor-instance'>#constructor</a>,
+                <a href='../../classes/View/HTMLModal.html#show-instance'>#show</a>,
+                <a href='../../classes/View/HTMLModal.html#hide-instance'>#hide</a>,
+                <a href='../../classes/View/HTMLModal.html#toggle-instance'>#toggle</a>,
+                <a href='../../classes/View/HTMLModal.html#onClose-instance'>#onClose</a>,
+                <a href='../../classes/View/HTMLModal.html#offClose-instance'>#offClose</a>,
+                <a href='../../classes/View/HTMLModal.html#onClosed-instance'>#onClosed</a>,
+                <a href='../../classes/View/HTMLModal.html#offClosed-instance'>#offClosed</a>,
+                <a href='../../classes/View/HTMLModal.html#_create-instance'>#_create</a>,
+                <a href='../../classes/View/HTMLModal.html#kill-instance'>#kill</a>,
+                <a href='../../classes/View/HTMLModal.html#clear-instance'>#clear</a>,
+                <a href='../../classes/View/HTMLModal.html#draw-instance'>#draw</a>,
+                <a href='../../classes/View/HTMLModal.html#_setAction-instance'>#_setAction</a>,
+                <a href='../../classes/View/HTMLModal.html#_createHeader-instance'>#_createHeader</a>,
+                <a href='../../classes/View/HTMLModal.html#_createBody-instance'>#_createBody</a>,
+        <a href='../../classes/View/HTMLModal.html#_createFooter-instance'>#_createFooter</a>
+      </p>
+      <h3 class='inherited'>
+        Methods inherited from
+        <a href='../../classes/Helper/Mixable.html'>Helper.Mixable</a>
+      </h3>
+      <p class='inherited'>
+                <a href='../../classes/Helper/Mixable.html#extend-class'>.extend</a>,
+                <a href='../../classes/Helper/Mixable.html#include-class'>.include</a>,
+                <a href='../../classes/Helper/Mixable.html#concern-class'>.concern</a>,
+                <a href='../../classes/Helper/Mixable.html#extractId-class'>.extractId</a>,
+                <a href='../../classes/Helper/Mixable.html#isLocal-instance'>#isLocal</a>,
+        <a href='../../classes/Helper/Mixable.html#parseDate-class'>.parseDate</a>
+      </p>
+      <h2>
+        <small>Concern Method Summary</small>
+      </h2>
+      <h3 class='included'>
+        Methods mixed in from
+        <a href='../../mixins/Mixin/EventBindings.html'>Mixin.EventBindings</a>
+      </h3>
+      <p class='included'>
+                <a href='../../mixins/Mixin/EventBindings.html#_allowEventBindings-instance'>#_allowEventBindings</a>,
+                <a href='../../mixins/Mixin/EventBindings.html#_unbindAll-instance'>#_unbindAll</a>,
+                <a href='../../mixins/Mixin/EventBindings.html#_bind-instance'>#_bind</a>,
+                <a href='../../mixins/Mixin/EventBindings.html#_unbind-instance'>#_unbind</a>,
+                <a href='../../mixins/Mixin/EventBindings.html#_trigger-instance'>#_trigger</a>,
+                <a href='../../mixins/Mixin/EventBindings.html#_onNotificate-instance'>#_onNotificate</a>,
+        <a href='../../mixins/Mixin/EventBindings.html#_notificate-instance'>#_notificate</a>
+      </p>
+      <h2>Constructor Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='constructor-instance'>
+      - (void) <strong>constructor</strong>(_settings, id, classname)
+    </p>
+    <div class='docstring'>
+  <p>Constructs a new Modal view.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>id</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the id</span>
+    </li>
+    <li>
+      <span class='name'>classname</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>additiona classname(s)</span>
+    </li>
+  </ul>
+</div>
+  </div>
+</div>
+      <h2>Instance Method Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='_createBody-instance'>
+      - (jQuery.Elem) <strong>_createBody</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Create the modal body</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>jQuery.Elem</tt>)
+      &mdash;
+      <span class='desc'>the body element</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_createControlSection-instance'>
+      - (jQuery.Elem) <strong>_createControlSection</strong>(section, options)
+    </p>
+    <div class='docstring'>
+  <p>Create section</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>section</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the section name</span>
+    </li>
+    <li>
+      <span class='name'>options</span>
+      <span class='type'>
+        (<tt>Object</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the options</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>jQuery.Elem</tt>)
+      &mdash;
+      <span class='desc'>the element</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_createControlGroup-instance'>
+      - (void) <strong>_createControlGroup</strong>(section, label, key, meta_data)
+    </p>
+    <div class='docstring'>
+  <p>Create control group for an options</p><p>@options meta_data [String] type the type of the data
+@options meta_data [any] value the value of the data
+@options meta_data [Integer] min the minumum value
+@options meta_data [Integer] max the maximum value
+@options meta_data [Integer] step the step value
+@options meta_data [String] active the active discriptor</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>section</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the parent section</span>
+    </li>
+    <li>
+      <span class='name'>label</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the label to show</span>
+    </li>
+    <li>
+      <span class='name'>key</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the option key</span>
+    </li>
+    <li>
+      <span class='name'>meta_data</span>
+      <span class='type'>
+        (<tt>Object</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the meta data</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='getInput-instance'>
+      - (jQuery.Collection) <strong>getInput</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Gets all the input fields</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>jQuery.Collection</tt>)
+      &mdash;
+      <span class='desc'>the input fields</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_createFooter-instance'>
+      - (void) <strong>_createFooter</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Create the modal footer</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+</div>
+    </div>
+    <div id='footer'>
+  Generated on
+  Tue Jun 11 2013 00:05:30 GMT+0200 (W. Europe Daylight Time)
+  by
+  <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
+  v1.5.6
+  (Node.js v0.10.4).
+  &#10034;
+  Press Ctrl-h to see the keyboard shortcuts
+  &#10034;
+  <a href='http://twitter.com/#!/netzpirat'>@netzpirat</a>
+  &#10034;
+  <a href='https://mksoft.ch'>mksoft.ch</a>
+</div>
+  </body>
+</html>
