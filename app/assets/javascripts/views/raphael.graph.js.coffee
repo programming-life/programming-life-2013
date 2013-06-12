@@ -40,7 +40,11 @@ class View.Graph extends View.RaphaelBase
 	clear: () ->
 		@_chart?.remove()
 		@_title?.remove()
-
+		
+		@_line?.remove()
+		@_line = null
+		@_columnText?.remove()
+		@_columnText = null
 		super()
 		
 	# Kills the view
@@ -82,6 +86,14 @@ class View.Graph extends View.RaphaelBase
 		@_chart = @paper.linechart( Graph.AXISPADDING, 0, 
 			@_width, @_height,
 			_( xValues ).clone( true ), _( yValues ).clone( true ), options )
+		
+		requestLine = (x) =>
+			xFactor = (x - Graph.AXISPADDING - 10) / (@_width - Graph.AXISPADDING)
+			@_trigger "view.graph.hover", @, [xFactor]
+
+		@_chart.hoverColumn () ->
+			requestLine( @x )
+
 		return this
 
 	# Move the viewbox of the chart
@@ -107,3 +119,35 @@ class View.Graph extends View.RaphaelBase
 		@_container.prepend @_title
 		return @_title
 	
+	# Draws a red line over the chart
+	#
+	# @param x [Integer] The x of the data to draw the line at
+	#
+	_drawRedLine: ( x ) ->
+		unless @_line?	
+			@_line = @paper
+				.path( [ 'M', 0 ,0, 'V', @_height ] )
+				.attr
+					stroke : '#F00'
+				.toFront()
+
+		@_line.transform( "T#{x}, 0" )
+	
+	_drawColumnText: (x, text ) ->
+		unless @_columnText?
+			padding = 5;
+			@_columnText = @paper.text( 0 + padding, @_height / 2, text).attr("text-anchor", "start")
+		else
+			@_columnText.attr("text", text)
+
+		@_columnText.transform( "T#{x}, 0" )
+	
+	
+	showColumn: ( xFactor , text ) ->
+		x = (@_width - Graph.AXISPADDING) * xFactor + Graph.AXISPADDING
+
+		# Add 10 magically for the axis
+		x += 10 
+
+		@_drawRedLine(x)
+		@_drawColumnText(x, text )
