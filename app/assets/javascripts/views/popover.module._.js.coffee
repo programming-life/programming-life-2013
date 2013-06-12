@@ -12,9 +12,8 @@ class View.ModuleProperties extends View.HTMLPopOver
 	# @param module [Model.Module] the module for which to display its properties
 	# @param cellView [View.Cell] the accompanying cell view
 	# @param cell [Model.Cell] the parent cell of the module
-	# @param params [Object] options
 	#
-	constructor: ( parent, @_cellView, @_cell, @module, params = {} ) ->
+	constructor: ( parent, @_cellView, @_cell, @module, @_preview ) ->
 		@_changes = {}
 
 		@_compounds = @_cell.getCompoundNames()
@@ -70,16 +69,22 @@ class View.ModuleProperties extends View.HTMLPopOver
 	# @param saveText [String] the text on the save button
 	# @return [Array<jQuery.Elem>] the footer and the button element
 	#
-	_createFooter: ( removeText = '<i class="icon-trash icon-white"></i>', saveText = '<i class=" icon-ok icon-white"></i> Save' ) ->
+	_createFooter: ( removeText = '<i class="icon-trash icon-white"></i>', saveText ) ->
 		@_footer = $('<div class="modal-footer"></div>')
 
 		@_removeButton = $('<button class="btn btn-danger pull-left">' + removeText + '</button>')
 		@_removeButton.on('click', @_remove )
 
+		unless saveText?
+			saveText = if @_preview
+					'<i class=" icon-ok icon-white"></i> Create'
+				else
+					'<i class=" icon-ok icon-white"></i> Save'
+		
 		@_saveButton = $('<button class="btn btn-primary">' + saveText + '</button>')
 		@_saveButton.click @_save
-	
-		@_footer.append @_removeButton
+
+		@_footer.append @_removeButton unless @_preview
 		@_footer.append @_saveButton
 		return [ @_footer, @_removeButton, @_saveButton ]
 		
@@ -100,7 +105,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 	_drawForm: ( ) ->
 		@_currents = {}
 		
-		form = $('<div class="form-horizontal" id="' + @getFormId() + '"></div>')
+		form = $('<form class="form-horizontal" id="' + @getFormId() + '"></form>')
 		sections = []
 
 		properties = @_getModuleProperties()
@@ -372,14 +377,15 @@ class View.ModuleProperties extends View.HTMLPopOver
 				
 		values = _( selectable.value() )
 		options = _( options )
-		options = _( options.map( ( v ) -> v.split('#')[0] ) ) if selectable.key is 'transported'
+		options = _( options.map( ( v ) -> v.split('#')[0] ) )
 		options = _( options.filter( ( v ) -> not /#ext$/.test v ) )
 		
 		for option in _( _(options.concat values.value()).filter( ( v ) -> v? and v.length > 0) ).uniq()
 			
 			label = $( "<label class='option-selectable #{selectable.type}' for='#{selectable.id}-#{option}'></label>" )
 			elem = $( "<input type='#{selectable.type}' name='#{selectable.name}' id='#{selectable.id}-#{option}' value='#{option}'>" )
-			elem.prop( 'checked', values.contains(option) )
+			elem.attr( 'checked', values.contains(option) ) #default value
+			elem.prop( 'checked', values.contains(option) ) #current value
 			@_bindOnSelectableChange( selectable.key, elem )
 
 			text = option?.split( '#' )[0]
@@ -419,11 +425,17 @@ class View.ModuleProperties extends View.HTMLPopOver
 	_getThisForm: () ->
 		return $( "##{@getFormId()}" )
 		
+	# Resets this form element
+	#
+	_resetThisForm: () ->
+		@_getThisForm()[0].reset()
+		return this
+		
 	# Sets the selection state of this popover
 	# 
 	# @param selected [Boolean] the selection state
 	#
-	_setSelected: ( selected ) ->
+	setSelected: ( selected ) ->
 		super selected
 		
 		@_getThisForm()
@@ -447,7 +459,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 		else
 			@_elem.find( 'input' ).blur()
 			@_elem.off( 'keyup' )
-			@_reset()
+			@_resetThisForm()
 
 	# Returns the properties of our module
 	#
@@ -474,7 +486,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 		@_changes = {}
 		@_trigger( 'view.module.selected', @_parent, [ undefined, off ] )
 		
-	#
+	# Remove button clicked
 	#
 	_remove: () =>
 		@_trigger( 'view.module.removed', @_parent, [] )
@@ -504,8 +516,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 				message += "I need valid values for #{wrong_keys}." if wrong_keys.length
 				throw new Error message
 			
-			for key, value of @_changes
-				@module[ key ] = value
+			@_trigger( 'view.module.saved', @_parent, [ @_changes ] )
 			return true
 			
 	# Catcher function for Mixin.Catcher that will notificate any thrown Error on catchable methods
