@@ -20,6 +20,8 @@ describe("Module", function() {
 			module._propertiesView = undefined;
 			module._notificationsView = undefined;
 			module.kill();
+			paper.clear();
+			paper.remove();
 		});
 
 		it("should be defined", function() {
