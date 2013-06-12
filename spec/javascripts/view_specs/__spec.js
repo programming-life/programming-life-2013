@@ -69,7 +69,9 @@ describe("Base", function() {
 			});
 
 			it("should be able to get the absolute coordinates", function() {
-				expect(view.getAbsoluteCoords(20, 40)).toEqual([x+20, y+40]);
+				var coords = view.getAbsoluteCoords(20, 40);
+				expect(coords[0]).toBeCloseTo(x+20, 2);
+				expect(coords[1]).toBeCloseTo(y+40, 2);
 			});
 
 			describe("when moved to a new fixed position", function() {
