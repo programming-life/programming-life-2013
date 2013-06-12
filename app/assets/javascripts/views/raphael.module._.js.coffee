@@ -174,22 +174,8 @@ class View.Module extends View.RaphaelBase
 	# @return [self] chainable self
 	#
 	kill: () ->
-		#@_contents.insertBefore(@paper.bottom)
-
-		###fadeOut = ( ) =>
-			@_contents.stop()
-			@_contents.animate Raphael.animation(
-				transform: '...S0'
-			, 500, 'ease-in', =>
-					
-				View.RaphaelBase::kill.apply( @ )
-			)
-		###
 		@_propertiesView?.kill()
 		@_notificationsView?.kill()	
-
-
-		#_(fadeOut).defer()
 
 		super()
 

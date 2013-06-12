@@ -23,7 +23,7 @@ describe( "popover module view", function() {
 		});
 
 		afterEach( function() {
-			 //view.__super__.kill();
+			 view.kill();
 		})
 
 		it("a view should be created", function() {
