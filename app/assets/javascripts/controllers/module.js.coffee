@@ -35,7 +35,6 @@ class Controller.Module extends Controller.Base
 	#
 	_onAction: ( event ) =>
 	
-		console.log 'hi'
 		action = event.target.data( 'action' )
 		action = action.charAt(0).toUpperCase() + action.slice(1)
 		
@@ -56,14 +55,13 @@ class Controller.Module extends Controller.Base
 			@_preview = false
 			@view.setPreview off
 			
-		console.log 'completed'
+		@_parent.automagicAdd @model, off
 	
 	#
 	#
 	_onCancel: ( event ) =>
 		if @_preview
 			@_parent.remove this
-		console.log 'cancelled'
 		
 	#
 	#
@@ -93,6 +91,5 @@ class Controller.Module extends Controller.Base
 	#
 	#
 	_setRemoved: ( view, event ) =>
-		if view is @view
-			@_parent.removeChild @kill()
-			@_parent.model.remove @model
+		return if view isnt @view
+		@_parent.model.remove @model

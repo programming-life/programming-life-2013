@@ -189,6 +189,11 @@ class View.Module extends View.RaphaelBase
 	#
 	clear: ( ) ->
 		super()
+		@_clearSplines()
+	
+	#
+	#
+	_clearSplines: () ->
 		@each ( view ) =>
 			@remove view.kill() if view instanceof View.Spline				
 
@@ -201,6 +206,7 @@ class View.Module extends View.RaphaelBase
 	# Draws this view and thus the model
 	#
 	draw: ( x = null, y = null ) ->
+		@clear()
 		unless x? and y?
 			[x, y] = @_parent?.getViewPlacement(@) ? [0, 0]
 
@@ -387,6 +393,7 @@ class View.Module extends View.RaphaelBase
 	# @param preview [Boolean] the preview flag
 	#
 	createSplines: ( model = @model, preview = off ) ->
+		@_clearSplines()
 		if @type in ['Transporter', 'Metabolism']
 
 			orig = [].concat(model.orig)

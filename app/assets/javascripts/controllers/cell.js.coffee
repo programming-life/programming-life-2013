@@ -71,7 +71,7 @@ class Controller.Cell extends Controller.Base
 	# Creates the bindings for the cell
 	#
 	_createBindings: () ->
-		@_bind( 'cell.module.add', @, @_onModuleAdd )		
+		@_bind( 'cell.module.add', @, @_onModuleAdd )	
 		@_bind( 'cell.module.remove', @, @_onModuleRemove )
 		@_bind( 'cell.metabolite.add', @, @_onModuleAdd )
 		@_bind( 'cell.metabolite.remove', @, @_onModuleRemove )
@@ -94,17 +94,6 @@ class Controller.Cell extends Controller.Base
 		@view.add controller.view
 		
 		@stopSimulation()
-			
-	# Runs after module is added
-	#
-	# @param cell [Model.Cell] the cell
-	# @param module [Model.Module] the module
-	#
-	_onModuleAdded: ( cell, module ) ->
-		return if cell isnt @model
-		return unless @_automagically
-		@_automagicAdd( module )
-
 
 	# Runs when module is removed
 	#
@@ -113,8 +102,9 @@ class Controller.Cell extends Controller.Base
 	#
 	_onModuleRemove: ( cell, module ) ->
 		return if cell isnt @model
-		if controller = _( @controllers() ).find( ( c ) -> c.model is module )
-			@removeChild controller
+		if key = @findKey( ( c ) -> c.model is module )
+			controller = @controller( key ).kill()
+			@removeChild key
 			@view.remove controller.view
 			
 		@stopSimulation()
@@ -124,7 +114,9 @@ class Controller.Cell extends Controller.Base
 	# @param module [Model.Module] The module for which to automagically add
 	# @todo remove is_product
 	#
-	_automagicAdd: ( module ) ->
+	automagicAdd: ( module, preview = off ) ->
+		return unless @_automagically
+				
 		# Expand names
 		names = []
 		props = module.getMetaboliteProperties()
@@ -151,11 +143,11 @@ class Controller.Cell extends Controller.Base
 
 			is_inside = name.split( '#' )[1] is 'int'
 			
-			if @_creating or @_updating
+			if preview
 				type = if is_product then Model.Metabolite.Product else Model.Metabolite.Substrate
 				placement = if is_inside then Model.Metabolite.Inside else Model.Metabolite.Outside
 				metabolite = new Model.Metabolite( { supply: 0, placement: placement, type: type }, 0, name )
-				@preview metabolite
+				#@preview metabolite
 			else
 				@model.addMetabolite( name, 0, 0, is_inside, is_product )
 	

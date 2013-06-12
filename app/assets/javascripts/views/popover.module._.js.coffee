@@ -198,6 +198,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 	_drawName: ( id, key, value ) ->
 		input = $('<input disabled type="text" id="' + id + '" class="input-small disabled" data-multiple="false" value="' + value + '" />')
 		@_bindOnChange( key, input )
+		input.removeClass( 'disabled' ) if @_preview
 		return input
 	
 	# Draws the input for a parameter
@@ -429,6 +430,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 	#
 	_resetThisForm: () ->
 		@_getThisForm()[0].reset()
+		@_getThisForm().find( '.control-group' ).removeClass( 'error' )
 		return this
 		
 	# Sets the selection state of this popover
