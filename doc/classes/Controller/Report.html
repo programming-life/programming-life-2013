@@ -2,7 +2,7 @@
 <html>
   <head>
   <meta charset='UTF-8'>
-  <title>Broyologramming Life API Documentation</title>
+  <title>CoffeeScript API Documentation</title>
   <link rel='stylesheet' href='../../assets/codo.css' type='text/css'>
   <script src='../../assets/codo.js'></script>
   <script src='../../assets/search_data.js'></script>
@@ -125,7 +125,8 @@
         <tr>
           <td>Concerns:</td>
           <td>
-            <a href='../../mixins/Mixin/EventBindings.html'>Mixin.EventBindings</a>
+                        <a href='../../mixins/Mixin/EventBindings.html'>Mixin.EventBindings</a>,
+            <a href='../../mixins/Mixin/Catcher.html'>Mixin.Catcher</a>
           </td>
         </tr>
       </table>
@@ -164,6 +165,17 @@
   </li>
   <li>
     <span class='signature'>
+      <a href='#_setProgressBar-instance'>
+        - (void) <strong>_setProgressBar</strong>(value)
+      </a>
+    </span>
+    <span class='bound note title'>Bound</span>
+    <span class='desc'>
+      Sets the progress bar
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
       <a href='#load-instance'>
         - (jQuery.Promise) <strong>load</strong>(cell_id, callback)
       </a>
@@ -175,21 +187,21 @@
   <li>
     <span class='signature'>
       <a href='#serializePaper-instance'>
-        - (void) <strong>serializePaper</strong>()
+        - (String) <strong>serializePaper</strong>()
       </a>
     </span>
     <span class='desc'>
-      
+      Serializes a paper
     </span>
   </li>
   <li>
     <span class='signature'>
       <a href='#solveTheSystem-instance'>
-        - (void) <strong>solveTheSystem</strong>()
+        - (Tuple&lt;CancelToken, jQuery.Promise&gt;) <strong>solveTheSystem</strong>()
       </a>
     </span>
     <span class='desc'>
-      
+      Solve the system
     </span>
   </li>
   <li>
@@ -215,9 +227,14 @@
                 <a href='../../classes/Controller/Base.html#constructor-instance'>#constructor</a>,
                 <a href='../../classes/Controller/Base.html#addChild-instance'>#addChild</a>,
                 <a href='../../classes/Controller/Base.html#removeChild-instance'>#removeChild</a>,
+                <a href='../../classes/Controller/Base.html#each-instance'>#each</a>,
                 <a href='../../classes/Controller/Base.html#controller-instance'>#controller</a>,
                 <a href='../../classes/Controller/Base.html#controllers-instance'>#controllers</a>,
-        <a href='../../classes/Controller/Base.html#kill-instance'>#kill</a>
+                <a href='../../classes/Controller/Base.html#kill-instance'>#kill</a>,
+                <a href='../../classes/Controller/Base.html#onUpdate-instance'>#onUpdate</a>,
+                <a href='../../classes/Controller/Base.html#beforeUnload-instance'>#beforeUnload</a>,
+                <a href='../../classes/Controller/Base.html#onUnload-instance'>#onUnload</a>,
+        <a href='../../classes/Controller/Base.html#_catcher-instance'>#_catcher</a>
       </p>
       <h3 class='inherited'>
         Methods inherited from
@@ -226,7 +243,10 @@
       <p class='inherited'>
                 <a href='../../classes/Helper/Mixable.html#extend-class'>.extend</a>,
                 <a href='../../classes/Helper/Mixable.html#include-class'>.include</a>,
-        <a href='../../classes/Helper/Mixable.html#concern-class'>.concern</a>
+                <a href='../../classes/Helper/Mixable.html#concern-class'>.concern</a>,
+                <a href='../../classes/Helper/Mixable.html#extractId-class'>.extractId</a>,
+                <a href='../../classes/Helper/Mixable.html#isLocal-instance'>#isLocal</a>,
+        <a href='../../classes/Helper/Mixable.html#parseDate-class'>.parseDate</a>
       </p>
       <h2>
         <small>Concern Method Summary</small>
@@ -243,6 +263,13 @@
                 <a href='../../mixins/Mixin/EventBindings.html#_trigger-instance'>#_trigger</a>,
                 <a href='../../mixins/Mixin/EventBindings.html#_onNotificate-instance'>#_onNotificate</a>,
         <a href='../../mixins/Mixin/EventBindings.html#_notificate-instance'>#_notificate</a>
+      </p>
+      <h3 class='included'>
+        Methods mixed in from
+        <a href='../../mixins/Mixin/Catcher.html'>Mixin.Catcher</a>
+      </h3>
+      <p class='included'>
+        <a href='../../mixins/Mixin/Catcher.html#catchable-class'>.catchable</a>
       </p>
       <h2>Constructor Details</h2>
       <div class='methods'>
@@ -296,6 +323,28 @@
 </div>
   </div>
   <div class='method_details'>
+    <p class='signature' id='_setProgressBar-instance'>
+      - (void) <strong>_setProgressBar</strong>(value)
+      (bound)
+    </p>
+    <div class='docstring'>
+  <p>Sets the progress bar</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>value</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the current value</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
     <p class='signature' id='load-instance'>
       - (jQuery.Promise) <strong>load</strong>(cell_id, callback)
     </p>
@@ -335,16 +384,40 @@
   </div>
   <div class='method_details'>
     <p class='signature' id='serializePaper-instance'>
-      - (void) <strong>serializePaper</strong>()
+      - (String) <strong>serializePaper</strong>()
     </p>
-    <div class='tags'>
+    <div class='docstring'>
+  <p>Serializes a paper</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>String</tt>)
+      &mdash;
+      <span class='desc'>the serialized paper in XML</span>
+    </li>
+  </ul>
 </div>
   </div>
   <div class='method_details'>
     <p class='signature' id='solveTheSystem-instance'>
-      - (void) <strong>solveTheSystem</strong>()
+      - (Tuple&lt;CancelToken, jQuery.Promise&gt;) <strong>solveTheSystem</strong>()
     </p>
-    <div class='tags'>
+    <div class='docstring'>
+  <p>Solve the system</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Tuple&lt;CancelToken, jQuery.Promise&gt;</tt>)
+      &mdash;
+      <span class='desc'>a token and the promise</span>
+    </li>
+  </ul>
 </div>
   </div>
   <div class='method_details'>
@@ -373,7 +446,7 @@
     </div>
     <div id='footer'>
   Generated on
-  Sun Jun 02 2013 15:47:57 GMT+0200 (W. Europe Daylight Time)
+  Tue Jun 11 2013 00:05:30 GMT+0200 (W. Europe Daylight Time)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

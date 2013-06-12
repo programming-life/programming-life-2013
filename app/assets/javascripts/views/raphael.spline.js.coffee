@@ -16,11 +16,6 @@ class View.Spline extends View.RaphaelBase
 
 		@addInteraction() if @_interaction is on		
 
-	# Fires a spline remove event, which should lead to this spline dying
-	#
-	_die: ( ) ->
-		@_trigger( 'cell.spline.remove', @_parent, [ @ ] )
-
 	# Adds interaction to the spline
 	#
 	addInteraction: ( ) ->
@@ -38,6 +33,10 @@ class View.Spline extends View.RaphaelBase
 
 		return this
 
+	clear: ( ) ->
+		super
+		tinyMetabolite?.remove() for tinyMetabolite in @_tinyMetabolites
+
 	# Sets the correct color of the spline
 	#
 	setColor: ( ) ->
@@ -54,11 +53,19 @@ class View.Spline extends View.RaphaelBase
 		@clear()
 
 		path = @_getPathString()
+		
+		@_contents = @paper.set()
 
-		@_contents = @paper.path(path)
-		@_contents.insertBefore(@paper.bottom)
-		$(@_contents.node).addClass('metabolite-spline')
+		@_spline = @paper.path(path)
+		$(@_spline.node).addClass('metabolite-spline')
+		@_contents.push(@_spline)
 
+		if @_interaction
+			@_splineDots = @_paper.path(path)
+			$(@_splineDots.node).addClass('metabolite-spline-dots')
+			@_contents.push(@_splineDots)
+
+		@_contents.insertBefore(@paper.bottom)		
 		@setColor()
 
 	# Returns an svg path string from orig to dest
@@ -94,24 +101,24 @@ class View.Spline extends View.RaphaelBase
 	# @param module [Module] the module that was removed
 	#
 	_onModuleRemoved: ( cell, module ) =>
-		if cell is @_cell and ( module is @orig.model or module is @dest.model )
-			@_die()
+		#if cell is @_cell and ( module is @orig.model or module is @dest.model )
+		#	@_die()
 
 	# Gets called when a module is invalidated (had its properties changed)
 	#
 	# @param module [Module] the module that was invalidated
 	#
 	_onModuleInvalidated: ( module ) =>
-		if module.constructor.name is 'Transporter'
-			if (module is @orig.model and @orig.model.transported isnt @dest.model.name.split('#')[0]) or
-					(module is @dest.model and @dest.model.transported isnt @orig.model.name.split('#')[0])
-				@_die()
-		else if module.constructor.name is 'Metabolism'
-			if (module is @orig.model and @dest.model.name not in @orig.model.dest) or
-					(module is @dest.model and @orig.model.name not in @dest.model.orig)
-				@_die()
-		
-		@setColor()
+		#if module.constructor.name is 'Transporter'
+		#	if (module is @orig.model and @orig.model.transported isnt @dest.model.name.split('#')[0]) or
+		#			(module is @dest.model and @dest.model.transported isnt @orig.model.name.split('#')[0])
+		#		@_die()
+		#else if module.constructor.name is 'Metabolism'
+		#	if (module is @orig.model and @dest.model.name not in @orig.model.dest) or
+		#			(module is @dest.model and @orig.model.name not in @dest.model.orig)
+		#		@_die()
+		#
+		#@setColor()
 
 	# Gets called when a view is about to move (animated)
 	#

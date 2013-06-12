@@ -43,6 +43,51 @@
   }
 }
 
+@-webkit-keyframes move-spline-dots {
+  from {
+    stroke-dashoffset: 60;
+  }
+  to { 
+    stroke-dashoffset: 0;
+  }
+}
+
+@-moz-keyframes move-spline-dots {
+  from {
+    stroke-dashoffset: 60;
+  }
+  to { 
+    stroke-dashoffset: 0;
+  }
+}
+
+@-o-keyframes move-spline-dots {
+  from {
+    stroke-dashoffset: 60;
+  }
+  to { 
+    stroke-dashoffset: 0;
+  }
+}
+
+@-ms-keyframes move-spline-dots {
+  from {
+    stroke-dashoffset: 60;
+  }
+  to { 
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes move-spline-dots {
+  from {
+    stroke-dashoffset: 60;
+  }
+  to { 
+    stroke-dashoffset: 0;
+  }
+}
+
 .cell {
 	stroke: #cacaca;
 	stroke-width: 40px;
@@ -50,6 +95,12 @@
 
 rect, circle:not(.cell) {
 	vector-effect:non-scaling-stroke;
+}
+
+
+#module-lipid-icon {
+	fill: red;
+	-webkit-mask: url('/img/lipid.png')
 }
 
 .module-box {
@@ -165,6 +216,20 @@ text, tspan {
 .metabolite-spline {
 	stroke-width: 1px;
 	vector-effect:non-scaling-stroke;
+}
+
+.metabolite-spline-dots {
+	stroke-width: 4px;
+	stroke-dasharray: 4, 56;
+	//opacity:.5;
+	vector-effect:non-scaling-stroke;
+
+	-webkit-animation: move-spline-dots 2s linear 0 infinite;
+	   -moz-animation: move-spline-dots 2s linear 0 infinite;
+	     -o-animation: move-spline-dots 2s linear 0 infinite;
+		    animation: move-spline-dots 2s linear 0 infinite;
+
+	
 }
 
 .transporter-arrow {

@@ -60,6 +60,7 @@ class View.RaphaelBase extends View.Collection
 	#
 	kill: ( ) ->
 		super()
+		
 		@_unbindAll()
 
 	# Sets the position of this view according to its parent's instructions

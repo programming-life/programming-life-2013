@@ -2,7 +2,7 @@
 <html>
   <head>
   <meta charset='UTF-8'>
-  <title>Broyologramming Life API Documentation</title>
+  <title>CoffeeScript API Documentation</title>
   <link rel='stylesheet' href='../../assets/codo.css' type='text/css'>
   <script src='../../assets/codo.js'></script>
   <script src='../../assets/search_data.js'></script>
@@ -125,7 +125,9 @@
         <tr>
           <td>Concerns:</td>
           <td>
-            <a href='../../mixins/Mixin/EventBindings.html'>Mixin.EventBindings</a>
+                        <a href='../../mixins/Mixin/EventBindings.html'>Mixin.EventBindings</a>,
+                        <a href='../../mixins/Mixin/Catcher.html'>Mixin.Catcher</a>,
+            <a href='../../mixins/Mixin/DynamicProperties.html'>Mixin.DynamicProperties</a>
           </td>
         </tr>
       </table>
@@ -135,18 +137,6 @@
 </div>
 <div class='tags'>
 </div>
-      <h2>Constant Summary</h2>
-      <dl class='constants'>
-        <dt id='MAX_RUNTIME-constant'>
-          MAX_RUNTIME
-          =
-          <div class='tags'>
-</div>
-        </dt>
-        <dd>
-          <pre><code class='coffee'>50</code></pre>
-        </dd>
-      </dl>
       <h2>Instance Method Summary</h2>
       <ul class='summary'>
   <li>
@@ -202,16 +192,6 @@
   </li>
   <li>
     <span class='signature'>
-      <a href='#_createButtons-instance'>
-        - (void) <strong>_createButtons</strong>()
-      </a>
-    </span>
-    <span class='desc'>
-      Creates the interaction buttons
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
       <a href='#getBBox-instance'>
         - (Object) <strong>getBBox</strong>()
       </a>
@@ -253,7 +233,7 @@
   <li>
     <span class='signature'>
       <a href='#remove-instance'>
-        - (void) <strong>remove</strong>(view)
+        - (void) <strong>remove</strong>(view, kill = true)
       </a>
     </span>
     <span class='desc'>
@@ -268,6 +248,16 @@
     </span>
     <span class='desc'>
       Get module view for the given module
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#getViewByName-instance'>
+        - (Module.View) <strong>getViewByName</strong>(name)
+      </a>
+    </span>
+    <span class='desc'>
+      Get module view by name
     </span>
   </li>
   <li>
@@ -312,8 +302,8 @@
   </li>
   <li>
     <span class='signature'>
-      <a href='#onModuleAdd-instance'>
-        - (void) <strong>onModuleAdd</strong>(cell, module)
+      <a href='#addModule-instance'>
+        - (void) <strong>addModule</strong>(module)
       </a>
     </span>
     <span class='bound note title'>Bound</span>
@@ -323,19 +313,19 @@
   </li>
   <li>
     <span class='signature'>
-      <a href='#onModuleRemove-instance'>
-        - (void) <strong>onModuleRemove</strong>(cell, module)
+      <a href='#removeModule-instance'>
+        - (void) <strong>removeModule</strong>(module)
       </a>
     </span>
     <span class='bound note title'>Bound</span>
     <span class='desc'>
-      On module removed, removed it from the cell
+      On module removed, remove it from the cell
     </span>
   </li>
   <li>
     <span class='signature'>
-      <a href='#onSplineAdd-instance'>
-        - (void) <strong>onSplineAdd</strong>(cell, spline)
+      <a href='#addSpline-instance'>
+        - (void) <strong>addSpline</strong>(spline)
       </a>
     </span>
     <span class='bound note title'>Bound</span>
@@ -345,8 +335,8 @@
   </li>
   <li>
     <span class='signature'>
-      <a href='#onSplineRemove-instance'>
-        - (void) <strong>onSplineRemove</strong>(cell, spline)
+      <a href='#removeSpline-instance'>
+        - (void) <strong>removeSpline</strong>(spline)
       </a>
     </span>
     <span class='bound note title'>Bound</span>
@@ -396,7 +386,8 @@
                 <a href='../../classes/View/Collection.html#add-instance'>#add</a>,
                 <a href='../../classes/View/Collection.html#remove-instance'>#remove</a>,
                 <a href='../../classes/View/Collection.html#draw-instance'>#draw</a>,
-        <a href='../../classes/View/Collection.html#redraw-instance'>#redraw</a>
+                <a href='../../classes/View/Collection.html#redraw-instance'>#redraw</a>,
+        <a href='../../classes/View/Collection.html#each-instance'>#each</a>
       </p>
       <h3 class='inherited'>
         Methods inherited from
@@ -405,7 +396,10 @@
       <p class='inherited'>
                 <a href='../../classes/Helper/Mixable.html#extend-class'>.extend</a>,
                 <a href='../../classes/Helper/Mixable.html#include-class'>.include</a>,
-        <a href='../../classes/Helper/Mixable.html#concern-class'>.concern</a>
+                <a href='../../classes/Helper/Mixable.html#concern-class'>.concern</a>,
+                <a href='../../classes/Helper/Mixable.html#extractId-class'>.extractId</a>,
+                <a href='../../classes/Helper/Mixable.html#isLocal-instance'>#isLocal</a>,
+        <a href='../../classes/Helper/Mixable.html#parseDate-class'>.parseDate</a>
       </p>
       <h2>
         <small>Concern Method Summary</small>
@@ -422,6 +416,26 @@
                 <a href='../../mixins/Mixin/EventBindings.html#_trigger-instance'>#_trigger</a>,
                 <a href='../../mixins/Mixin/EventBindings.html#_onNotificate-instance'>#_onNotificate</a>,
         <a href='../../mixins/Mixin/EventBindings.html#_notificate-instance'>#_notificate</a>
+      </p>
+      <h3 class='included'>
+        Methods mixed in from
+        <a href='../../mixins/Mixin/Catcher.html'>Mixin.Catcher</a>
+      </h3>
+      <p class='included'>
+        <a href='../../mixins/Mixin/Catcher.html#catchable-class'>.catchable</a>
+      </p>
+      <h3 class='included'>
+        Methods mixed in from
+        <a href='../../mixins/Mixin/DynamicProperties.html'>Mixin.DynamicProperties</a>
+      </h3>
+      <p class='included'>
+                <a href='../../mixins/Mixin/DynamicProperties.html#setter-instance'>#setter</a>,
+                <a href='../../mixins/Mixin/DynamicProperties.html#getter-instance'>#getter</a>,
+                <a href='../../mixins/Mixin/DynamicProperties.html#property-instance'>#property</a>,
+                <a href='../../mixins/Mixin/DynamicProperties.html#_defineProperty-instance'>#_defineProperty</a>,
+                <a href='../../mixins/Mixin/DynamicProperties.html#_propertiesFromParams-instance'>#_propertiesFromParams</a>,
+                <a href='../../mixins/Mixin/DynamicProperties.html#_nonEnumerableValue-instance'>#_nonEnumerableValue</a>,
+        <a href='../../mixins/Mixin/DynamicProperties.html#_nonEnumerableGetter-instance'>#_nonEnumerableGetter</a>
       </p>
       <h2>Constructor Details</h2>
       <div class='methods'>
@@ -458,6 +472,14 @@
       </span>
       &mdash;
       <span class='desc'>cell to view</span>
+    </li>
+    <li>
+      <span class='name'>interaction</span>
+      <span class='type'>
+        (<tt>Boolean</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the interaction flag</span>
     </li>
   </ul>
 </div>
@@ -512,16 +534,6 @@
     </p>
     <div class='docstring'>
   <p>Kills the cell view by resetting itself and its children</p>
-</div>
-<div class='tags'>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='_createButtons-instance'>
-      - (void) <strong>_createButtons</strong>()
-    </p>
-    <div class='docstring'>
-  <p>Creates the interaction buttons</p>
 </div>
 <div class='tags'>
 </div>
@@ -601,7 +613,7 @@
   </div>
   <div class='method_details'>
     <p class='signature' id='remove-instance'>
-      - (void) <strong>remove</strong>(view)
+      - (void) <strong>remove</strong>(view, kill = true)
     </p>
     <div class='docstring'>
   <p>Removes a view from the container</p>
@@ -637,6 +649,36 @@
       </span>
       &mdash;
       <span class='desc'>the module for which to return the view</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Module.View</tt>)
+      &mdash;
+      <span class='desc'>the view which represents the given module</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='getViewByName-instance'>
+      - (Module.View) <strong>getViewByName</strong>(name)
+    </p>
+    <div class='docstring'>
+  <p>Get module view by name</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>name</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the module name for which to return the view</span>
     </li>
   </ul>
   <h3>Returns:</h3>
@@ -751,8 +793,8 @@
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='onModuleAdd-instance'>
-      - (void) <strong>onModuleAdd</strong>(cell, module)
+    <p class='signature' id='addModule-instance'>
+      - (void) <strong>addModule</strong>(module)
       (bound)
     </p>
     <div class='docstring'>
@@ -761,14 +803,6 @@
 <div class='tags'>
   <h3>Parameters:</h3>
   <ul class='param'>
-    <li>
-      <span class='name'>cell</span>
-      <span class='type'>
-        (<tt><a href='../../classes/Model/Cell.html'>Model.Cell</a></tt>)
-      </span>
-      &mdash;
-      <span class='desc'>cell added to</span>
-    </li>
     <li>
       <span class='name'>module</span>
       <span class='type'>
@@ -781,24 +815,16 @@
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='onModuleRemove-instance'>
-      - (void) <strong>onModuleRemove</strong>(cell, module)
+    <p class='signature' id='removeModule-instance'>
+      - (void) <strong>removeModule</strong>(module)
       (bound)
     </p>
     <div class='docstring'>
-  <p>On module removed, removed it from the cell</p>
+  <p>On module removed, remove it from the cell</p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
   <ul class='param'>
-    <li>
-      <span class='name'>cell</span>
-      <span class='type'>
-        (<tt><a href='../../classes/Model/Cell.html'>Model.Cell</a></tt>)
-      </span>
-      &mdash;
-      <span class='desc'>cell removed from</span>
-    </li>
     <li>
       <span class='name'>module</span>
       <span class='type'>
@@ -811,8 +837,8 @@
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='onSplineAdd-instance'>
-      - (void) <strong>onSplineAdd</strong>(cell, spline)
+    <p class='signature' id='addSpline-instance'>
+      - (void) <strong>addSpline</strong>(spline)
       (bound)
     </p>
     <div class='docstring'>
@@ -821,14 +847,6 @@
 <div class='tags'>
   <h3>Parameters:</h3>
   <ul class='param'>
-    <li>
-      <span class='name'>cell</span>
-      <span class='type'>
-        (<tt><a href='../../classes/Model/Cell.html'>Model.Cell</a></tt>)
-      </span>
-      &mdash;
-      <span class='desc'>cell added to</span>
-    </li>
     <li>
       <span class='name'>spline</span>
       <span class='type'>
@@ -841,8 +859,8 @@
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='onSplineRemove-instance'>
-      - (void) <strong>onSplineRemove</strong>(cell, spline)
+    <p class='signature' id='removeSpline-instance'>
+      - (void) <strong>removeSpline</strong>(spline)
       (bound)
     </p>
     <div class='docstring'>
@@ -851,14 +869,6 @@
 <div class='tags'>
   <h3>Parameters:</h3>
   <ul class='param'>
-    <li>
-      <span class='name'>cell</span>
-      <span class='type'>
-        (<tt><a href='../../classes/Model/Cell.html'>Model.Cell</a></tt>)
-      </span>
-      &mdash;
-      <span class='desc'>cell removed from</span>
-    </li>
     <li>
       <span class='name'>spline</span>
       <span class='type'>
@@ -911,7 +921,7 @@
     </div>
     <div id='footer'>
   Generated on
-  Sun Jun 02 2013 15:47:57 GMT+0200 (W. Europe Daylight Time)
+  Tue Jun 11 2013 00:05:30 GMT+0200 (W. Europe Daylight Time)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

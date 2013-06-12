@@ -22,10 +22,9 @@ class Controller.Graphs extends Controller.Base
 	# @return [Object] graphs
 	#
 	show: ( datasets, append = off, id = 'id'  ) ->
-		
 		template = _.template("graph-<%= #{id} %>") 
 		for key, graph of @controllers() when graph instanceof Controller.Graph
-			if not datasets[ key ]?
+			unless datasets[ key ]?
 				@view.remove graph.kill().view
 				@removeChild key
 		
@@ -36,4 +35,5 @@ class Controller.Graphs extends Controller.Base
 				@addChild key, new Controller.Graph( graph )
 				@view.add graph, false
 			@controller( key ).show( dataset, append ) 
+
 		return this

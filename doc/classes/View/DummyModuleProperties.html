@@ -2,7 +2,7 @@
 <html>
   <head>
   <meta charset='UTF-8'>
-  <title>Broyologramming Life API Documentation</title>
+  <title>CoffeeScript API Documentation</title>
   <link rel='stylesheet' href='../../assets/codo.css' type='text/css'>
   <script src='../../assets/codo.js'></script>
   <script src='../../assets/search_data.js'></script>
@@ -125,7 +125,8 @@
         <tr>
           <td>Concerns:</td>
           <td>
-            <a href='../../mixins/Mixin/EventBindings.html'>Mixin.EventBindings</a>
+                        <a href='../../mixins/Mixin/EventBindings.html'>Mixin.EventBindings</a>,
+            <a href='../../mixins/Mixin/Catcher.html'>Mixin.Catcher</a>
           </td>
         </tr>
       </table>
@@ -140,7 +141,7 @@
   <li>
     <span class='signature'>
       <a href='#constructor-instance'>
-        - (void) <strong>constructor</strong>(parent, _cellView, _cell, modulector, params = {})
+        - (void) <strong>constructor</strong>(parent, _cellView, _cell, modulector, _override_params = {})
       </a>
     </span>
     <span class='constructor note title'>Constructor</span>
@@ -210,12 +211,32 @@
   </li>
   <li>
     <span class='signature'>
+      <a href='#_drawEnumeration-instance'>
+        - (void) <strong>_drawEnumeration</strong>(id, key, value, params)
+      </a>
+    </span>
+    <span class='desc'>
+      Draws the input for an enumeration
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
       <a href='#_getModuleProperties-instance'>
-        - (void) <strong>_getModuleProperties</strong>()
+        - (Object) <strong>_getModuleProperties</strong>()
       </a>
     </span>
     <span class='desc'>
       Returns the properties of our module to be
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_getModuleDefaults-instance'>
+        - (Object) <strong>_getModuleDefaults</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Returns the defaults of our module to be
     </span>
   </li>
   <li>
@@ -242,18 +263,50 @@
   </li>
   <li>
     <span class='signature'>
-      <a href='#_bindOnSelectableChange-instance'>
-        - (void) <strong>_bindOnSelectableChange</strong>(key, selectable)
+      <a href='#_catcher-instance'>
+        - (void) <strong>_catcher</strong>(source, e)
       </a>
     </span>
+    <span class='bound note title'>Bound</span>
     <span class='desc'>
-      Binds an on change event to a selectable input that sets the key
+      Catcher function for Mixin.Catcher that will notificate any thrown Error on catchable methods
     </span>
   </li>
   <li>
     <span class='signature'>
-      <a href='#onModuleCreationStarted-instance'>
-        - (void) <strong>onModuleCreationStarted</strong>(dummy)
+      <a href='#_reset-instance'>
+        - (void) <strong>_reset</strong>()
+      </a>
+    </span>
+    <span class='bound note title'>Bound</span>
+    <span class='desc'>
+      Resets the popover module
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_getCurrentValueFor-instance'>
+        - (any) <strong>_getCurrentValueFor</strong>(key)
+      </a>
+    </span>
+    <span class='desc'>
+      Gets the current value for a key
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_triggerChange-instance'>
+        - (void) <strong>_triggerChange</strong>(key, value)
+      </a>
+    </span>
+    <span class='desc'>
+      Triggers when changed a key
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_onModuleCreationStarted-instance'>
+        - (void) <strong>_onModuleCreationStarted</strong>(dummy)
       </a>
     </span>
     <span class='desc'>
@@ -262,8 +315,8 @@
   </li>
   <li>
     <span class='signature'>
-      <a href='#onModuleCreationAborted-instance'>
-        - (void) <strong>onModuleCreationAborted</strong>(dummy)
+      <a href='#_onModuleCreationAborted-instance'>
+        - (void) <strong>_onModuleCreationAborted</strong>(dummy)
       </a>
     </span>
     <span class='desc'>
@@ -272,8 +325,8 @@
   </li>
   <li>
     <span class='signature'>
-      <a href='#onModuleCreationFinished-instance'>
-        - (void) <strong>onModuleCreationFinished</strong>(dummy)
+      <a href='#_onModuleCreationFinished-instance'>
+        - (void) <strong>_onModuleCreationFinished</strong>(dummy)
       </a>
     </span>
     <span class='desc'>
@@ -302,10 +355,13 @@
                 <a href='../../classes/View/ModuleProperties.html#_drawParameter-instance'>#_drawParameter</a>,
                 <a href='../../classes/View/ModuleProperties.html#_drawMetabolite-instance'>#_drawMetabolite</a>,
                 <a href='../../classes/View/ModuleProperties.html#_drawDNA-instance'>#_drawDNA</a>,
+                <a href='../../classes/View/ModuleProperties.html#_drawPopulation-instance'>#_drawPopulation</a>,
                 <a href='../../classes/View/ModuleProperties.html#_drawCompound-instance'>#_drawCompound</a>,
                 <a href='../../classes/View/ModuleProperties.html#_drawEnumeration-instance'>#_drawEnumeration</a>,
                 <a href='../../classes/View/ModuleProperties.html#_bindOnChange-instance'>#_bindOnChange</a>,
+                <a href='../../classes/View/ModuleProperties.html#_getCurrentValueFor-instance'>#_getCurrentValueFor</a>,
                 <a href='../../classes/View/ModuleProperties.html#_bindOnSelectableChange-instance'>#_bindOnSelectableChange</a>,
+                <a href='../../classes/View/ModuleProperties.html#_triggerChange-instance'>#_triggerChange</a>,
                 <a href='../../classes/View/ModuleProperties.html#_drawSelectionFor-instance'>#_drawSelectionFor</a>,
                 <a href='../../classes/View/ModuleProperties.html#_drawSelectable-instance'>#_drawSelectable</a>,
                 <a href='../../classes/View/ModuleProperties.html#_redrawSelectable-instance'>#_redrawSelectable</a>,
@@ -314,15 +370,17 @@
                 <a href='../../classes/View/ModuleProperties.html#_setSelected-instance'>#_setSelected</a>,
                 <a href='../../classes/View/ModuleProperties.html#_getModuleProperties-instance'>#_getModuleProperties</a>,
                 <a href='../../classes/View/ModuleProperties.html#_close-instance'>#_close</a>,
+                <a href='../../classes/View/ModuleProperties.html#_reset-instance'>#_reset</a>,
                 <a href='../../classes/View/ModuleProperties.html#_save-instance'>#_save</a>,
+                <a href='../../classes/View/ModuleProperties.html#_catcher-instance'>#_catcher</a>,
                 <a href='../../classes/View/ModuleProperties.html#_remove-instance'>#_remove</a>,
-                <a href='../../classes/View/ModuleProperties.html#onCompoundsChanged-instance'>#onCompoundsChanged</a>,
-                <a href='../../classes/View/ModuleProperties.html#onMetabolitesChanged-instance'>#onMetabolitesChanged</a>,
-                <a href='../../classes/View/ModuleProperties.html#onModuleDrawn-instance'>#onModuleDrawn</a>,
-                <a href='../../classes/View/ModuleProperties.html#onModuleSelected-instance'>#onModuleSelected</a>,
-                <a href='../../classes/View/ModuleProperties.html#onModuleHovered-instance'>#onModuleHovered</a>,
-                <a href='../../classes/View/ModuleProperties.html#onModuleInvalidated-instance'>#onModuleInvalidated</a>,
-        <a href='../../classes/View/ModuleProperties.html#onModuleCreationStarted-instance'>#onModuleCreationStarted</a>
+                <a href='../../classes/View/ModuleProperties.html#_onCompoundsChanged-instance'>#_onCompoundsChanged</a>,
+                <a href='../../classes/View/ModuleProperties.html#_onMetabolitesChanged-instance'>#_onMetabolitesChanged</a>,
+                <a href='../../classes/View/ModuleProperties.html#_onModuleDrawn-instance'>#_onModuleDrawn</a>,
+                <a href='../../classes/View/ModuleProperties.html#_onModuleSelected-instance'>#_onModuleSelected</a>,
+                <a href='../../classes/View/ModuleProperties.html#_onModuleHovered-instance'>#_onModuleHovered</a>,
+                <a href='../../classes/View/ModuleProperties.html#_onModuleInvalidated-instance'>#_onModuleInvalidated</a>,
+        <a href='../../classes/View/ModuleProperties.html#_onModuleCreationStarted-instance'>#_onModuleCreationStarted</a>
       </p>
       <h3 class='inherited'>
         Methods inherited from
@@ -349,7 +407,10 @@
       <p class='inherited'>
                 <a href='../../classes/Helper/Mixable.html#extend-class'>.extend</a>,
                 <a href='../../classes/Helper/Mixable.html#include-class'>.include</a>,
-        <a href='../../classes/Helper/Mixable.html#concern-class'>.concern</a>
+                <a href='../../classes/Helper/Mixable.html#concern-class'>.concern</a>,
+                <a href='../../classes/Helper/Mixable.html#extractId-class'>.extractId</a>,
+                <a href='../../classes/Helper/Mixable.html#isLocal-instance'>#isLocal</a>,
+        <a href='../../classes/Helper/Mixable.html#parseDate-class'>.parseDate</a>
       </p>
       <h2>
         <small>Concern Method Summary</small>
@@ -367,11 +428,18 @@
                 <a href='../../mixins/Mixin/EventBindings.html#_onNotificate-instance'>#_onNotificate</a>,
         <a href='../../mixins/Mixin/EventBindings.html#_notificate-instance'>#_notificate</a>
       </p>
+      <h3 class='included'>
+        Methods mixed in from
+        <a href='../../mixins/Mixin/Catcher.html'>Mixin.Catcher</a>
+      </h3>
+      <p class='included'>
+        <a href='../../mixins/Mixin/Catcher.html#catchable-class'>.catchable</a>
+      </p>
       <h2>Constructor Details</h2>
       <div class='methods'>
   <div class='method_details'>
     <p class='signature' id='constructor-instance'>
-      - (void) <strong>constructor</strong>(parent, _cellView, _cell, modulector, params = {})
+      - (void) <strong>constructor</strong>(parent, _cellView, _cell, modulector, _override_params = {})
     </p>
     <div class='docstring'>
   <p>Constructs a new DummyModuleProperties view.</p>
@@ -597,13 +665,82 @@
 </div>
   </div>
   <div class='method_details'>
+    <p class='signature' id='_drawEnumeration-instance'>
+      - (void) <strong>_drawEnumeration</strong>(id, key, value, params)
+    </p>
+    <div class='docstring'>
+  <div class='note todo'>
+    <strong>TODO:</strong>
+    on clear/kill remove property from option
+  </div>
+  <p>Draws the input for an enumeration</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>id</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the form id</span>
+    </li>
+    <li>
+      <span class='name'>key</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>property to set</span>
+    </li>
+    <li>
+      <span class='name'>value</span>
+      <span class='type'>
+        (<tt>any</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the current value</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
     <p class='signature' id='_getModuleProperties-instance'>
-      - (void) <strong>_getModuleProperties</strong>()
+      - (Object) <strong>_getModuleProperties</strong>()
     </p>
     <div class='docstring'>
   <p>Returns the properties of our module to be</p>
 </div>
 <div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Object</tt>)
+      &mdash;
+      <span class='desc'>the properties</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_getModuleDefaults-instance'>
+      - (Object) <strong>_getModuleDefaults</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Returns the defaults of our module to be</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Object</tt>)
+      &mdash;
+      <span class='desc'>the defaults</span>
+    </li>
+  </ul>
 </div>
   </div>
   <div class='method_details'>
@@ -629,11 +766,44 @@
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='_bindOnSelectableChange-instance'>
-      - (void) <strong>_bindOnSelectableChange</strong>(key, selectable)
+    <p class='signature' id='_catcher-instance'>
+      - (void) <strong>_catcher</strong>(source, e)
+      (bound)
     </p>
     <div class='docstring'>
-  <p>Binds an on change event to a selectable input that sets the key</p>
+  <p>Catcher function for Mixin.Catcher that will notificate any thrown Error on catchable methods</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>e</span>
+      <span class='type'>
+        (<tt>Error</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the error to notificate</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_reset-instance'>
+      - (void) <strong>_reset</strong>()
+      (bound)
+    </p>
+    <div class='docstring'>
+  <p>Resets the popover module</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_getCurrentValueFor-instance'>
+      - (any) <strong>_getCurrentValueFor</strong>(key)
+    </p>
+    <div class='docstring'>
+  <p>Gets the current value for a key</p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
@@ -644,22 +814,52 @@
         (<tt>String</tt>)
       </span>
       &mdash;
-      <span class='desc'>property to set</span>
+      <span class='desc'>the key to get</span>
     </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
     <li>
-      <span class='name'>selectable</span>
-      <span class='type'>
-        (<tt>jQuery.Elem</tt>)
-      </span>
+      <span class='type'></span>
+      (<tt>any</tt>)
       &mdash;
-      <span class='desc'>the selectable to set it on</span>
+      <span class='desc'>the current value</span>
     </li>
   </ul>
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='onModuleCreationStarted-instance'>
-      - (void) <strong>onModuleCreationStarted</strong>(dummy)
+    <p class='signature' id='_triggerChange-instance'>
+      - (void) <strong>_triggerChange</strong>(key, value)
+    </p>
+    <div class='docstring'>
+  <p>Triggers when changed  a key</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>key</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the key of the change</span>
+    </li>
+    <li>
+      <span class='name'>value</span>
+      <span class='type'>
+        (<tt>any</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the new value</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_onModuleCreationStarted-instance'>
+      - (void) <strong>_onModuleCreationStarted</strong>(dummy)
     </p>
     <div class='docstring'>
   <p>Will be called when the creation process of a module has started</p>
@@ -679,8 +879,8 @@
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='onModuleCreationAborted-instance'>
-      - (void) <strong>onModuleCreationAborted</strong>(dummy)
+    <p class='signature' id='_onModuleCreationAborted-instance'>
+      - (void) <strong>_onModuleCreationAborted</strong>(dummy)
     </p>
     <div class='docstring'>
   <p>Will be called when the creation process of a module has aborted</p>
@@ -700,8 +900,8 @@
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='onModuleCreationFinished-instance'>
-      - (void) <strong>onModuleCreationFinished</strong>(dummy)
+    <p class='signature' id='_onModuleCreationFinished-instance'>
+      - (void) <strong>_onModuleCreationFinished</strong>(dummy)
     </p>
     <div class='docstring'>
   <p>Will be called when the creation process of a module has finished</p>
@@ -724,7 +924,7 @@
     </div>
     <div id='footer'>
   Generated on
-  Sun Jun 02 2013 15:47:57 GMT+0200 (W. Europe Daylight Time)
+  Tue Jun 11 2013 00:05:30 GMT+0200 (W. Europe Daylight Time)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

@@ -174,22 +174,8 @@ class View.Module extends View.RaphaelBase
 	# @return [self] chainable self
 	#
 	kill: () ->
-		#@_contents.insertBefore(@paper.bottom)
-
-		###fadeOut = ( ) =>
-			@_contents.stop()
-			@_contents.animate Raphael.animation(
-				transform: '...S0'
-			, 500, 'ease-in', =>
-					
-				View.RaphaelBase::kill.apply( @ )
-			)
-		###
 		@_propertiesView?.kill()
 		@_notificationsView?.kill()	
-
-
-		#_(fadeOut).defer()
 
 		super()
 
@@ -362,36 +348,68 @@ class View.Module extends View.RaphaelBase
 	# @return [Array<Raphael>] the contents
 	#
 	drawAsProtein: () ->	
-		params =
-			substrate: @model.name ? "..."
-			showText: on
-			useFullName : on
-			r: 35
+		rect = @paper.rect(@x - 29, @y - 19, 58, 38)
+		rect.attr
+			fill: @color
+			stroke: 'none'
+
+		mask = @paper.image('/img/protein.png', @x - 30, @y - 20, 60, 40)
+
+		set = @paper.set(rect, mask)
+		# params =
+		# 	substrate: @model.name ? "..."
+		# 	showText: on
+		# 	useFullName : on
+		# 	r: 35
 			
-		[ substrateCircle, substrateText ] = @drawComponent( 
-			'protein', 
-			'SubstrateCircle', 
-			@x, @y, params )
+		# [ substrateCircle, substrateText ] = @drawComponent( 
+		# 	'protein', 
+		# 	'SubstrateCircle', 
+		# 	@x, @y, params )
 			
-		return [ substrateCircle, substrateText ]
+		# return [ substrateCircle, substrateText ]
 		
 	# Draws this view as a DNA
 	#
 	# @return [Array<Raphael>] the contents
 	#
-	drawAsDNA: () -> @drawAsBasic()
+	drawAsDNA: () ->
+		rect = @paper.rect(@x - 39, @y - 29, 78, 58)
+		rect.attr
+			fill: '#b94a48'
+			stroke: 'none'
+
+		mask = @paper.image('/img/dna.png', @x - 40, @y - 30, 80, 60)
+
+		set = @paper.set(rect, mask)
 	
 	# Draws this view as a Lipid
 	#
 	# @return [Array<Raphael>] the contents
 	#
-	drawAsLipid: () -> @drawAsBasic()
+	drawAsLipid: () ->
+		rect = @paper.rect(@x - 29, @y - 19, 58, 38)
+		rect.attr
+			fill: @color
+			stroke: 'none'
+
+		mask = @paper.image('/img/lipid.png', @x - 30, @y - 20, 60, 40)
+
+		set = @paper.set(rect, mask)
 	
 	# Draws this view as a cell growth
 	#
 	# @return [Array<Raphael>] the contents
 	#
-	drawAsCellGrowth: () -> @drawAsBasic()
+	drawAsCellGrowth: () -> 
+		rect = @paper.rect(@x - 29, @y - 19, 58, 38)
+		rect.attr
+			fill: @color
+			stroke: 'none'
+
+		mask = @paper.image('/img/cellgrowth.png', @x - 30, @y - 20, 60, 40)
+
+		set = @paper.set(rect, mask)
 
 	# Draws this view bounding box
 	#
@@ -399,7 +417,7 @@ class View.Module extends View.RaphaelBase
 	#
 	drawBox : ( elem ) ->
 		rect = elem.getBBox()
-		padding = 15
+		padding = 10
 
 		switch @type
 			when 'Metabolite'

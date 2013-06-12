@@ -28,5 +28,5 @@ class View.SplinePreview extends View.Spline
 	# Gets called when module preview ends
 	#
 	_onModulePreviewEnded: ( preview ) ->
-		if preview.model is @orig.model or preview.model is @dest.model
-			@_die()
+		#if preview.model is @orig.model or preview.model is @dest.model
+			#@_die()

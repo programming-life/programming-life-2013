@@ -208,12 +208,12 @@ class View.Cell extends View.RaphaelBase
 		switch type
 		
 			when "CellGrowth"
-				alpha = -3 * Math.PI / 4 + ( ( index + 1 ) * Math.PI / 12 )
+				alpha = -3 * Math.PI / 4 + ( index * Math.PI / 12 )
 				x = @x + @_radius * Math.cos( alpha )
 				y = @y + @_radius * Math.sin( alpha )
 			
 			when "Lipid"
-				alpha = -3 * Math.PI / 4 + ( index * Math.PI / 12 )
+				alpha = -2 * Math.PI / 3 + ( index * Math.PI / 12 )
 				x = @x + @_radius * Math.cos( alpha )
 				y = @y + @_radius * Math.sin( alpha )
 
