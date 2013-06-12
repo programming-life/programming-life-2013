@@ -82,9 +82,9 @@ class View.Module extends View.RaphaelBase
 			else
 				@_removeClass('selected')
 
-		@_propertiesView.setSelected selected
+		@_propertiesView?.setSelected selected
 		@_selected = selected
-		@_notificationsView.hide()
+		@_notificationsView?.hide()
 		return this
 
 	# Sets wether or not the module is hovered
@@ -98,7 +98,7 @@ class View.Module extends View.RaphaelBase
 			else
 				@_removeClass( 'hovered' )
 
-		@_propertiesView.setHovered hovered
+		@_propertiesView?.setHovered hovered
 		@_hovered = hovered
 		return this
 
@@ -223,10 +223,10 @@ class View.Module extends View.RaphaelBase
 
 		@setPreview @_preview
 		
-		@_propertiesView.setPosition()
+		@_propertiesView?.setPosition()
 		@_contents.transform('S.1').animate Raphael.animation(
 			transform: 'S1'
-		, 900, 'elastic', => @_propertiesView.setPosition()
+		, 900, 'elastic', => @_propertiesView?.setPosition()
 		)
 
 	# Draws the contents (module)
@@ -616,7 +616,7 @@ class View.Module extends View.RaphaelBase
 	#
 	_onModuleChanged: ( source, params, key, value, currents ) =>
 		if source.model is @model
-			@_notificationsView.hide()
+			@_notificationsView?.hide()
 			module = new source.model.constructor( _( _( params ).clone( true ) ).defaults( currents ) )
 			@createSplines( module, on )
 			
