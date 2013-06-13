@@ -25,10 +25,10 @@ class View.Module extends View.RaphaelBase
 	# @param parent [View.Cell] the cell view
 	# @param _cell [Model.Cell] the cell model
 	# @param model [Model.Module] the module to show
-	# @param preview [Boolean] the preview flag (is new)
+	# @param _preview [Boolean] the preview flag (is new)
 	# @param _interaction [Boolean] the interaction flag
 	#
-	constructor: ( paper, parent, @_cell, @model, preview = off, @_interaction = on ) ->
+	constructor: ( paper, parent, @_cell, @model, @_preview = off, @_interaction = on ) ->
 		super paper, parent
 
 		@id = _.uniqueId('view-module-')
@@ -36,12 +36,12 @@ class View.Module extends View.RaphaelBase
 		@_type = @model.constructor.name
 		@_name = @model.name
 
-		@_selected = off	
+		@_selected = @_preview
 		@_visible = on
 
 		@addBindings()
 		@addInteraction() if @_interaction is on
-		@setPreview preview
+		@setPreview @_preview
 				
 		@getter
 			type: -> @_type
@@ -51,7 +51,7 @@ class View.Module extends View.RaphaelBase
 	# @return [self] chainable self
 	#
 	addInteraction: () ->
-		@_propertiesView = new View.ModuleProperties( @, @_parent, @_cell, @model )
+		@_propertiesView = new View.ModuleProperties( @, @_parent, @_cell, @model, @_preview )
 		@_notificationsView = new View.ModuleNotification( @, @_parent, @_cell, @model )
 		return this
 		
@@ -368,7 +368,7 @@ class View.Module extends View.RaphaelBase
 	# @param preview [Boolean] the preview flag
 	# @return [self] chainable self
 	#
-	createSplines: ( model = @model, preview = off ) ->
+	createSplines: ( model = @model, preview = @_preview ) ->
 		@_clearSplines()
 		if @type in ['Transporter', 'Metabolism']
 

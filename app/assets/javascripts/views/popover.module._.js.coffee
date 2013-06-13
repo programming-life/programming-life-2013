@@ -30,6 +30,8 @@ class View.ModuleProperties extends View.HTMLPopOver
 		@_bind( 'cell.metabolite.added', @, @_onMetabolitesChanged )
 		@_bind( 'cell.metabolite.removed', @, @_onMetabolitesChanged )
 		
+		@setSelected on if @_preview
+		
 	# Gets the id for this popover
 	#
 	getFormId: () ->
