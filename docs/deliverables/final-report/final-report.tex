@@ -91,7 +91,7 @@ ODE Solver( T, f, y, I )
 		\subsection{Undo}
 			The ability to undo and redo your actions makes an application easier to use and thus more user-friendly, and so the decision to add this functionality to our application was made early on. This resulted in functionality that could be added as the application grew in complexity. The challenge in accomplishing this, is to store and update the relevant data in such a way it becomes a self containing entity. To do this, the functionality needs to have an easy to use interface, while all the complex logic is contained within the entity itself.
 			
-			In implementing this, it becomes evident that the interface to the entity consists of it's basic functions; namely undoing (\emph{undo}), redoing (\emph{redo}), and adding (\emph{addAction}) an action. Any action that can be undone and redone is stored a tree structure, each point in time containing a reference to the previous point and all the future point that emerged from that specific snapshot in time. This allows for multiple possible time lines, and makes this functionality more powerful without adding much complexity to the use of it, because everything complicated is contained within the entity.
+			In implementing this, it becomes evident that the interface to the entity consists of its basic functions; namely undoing (\emph{undo}), redoing (\emph{redo}), and adding (\emph{addAction}) an action. Any action that can be undone and redone is stored a tree structure, each point in time containing a reference to the previous point and all the future point that emerged from that specific snapshot in time. This allows for multiple possible time lines, and makes this functionality more powerful without adding much complexity to the use of it, because everything complicated is contained within the entity.
 
 			In addition to creating an easy to use implementation, it is also required that the functionality remains simple even when the cell model is very complex. To easily maintain the time line of the entire application, each module keeps track of it's own history and future and makes this data available. The cell also track changes made to it and makes its time line available. Because of this separation, any part of the cell model can be adapted without having to think about the consequences of the changes to other parts of the model, allowing for easier development and generally higher quality software.
 	
@@ -111,10 +111,10 @@ ODE Solver( T, f, y, I )
 		\subsection{Task delegation}
 			During the project, the role of Scrum Master would rotate among the members. This happened naturally, as no explicit roster was made.
 			
-			When assigning the tasks, most tasks were actively picked up by the members. Rarely has there been a situation where a task had to be assigned by the master and when that happened, the task went to the member with the lowest amount of workload. The workload was not only comprised of tasks within the project, but also their personal lives and other courses. This was accepted within the group and was taken into account during task delegation.
+			When assigning the tasks, most tasks were actively picked up by the members. Rarely has there been a situation where a task had to be assigned by the master and when that happened, the task went to the member with the lowest workload. The workload was not only comprised of tasks within the project, but also their personal lives and other courses. This was accepted within the group and was taken into account during task delegation.
 
 		\subsection{Interpersonal communication}
-			During meetings, the communication was open, as questions could be asked to each other at all times. When major points were about to be discussed, all work was halted and everyone actively joined the discussion. Not only does this method ensure that everyone is updated, it also creates an open environment for each other: whenever someone is stuck and thinks it's something major, he can throw it into the group and can expect the full attention of the members.
+			During meetings, the communication was open, as questions could be asked to each other at all times. When major points were about to be discussed, all work was halted and everyone actively joined the discussion. Not only does this method ensure that everyone is updated, it also creates an open environment for each other: whenever someone is stuck and thinks it's something major, it can be discussed in with the whole group.
 			
 			When not meeting each other in person, communication was done through Skype. This helped immensely, as it creates the same open environment where everyone can ask each other for advice.
 
@@ -128,7 +128,7 @@ ODE Solver( T, f, y, I )
 				
 				By doing this, the people with less aptitude in programming can still keep up with the rest, as everyone else is also learning the ropes of this new language.
 				
-				Members also had their isolated projects where they can work at their own pace. This way, the more adept programmers can develop the more elaborate features and the rest can focus on their own tasks, so they don't slow each other down.
+				Members also had their isolated projects where they can work at their own pace. This way, the more adept programmers can develop the more elaborate features and the rest can focus on their own tasks, so they do not slow each other down.
 				
 				Every week during the meetings, there was a mandatory moment where each member had to explain what they did, what went good/bad and what they were planning to do for that week.
 				
@@ -147,7 +147,7 @@ ODE Solver( T, f, y, I )
 				To help overcome the occasional programmer's block, pair programming was introduced to the group. One member is responsible of writing the code, while the other observes and reviews the written code. This way, both members are actively coding and can come up with new ideas when the other member is stuck.
 
 	\section{Individual reflections on the project}
-		This section of the report contains the personal reflections of each of the team members. It contains every members perspective on the project, rather than the global experience of the group.
+		This section of the report contains the personal reflections of each of the team members. It contains every member's perspective on the project, rather than the global experience of the group.
 		\subsection{Derk-Jan Karrenbeld}
 			\input{personal-reflection-dj.tex}
 			\clearpage
