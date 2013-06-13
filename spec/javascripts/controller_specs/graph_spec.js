@@ -4,7 +4,8 @@ describe("Graph", function() {
 			view = {
 				draw: function() {}
 			};
-			controller = new Controller.Graph( view );
+			parent = {}
+			controller = new Controller.Graph( parent, view );
 		});
 
 		it("should have created a new controller with its properties set", function() {

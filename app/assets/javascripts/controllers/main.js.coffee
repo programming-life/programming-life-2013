@@ -88,7 +88,6 @@ class Controller.Main extends Controller.Base
 		@_bind( 'view.cell.set', @, @_onCellViewSet )
 		@_bind( 'module.selected.changed', @, 
 			(module, selected) => 
-				console.log "test"
 				@controller('undo').focusTimeMachine if selected
 					module.timemachine 
 				else 

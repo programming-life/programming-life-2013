@@ -61,7 +61,7 @@ class Controller.Base extends Helper.Mixable
 	#
 	kill: () ->
 		@removeChild( id, on ) for id, child of @_children
-		@view.kill()
+		@view?.kill()
 		@_unbindAll()
 		return this
 		
