@@ -11,12 +11,15 @@ class View.DummyModule extends View.RaphaelBase
 	# @param model [Model.Module] the module
 	# @param _visible
 	#
-	constructor: ( paper, parent, @_cell, model, @_visible, @_params = {} ) ->
+	constructor: ( paper, parent, @_cell, @_model, @_visible, @_params = {} ) ->
 		
 		@getter
 			visible: -> @_visible
-			model: -> model
+			model: -> @_model
 			type: -> @model.constructor.name
+			
+		@setter
+			model: ( value ) -> @_model = value
 			
 		super paper, parent
 
@@ -146,12 +149,8 @@ class View.DummyModule extends View.RaphaelBase
 			if selected
 				@setHovered off
 				@_addClass 'selected'
-				
-				#@_module = new @_modulector( _( @_params ).clone( true ) )
-				#@_trigger 'module.creation.started', @, [ @_module, @_params ]
 			else
 				@_removeClass 'selected'
-				#@_trigger "module.creation.aborted", @, []
 				
 		@_selected = selected
 		return this
