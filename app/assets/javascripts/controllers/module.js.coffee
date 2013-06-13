@@ -13,7 +13,7 @@ class Controller.Module extends Controller.Base
 	constructor: ( @_parent, model, @_preview = off, @_interaction = on ) ->
 		super new View.Module( @_parent.view.paper, @_parent.view, @_parent.model, model, @_preview, @_interaction )
 		
-		@_selected = off
+		@_selected = @_preview
 		@_hovered = off
 
 		@_createBindings()
@@ -44,9 +44,8 @@ class Controller.Module extends Controller.Base
 			@model[ key ] = value
 			
 		if @_preview
+			@_parent.endCreate @model
 			@_parent.model.add @model
-			@_preview = false
-			@view.setPreview off
 			
 		@_parent.automagicAdd @model, off
 		return this
@@ -79,8 +78,8 @@ class Controller.Module extends Controller.Base
 			@_parent.view.removePreviews()
 				
 		if view is @view and state
-				@_parent.automagicAdd @model, on
-				@view.createSplines @model, on
+			@_parent.automagicAdd @model, on
+			@view.createSplines @model, on
 				
 		if view isnt @view and state
 			state = off
@@ -88,6 +87,7 @@ class Controller.Module extends Controller.Base
 		if @_selected isnt state
 			@view.setSelected state
 			@_selected = state
+			@_parent.endCreate @model if @_preview and not state
 			
 		return this
 		
