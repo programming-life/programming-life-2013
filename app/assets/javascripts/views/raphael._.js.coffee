@@ -53,6 +53,7 @@ class View.RaphaelBase extends View.Collection
 	# 
 	clear: ( ) ->
 		@_contents?.remove()
+		@_contents = @_paper?.set()
 		super()
 		return this
 			
