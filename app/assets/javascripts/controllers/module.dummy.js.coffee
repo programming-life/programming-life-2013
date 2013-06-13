@@ -53,9 +53,8 @@ class Controller.DummyModule extends Controller.Base
 			@_selected = state
 			
 			if view is @view and state
+				@view.model = new @_modulector( _( @_params ).clone( true ) )
 				@_parent.beginCreate @view.model
-			unless state
-				@_parent.endCreate @view.model
 				
 				
 		return this
