@@ -22,13 +22,13 @@ class View.ModuleProperties extends View.HTMLPopOver
 
 		super parent, module.constructor.name, 'module-properties', 'bottom'
 		
-		@_bind('module.property.changed', @, @_onModuleInvalidated)
-		@_bind('module.compound.changed', @, @_onModuleInvalidated)
+		@_bind( 'module.property.changed', @, @_onModuleInvalidated )
+		@_bind( 'module.compound.changed', @, @_onModuleInvalidated )
 
-		@_bind('cell.module.added', @, @_onCompoundsChanged)
-		@_bind('cell.module.removed', @, @_onCompoundsChanged)
-		@_bind('cell.metabolite.added', @, @_onMetabolitesChanged)
-		@_bind('cell.metabolite.removed', @, @_onMetabolitesChanged)
+		@_bind( 'cell.module.added', @, @_onCompoundsChanged )
+		@_bind( 'cell.module.removed', @, @_onCompoundsChanged )
+		@_bind( 'cell.metabolite.added', @, @_onMetabolitesChanged )
+		@_bind( 'cell.metabolite.removed', @, @_onMetabolitesChanged )
 		
 	# Gets the id for this popover
 	#
@@ -143,6 +143,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 		)
 
 		@_body.append form
+		return form
 
 	# Draws input 
 	#
@@ -335,7 +336,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 	#
 	_triggerChange: ( key, value ) ->
 		console.debug "trigger change #{key} to #{value}"
-		@_trigger( 'module.properties.change', @_parent, [ @_changes, key, value, @_currents ] )
+		@_trigger( 'view.module.changed', @_parent, [ @_changes, key, value, @_currents ] )
 		
 	# Draws the selectable selection for
 	#
