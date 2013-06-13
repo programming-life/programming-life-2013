@@ -59,6 +59,7 @@ class Controller.Cell extends Controller.Base
 		
 		@_addDummyView( 'cellgrowth', Model.CellGrowth, 1 )
 		@_addDummyView( 'lipid', Model.Lipid, 1 )
+		@_addDummyView( 'dna', Model.DNA, 1 )
 		@_addDummyView( 'metabolite-outside', Model.Metabolite, -1, { placement: Model.Metabolite.Outside, type: Model.Metabolite.Substrate, amount: 0, supply: 1 } )
 		@_addDummyView( 'transporter-inward', Model.Transporter, -1, { direction: Model.Transporter.Inward, transported: 's'  } )
 		@_addDummyView( 'metabolism', Model.Metabolism, -1 )
