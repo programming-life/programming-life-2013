@@ -87,7 +87,7 @@ class View.Cell extends View.RaphaelBase
 	# Returns the coordinates of either the entrance or exit of this view
 	#
 	# @param location [View.Module.Location] the location (entrance or exit)
-	# @return [[float, float]] a tuple of the x and y coordinates
+	# @return [<float, float>] a tuple of the x and y coordinates
 	#
 	getPoint: ( location ) ->
 		box = @getBBox()
@@ -115,15 +115,22 @@ class View.Cell extends View.RaphaelBase
 	add: ( view ) ->
 		type = view.model.getFullType()
 
-		unless @viewsByType[type]?
-			@viewsByType[type] = []
+		unless @viewsByType[ type ]?
+			@viewsByType[ type ] = []
 
-		dummies = _(@viewsByType[type]).filter( (v) -> v instanceof View.DummyModule)
-		@viewsByType[type].push(view)
-		@viewsByType[type] = _(@viewsByType[type]).difference(dummies).concat(dummies)
+		@viewsByType[ type ].push view
 		view.draw()
 		@_notificationsView?.hide()
-
+		return this
+		
+	# Add a preview
+	#
+	addPreview: ( view ) ->
+		@add view
+		unless @viewsByType[ '__previews' ]?
+			@viewsByType[ '__previews' ] = []
+		@viewsByType[ '__previews' ].push view
+		
 	# Removes a view from the container
 	#
 	# @param [View.Base] The view to remove
@@ -133,6 +140,15 @@ class View.Cell extends View.RaphaelBase
 		@viewsByType[type] = _( @viewsByType[type] ? [] ).without view
 		view.kill() if kill
 		@_notificationsView?.hide()
+		return this
+		
+	# Remove all preview
+	#
+	removePreviews: () ->
+		return this unless @viewsByType[ '__previews' ]?
+		@remove view.kill() for view in @viewsByType[ '__previews' ]
+		@viewsByType[ '__previews' ] = []
+		return this
 
 	# Get module view for the given module
 	#
@@ -188,7 +204,7 @@ class View.Cell extends View.RaphaelBase
 
 	# Returns the location for a module view
 	#
-	# @return [[float, float]] a type of the x and y coordinates
+	# @return [<float, float>] a type of the x and y coordinates
 	#
 	getViewPlacement: ( view ) ->
 		type = view.model.getFullType()

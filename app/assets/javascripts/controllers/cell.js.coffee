@@ -108,7 +108,7 @@ class Controller.Cell extends Controller.Base
 			@view.remove controller.view
 			
 		@stopSimulation()
-
+		
 	# Automagically adds the metabolite modules requires to the cell view or model
 	#
 	# @param module [Model.Module] The module for which to automagically add
@@ -147,7 +147,7 @@ class Controller.Cell extends Controller.Base
 				type = if is_product then Model.Metabolite.Product else Model.Metabolite.Substrate
 				placement = if is_inside then Model.Metabolite.Inside else Model.Metabolite.Outside
 				metabolite = new Model.Metabolite( { supply: 0, placement: placement, type: type }, 0, name )
-				#@preview metabolite
+				@view.addPreview new View.Module( @view.paper, @view, @view.model, metabolite, on, off ) 
 			else
 				@model.addMetabolite( name, 0, 0, is_inside, is_product )
 	
