@@ -89,26 +89,32 @@ class Controller.Cell extends Controller.Base
 		@_bind( 'cell.metabolite.add', @, @_onModuleAdd )
 		@_bind( 'cell.metabolite.remove', @, @_onModuleRemove )
 		
-	#
+	# 
 	#
 	setCell: ( value ) ->
 		@view.model = value
-		
 		for module in @view.model.getModules()
 			@_onModuleAdd( value, module )
-			
 		@_addDummyViews() if @_interaction
+		return this
 		
-	#
+	# Begin creation of a module
 	#
 	beginCreate: ( module ) ->
-		console.log 'start creation for ', module
+		@addChild( _( 'module-' ).uniqueId(), controller = new Controller.Module( @, module, on, @_interaction ) )
+		@automagicAdd controller.model, on
+		@view.add controller.view
+		@stopSimulation()
+		return this
 		
-	#
+	# End creation of a module
 	#
 	endCreate: ( module ) ->
-		console.log 'end creation for ', module
-		
+		key = @findKey( ( v ) -> v.model is module ) 
+		@view.remove @controller( key ).view.kill()
+		@removeChild key
+		@stopSimulation()
+		return this
 		
 	# Runs when module is added
 	#
@@ -119,7 +125,6 @@ class Controller.Cell extends Controller.Base
 		return if cell isnt @model
 		@addChild( _( 'module-' ).uniqueId(), controller = new Controller.Module( @, module, off, @_interaction ) )
 		@view.add controller.view
-		
 		@stopSimulation()
 
 	# Runs when module is removed
@@ -133,7 +138,6 @@ class Controller.Cell extends Controller.Base
 			controller = @controller( key ).kill()
 			@removeChild key
 			@view.remove controller.view
-			
 		@stopSimulation()
 		
 	# Automagically adds the metabolite modules requires to the cell view or model
