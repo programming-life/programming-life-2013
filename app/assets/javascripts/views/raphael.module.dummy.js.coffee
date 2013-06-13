@@ -78,9 +78,8 @@ class View.DummyModule extends View.RaphaelBase
 		@_contents.push hitbox
 		@_contents.push contents
 		@_contents.push @_box
-		@_contents.show()
-		
-		#@hide off unless @visible
+				
+		@hide off unless @_visible
 		
 	# Hides this view
 	#
@@ -96,6 +95,7 @@ class View.DummyModule extends View.RaphaelBase
 			, 200, 'ease-in', done)
 		else
 			done()
+			
 		console.log 'hide'
 		return this
 		
@@ -111,7 +111,6 @@ class View.DummyModule extends View.RaphaelBase
 		if animate
 			@_visible = on
 			@_contents.attr('opacity', 0)
-			@_contents.attr('display', 'block')
 			@_contents.show()
 			@_contents.animate Raphael.animation(
 				opacity: 1

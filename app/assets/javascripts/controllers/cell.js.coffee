@@ -49,23 +49,37 @@ class Controller.Cell extends Controller.Base
 	#
 	_addInteraction: () ->
 		@_automagically = on
+		return this
 
 	# Adds dummy modules
 	#
 	_addDummyViews: () ->
 		
 		@controller( 'dummies' )?.kill()
-		@controller( 'dummies' ).addChild 'cellgrowth', new Controller.DummyModule( @, Model.CellGrowth, 1 )
 		
-		#@view.add new View.DummyModule( @view.paper, @view, @model, Model.DNA, 1 )
-		#@view.add new View.DummyModule( @view.paper, @view, @model, Model.Lipid, 1 )
-		#@view.add new View.DummyModule( @view.paper, @view, @model, Model.Metabolite, -1, { placement: Model.Metabolite.Outside, type: Model.Metabolite.Substrate, amount: 0, supply: 1 } )
-		#@view.add new View.DummyModule( @view.paper, @view, @model, Model.Metabolite, -1, { placement: Model.Metabolite.Inside, type: Model.Metabolite.Product, amount: 0, supply: 0 } )
-		#@view.add new View.DummyModule( @view.paper, @view, @model, Model.Transporter, -1, { direction: Model.Transporter.Inward } )
-		#@view.add new View.DummyModule( @view.paper, @view, @model, Model.Metabolism, -1 )
-		#@view.add new View.DummyModule( @view.paper, @view, @model, Model.Protein, -1 )
-		#@view.add new View.DummyModule( @view.paper, @view, @model, Model.Transporter, -1, { direction: Model.Transporter.Outward, transported: 'p' } )
+		@_addDummyView( 'cellgrowth', Model.CellGrowth, 1 )
+		@_addDummyView( 'lipid', Model.Lipid, -1 )
+		@_addDummyView( 'metabolite-outside', Model.Metabolite, -1, { placement: Model.Metabolite.Outside, type: Model.Metabolite.Substrate, amount: 0, supply: 1 } )
+		@_addDummyView( 'transporter-inward', Model.Transporter, -1, { direction: Model.Transporter.Inward, transported: 's'  } )
+		@_addDummyView( 'metabolism', Model.Metabolism, -1 )
+		@_addDummyView( 'metabolite-inside', Model.Metabolite, -1, { placement: Model.Metabolite.Inside, type: Model.Metabolite.Product, amount: 0, supply: 0 } )
+		@_addDummyView( 'protein', Model.Protein, -1 )
+		@_addDummyView( 'transporter-outward', Model.Transporter, -1, { direction: Model.Transporter.Outward, transported: 'p' } )
 		
+		return this
+
+	# Add a dummy view
+	#
+	# @param id [String] the id
+	# @param modulector [Function] the module constructor
+	# @param number [Integer] the amount allowed or -1 for unlimited
+	# @param params [Object] the defaults
+	#
+	_addDummyView: ( id, modulector, number, params ) ->
+	
+		@controller( 'dummies' ).addChild id, new Controller.DummyModule( @, modulector, number, params )
+		@view.add @controller( 'dummies' ).controller( id ).view
+		return this
 		
 	# Creates the bindings for the cell
 	#
@@ -84,6 +98,17 @@ class Controller.Cell extends Controller.Base
 			@_onModuleAdd( value, module )
 			
 		@_addDummyViews() if @_interaction
+		
+	#
+	#
+	beginCreate: ( module ) ->
+		console.log 'start creation for ', module
+		
+	#
+	#
+	endCreate: ( module ) ->
+		console.log 'end creation for ', module
+		
 		
 	# Runs when module is added
 	#
