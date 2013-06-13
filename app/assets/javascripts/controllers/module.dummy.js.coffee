@@ -25,9 +25,6 @@ class Controller.DummyModule extends Controller.Base
 
 		@getter
 			model: -> @view.model
-			
-		if @view.visible
-			@_parent.view.add @view
 
 	# Create bindings for the buttons
 	#
@@ -50,9 +47,17 @@ class Controller.DummyModule extends Controller.Base
 	_setSelected: ( view, event, state = not @_selected ) =>
 		if view isnt @view and state
 			state = off
+					
+		if state isnt @_selected
+			@view.setSelected state
+			@_selected = state
 			
-		@view.setSelected state
-		@_selected = state
+			if view is @view and state
+				@_parent.beginCreate @view.model
+			unless state
+				@_parent.endCreate @view.model
+				
+				
 		return this
 		
 	# Runs when view is hovered or dehovered
@@ -88,12 +93,9 @@ class Controller.DummyModule extends Controller.Base
 	_onModuleAdd : ( cell, module ) ->
 		if cell is @_parent.model and module instanceof @_modulector 
 			@_count += 1
-			console.log 'fas', @_number, @_count, @view.visible
 			if @_number isnt -1 and @_number <= @_count
 				if @view.visible
 					@view.hide()
-					console.log 'yadayada'
-					@_parent.view.remove @view
 			else
 				@view.setPosition()
 
@@ -108,7 +110,5 @@ class Controller.DummyModule extends Controller.Base
 			if @_number > @_count
 				unless @view.visible
 					@view.show()
-					console.log 'yadayada2'
-					@_parent.view.add @view, false
 			else
 				@view.setPosition()
