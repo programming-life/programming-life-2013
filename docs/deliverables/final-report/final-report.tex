@@ -9,7 +9,7 @@
 \usepackage{listings}
 \usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry}
 
-\title{Title}
+\title{Final Report}
 \author{Programming Life group 2\\
 	\begin{tabular}{c c c}
 	\hline 
@@ -37,22 +37,28 @@
 	\clearpage
 
 	\section{Introduction}
-		This is the Draft Final Report for the Context Project: Programming Life.\\
-		During this project we have built Gigabase, an app to create the virtual cell. The creation of this application was not without its challenges, but as a team we managed to overcome these and together we didn't only work towards a great product, we also grew as individuals, refined our personalities when it comes to teamwork and had a lot of fun.\\
-		This document reflects on these challenges, that teamwork and what the project itself means to us.
+		This is the Final Report for the Context Project: Programming Life.\\
+		During this project we have built Gigabase, an application to create the virtual cell. The creation of this application was not without its challenges, but we managed to overcome these challenges while growing as a group and on a personal level.
+		
+		This document reflects on these challenges, the teamwork and what the project itself means to us.
 		
 	\section{Key challenges and Solutions}
 		The project itself had some challenges that were conceived as difficult. Apart from these challenges, the process itself had some as well, which are listed under 'Reflection on the teamwork'. 
 		
 		\subsection{ODE modularity}
-			Let's first define component as any module or metabolite in the cell such as a transporter or substrate. The biological-cell model consists of components that interact with eachother, but the differential equations are not defined by interaction, but component. Our task was to make these components modular, meaning you need to be able to change them, add more of them and so forth and so on. But since these differential equations were intertwined, a way needed to be devised to separate them and make the arguments dynamic. For example $'\frac{ds}{dt} = ks * s + kc * c'$ would need to assign s and c dynamically. kc belongs to c, so it's probably its own compound. If we have two, it would become $'\frac{ds}{dt} = ks * s + kc1 * c1 + kc2 * c2'$.\\
-			We wrote a mapping code that collects produced compounds. So c would produce c and s and s would produce s. The equations were seperated by how operators depencies work. We gave each compound all the effects and affects as equations. s now has $'\frac{ds}{dt} = ks * s'$ and c has $'\frac{ds}{dt} = kc * c'$ and $'\frac{dc}{dt} = magix'$ Now adding more c's will dynamically build the correct equation. But since we have a mapping, we can use indexes to get those compound values. $'\frac{ds}{dt} = ks * compounds[s]'$. And if we make the indexer a settable parameter, we are done! $'\frac{ds}{dt} = @ks * compounds[@s]'$. \\
+			Let's first define a component as any module or metabolite in the cell such as a transporter or substrate. The biological-cell model consists of components that interact with each other, but the differential equations are not defined by interaction, but component. Our task was to make these components modular, meaning you need to be able to change them, add more of them and so forth and so on. But since these differential equations were intertwined, a way needed to be devised to separate them and make the arguments dynamic. For example $'\frac{ds}{dt} = ks * s + kc * c'$ would need to assign $s$ and $c$ dynamically. $kc$ belongs to $c$, so it's probably its own compound. If we have two, it would become $'\frac{ds}{dt} = ks * s + kc1 * c1 + kc2 * c2'$.
+			
+			We wrote a mapping code that collects produced compounds. So $c$ would produce $c$ and $s$ and $s$ would produce $s$. The equations were separated by how operators dependencies work. We gave each compound all the effects and affects as equations. $s$ now has $'\frac{ds}{dt} = ks * s'$ and $c$ has $'\frac{ds}{dt} = kc * c'$ and $'\frac{dc}{dt} = magix'$ Now adding more $c$'s will dynamically build the correct equation. But since we have a mapping, we can use indexes to get those compound values. $'\frac{ds}{dt} = ks * compounds[s]'$. And if we make the indexer a settable parameter, we are done! $'\frac{ds}{dt} = @ks * compounds[@s]'$.
+			
 			This way we could turn the equations from statically defined to dynamically settable.
 			
 		\subsection{ODE solver complexity}
-			Our ordinary differential equations solver is the same used in MATLAB. It's very powerfull but this did yield some problems. The more components we added, the more noticeable the delay between pressing simulate and the actual output. To get accurate results we were doing the caluclations on a low tolerance and a high number of iterations. \\
-			One could always tweak this tolerance and iteration number, but defining that dynamically is hard. Instead we took a different road. We re-implemented the ODE by implementing the algorithm and deferring each iteration. This made the overal solving time higher, but there was no UI freeze anymore whatsoever. We could now also display results on the fly and show progress.\\
-			If the next function denotes the pseudocode:\\
+			Our ordinary differential equations solver is the same used in MATLAB. It's very powerful but this did yield some problems. The more components we added, the more noticeable the delay between pressing simulate and the actual output. To get accurate results we were doing the calculations on a low tolerance and a high number of iterations.
+			
+			One could always tweak this tolerance and iteration number, but defining that dynamically is hard. Instead we took a different road. We re-implemented the ODE by implementing the algorithm and deferring each iteration. This made the overall solving time higher, but now there was no UI freeze whatsoever. We could now also display results on the fly and show progress.
+			
+			The following pseudo-code represents the function:
+			
 			\begin{lstlisting}
 ODE Solver( T, f, y, I )
 	initialize t = 0, y = [ y ], i = 0
@@ -65,85 +71,104 @@ ODE Solver( T, f, y, I )
 		increment t
 			\end{lstlisting}
 
-			The outer while block was deferred. Deferring in JavaScript is achieved by pushing a function to the end of the callstack, using setTimeout.
+			The outer while block was deferred. Deferring in JavaScript is achieved by pushing a function to the end of the call-stack, using a time-out (setTimeout).
+			\clearpage
 		
 		\subsection{Concurrency}
-			The database operations themself are atomic: isolated, but since users can edit the same cell, or might have a copy on their local storage which isn't updated back into the database, consistency between data is a problem. We offer two solutions to the problem.\\ 
+			The database operations themselves are atomic i.e. isolated, however since users can edit the same cell, or might have a copy on their local storage which is not updated back into the database, consistency between data is a problem. We offer two solutions to the problem.
 			
-			Firstly there is a clone cell feature, where all the data is copied, rather than simply loaded. This means that you are safe editing that data. See it as forking a repository on GitHub.\\
+			Firstly there is a clone cell feature, where all the data is copied, rather than simply loaded. This means that you are safe editing that data.
 			
-			Secondly one can create access keys to his or her creation. This will make the cell readonly for everyone, unless they have the access key. This can also be used to create private cells, which have a limited amount of read-only access keys.
+			Secondly one can create access keys to his or her creation. This will make the cell read-only for everyone, unless they have the access key. This can also be used to create private cells, which have a limited amount of read-only access keys.
 		
 		\subsection{Offline availability}
-			The application should be available offline. As this was one of our design goals, we chose to write the base functionality in a client side application. The next step was making this available to the offline user.\\
-			HTML5 has new functionality with application manifests. We implemented these to make sure the application is available offline. The HTML5 Local Storage feature was used for a key-value database storage client side. The HTML5 online-offline events perfectly provided the link to transparently update both the database, as well as the application when a user came online.\\
-			The beauty of this solution is that you don't need to install anything and the application simply degrades to online-only if these features are not available.
+			The application should be available offline. As this was one of our design goals, we chose to write the basic functionality in a client side application. The next step was making this available to the offline user.
+			
+			HTML5 has new functionality with application manifests. We implemented these to make sure the application is available offline. The HTML5 Local Storage feature was used for a key-value database storage client side. The HTML5 online-offline events provide a link to transparently update the database, as well as the application when a user comes online.
+			
+			The beauty of this solution is that you don't need to install anything and the application simply degrades to online-only if HTML5 features are not available.
 		
 		\subsection{Undo}
-			The ability to undo and redo your actions makes an interface more user friendly and easy to use, and so the decision to add this functionality to our application was made early on. This resulted in a functionality that could be added to as the application grew in complexity. The challenge in accomplishing this, is to store and update the relevant data in such a way in becomes a self containing entity. To do this, the functionality needs to have an easy to use interface, while all the complex logic is contained within the entity itself.
+			The ability to undo and redo your actions makes an application easier to use and thus more user-friendly, and so the decision to add this functionality to our application was made early on. This resulted in functionality that could be added as the application grew in complexity. The challenge in accomplishing this, is to store and update the relevant data in such a way it becomes a self containing entity. To do this, the functionality needs to have an easy to use interface, while all the complex logic is contained within the entity itself.
 			
-			In implementing this, it becomes evident that the interface to the entity consists of it's basic functions; namely \emph{undo}, \emph{redo}, and \emph{addAction}. Any action that can be undone and redone is stored a tree structure, each point in time containing a reference to the previous point and all the future point that emerged from that specific snapshot in time. This allows for multiple possible timelines, and makes this functionality more powerfull without adding much complexity to the use of it, because everything complicated is contained within the entity.
+			In implementing this, it becomes evident that the interface to the entity consists of its basic functions; namely undoing (\emph{undo}), redoing (\emph{redo}), and adding (\emph{addAction}) an action. Any action that can be undone and redone is stored a tree structure, each point in time containing a reference to the previous point and all the future point that emerged from that specific snapshot in time. This allows for multiple possible time lines, and makes this functionality more powerful without adding much complexity to the use of it, because everything complicated is contained within the entity.
 
-			In addition to creating an easy to use implementation, it is also required that the functionality remains simple even when the cell model is very complex. To easily maintain the timeline of the entire application, each module keeps track of it's own history and future and makes this data avaiable. The cell also track changes made to it and makes its timeline avaiable. Because of this separation, any part of the cell model can be adapted without having to think about the consequences of the changes to other parts of the model, allowing for easier development and generally higher quality software.
+			In addition to creating an easy to use implementation, it is also required that the functionality remains simple even when the cell model is very complex. To easily maintain the time line of the entire application, each module keeps track of it's own history and future and makes this data available. The cell also track changes made to it and makes its time line available. Because of this separation, any part of the cell model can be adapted without having to think about the consequences of the changes to other parts of the model, allowing for easier development and generally higher quality software.
 	
 	\section{Reflection on the teamwork}
 		This section covers the reflection as a group on the teamwork during the development of the software. The reflection is divided in different subsections.
 		\subsection{Preparation}
-			At the very start of the project, the programming language was decided. Because this was done so early, the toolchain and programming environment could be set up almost immediately. The result of these early preperations is that the start of the project was pretty much smooth sailing. \\
+			At the very start of the project, the programming language was decided. Because this was done so early, the toolchain and programming environment could be set up almost immediately. The result of these early preparations is that the start of the project was pretty much smooth sailing.
+			
 			In addition, coding guidelines and styles were discussed, so the group could code consistently in one style from the start.
 		
 		\subsection{Meetings and contact}
-			Every first day of the workweek, there was a Scrum meeting. During those meetings the tasks (finished, in progress and future) were discussed and a planning was made. At the start of every other day, the tasks planned for that week were briefly discussed. \\
+			Every first day of the week, there was a Scrum meeting. During those meetings the tasks (finished, in progress and future) were discussed and a planning was made. At the start of every other day, the tasks planned for that week were briefly discussed.
+			
 			Once a week, there was a meeting with the teaching assistants who guided the group throughout the development. Through them, the group could ask questions concerning the deliverables and goals.
-			Communication at home was done with Skype, where regular coding sessions was held during the day and night.
+			Communication at home was done through Skype, where regular coding sessions were held during the day and night.
 
 		\subsection{Task delegation}
-			During the project, the role of Scrum Master would rotate among the members. This happened naturally, as no explicit roster was made. \\
-			When assigning the tasks, most tasks were actively picked up by the members. Rarely has there been a situation where a task had to be assigned by the master and when that happened, the task went to the member with the lowest amount of workload. The workload was not only comprised of tasks within the project, but also their personal lives and other courses. This was accepted within the group and was taken into account during task delegation.
+			During the project, the role of Scrum Master would rotate among the members. This happened naturally, as no explicit roster was made.
+			
+			When assigning the tasks, most tasks were actively picked up by the members. Rarely has there been a situation where a task had to be assigned by the master and when that happened, the task went to the member with the lowest workload. The workload was not only comprised of tasks within the project, but also their personal lives and other courses. This was accepted within the group and was taken into account during task delegation.
 
 		\subsection{Interpersonal communication}
-			During meetings, the communication was open, as questions could be asked to each other at all times. When major points were about to be discussed, all work was halted and everyone actively joined the discussion. Not only does this method ensure that everyone is updated, it also creates an open environment for each other: whenever someone is stuck and thinks it's something major, he can throw it into the group and can expect the full attention of the members.\\
-			When not meeting each other in person, communication was done by Skype. This helped immensely, as it creates the same open environment where everyone can ask each other for advice.
+			During meetings, the communication was open, as questions could be asked to each other at all times. When major points were about to be discussed, all work was halted and everyone actively joined the discussion. Not only does this method ensure that everyone is updated, it also creates an open environment for each other: whenever someone is stuck and thinks it's something major, it can be discussed in with the whole group.
+			
+			When not meeting each other in person, communication was done through Skype. This helped immensely, as it creates the same open environment where everyone can ask each other for advice.
 
 		\subsection{Problems and challenges}
 			\subsubsection*{Downtime during exams}
-				During the planning, the fact that no real work can be done during the exams was not taken into account. This lead to a two to three weeks of considerable slowdown of the project progress.\\
-				Nonetheless, there were still short, weekly meetings with the teaching assistents. Immediately after the exams, a revised planning has been made and the lost time during those exams has been made up for.
+				During the planning, the fact that no real work can be done during the exams was not taken into account. This led to around two weeks of considerable slowdown of the project progress.
+				
+				Nonetheless, there were still short, weekly meetings with the teaching assistants. Immediately after the exams, a revised planning has been made and the lost time during those exams has been made up for.
 			\subsubsection*{Differences in level of expertise}
-				The group is comprised of members of different levels of expertise, so the decision was made to use a whole new programming language.\\ 
-				By doing this, the people with less aptitude in programming can still keep up with the rest, as everyone else is also learning the ropes of this new language.\\
-				Members also had their isolated projects where they can work at their own pace. This way, the more adept programmers can develop the more elaborate features and the rest can focus on their own tasks, so they don't slow each other down.\\ 
-				Every week during the meetings, there was a mandatory moment where each member had to explain what they did, what went good/bad and what they were planning to do for that week.\\ 
+				The group is comprised of members of different levels of expertise, so the decision was made to use a whole new programming language.
+				
+				By doing this, the people with less aptitude in programming can still keep up with the rest, as everyone else is also learning the ropes of this new language.
+				
+				Members also had their isolated projects where they can work at their own pace. This way, the more adept programmers can develop the more elaborate features and the rest can focus on their own tasks, so they do not slow each other down.
+				
+				Every week during the meetings, there was a mandatory moment where each member had to explain what they did, what went good/bad and what they were planning to do for that week.
+				
 				By doing this, it's possible to ask each other for advice when they were stuck at a problem and thus help each other.
 			\subsubsection*{Punctuality}
-				A recurring problem in the group was the occasional early meeting. Some members had the tendicy to be tardy and thus keeping the rest of the group waiting. \\
+				A recurring problem in the group was the occasional early meeting. Some members had the tendency to be tardy and thus keeping the rest of the group waiting.
+				
 				This has been acknowledged as a problem. This behaviour is not condoned, but the lost time was always compensated. This is a point of improvement for future projects.
 			\subsubsection*{Understanding each other's work}
-				Because of the scale of the project, a high volume of code can be written in a short amount of time by different members of the group. This make it easy to lose track of each other's work. \\
-				By letting other members of the group write test classes for each other, every member is aware of the work done by other members and it helps understand the code. \\
-				The code was also actively commented and documentated to further improve code understanding.
+				Because of the scale of the project, a high volume of code can be written in a short amount of time by different members of the group. This makes it easy to lose track of each other's work. 
+				
+				By letting other members of the group write test classes for each other, every member is aware of the work done by other members and it helps understand the code. 
+				
+				The code was also actively commented and documented to further improve code understanding.
 			\subsubsection*{Programmer's block}
 				To help overcome the occasional programmer's block, pair programming was introduced to the group. One member is responsible of writing the code, while the other observes and reviews the written code. This way, both members are actively coding and can come up with new ideas when the other member is stuck.
 
 	\section{Individual reflections on the project}
-		This section of the report contains the personal reflections of each of the team members. It contains every members perspective on the project, rather than the global experience of the group.
+		This section of the report contains the personal reflections of each of the team members. It contains every member's perspective on the project, rather than the global experience of the group.
 		\subsection{Derk-Jan Karrenbeld}
 			\input{personal-reflection-dj.tex}
+			\clearpage
 		\subsection{Joost Verdoorn}
 			\input{personal-reflection-joost.tex}
+			\clearpage
 		\subsection{Steffan Sluis}
 			\input{personal-reflection-steffan.tex}
+			\clearpage
 		\subsection{Tung Phan}
 			\input{personal-reflection-tung.tex}
+			\clearpage
 		\subsection{Vincent Robbemond}
 			\input{personal-reflection-vincent.tex}
-		
-	\section{Lightweight SCRUM plans}
-		-- Dear TA's, what's expected here? We do have these on paper and on planbox and in de PV --
-		
+	
+	\clearpage	
 	\section{Conclusion}
-		We struggled a bit, we fought even harder. This project has thought us a great deal about scrum. Told us that great projectmembers still exist. It opened up our eyes to the beauty of biology and chemistry into engineering, and most of all, we encouraged ourselved to learn more and even more. \\
-		Working on this application and working together as we did, was a lot of fun. A lot of laughter and a lot of great moments, both positive and negative. As a team we grew. As computer scientists even so.\\
+		We struggled a bit, we fought even harder. This project has thought us a great deal about scrum. Told us that great project-members still exist. It opened up our eyes to the beauty of biology and chemistry into engineering, and most of all, we encouraged ourselves to learn more and even more.
+		
+		Working on this application and working together as we did, was a lot of fun. A lot of laughter and a lot of great moments, both positive and negative. As a team we grew. As computer scientists even so.
+		
 		Not only did we apprehend the context, we learned three new languages and even more new technologies. Technology seems limitless. 
 	
 \end{document}

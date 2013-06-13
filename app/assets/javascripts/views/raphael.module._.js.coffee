@@ -377,11 +377,11 @@ class View.Module extends View.RaphaelBase
 
 			for metabolite in orig
 				if view = @_parent.getViewByName metabolite
-					@add new View.Spline( @paper, @_parent, @_cell, view, @, preview, on, View.Spline.Type.Metabolite )
+					@add new View.Spline( @paper, @_parent, @_cell, view, @, preview, on, View.Spline.Type.Processing )
 
 			for metabolite in dest
 				if view = @_parent.getViewByName metabolite
-					@add new View.Spline( @paper, @_parent, @_cell, @, view, preview, on, View.Spline.Type.Metabolite )
+					@add new View.Spline( @paper, @_parent, @_cell, @, view, preview, on, View.Spline.Type.Processing )
 
 		return this
 
