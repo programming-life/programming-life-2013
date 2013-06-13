@@ -39,7 +39,7 @@ class Controller.Cell extends Controller.Base
 			set: @setCell
 		)
 
-		@_previews = new View.Collection()
+		@addChild 'dummies', new Controller.Base( new View.Collection() )
 		
 		@model = @view.model
 		@_createBindings()
@@ -49,15 +49,14 @@ class Controller.Cell extends Controller.Base
 	#
 	_addInteraction: () ->
 		@_automagically = on
-		@_addDummyViews()
 
 	# Adds dummy modules
 	#
 	_addDummyViews: () ->
 		
-		@view.each( (view) => @view.remove view if view instanceof View.DummyModule )
+		@controller( 'dummies' )?.kill()
+		@controller( 'dummies' ).addChild 'cellgrowth', new Controller.DummyModule( @, Model.CellGrowth, 1 )
 		
-		#@view.add new View.DummyModule( @view.paper, @view, @model, Model.CellGrowth, 1 )
 		#@view.add new View.DummyModule( @view.paper, @view, @model, Model.DNA, 1 )
 		#@view.add new View.DummyModule( @view.paper, @view, @model, Model.Lipid, 1 )
 		#@view.add new View.DummyModule( @view.paper, @view, @model, Model.Metabolite, -1, { placement: Model.Metabolite.Outside, type: Model.Metabolite.Substrate, amount: 0, supply: 1 } )
@@ -80,9 +79,12 @@ class Controller.Cell extends Controller.Base
 	#
 	setCell: ( value ) ->
 		@view.model = value
+		
 		for module in @view.model.getModules()
 			@_onModuleAdd( value, module )
 			
+		@_addDummyViews() if @_interaction
+		
 	# Runs when module is added
 	#
 	# @param cell [Model.Cell] the cell
@@ -161,7 +163,6 @@ class Controller.Cell extends Controller.Base
 
 		setcallback = ( cell ) => 
 			@model = cell 
-			@_addDummyViews() if @_interaction
 			callback?.call( @, cell )
 			
 		@_automagically = off
