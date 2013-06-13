@@ -136,7 +136,7 @@ rect, circle:not(.cell) {
 		}
 	}
 
-	&.module-preview {
+	&.preview {
 		opacity: .68;
 		stroke-dasharray: 5,5;
 		stroke: #52a8ec;
@@ -190,7 +190,7 @@ text, tspan {
 		opacity: .182 !important;
 	}
 
-	&.module-preview {
+	&.preview {
 		opacity: .05 !important;
 	}
 }
@@ -238,7 +238,7 @@ text, tspan {
 	stroke-width: 1px;
 }
 
-.spline-preview {
+.metabolite-spline-preview {
 	opacity: .8;
 	stroke-dasharray: 5,5;
 
