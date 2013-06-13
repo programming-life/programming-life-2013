@@ -77,3 +77,12 @@ class Helper.Mixable
 			timezone = ( if offset[ 2 ] is '+' then -1 else 1 ) * ( offset[ 3 ] * 60 + Number( offset[ 3 ] ) )
 			result.setMinutes( result.getMinutes() + timezone ) #- result.getTimezoneOffset() 
 		return result
+
+	# Generates a colour based on the module name
+	#
+	# @param hashee [String] the name to use as hash
+	# @return [String] the CSS color
+	#
+	@hashColor : ( hashee = @_name ) ->
+		hashee = hashee.split('#')[0]
+		return '#' + md5( hashee ).slice(0, 6)

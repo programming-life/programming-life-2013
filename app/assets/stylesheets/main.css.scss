@@ -50,4 +50,8 @@ div#paper svg, .pane, .btn {
 	min-width: 100px;
 }
 
+[data-action], [data-toggle] {
+	cursor:pointer;
+}
+
 .bottom-up {top: auto; bottom: 100%; }
