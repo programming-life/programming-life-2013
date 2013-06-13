@@ -34,27 +34,32 @@
 	\section{Introduction}
 		This document contains the architectural design for the application created during the Context Project `Programming Life: Synthetic Biology'. The application is targeted at synthetic biologists and its main purpose is to easily model, simulate and validate the complex workings of a cell. \\
 		The design of this application is explained first in terms of its design goals. Then a subsystem decomposition follows, which serves to uncover the inner workings of the application, along with a description of the mapping of subsystems to processes and computers, a hardware/software mapping. After this, the management of data and shared resources is discussed. 
+		
 		\subsection{Design goals}
 			The application can model cells and the processes within. The main design goal is to make this task as easy and intuitive as possible. Further, as requested by the client, it should:
 			\begin{itemize}
 				\item give an indication how changes to the cell will reflect on the rest of the cell
 				\item have the ability to easily import and export datasets from and to frequently used data-formats e.g. CSV, SBML, HTML, PDF and Excel.
 				\item give feedback to the user about mistakes and when possible provide a solution. An example is telling the user components are missing for a correctly working cell.
+				\item simulate the cell by integrating the corresponding system of ODEs
 				\item compare simulations by plotting data on top of other simulations.
 				\item be available offline, once the application is loaded once.
 				\item have the functionality to share data with other users.
 				\item have an easy way to undo changes.
 			\end{itemize}
+			
+		\subsection{Additional goals}
 			To broaden their knowledge and expand their experience, the developers agreed to use programming languages and frameworks previously unknown to them.
 	\clearpage
+	
 	\section{Architecture}
 	
 			\subsection{Overview}
-				Because the application is available offline, the server-client relation is very decoupled. This means that the main functionality resides on the client. The server is merely used for administrative purposes, storing application and user data and providing the clientside functionality. A backend on the server also allows for data manipulation on the database.
+				Because the application is available offline, the server-client relation is very decoupled. This means that the main functionality resides on the client. The server is merely used for administrative purposes, storing application and user data and providing the client-side functionality. A backend on the server also allows for data manipulation on the database.
 				
 			\subsection{Server}
 				The primary function of the server is to provide the clientside application. After the application is downloaded the first time, it will reside on the client. Each time a client is online the application is automatically updated. \\
-				The secondary function is to provide storage for everything created by the user. Sharing data is made possible by the storing functionality. \\
+				The secondary function of the server is to provide storage for everything created by the user. Sharing data is made possible by the storing functionality. \\
 				In the figure below you can see this concept. The server provides all the client side assets and outputs these assets and html files to the client. The clients have a local copy of the database and can synchronise this with the server side database.
 				\clearpage
 				\begin{figure}[htb]
@@ -67,9 +72,11 @@
 				\clearpage
 									
 				\subsubsection{Rails}
-					The server runs on Ruby on Rails \cite{ror} . This is a fairly new but very stable platform that is not only free but also open source. This means active development by a lot of people. Problems are easily fixed and this should ease the use of the application that is being designed. The language itself is written from a standpoint where you should just be able to write code and not worry about breaking the interpreter \cite{ruby} . This makes it easy to write comprehensible code that executes complex tasks.				
+					The server runs on Ruby on Rails \cite{ror} . This is a fairly new but very stable platform that is not only free but also open source. This means active development by a lot of people. Problems are easily fixed and this should ease the use of the application that is being designed. The language itself is written from a standpoint where you should just be able to write code and not worry about breaking the interpreter \cite{ruby} . This makes it easy to write comprehensible code that executes complex tasks.	
+								
 				\subsubsection{MVC on the server}
 					The pages served are HTML5 for markup with CSS3 for styling and Javascript for interaction. Pages are built by a comprehensive and solid Model-Viewer-Controller system. This keeps data separated from the representation, further increasing maintainability. Interaction is illustrated in figure 3. Rails uses MVC in its core. It made it easy to create the backend views and client side representations because displaying data, the interaction and the actual data are seperated. This is a reason to stick with this system.
+					
 				\subsubsection{MVC Models and Database Design}
 					\begin{figure}[htb]
 						\begin{center}
@@ -80,8 +87,10 @@
 					\end{figure}	
 					A report always shows the current cell data, so there is a one to one relation between reports and cells. The component definitions are seperated from the values. A cell contains components, called modules (module\_instance). These components are instances of blueprints (module\_template). Each component blueprint can provide multiple parameters (module\_parameter). Each instance has a value for each parameter (module\_value).\\
 					The database design was devised this way, so templates are seperated from instances, resulting in no data redundancy.
+					
 				\subsubsection{Active Database}
 					Ruby models are mapped to any Relational Database Management System (RDBMS \cite{rdbms} ) such as SQLite, MySQL and PostgreSQL. By not restricting the server database technology, switching systems, servers or extending their capacity should be fairly simple and easy. Database operations are done through Active Database, part of rails, which transparently maps the query to the technology's language.
+					
 				\subsubsection{Views and ERB} 
 					The views are in ERB \cite{erb} which is an HTML template system. It comes with the Rails framework, so it does not require any extra software. Rails controllers written in Ruby can expose data to these views. Using a templating system such as this allows for quick translation from model to display. 
 			\begin{figure}[htb]
@@ -132,6 +141,7 @@
 					Controllers add interaction to views and models. Controllers can have children. Parent controllers can alter a child controllers behaviour. This way there is no need for a large set of controllers, e.g. a MainCell controller and a ReportCell are now combined into one Cell controller. \\
 					For collections of elements, views can use unobtrusive JavaScript to enlist those elements for interaction. A view might add data-xxx attributes to elements. Controllers may or may not bind javascript to elements with these attributes. Keeps the HTML clean and the interaction in the controllers hand. 
 				\clearpage
+				
 				\subsubsection{Helpers}
 					\begin{figure}[htb]
 						\begin{center}
@@ -180,6 +190,7 @@
 				During the Production release the Coffeescript assets are compiled to Javascript \cite{javascript} and the SASS assets are compiled to CSS, after which they are minified and bundled using uglifier \cite{uglifier} . Minified assets take up less space and increase page performance which results in a better user experience and less demand on the web server. 
 				SVG is still used for creating visualisations of the cell models.
 		\newpage		
+		
 		\subsection{Ordinary Differential Equation Solver}
 			All computations run client-side and are performed by our ODE Solver, which is built upon the numericjs \cite{numericjs} library. This is a library which makes it possible to perform sophisticated numerical computations in pure JavaScript and thus is able to run in the browser. The ODEs are solved using the Dormand-Prince RK method \cite{dormandprince} , also known as the ode45-function in MATLAB (previously used by our client).
 			
