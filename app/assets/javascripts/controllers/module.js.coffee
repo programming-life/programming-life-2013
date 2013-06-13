@@ -28,25 +28,18 @@ class Controller.Module extends Controller.Base
 		@_bind( 'view.module.hovered', @view, @_setHovered )
 		@_bind( 'view.module.removed', @view, @_setRemoved )
 		@_bind( 'view.module.saved', @view, @_setChanged )
+		@_bind( 'view.module.changed', @view, @_previewChanged )
+		return this
 		
-	# On action button clicked
-	# 
-	# @param event [jQuery.Event] the event thrown
+	# Runs when view activates save button
 	#
-	_onAction: ( event ) =>
-	
-		action = event.target.data( 'action' )
-		action = action.charAt(0).toUpperCase() + action.slice(1)
-		
-		func = @["_on#{action}"]
-		func( event ) if func?
-		
-		@_actionAlways event
-		
-	#
+	# @param view [View.Module] the view
+	# @param changes [Object] the changes made
 	#
 	_setChanged: ( view, changes ) =>
-		return if view isnt @view
+		return this if view isnt @view
+		@_parent.view.removePreviews()
+		
 		for key, value of changes
 			@model[ key ] = value
 			
@@ -56,29 +49,53 @@ class Controller.Module extends Controller.Base
 			@view.setPreview off
 			
 		@_parent.automagicAdd @model, off
+		return this
 	
+	# Runs when view activates a change
 	#
+	# @param view [View.Module] the view
+	# @param params [Object] the parameters
+	# @param key [String] the parameter changed
+	# @param value [any] the new value
+	# @param currents [Object] the current values
 	#
-	_onCancel: ( event ) =>
-		if @_preview
-			@_parent.remove this
+	_previewChanged: ( view, params, key, value, currents ) =>
+		return this if view isnt @view
+		@_parent.view.removePreviews()
+
+		module = new @model.constructor( _( _( params ).clone( true ) ).defaults( currents ) )
+		@_parent.automagicAdd module, on
+		@view.createSplines module, on
+		return this
 		
+	# Runs when view is selected or deselected
 	#
-	#
-	_actionAlways: ( event ) =>
-		console.log 'always'
-	
-	#
+	# @param view [View.Module] the view selected
+	# @param event [jQuery.Event] the event raised
+	# @param state [Boolean] the selection state
 	#
 	_setSelected: ( view, event, state = not @_selected ) =>
+		if state is off
+			@_parent.view.removePreviews()
+				
+		if view is @view and state
+				@_parent.automagicAdd @model, on
+				@view.createSplines @model, on
+				
 		if view isnt @view and state
 			state = off
 			
 		if @_selected isnt state
 			@view.setSelected state
 			@_selected = state
+			
+		return this
 		
+	# Runs when view is hovered or dehovered
 	#
+	# @param view [View.Module] the view hovered
+	# @param event [jQuery.Event] the event raised
+	# @param state [Boolean] the hovered state
 	#
 	_setHovered: ( view, event, state = not @_hovered ) =>
 		if view isnt @view and state
@@ -87,9 +104,14 @@ class Controller.Module extends Controller.Base
 		if @_hovered isnt state
 			@view.setHovered state
 			@_hovered = state
+		return this
 
+	# Runs when view activates delete button
 	#
+	# @param view [View.Module] the view
 	#
 	_setRemoved: ( view, event ) =>
-		return if view isnt @view
+		return this if view isnt @view
+		@_parent.view.removePreviews()
 		@_parent.model.remove @model
+		return this
