@@ -22,9 +22,13 @@ class View.Module extends View.RaphaelBase
 	# Creates a new module view
 	#
 	# @param paper [Raphael.Paper] the raphael paper
-	# @param module [Model.Module] the module to show
+	# @param parent [View.Cell] the cell view
+	# @param _cell [Model.Cell] the cell model
+	# @param model [Model.Module] the module to show
+	# @param preview [Boolean] the preview flag (is new)
+	# @param _interaction [Boolean] the interaction flag
 	#
-	constructor: ( paper, parent, @_cell, @model, @_preview = off, @_interaction = on ) ->
+	constructor: ( paper, parent, @_cell, @model, preview = off, @_interaction = on ) ->
 		super paper, parent
 
 		@id = _.uniqueId('view-module-')
@@ -37,43 +41,39 @@ class View.Module extends View.RaphaelBase
 
 		@addBindings()
 		@addInteraction() if @_interaction is on
+		@setPreview preview
 				
 		@getter
 			type: -> @_type
 		
 	# Adds interaction to the module ( popovers )
 	#
+	# @return [self] chainable self
+	#
 	addInteraction: () ->
 		@_propertiesView = new View.ModuleProperties( @, @_parent, @_cell, @model )
 		@_notificationsView = new View.ModuleNotification( @, @_parent, @_cell, @model )
-	
-	# 	@_bind( 'module.selected.changed', @, @onModuleSelected )
-	# 	@_bind( 'module.hovered.changed', @, @onModuleHovered )
-	# 	@_bind( 'module.properties.change', @, @_onModuleChanged )
-	# 	@_bind( 'module.update.aborted', @, @_onModuleUpdateEnded )
-
-	# 	@_onNotificate( @, @model, @_onNotificate)
-	# 	return this
-
-
-	# # Forwards any notification from the model
-	# #
-	# _onNotificate: ( context, source, identifier, type, message, args ) ->
-	# 	@_notificate( @, @, identifier, message, args, type )
-
+		return this
 		
 	# Adds bindings to the module (non-interaction)
 	#
+	# @return [self] chainable self
+	#
 	addBindings: () ->
+	
 		@_bind( 'module.property.changed', @, @_onModuleInvalidated )
 		@_bind( 'module.compound.changed', @, @_onModuleInvalidated )
+		
 		@_bind( 'cell.module.removed', @, @_onModuleRemoved )
 		@_bind( 'cell.metabolite.added', @, @_onMetaboliteAdded )
 		@_bind( 'cell.metabolite.removed', @, @_onMetaboliteRemoved )
+		return this
 		
 	# Sets wether or not the module is selected
 	#
 	# @param selected [Boolean] selection state
+	# @return [self] chainable self
+	#
 	setSelected: ( selected ) ->
 		if selected isnt @_selected
 			if selected
@@ -81,7 +81,8 @@ class View.Module extends View.RaphaelBase
 				@_addClass('selected')
 			else
 				@_removeClass('selected')
-
+				@createSplines()
+				
 		@_propertiesView?.setSelected selected
 		@_selected = selected
 		@_notificationsView?.hide()
@@ -90,6 +91,7 @@ class View.Module extends View.RaphaelBase
 	# Sets wether or not the module is hovered
 	#
 	# @param hovered [Boolean] hover state
+	# @return [self] chainable self
 	#
 	setHovered: ( hovered ) ->
 		if hovered isnt @_hovered 
@@ -102,7 +104,10 @@ class View.Module extends View.RaphaelBase
 		@_hovered = hovered
 		return this
 
+	# Sets the preview class
 	#
+	# @param hovered [Boolean] preview state
+	# @return [self] chainable self
 	#
 	setPreview: ( preview ) ->
 		if preview
@@ -111,12 +116,13 @@ class View.Module extends View.RaphaelBase
 			@_removeClass('preview')
 
 		@_preview = preview
+		return this
 
 		
 	# Returns the full type of this view's module.
-	# #
-	# # @return [String] the full type string
-	# #
+	# 
+	# @return [String] the full type string
+	# 
 	getFullType: ( ) ->
 	 	return @model.getFullType()
 				
@@ -140,7 +146,7 @@ class View.Module extends View.RaphaelBase
 	# Returns the coordinates of either the entrance or exit of this view
 	#
 	# @param location [View.Module.Location] the location (entrance or exit)
-	# @return [[float, float]] a tuple of the x and y coordinates
+	# @return [<float, float>] a tuple of the x and y coordinates
 	#
 	getPoint: ( location ) ->
 		box = @getBBox()
@@ -158,46 +164,32 @@ class View.Module extends View.RaphaelBase
 	# Returns the absolute coordinates of a location
 	#
 	# @param location [View.Module.Location] the location for which to get the coordinates
-	# @return [[float, float]] a tuple of the absolute x and y values, respectively
+	# @return [<float, float>] a tuple of the absolute x and y values, respectively
 	#
 	getAbsolutePoint: ( location ) ->
 		[x, y] = @getPoint(location)
 		return @getAbsoluteCoords(x, y)
 
-	# Returns the direction in which a spline should be drawn wrt a metabolite
-	#
-	# @param metabolitePlacement [Placement] the placement of the metabolite
-	# @return [View.Module.Direction] the direction of the spline
-	#
-	# _getSplineDirection: ( metabolitePlacement, model = @model ) ->
-	# 	if @type is 'Transporter'
-	# 		switch model.direction
-	# 			when Model.Transporter.Inward
-	# 				switch metabolitePlacement
-	# 					when Model.Metabolite.Inside
-	# 						return View.Module.Direction.Outward
-	# 					when Model.Metabolite.Outside
-	# 						return View.Module.Direction.Inward
-	# 			when Model.Transporter.Outward
-	# 				switch metabolitePlacement
-	# 					when Model.Metabolite.Inside
-	# 						return View.Module.Direction.Inward
-	# 					when Model.Metabolite.Outside
-	# 						return View.Module.Direction.Outward
-	
 	# Clears this view
+	#
+	# @return [self] chainable self
 	#
 	clear: ( ) ->
 		super()
 		@_clearSplines()
+		return this
 	
+	# Clears the splines form the view
 	#
+	# @return [self] chainable self
 	#
 	_clearSplines: () ->
-		@each ( view ) =>
-			@remove view.kill() if view instanceof View.Spline				
+		@each ( view ) => @remove view.kill() if view instanceof View.Spline		
+		return this
 
 	# Redraws this view iff it has been drawn before
+	#
+	# @return [self] chainable self
 	#
 	redraw: ( ) ->
 		_( @draw() ).debounce( 50 )
@@ -305,22 +297,9 @@ class View.Module extends View.RaphaelBase
 		rect.attr
 			fill: @color
 			stroke: 'none'
-
 		mask = @paper.image('/img/protein.png', @x - 30, @y - 20, 60, 40)
-
 		set = @paper.set(rect, mask)
-		# params =
-		# 	substrate: @model.name ? "..."
-		# 	showText: on
-		# 	useFullName : on
-		# 	r: 35
-			
-		# [ substrateCircle, substrateText ] = @drawComponent( 
-		# 	'protein', 
-		# 	'SubstrateCircle', 
-		# 	@x, @y, params )
-			
-		# return [ substrateCircle, substrateText ]
+		return [ set ]
 		
 	# Draws this view as a DNA
 	#
@@ -331,10 +310,9 @@ class View.Module extends View.RaphaelBase
 		rect.attr
 			fill: '#b94a48'
 			stroke: 'none'
-
 		mask = @paper.image('/img/dna.png', @x - 40, @y - 30, 80, 60)
-
 		set = @paper.set(rect, mask)
+		return [ set ]
 	
 	# Draws this view as a Lipid
 	#
@@ -345,10 +323,9 @@ class View.Module extends View.RaphaelBase
 		rect.attr
 			fill: @color
 			stroke: 'none'
-
 		mask = @paper.image('/img/lipid.png', @x - 30, @y - 20, 60, 40)
-
 		set = @paper.set(rect, mask)
+		return [ set ]
 	
 	# Draws this view as a cell growth
 	#
@@ -359,10 +336,9 @@ class View.Module extends View.RaphaelBase
 		rect.attr
 			fill: @color
 			stroke: 'none'
-
 		mask = @paper.image('/img/cellgrowth.png', @x - 30, @y - 20, 60, 40)
-
 		set = @paper.set(rect, mask)
+		return [ set ]
 
 	# Draws this view bounding box
 	#
@@ -384,13 +360,13 @@ class View.Module extends View.RaphaelBase
 
 		$( box.node ).addClass 'module-box'
 		$( box.node ).addClass  @type.toLowerCase() + '-box'
-		
 		return box
 		
 	# Creates splines for this module
 	#
 	# @param model [Model] the module to create for
 	# @param preview [Boolean] the preview flag
+	# @return [self] chainable self
 	#
 	createSplines: ( model = @model, preview = off ) ->
 		@_clearSplines()
@@ -401,33 +377,12 @@ class View.Module extends View.RaphaelBase
 
 			for metabolite in orig
 				if view = @_parent.getViewByName metabolite
-					@add(new View.Spline(@paper, @_parent, @_cell, view, @, preview, on))
+					@add new View.Spline( @paper, @_parent, @_cell, view, @, preview, on, View.Spline.Type.Metabolite )
 
 			for metabolite in dest
 				if view = @_parent.getViewByName metabolite
-					@add(new View.Spline(@paper, @_parent, @_cell, @, view, preview, on))
+					@add new View.Spline( @paper, @_parent, @_cell, @, view, preview, on, View.Spline.Type.Metabolite )
 
-				###for location in ["int", "ext"]
-					view = @_parent.getViewByName "#{property}##{location}"
-					if view
-						placement = view.model.placement
-						direction = @_getSplineDirection(placement)
-
-						if direction is View.Module.Direction.Inward
-							@_createSpline( view, @, preview )
-						else if direction is View.Module.Direction.Outward
-							@_createSpline( @, view, preview )###
-		###else if @type is 'Metabolism'
-			for property in _( model["orig"] ).concat( model["dest"] )
-				view = @_parent.getViewByName property
-				if view
-					placement = view.model.placement
-					direction = @_getSplineDirection(placement)
-
-					if property in model["orig"]
-						@_createSpline( view, @, preview )
-					else if property in model["dest"]
-						@_createSpline( @, view, preview )###
 		return this
 
 	# Draws this view shadow
@@ -588,22 +543,6 @@ class View.Module extends View.RaphaelBase
 
 		return [ enzymOrigCircles, enzymDestCircles ]
 
-	# Creates a new spline
-	#
-	# @param orig [View.Module] the origin module view
-	# @param dest [View.Module] the destination module view
-	# @return [View.Spline] the created spline
-	# #
-	# _createSpline: ( orig, dest, preview = off ) ->
-	# 	#return @_createPreviewSpline( orig, dest ) if preview
-	# 	#return if orig instanceof View.ModulePreview or dest instanceof View.ModulePreview
-		
-
-	# Creates a spline preview
-	#
-	# _createPreviewSpline: ( orig, dest ) ->
-	# 	new View.SplinePreview(@paper, @_parent, @_cell, orig, dest)
-
 	# Runs if module is invalidated
 	# 
 	# @param module [Model.Module] the module invalidated
@@ -611,21 +550,7 @@ class View.Module extends View.RaphaelBase
 	_onModuleInvalidated: ( module ) =>
 		if module is @model
 			@redraw()
-			
-	# Runs if module is changed
-	#
-	_onModuleChanged: ( source, params, key, value, currents ) =>
-		if source.model is @model
-			@_notificationsView?.hide()
-			module = new source.model.constructor( _( _( params ).clone( true ) ).defaults( currents ) )
-			@createSplines( module, on )
-			
-	# Runs if module is no longer updated
-	#
-	_onModuleUpdateEnded: ( source ) =>
-		if source.model is @model
-			@createSplines( @model, off )
-			
+
 	# Gets called when a module is removed from a cell
 	#
 	# @param cell [Model.Cell] the cell from which the module was removed

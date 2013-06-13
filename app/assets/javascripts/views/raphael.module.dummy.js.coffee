@@ -139,7 +139,7 @@ class View.DummyModule extends View.RaphaelBase
 	# Returns the coordinates of either the entrance or exit of this view
 	#
 	# @param location [View.Module.Location] the location (entrance or exit)
-	# @return [[float, float]] a tuple of the x and y coordinates
+	# @return [<float, float>] a tuple of the x and y coordinates
 	#
 	getPoint: ( location ) ->
 		box = @getBBox()
