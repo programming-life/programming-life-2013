@@ -141,7 +141,3 @@ class View.Spline extends View.RaphaelBase
 	# _onViewDrawn: ( module ) =>
 	# 	if module is @orig.model or module is @dest.model
 	# 		@draw()
-
-
-
-		

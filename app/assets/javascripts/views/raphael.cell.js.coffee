@@ -171,6 +171,15 @@ class View.Cell extends View.RaphaelBase
 			view = _( views ).find( (view) -> view.model?.name is name )
 			return view if view?
 		return null
+	 	
+	# Gets number of views by type
+	#
+	# @param type [String] the type
+	# @return [Integer] the number of views
+	#
+	numberOf: ( type ) ->
+		return 0 unless @viewsByType[ type ]?
+		return @viewsByType[ type ].length
 
 	# Draws the cell
 	#

@@ -10,8 +10,8 @@ class Controller.Module extends Controller.Base
 	# @param _preview [Boolean] is this a preview module
 	# @param _interaction [Boolean] has this interaction enabled
 	#
-	constructor: ( @_parent, @model, @_preview = off, @_interaction = on ) ->
-		super new View.Module( @_parent.view.paper, @_parent.view, @_parent.model, @model, @_preview, @_interaction )
+	constructor: ( @_parent, model, @_preview = off, @_interaction = on ) ->
+		super new View.Module( @_parent.view.paper, @_parent.view, @_parent.model, model, @_preview, @_interaction )
 		
 		@_selected = off
 		@_hovered = off
