@@ -43,9 +43,8 @@ class View.Graph extends View.RaphaelBase
 		
 		@_line?.remove()
 		@_line = null
-		for value in @_columnText?
-			value.remove()
 		
+		@_columnText?.remove()
 		@_columnText = null;
 		super()
 		
@@ -138,11 +137,13 @@ class View.Graph extends View.RaphaelBase
 	
 	_drawColumnText: (text ) ->
 		unless @_columnText? 
-			@_columnText = []
+			@_columnText = $("<div></div>")
+			@_container.append @_columnText
+		@_columnText.empty()
+
 		for i,s of text
-			@_columnText.push $("<p></p>")
-			@_container.append( _(@_columnText).last() )
-			@_columnText[i].html(s)
+			node = $("<p>#{s}</p>")
+			@_columnText.append node
 	
 	# Shows a column
 	showColumn: ( xFactor , text ) ->
