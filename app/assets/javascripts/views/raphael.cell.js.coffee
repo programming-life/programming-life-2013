@@ -118,7 +118,7 @@ class View.Cell extends View.RaphaelBase
 		unless @viewsByType[ type ]?
 			@viewsByType[ type ] = []
 
-		@viewsByType[ type ].push view
+		@viewsByType[ type ].push view unless view instanceof View.DummyModule
 		view.draw()
 		@_notificationsView?.hide()
 		return this
@@ -219,7 +219,9 @@ class View.Cell extends View.RaphaelBase
 		type = view.model.getFullType()
 		views = @viewsByType[type] ? []
 
-		index = views.indexOf(view)
+		index = views.indexOf view
+		if view instanceof View.DummyModule
+			index = views.length
 		
 		switch type
 		
