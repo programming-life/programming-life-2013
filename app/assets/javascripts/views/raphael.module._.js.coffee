@@ -1,5 +1,4 @@
-# The module view shows a module
-#
+# The module view shows a module#
 class View.Module extends View.RaphaelBase
 
 	# Module Location
@@ -67,6 +66,7 @@ class View.Module extends View.RaphaelBase
 		@_bind( 'cell.module.removed', @, @_onModuleRemoved )
 		@_bind( 'cell.metabolite.added', @, @_onMetaboliteAdded )
 		@_bind( 'cell.metabolite.removed', @, @_onMetaboliteRemoved )
+		@_bind( 'view.module.changed', @, @_onChanged )
 		return this
 		
 	# Sets wether or not the module is selected
@@ -584,3 +584,6 @@ class View.Module extends View.RaphaelBase
 		for view in @_views when view instanceof View.Spline
 			if metabolite is view.orig.model or metabolite is view.dest.model
 				view.kill()
+	
+	_onChanged: ( ) ->
+		#@redraw()
