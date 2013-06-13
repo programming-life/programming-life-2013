@@ -38,7 +38,10 @@ class Controller.Graphs extends Controller.Base
 
 		return this
 	
+	# Shows the column data for the column where xData is displayed
+	#
+	# @param xData [Integer] The data x of the column to show
+	#
 	showColumnData: ( xData ) ->
 		@each( (child) -> child.showColumnData( xData ) )
 			
-		
