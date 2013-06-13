@@ -7,9 +7,9 @@ describe("Graphs", function() {
 				kill: jasmine.createSpy("kill"),
 				draw: jasmine.createSpy("draw")
 			}
-			graph1 = new Controller.Graph( viewSpy );
-			graph2 = new Controller.Graph( viewSpy );
-			graph3 = new Controller.Graph( viewSpy );
+			graph1 = new Controller.Graph( {}, viewSpy );
+			graph2 = new Controller.Graph( {}, viewSpy );
+			graph3 = new Controller.Graph( {}, viewSpy );
 			controller.addChild( 1, graph1 );
 			controller.addChild( 2, graph2 );
 			controller.addChild( 3, graph3 );

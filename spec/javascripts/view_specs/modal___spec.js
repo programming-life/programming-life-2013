@@ -8,6 +8,10 @@ describe("Modal", function() {
 			view = new View.HTMLModal(header, contents, id, classname)
 		});
 
+		afterEach( function() {
+			view.kill()
+		})
+
 		it("should have set all the properties", function() {
 			expect( view._header ).toBe( header );
 			expect( view._contents ).toBe( contents );
