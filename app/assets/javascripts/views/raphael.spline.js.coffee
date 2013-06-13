@@ -2,6 +2,12 @@
 #
 class View.Spline extends View.RaphaelBase
 
+	# The spline type
+	@Type:
+		Processing: 0
+		Synthesis: 1
+		Consuming: 2
+
 	# Creates a new spline
 	# 
 	# @param paper [Raphael.Paper] the raphael paper
@@ -9,26 +15,39 @@ class View.Spline extends View.RaphaelBase
 	# @param _cell [Model.Cell] the cell model displayed in the parent
 	# @param orig [View.Module] the origin of the spline
 	# @param dest [View.Module] the destination of the spline
-	# @param interaction [Boolean] wether to add interaction to the splines or not
+	# @param interaction [Boolean] whether to add interaction to the splines or not
+	# @param type [Integer] the type of the spline
 	#
-	constructor: ( paper, parent, @_cell, @orig, @dest, @_preview = off, @_interaction = on ) ->
+	constructor: ( paper, parent, @_cell, @orig, @dest, @_preview = off, @_interaction = on, @_type = Spline.Type.Processing ) ->
 		super paper, parent
-
 		@addInteraction() if @_interaction is on		
+		
+	# Gets the spline class for this type
+	#
+	# @return [String] the class
+	#
+	getSplineClass: ( affix = '' ) ->
+		type = switch @_type
+			when Spline.Type.Processing
+				'metabolite'
+			when Spline.Type.Synthesis
+				'dna'
+			when Spline.Type.Consume
+				'consume'
+			else
+				'metabolite'
+				
+		affix = "-#{affix}" if affix isnt ''
+		affix = "#{affix}-preview" if @_preview
+		return "#{type}-spline#{affix}"
 
 	# Adds interaction to the spline
 	#
 	addInteraction: ( ) ->
-		# @_bind( 'cell.module.removed', @, @_onModuleRemoved )
-		# @_bind( 'cell.metabolite.removed', @, @_onModuleRemoved )
-
-		# @_bind( 'module.property.changed', @, @_onModuleInvalidated )
-		# @_bind( 'module.compound.changed', @, @_onModuleInvalidated )
 
 		@_bind( 'view.moving', @, @_onViewMoving )
 		@_bind( 'view.moved', @, @_onViewMoved )
 		# @_bind( 'view.drawn', @, @_onViewDrawn )
-
 		return this
 
 	# Sets the correct color of the spline
@@ -40,24 +59,24 @@ class View.Spline extends View.RaphaelBase
 			@color = @dest.color
 
 		@_contents?.attr('stroke', @color)
+		return this
 
 	# Draws the spline
 	#
 	draw: ( ) ->
 		path = @_getPathString()
-		
 		@_contents = @paper.set()
 
-		@_spline = @paper.path(path)
-		$(@_spline.node).addClass('metabolite-spline')
-		@_contents.push(@_spline)
+		@_spline = @paper.path path
+		$( @_spline.node ).addClass "#{ @getSplineClass() }"
+		@_contents.push @_spline
 
-		if @_interaction
-			@_splineDots = @_paper.path(path)
-			$(@_splineDots.node).addClass('metabolite-spline-dots')
-			@_contents.push(@_splineDots)
+		if @_interaction and not @_preview
+			@_splineDots = @_paper.path path
+			$( @_splineDots.node ).addClass "#{ @getSplineClass 'dots' }"
+			@_contents.push @_splineDots
 
-		@_contents.insertBefore(@paper.bottom)		
+		@_contents.insertBefore @paper.bottom
 		@setColor()
 
 	# Returns an svg path string from orig to dest
