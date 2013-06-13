@@ -698,5 +698,6 @@ class View.Module extends View.RaphaelBase
 	# @param metabolite [Metabolite] the metabolite that was removed
 	#
 	_onMetaboliteRemoved: ( cell, metabolite ) ->
+		return if cell isnt @_cell
 		if @getFullType() is metabolite.getFullType() and metabolite isnt @model
 			@setPosition()		
