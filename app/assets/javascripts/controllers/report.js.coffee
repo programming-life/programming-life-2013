@@ -24,6 +24,7 @@ class Controller.Report extends Controller.Base
 	_createChildren: () ->
 		@addChild 'cell', new Controller.Cell( @view.paper, @view, undefined, off )
 		@addChild 'graphs', new Controller.Graphs( @view.paper )
+		@addChild 'settings', new Controller.Settings()
 		
 		@view.add @controller('cell').view
 		@view.add @controller('graphs').view
@@ -82,7 +83,7 @@ class Controller.Report extends Controller.Base
 	#
 	solveTheSystem: () ->
 		
-		@_iterations = 2
+		@_iterations = @controller('settings').options.simulate.iterations
 		@_currentIteration = 0
 
 		iterationDone = ( results, from, to ) =>
@@ -95,7 +96,9 @@ class Controller.Report extends Controller.Base
 			@_setProgressBar 0
 
 		@view.showProgressBar()
-		[ token, promise ] = @controller('cell').startSimulation( { iterations: @_iterations, iteration_length: 20 }, iterationDone )
+		settings = @controller('settings').options
+		override = { dt: 0.01, interpolate: on }
+		[ token, promise ] = @controller('cell').startSimulation( settings.simulate, iterationDone, _( override ).defaults (settings.ode) )
 		promise.done( () => 
 			$('#create-pdf').removeProp 'disabled'
 			$('#create-csv').removeProp 'disabled'
