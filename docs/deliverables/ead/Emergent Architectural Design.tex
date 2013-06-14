@@ -75,18 +75,21 @@
 					The server runs on Ruby on Rails \cite{ror} . This is a fairly new but very stable platform that is not only free but also open source. This means it is being actively developed by a large number of people. Problems are easily fixed and this should ease the use of the application that is being designed. The language itself is written from a standpoint where you should just be able to write code and not worry about breaking the interpreter \cite{ruby} . This makes it easy to write comprehensible code that executes complex tasks.
 								
 				\subsubsection{MVC on the server}
-					The pages served are HTML5 for markup with CSS3 for styling and Javascript for interaction. Pages are built by a comprehensive and solid Model-Viewer-Controller system. This keeps data separated from the representation, further increasing maintainability. Interaction is illustrated in Figure 3. Rails uses MVC at its core. It makes it easy to create the back end views and client side representations because displaying data, the interaction and the actual data are separated.
+					The pages served are HTML5 for markup with CSS3 for styling and Javascript for interaction. Pages are built by a comprehensive and solid Model-Viewer-Controller system. In such a system, data is kept in models, views are their representations - you can have multiple representations per model - and controllers add interaction to these views, control the models that are displayed and isolate all model changes. In short, such system keeps data separated from the representation, further increasing maintainability. Interaction is illustrated in Figure 3. Rails uses MVC at its core. It makes it easy to create the back end views and client side representations because displaying data, the interaction and the actual data are separated.
 					
 				\subsubsection{MVC Models and Database Design}
+					The database design was devised in a specifc way to ensure that there is no data redundancy. Specifically template/blueprint data is seperated from instance/instantiated data. The figure below is a database diagram.
 					\begin{figure}[htb]
 						\begin{center}
 							\includegraphics[width=\linewidth]{erd.pdf}
 							\caption{Database and Ruby Models}
 							\label{fig: erd}
 						\end{center}
-					\end{figure}	
-					A report always shows the current cell data, so there is a one to one relation between reports and cells. The component definitions are separated from the values. A cell contains components, called modules (module\_instance). These components are instances of blueprints (module\_template). Each component blueprint can provide multiple parameters (module\_parameter). Each instance has a value for each parameter (module\_value).\\
-					The database design was devised this way, so templates are separated from instances, resulting in no data redundancy.
+					\end{figure}
+					In the following paragraphs the words module, cell, report, module instance, module template, module parameter and module value and their instantiated forms refer to the figure abobe.
+					Solid lines and arrows are associations.  For example, a module instance belongs to a cell, a module instance also has a module template as parent and a cell is bound to a report, whereas a report belongs to a cell.
+					The dashed arrows indicate implict asociations. Since the module instance belongs to a cell and a template, a cell could query all the parents - the module templates - of all its module instances. And because a module value belongs to both a module instance and a module parameter, a module instance can query its module parameters.
+					A report (see the figure above) is only dynamically defined. There is no additional cell data present in the report model. This enables a one to one relation between reports and cells. The component definitions are separated from the values. A cell contains components, called modules (module\_instance). These components are instances of blueprints (module\_template). Each component blueprint can provide multiple parameters (module\_parameter). Each instance has a value for each parameter (module\_value).\\
 					
 				\subsubsection{Active Database}
 					Ruby models are mapped to any Relational Database Management System (RDBMS \cite{rdbms}) such as SQLite, MySQL and PostgreSQL. By not restricting the server database technology, switching systems, servers or extending their capacity should be fairly simple and easy. Database operations are done through Active Database, part of Rails, which transparently maps the query to the technology's language.
@@ -103,7 +106,22 @@
 			\clearpage
 
 			\subsection{Client}
-				The server compiles the client application from Coffeescript to Javascript. This application is completely seperated from the server side functionality except for saving, loading, sharing and the production of reports. The client application is also built upon MVC.\\	
+				The server compiles the client application from Coffeescript to Javascript. This application is completely seperated from the server side functionality except for saving, loading, sharing and the production of reports. The client application is also built upon MVC.
+				
+				\subsubsection{Helpers}
+					\begin{figure}[htb]
+						\begin{center}
+							\includegraphics[width=\linewidth]{helpers.png}
+							\caption{Client Helpers}
+							\label{fig: cmodels}
+						\end{center}
+					\end{figure}	
+					In the figure above the mixable class is shown, as well as a number of concerns - a set a functions that can be augmented with any class derived from mixable. A concern is also known as Trait or Mixin.\\
+					DynamicProperties adds the ability to dynamically create JavaScript properties. It has a function to define getters: a read function for a property, define setters: a write function for a property, define non enumerable values: properties that are excluded from the enumeration when enumerating over a class its properties. The Cell and Module models, show in the next section, use this extensively.\\
+					TimeMachine adds undo functionality to a class. It adds an action queue - a queue of functions wrapped in actions - to classes that include this concern. The action class is used to fill this queue. It is used by the Cell and Module models.\\
+					EventBindings enable listening and triggering events, used by almost all classes. This concern depends on the EventManager class.\\
+					Catchable can enclose functions into try catch blocks and trigger callbacks and events instead of breaking the application.\\
+					To use one of these concern, a class needs to have the Mixable class in the inheritance chain.
 				
 				\subsubsection{Models}
 					\begin{figure}[htb]
@@ -113,10 +131,7 @@
 							\label{fig: cmodels}
 						\end{center}
 					\end{figure}	
-					There are two data models and a few meta models. The cell has it's own model and so do the modules, cell components, such as transporters and metabolites. The JavaScript classes can be seen as the ModuleTemplate and ModuleParameter classes on the server. The contents of the classes, the actual data, are the ModuleInstance and ModuleValue classes. Each model has a bit of functionality but only
-					to ensure data consistency and correctness. Each of these data models can load and save itself. \\
-					To provide for undo functionality, the tree, node, undo tree and action classes are present. The former three are pretty transparent. The latter is a closure class used as node data in the tree. \\
-					The Event Manager adds communication between arbitrary parts of the application. Objects can trigger events or listen on it.
+					In the figure above you can see the model classes. Each JavaScript class maps to one ModuleTemplate and associated ModuleParameter entries on the server. When a cell or module JavavaScript class is instantiated, it can save the instance data as ModuleInstance and associated ModuleValue entries on the server.
 				
 				\subsubsection{Views}
 					\begin{figure}[htb]
@@ -126,9 +141,8 @@
 							\label{fig: cmodels}
 						\end{center}
 					\end{figure}	
-
-					The views are of two basic types: Raphael or HTML. There is a meta class Collection which just holds views. All views can have children and display a single model. Raphael typed views use SVG to display their contents. To display a model differently, new views can be added. The views only have display functionality. They do not add interaction. \\
-					Events on the models ensure views to be able to update their display. This way a view is notified of changes instead of needing to poll for changes.
+					In the figure above there are two basic types: Raphael or HTML. All views can have children and display a single model. Raphael typed views use SVG to display their contents. The views only have display functionality. They do not add interaction. Each view keeps track of changes to the displayed module. Through controllers, views can interact with the models. This is explained and displayed later on. \\
+					To keep the figure above from cluttering, a few associations are left out. The Module view has a ModuleProperties popover and Cell, Main and Module views have Notification views. Graph views are contained in a Graphs view, which is just a Collection.
 					
 				\subsubsection{Controllers}
 					\begin{figure}[htb]
@@ -139,21 +153,10 @@
 						\end{center}
 					\end{figure}	
 					Controllers add interaction to views and models. Controllers can have children. Parent controllers can alter a child controllers behaviour. This way there is no need for a large set of controllers, e.g. a MainCell controller and a ReportCell are now combined into one Cell controller. \\
-					For collections of elements, views can use unobtrusive JavaScript to enlist those elements for interaction. A view might add data-xxx attributes to elements. Controllers may or may not bind Javascript to elements with these attributes. Keeps the HTML clean and the interaction in the controllers hand. 
-				\clearpage
-				
-				\subsubsection{Helpers}
-					\begin{figure}[htb]
-						\begin{center}
-							\includegraphics[width=\linewidth]{helpers.png}
-							\caption{Client Helpers}
-							\label{fig: cmodels}
-						\end{center}
-					\end{figure}	
-					There is a set of mixins used by many models, views and controllers. DynamicProperties adds the ability to dynamically create Javascript properties. Define getters, setters, non enumerable values and so forth and on. The Cell and Module models use this extensively. TimeMachine adds undo functionality to a class. EventBindings enable listening and triggering events, used by almost all classes. Catchable can enclose functions into try catch blocks and trigger callbacks and events instead of breaking the application. Finally there is the Mixable base class. To use mixins, this class needs to be in the prototype chain.
+					For collections of elements, views can use unobtrusive JavaScript to enlist those elements for interaction. A view might add data-xxx attributes to elements. Controllers may or may not bind Javascript to elements with these attributes. This keeps the HTML clean and the interaction in the controllers hand. 
 					
 				\subsubsection{Local storage}
-					Javascript determines the local storage engine that is available and uses that to maintain an offline copy of the application and the created cells/modules. This makes it very easy to design new cells or edit saved cells even when the user isn't connected to the internet. This is communicated to the user, but requires no further interaction. Synchronization is completely transparent.
+					Javascript determines the local storage engine that is available and uses that to maintain an offline copy of the application and the created cells/modules. This makes it very easy to design new cells or edit saved cells even when the user isn't connected to the internet. This is communicated to the user, but requires no further interaction. Synchronization is completely transparent, but if it fails for whatever reason and the fallbacks that are in place don't kick in, a notification is displayed.
 		
 		\subsection{Data management}
 			When the user has access to the server, it can export simulation results to a report in multiple standardised format, such as \emph{HTML}, \emph{Excel} and \emph{PDF} which can then be shared. Maintaining a standardised format allows for consistency in the reports as requested by the user.		
