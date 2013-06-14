@@ -106,7 +106,22 @@
 			\clearpage
 
 			\subsection{Client}
-				The server compiles the client application from Coffeescript to Javascript. This application is completely seperated from the server side functionality except for saving, loading, sharing and the production of reports. The client application is also built upon MVC.\\	
+				The server compiles the client application from Coffeescript to Javascript. This application is completely seperated from the server side functionality except for saving, loading, sharing and the production of reports. The client application is also built upon MVC.
+				
+				\subsubsection{Helpers}
+					\begin{figure}[htb]
+						\begin{center}
+							\includegraphics[width=\linewidth]{helpers.png}
+							\caption{Client Helpers}
+							\label{fig: cmodels}
+						\end{center}
+					\end{figure}	
+					In the figure above the mixable class is shown, as well as a number of concerns - a set a functions that can be augmented with any class derived from mixable. A concern is also known as Trait or Mixin.\\
+					DynamicProperties adds the ability to dynamically create JavaScript properties. It has a function to define getters: a read function for a property, define setters: a write function for a property, define non enumerable values: properties that are excluded from the enumeration when enumerating over a class its properties. The Cell and Module models, show in the next section, use this extensively.\\
+					TimeMachine adds undo functionality to a class. It adds an action queue - a queue of functions wrapped in actions - to classes that include this concern. The action class is used to fill this queue. It is used by the Cell and Module models.\\
+					EventBindings enable listening and triggering events, used by almost all classes. This concern depends on the EventManager class.\\
+					Catchable can enclose functions into try catch blocks and trigger callbacks and events instead of breaking the application.\\
+					To use one of these concern, a class needs to have the Mixable class in the inheritance chain.
 				
 				\subsubsection{Models}
 					\begin{figure}[htb]
@@ -116,7 +131,7 @@
 							\label{fig: cmodels}
 						\end{center}
 					\end{figure}	
-					There are two data models and a few meta models. The cell has it's own model and so do the modules, cell components, such as transporters and metabolites. Each JavaScript class maps to one ModuleTemplate and associated ModuleParameter classes on the server. Each of these data models can load and save itself. \\ 
+					In the figure above you can see the model classes. Each JavaScript class maps to one ModuleTemplate and associated ModuleParameter entries on the server. When a cell or module JavavaScript class is instantiated, it can save the instance data as ModuleInstance and associated ModuleValue entries on the server.
 				
 				\subsubsection{Views}
 					\begin{figure}[htb]
@@ -126,9 +141,8 @@
 							\label{fig: cmodels}
 						\end{center}
 					\end{figure}	
-
-					The views are of two basic types: Raphael or HTML. There is a meta class Collection which just holds views. All views can have children and display a single model. Raphael typed views use SVG to display their contents. To display a model differently, new views can be added. The views only have display functionality. They do not add interaction. \\
-					Events on the models ensure views to be able to update their display. This way a view is notified of changes instead of needing to poll for changes.
+					In the figure above there are two basic types: Raphael or HTML. All views can have children and display a single model. Raphael typed views use SVG to display their contents. The views only have display functionality. They do not add interaction. Each view keeps track of changes to the displayed module. Through controllers, views can interact with the models. This is explained and displayed later on. \\
+					To keep the figure above from cluttering, a few associations are left out. The Module view has a ModuleProperties popover and Cell, Main and Module views have Notification views. Graph views are contained in a Graphs view, which is just a Collection.
 					
 				\subsubsection{Controllers}
 					\begin{figure}[htb]
@@ -139,21 +153,10 @@
 						\end{center}
 					\end{figure}	
 					Controllers add interaction to views and models. Controllers can have children. Parent controllers can alter a child controllers behaviour. This way there is no need for a large set of controllers, e.g. a MainCell controller and a ReportCell are now combined into one Cell controller. \\
-					For collections of elements, views can use unobtrusive JavaScript to enlist those elements for interaction. A view might add data-xxx attributes to elements. Controllers may or may not bind Javascript to elements with these attributes. Keeps the HTML clean and the interaction in the controllers hand. 
-				\clearpage
-				
-				\subsubsection{Helpers}
-					\begin{figure}[htb]
-						\begin{center}
-							\includegraphics[width=\linewidth]{helpers.png}
-							\caption{Client Helpers}
-							\label{fig: cmodels}
-						\end{center}
-					\end{figure}	
-					There is a set of mixins used by many models, views and controllers. DynamicProperties adds the ability to dynamically create Javascript properties. Define getters, setters, non enumerable values and so forth and on. The Cell and Module models use this extensively. TimeMachine adds undo functionality to a class. EventBindings enable listening and triggering events, used by almost all classes. Catchable can enclose functions into try catch blocks and trigger callbacks and events instead of breaking the application. Finally there is the Mixable base class. To use mixins, this class needs to be in the prototype chain.
+					For collections of elements, views can use unobtrusive JavaScript to enlist those elements for interaction. A view might add data-xxx attributes to elements. Controllers may or may not bind Javascript to elements with these attributes. This keeps the HTML clean and the interaction in the controllers hand. 
 					
 				\subsubsection{Local storage}
-					Javascript determines the local storage engine that is available and uses that to maintain an offline copy of the application and the created cells/modules. This makes it very easy to design new cells or edit saved cells even when the user isn't connected to the internet. This is communicated to the user, but requires no further interaction. Synchronization is completely transparent.
+					Javascript determines the local storage engine that is available and uses that to maintain an offline copy of the application and the created cells/modules. This makes it very easy to design new cells or edit saved cells even when the user isn't connected to the internet. This is communicated to the user, but requires no further interaction. Synchronization is completely transparent, but if it fails for whatever reason and the fallbacks that are in place don't kick in, a notification is displayed.
 		
 		\subsection{Data management}
 			When the user has access to the server, it can export simulation results to a report in multiple standardised format, such as \emph{HTML}, \emph{Excel} and \emph{PDF} which can then be shared. Maintaining a standardised format allows for consistency in the reports as requested by the user.		
