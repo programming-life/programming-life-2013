@@ -1,4 +1,6 @@
 class ReportsController < ApplicationController
+	require 'csv'
+	require 'json'
 
 	# GET /reports
 	def index
@@ -64,19 +66,33 @@ class ReportsController < ApplicationController
 	def update
 		@report = Report.find(params[:id])
 		@module_instances = @report.cell.module_instances
-		@report_params = params[:report]
-		@isPDF = true
+		@isPDF = false
 
-		if ( @report_params[:format] == 'pdf' )
+		if ( params[:commit] == 'Create PDF' )
+			@isPDF = true
 			respond_to do |format|
 				format.html { 
 					render	:pdf 					=> "#{@report.created_at.strftime("%Y-%m-%d")}_#{@report.id}_#{@report.cell.id}",
 							:disable_internal_links		=> true,
-		           			:disable_external_links		=> true,
-	           				:template					=> 'reports/show.html.erb'
-	           	}
-	        end
-	        return
+							:disable_external_links		=> true,
+							:template					=> 'reports/show.html.erb'
+				}
+			end
+			return
+		elsif ( params[:commit] == 'Export to CSV' )
+			csv_string = CSV.generate do |csv|
+				JSON.parse(params[:report][:datasets]).each do |dataset|
+					csv << [dataset[0]]
+					dataset[1].each do |key, values|
+						csv << [key]
+						csv << (values.each)						
+					end
+				end
+			end
+
+			send_data csv_string,
+					:type => 'text/csv; charset=iso-8859-1; header=present',
+					:disposition => "attachment; filename=#{@report.id}_#{@report.cell.id}.csv"
 		end	
 	end
 

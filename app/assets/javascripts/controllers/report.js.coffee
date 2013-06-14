@@ -12,6 +12,7 @@ class Controller.Report extends Controller.Base
 		super view ? new View.Report( @container )
 		
 		@_currentIteration = 0
+		@_datasets = {}
 		@_createChildren()
 		@_createBindings()
 		
@@ -66,6 +67,15 @@ class Controller.Report extends Controller.Base
 		$( '#report_data' ).attr( "value", cell_svg )
 		return cell_svg
 		
+	# Serializes the graph datasets
+	#
+	# @return [JSON] the serialized datasets
+	#
+	serializeDatasets: () ->
+		serializedDatasets = JSON.stringify( @_datasets )
+		$( '#report_datasets' ).attr( "value", serializedDatasets )
+		return serializedDatasets
+
 	# Solve the system
 	#
 	# @return [Tuple<CancelToken, jQuery.Promise>] a token and the promise
@@ -74,16 +84,24 @@ class Controller.Report extends Controller.Base
 		
 		@_iterations = 2
 		@_currentIteration = 0
-	
+
 		iterationDone = ( results, from, to ) =>
 			@controller( 'graphs' ).show( results.datasets, @_currentIteration > 0, 'key' )
+			
+			# Send first dataset only for now, second dataset is bugged
+			@_datasets = results.datasets if @_currentIteration == 0
+
 			@_currentIteration++
 			@_setProgressBar 0
 
 		@view.showProgressBar()
 		[ token, promise ] = @controller('cell').startSimulation( { iterations: @_iterations, iteration_length: 20 }, iterationDone )
-		promise.done () => $('#create-pdf').removeProp 'disabled'
-		promise.done () => @view.hideProgressBar()
+		promise.done( () => 
+			$('#create-pdf').removeProp 'disabled'
+			$('#create-csv').removeProp 'disabled'
+			@view.hideProgressBar()
+			@serializeDatasets()
+		)
 		promise.progress @_setProgressBar
 		
 	# Runs on an action (click)
