@@ -41,7 +41,6 @@ class View.RaphaelBase extends View.Collection
 	_catcher: ( source, e ) =>
 		text = if _( e ).isObject() then e.message ? 'no message' else e 
 		@_notificate( @, source, _( 'catched-' ).uniqueId() , text, [], View.RaphaelBase.Notification.Error)
-
 		
 	# Gets the Bounding Box for this view
 	# 
@@ -54,14 +53,16 @@ class View.RaphaelBase extends View.Collection
 	# 
 	clear: ( ) ->
 		@_contents?.remove()
+		@_contents = @_paper?.set()
 		super()
+		return this
 			
 	# Kills this view 
 	#
 	kill: ( ) ->
 		super()
-		
 		@_unbindAll()
+		return this
 
 	# Sets the position of this view according to its parent's instructions
 	#
@@ -95,7 +96,7 @@ class View.RaphaelBase extends View.Collection
 	# @param dy [float] the amount to move in the y direction
 	# @param animate [Boolean] wether or not to animate the move
 	#
-	move: (dx, dy, animate = on, moveViews = on) ->
+	move: (dx, dy, animate = on, moveViews = off) ->
 		done = ( ) =>
 			@_trigger( 'view.moved', @ )			
 
@@ -135,7 +136,6 @@ class View.RaphaelBase extends View.Collection
 		@_contents.push(@_anchor)
 
 		super()		
-
 		return @_contents
 	
 	# Redraw this view and it's children with their current parameters
@@ -143,11 +143,40 @@ class View.RaphaelBase extends View.Collection
 	redraw: ( ) ->
 		return @draw( @x, @y )
 
+	# Add a css class to all content elements
+	#
+	# @param className [String] the css class to add
+	# @param contents [Raphael] the contents to which to apply the class
+	#
+	_addClass: ( className, contents = @_contents ) ->
+		if contents.constructor.prototype is Raphael.el
+			$(contents.node).addClass(className)
+
+		else if contents.constructor.prototype is Raphael.st
+			contents.forEach ( elem ) =>
+				@_addClass(className, elem)
+		return this
+
+	# Remove a css class to all content elements
+	#
+	# @param className [String] the css class to remove
+	# @param contents [Raphael] the contents from which to remove the class
+	#
+	_removeClass: ( className, contents = @_contents ) ->
+		if contents.constructor.prototype is Raphael.el
+			$(contents.node).removeClass(className)
+
+		else if contents.constructor.prototype is Raphael.st
+			contents.forEach ( elem ) =>
+				@_removeClass(className, elem)
+		return this
+
+
 	# Returns the absolute (document) coordinates of a point within the paper
 	#
 	# @param x [float] the x position of the paper point
 	# @param y [float] the y position of the paper point
-	# @return [[float, float]] a tuple of the document x and y coordinates, respectively
+	# @return [<float, float>] a tuple of the document x and y coordinates, respectively
 	#
 	getAbsoluteCoords: ( x, y ) ->
 		coords = @_parent?.getAbsoluteCoords(x, y)

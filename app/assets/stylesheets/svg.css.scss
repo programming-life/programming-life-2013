@@ -136,7 +136,7 @@ rect, circle:not(.cell) {
 		}
 	}
 
-	&.module-preview {
+	&.preview {
 		opacity: .68;
 		stroke-dasharray: 5,5;
 		stroke: #52a8ec;
@@ -157,7 +157,7 @@ text, tspan {
 	fill: #333;
 }
 
-[class$='-substrate-text'], [class$='-substrate-text-shadow'] {
+[class*='-substrate-text'], [class*='-substrate-text-shadow'] {
 	font-weight: bolder !important;
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
 	font-size:18px !important
@@ -190,26 +190,26 @@ text, tspan {
 		opacity: .182 !important;
 	}
 
-	&.module-preview {
+	&.preview {
 		opacity: .05 !important;
 	}
 }
 
-[class$='-substrate-circle'] {
+[class*='-substrate-circle'] {
 	stroke-width: 1px;
 	stroke:rgba(0, 0, 0, .5);
 }
 
-[class$='-substrate-sector'] {
+[class*='-substrate-sector'] {
 	stroke-width: 1px;
 	stroke:rgba(0, 0, 0, .5);
 }
 
-[class$='-substrate-text'] {
+[class*='-substrate-text'] {
 	fill: #fff;
 }
 
-[class$='-substrate-text-shadow'] {
+[class*='-substrate-text-shadow'] {
 	fill: rgba(0, 0, 0, .25);
 }
 
@@ -238,7 +238,7 @@ text, tspan {
 	stroke-width: 1px;
 }
 
-.spline-preview {
+.metabolite-spline-preview {
 	opacity: .8;
 	stroke-dasharray: 5,5;
 
