@@ -49,14 +49,14 @@
 			The model used for this project defines a set of differential equations. Each equation is composed of the effects and affects of different modules. For example: One of the components is $s\_int$ and its value is composed of $supply$, -$transporter_synthesis$, +$transportation$, $metabolism_conversion$ and more. Our challenge is to make the application modular. Some of these components might not be present or more than once. In either case, the equation as it is, is not correct.\\
 			Step one of the solution was to break all the composition of all the modules. The example above yields:
 			\begin{lstlisting}
-$\frac{s\_int}{dt}$: 
-	$\frac{s\_int}{dt}$: $supply$
+s\_int: 
+	s\_int: supply
 
-$transporter$:
-	$\frac{s\_int}{dt}$: +$transportation$ - $synthesis$
+transporter:
+	s\_int: +transportation - synthesis
 	
-$metabolism$:
-	$\frac{s\_int}{dt}$: -$conversion$
+metabolism:
+	s\_int: -conversion
 			\end{lstlisting}
 			Off course each component can have multiple equations, for example: metabolism and Transporter have an equation for synthesis. When we run the ODE solver the results of each component are added. Multiple transporters would yield multiple additions, and 0 transporters would correctly not evaluate that section of the original equation\\
 			Step two of the solution was to make these equations more abstract. Instead of saying a Transporter modifies the amount of $s\_int$, the compound transported can be defined. Before the ODE runs, a mapping for each abstract key to actual compound value is created. \\
