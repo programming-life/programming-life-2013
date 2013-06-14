@@ -116,10 +116,7 @@
 							\label{fig: cmodels}
 						\end{center}
 					\end{figure}	
-					There are two data models and a few meta models. The cell has it's own model and so do the modules, cell components, such as transporters and metabolites. The JavaScript classes can be seen as the ModuleTemplate and ModuleParameter classes on the server. The contents of the classes, the actual data, are the ModuleInstance and ModuleValue classes. Each model has a bit of functionality but only
-					to ensure data consistency and correctness. Each of these data models can load and save itself. \\
-					To provide for undo functionality, the tree, node, undo tree and action classes are present. The former three are pretty transparent. The latter is a closure class used as node data in the tree. \\
-					The Event Manager adds communication between arbitrary parts of the application. Objects can trigger events or listen on it.
+					There are two data models and a few meta models. The cell has it's own model and so do the modules, cell components, such as transporters and metabolites. Each JavaScript class maps to one ModuleTemplate and associated ModuleParameter classes on the server. Each of these data models can load and save itself. \\ 
 				
 				\subsubsection{Views}
 					\begin{figure}[htb]
