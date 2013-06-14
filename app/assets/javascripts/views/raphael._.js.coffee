@@ -9,6 +9,7 @@ class View.RaphaelBase extends View.Collection
 	@concern Mixin.EventBindings
 	@concern Mixin.Catcher
 	@concern Mixin.DynamicProperties
+	@concern Mixin.Nomad
 
 	# Constructs a new Base view
 	# 
@@ -103,20 +104,20 @@ class View.RaphaelBase extends View.Collection
 		@_contents.stop()
 
 		transform = "...t#{dx},#{dy}"
-		if animate
-			dt = 900
-			ease = 'elastic'
+		#if animate
+		if animate then dt = 900 else dt = 0
+		ease = 'elastic'
 
-			@_trigger( 'view.moving', @, [dx, dy, dt, ease] )
+		@_trigger( 'view.moving', @, [dx, dy, dt, ease] )
 
-			@_contents.animate Raphael.animation(
-				transform: transform
-			, dt, ease, _(done).once()
-			)
+		@_contents.animate Raphael.animation(
+			transform: transform
+		, dt, ease, _(done).once()
+		)
 				
-		else
-			@_contents.transform(transform)
-			done()
+		# else
+		# 	@_contents.attr 
+		# 		transform: transform
 
 		if moveViews
 			view.move(dx, dy, animate) for view in @_views				
@@ -186,3 +187,5 @@ class View.RaphaelBase extends View.Collection
 		absX = offset.left + x
 		absY = offset.top + y
 		return [ absX, absY ]
+
+

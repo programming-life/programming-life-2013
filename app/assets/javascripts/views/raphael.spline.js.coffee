@@ -20,6 +20,9 @@ class View.Spline extends View.RaphaelBase
 	#
 	constructor: ( paper, parent, @_cell, @orig, @dest, @_preview = off, @_interaction = on, @_type = Spline.Type.Processing ) ->
 		super paper, parent
+
+		@_origDX = @_origDY = @_destDX = @_destDY = 0
+
 		@addInteraction() if @_interaction is on		
 		
 	# Gets the spline class for this type
@@ -114,11 +117,17 @@ class View.Spline extends View.RaphaelBase
 	# @param dt [float] the amount of milliseconds for which to animate
 	# @param ease [String] the easing transition being used
 	#
-	_onViewMoving: ( view, dx, dy, dt, ease ) =>		
+	_onViewMoving: ( view, dx, dy, dt, ease ) =>
+
+
 		if view is @orig
-			path = @_getPathString(dx, dy, 0, 0)
+			@_origDX = dx
+			@_origDY = dy
+			path = @_getPathString(dx, dy, @_destDX, @_destDY)
 		else if view is @dest
-			path = @_getPathString(0, 0, dx, dy)
+			@_destDX = dx
+			@_destDY = dy
+			path = @_getPathString(@_origDX, @_origDY, dx, dy)
 
 		if path?
 			@_contents?.stop()
@@ -130,9 +139,15 @@ class View.Spline extends View.RaphaelBase
 	#
 	# @param view [Raphael] the view which has moved
 	#
-	_onViewMoved: ( module ) =>
-		if module is @orig.model or module is @dest.model
-			@draw()
+	_onViewMoved: ( view ) =>
+		if view is @orig or view is @dest
+			path = @_getPathString()
+
+			@_contents?.stop()
+			@_contents?.attr
+				path: path
+
+			@_origDX = @_origDY = @_destDX = @_destDY = 0
 
 	# # Gets called when a view view was drawn
 	# #

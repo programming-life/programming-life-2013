@@ -276,6 +276,27 @@ class View.Cell extends View.RaphaelBase
 				y = @y + index * 80
 
 		return [x, y]
+
+	doMigrationLogic: ( ) ->
+		super()
+
+		for view in @_views
+			switch view.getFullType()
+				when 'Metabolite-substrate-outside'
+					target = new @Point(@x - @_radius - 300, 0)
+				when'Metabolite-substrate-inside', 'Metabolite-product-inside', 'Metabolism'
+					target = new @Point(@x, @y)
+				when 'Metabolite-product-outside'
+					target = new @Point(@x + @_radius + 300, 0)
+
+			if target
+				fraction = view.location.distance(target) / 100
+
+				magnitude = 1 * fraction
+				direction = view.location.direction(target)
+
+				force = new @Vector(magnitude, direction)
+				view.addForce(force)
 	
 
 	# On spline added, add it to the cell and draw

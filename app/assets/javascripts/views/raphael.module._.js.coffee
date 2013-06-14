@@ -45,6 +45,12 @@ class View.Module extends View.RaphaelBase
 				
 		@getter
 			type: -> @_type
+
+		switch @type
+			when 'Transporter', 'DNA', 'Lipid', 'CellGrowth', 'Protein'
+				@_drag = 1
+			when 'Metabolism'
+				@_drag = .5
 		
 	# Adds interaction to the module ( popovers )
 	#
@@ -542,6 +548,25 @@ class View.Module extends View.RaphaelBase
 		
 
 		return [ enzymOrigCircles, enzymDestCircles ]
+
+	doMigrationLogic: ( ) ->
+		super()
+
+		switch @type
+			when 'Transporter'
+				metabolites = [@model.orig, @model.dest]
+			when 'Metabolism'
+				metabolites = @model.orig.concat(@model.dest)
+
+		if metabolites? 
+			for metabolite in metabolites
+				view = @_parent.getViewByName(metabolite)
+
+				direction = view.location.direction(@location)
+				magnitude = view.location.distance(@location) / 100
+				force = new @Vector(magnitude, direction)
+				view.addForce(force)
+				@addForce(force.multiply(-.5))
 
 	# Runs if module is invalidated
 	# 
