@@ -216,6 +216,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 		return input
 				
 	# Draws the input for a metabolite
+	# @TODO Is this function still needed?
 	#
 	# @param id [String] the form id
 	# @param key [String] property to set

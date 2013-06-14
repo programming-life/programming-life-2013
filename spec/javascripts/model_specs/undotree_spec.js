@@ -206,7 +206,6 @@ describe("UndoTree", function() {
 			});
 
 			it("should have returned the nodes in between in the right order", function() {
-				console.log(order)
 				for (i = 0; i < order.reverse.length; i++) {
 					expect( order.reverse[i] ).toBe( rightOrder.reverse[i] );
 				}
