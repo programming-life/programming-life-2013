@@ -39,13 +39,11 @@
 	\clearpage
 
 	\section{Introduction}
-		Synthetic biologists try to create cells that serve a specific purpose, for instance the creation of a product from a source metabolite while maintaining a predetermined rate of cell growth. Before they accomplish this, they would like to simulate the internal workings of cells by approximating their mutual influence on one another using combinations of several differential equations which influence each other. 
-By varying the properties, say factors and values used by these equations, the biologists can simulate the interplay of elements within the cell and measure the effect of that set of properties. 
+		Synthetic biologists try to create cells that serve a specific purpose, for instance the creation of a product from a source metabolite while maintaining a predetermined rate of cell growth. Before they accomplish this, they would like to simulate the internal workings of cells by simulating their mutual influence on one another using combinations of several differential equations which influence each other. 
+By varying the properties, i.e. the factors and values used by these equations, the biologists can simulate the interplay of elements within the cell based on that set of properties. 
 However, the complexity of the simulation can be daunting as well as time consuming if done on paper or programmed by hand per set of factors.\\
 
-GigaBase is an intuitive application that should overcome these problems by providing a GUI and allowing the simulation of an extensive number of modules. Furthermore, it allows the user to specify properties of the cell and the elements within, such as the flow rate of a transporter or the initial amount of substrate outside of the cell. This way, a cell can be modelled by solving a system of ODE's represting the specified properties and interactions of each of it's modules.
-
-By using this application, the user can efficiently find the optimal properties with less work to get their preferred outcome, such as maximizing the product of a cell. The user also doesn't have to worry about doing calculations which are prone to error and take a long time to perform.
+GigaBase is an intuitive application that should overcome these problems by providing a GUI and allowing the simulation of an extensive number of modules. It allows the user to specify properties of the cell and the elements within, such as the flow rate of a transporter or the initial amount of substrate outside of the cell. This way, a cell can be modelled by solving a system of ODEs representing the specified properties and interactions of each of its modules. By using this application, the user can efficiently find the optimal properties with less work to get the desired outcome, such as maximizing the product of a cell. The user also does ot have to worry about performing calculations which are prone to error and take a long time to perform.
 \\
 
 This product will be developed using the Scrum methodologies and the development wil be iterated in weekly sprints.
@@ -56,13 +54,13 @@ This product will be developed using the Scrum methodologies and the development
 		This section holds the main product vision, the high level product backlog and a general roadmap for the contents of the product during the project.
 		\subsection{Product Vision}
 
-			\textbf{FOR} Synthetic Biologists \textbf{WHO LIKE TO} create cells that work in certain ways, GigaBase \textbf{IS AN} application \textbf{THAT} allows the user to simulate a cell's interactions with itself and its environment by selecting modules that make up the cell, varying their properties and the environment’s, simulating the interplay of elements in the cell and visualising the outcome of the interactions in a graph. \textbf{UNLIKE} modelling the cell by generating and solving an ODE \textbf{OUR SERVICE} fast-tracks designing a cell by providing a GUI, enforces constraints for the entered values of the ODE's to minimize errors, saves time by reusing previous designs and solves the ODE for you, taking out a possibility for human error.
+			\textbf{FOR} Synthetic Biologists \textbf{WHO LIKE TO} create cells that work in certain ways, GigaBase \textbf{IS AN} application \textbf{THAT} allows the user to simulate a cell's interactions with itself and its environment by selecting modules that make up the cell, varying their properties and the environment, simulating the interplay of elements in the cell and visualising the outcome of the interactions in a graph. \textbf{UNLIKE} modelling the cell by generating and solving an ODE \textbf{OUR SERVICE} fast-tracks designing a cell by providing a GUI, enforces constraints for the entered values of the ODEs to minimize errors, saves time by reusing previous designs and solves the ODE, taking out a possibility for human error.
 
 		\subsection{High-level product backlog}
 			\textbf{A user can model a cell by selecting modules.}\\
 			\indent
 				\textit{Note: A GUI provides the modules needed to model a cell.}\\
-			\textbf{A user can see the output of a model when it’s simulated over a period of time.}\\
+			\textbf{A user can see the output of a model when it is simulated over a period of time.}\\
 			\indent
 				\textit{Glossary: A model is a selection of modules with their properties and initial conditions set.}\\
 			\indent
@@ -102,7 +100,7 @@ This product will be developed using the Scrum methodologies and the development
 			\subsubsection*{Sprint 1 (Q3/W7)}
 				A cell can be created by selecting modules from a list. Start working on integration tests.
 			\subsubsection*{Sprint 2 (Q3/W10) Demo product}
-				A basic visualisation of the internal workings is present. This consists of at least one graph per module that indicates the concentration over time. A set of modules with predefined property values is availble for cell modelling. Equations are solved using an ODE solver.
+				A basic visualisation of the internal workings is present. This consists of at least one graph per module that indicates the concentration over time. A set of modules with predefined property values is available for cell modelling. Equations are solved using an ODE solver.
 			\subsubsection*{Sprint 3 (Q4/W1)}
 				Initial rigorous acceptance tests, as the next sprint requires a product demo. Substrates can now be added to the cell. Tests are run automatically using Continuous Integration. Release first version with basic functionality.
 			\subsubsection*{Sprint 4 (Q4/W2)}
@@ -112,7 +110,7 @@ This product will be developed using the Scrum methodologies and the development
 			\subsubsection*{Sprint 6 (Q4/W4)}
 				HTML/PDF/EXCEL reports can now be generated from created cell models, containing parameter values and graphs from simulations. A user can now change module constants. Connections between modules are visualised. 
 			\subsubsection*{Sprint 7 (Q4/W5)}
-				Bug-fixes, acceptance tests and final review of code. Implement SIG feedback. A user can use the undo function in the GUI. Feedback on module constraints and errors is visible.
+				Bug-fixes, acceptance tests and final review of code. Implement improvements based on SIG feedback. A user can use the undo function in the GUI. Feedback on module constraints and errors is visible.
 			\subsubsection*{Sprint 8 (Q4/W6)}
 				Code cleanup, maintenance, bug fixing and other possible improvent to the system.
 			\subsubsection*{Sprint 9 (Q4/W7)}
@@ -122,7 +120,7 @@ This product will be developed using the Scrum methodologies and the development
 
 	\clearpage
 	\section{Product backlog}
-		The product backlog is a list of requirements that must be met for the product. The priority of each story is defined by its position in the backlog. The higher on the backlog, the more important the item is.\\
+		The product backlog is a list of possible features that gives a high-level description of the functionality that needs to be implemented before the application actually contains the feature. The priority of each story is defined by its position in the backlog. The higher on the backlog, the more important the item is and the more descriptive its required functionality is. Items that have been defined clearly enough also get a rough estimate of the amount of man-hours required to fully implement the feature described in that item.
 		\\
 		\textbf{A user can create a cell consisting of modules}. \\
 		\indent

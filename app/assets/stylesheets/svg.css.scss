@@ -43,6 +43,51 @@
   }
 }
 
+@-webkit-keyframes move-spline-dots {
+  from {
+    stroke-dashoffset: 60;
+  }
+  to { 
+    stroke-dashoffset: 0;
+  }
+}
+
+@-moz-keyframes move-spline-dots {
+  from {
+    stroke-dashoffset: 60;
+  }
+  to { 
+    stroke-dashoffset: 0;
+  }
+}
+
+@-o-keyframes move-spline-dots {
+  from {
+    stroke-dashoffset: 60;
+  }
+  to { 
+    stroke-dashoffset: 0;
+  }
+}
+
+@-ms-keyframes move-spline-dots {
+  from {
+    stroke-dashoffset: 60;
+  }
+  to { 
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes move-spline-dots {
+  from {
+    stroke-dashoffset: 60;
+  }
+  to { 
+    stroke-dashoffset: 0;
+  }
+}
+
 .cell {
 	stroke: #cacaca;
 	stroke-width: 40px;
@@ -50,6 +95,12 @@
 
 rect, circle:not(.cell) {
 	vector-effect:non-scaling-stroke;
+}
+
+
+#module-lipid-icon {
+	fill: red;
+	-webkit-mask: url('/img/lipid.png')
 }
 
 .module-box {
@@ -85,7 +136,7 @@ rect, circle:not(.cell) {
 		}
 	}
 
-	&.module-preview {
+	&.preview {
 		opacity: .68;
 		stroke-dasharray: 5,5;
 		stroke: #52a8ec;
@@ -106,7 +157,7 @@ text, tspan {
 	fill: #333;
 }
 
-[class$='-substrate-text'], [class$='-substrate-text-shadow'] {
+[class*='-substrate-text'], [class*='-substrate-text-shadow'] {
 	font-weight: bolder !important;
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
 	font-size:18px !important
@@ -139,26 +190,26 @@ text, tspan {
 		opacity: .182 !important;
 	}
 
-	&.module-preview {
+	&.preview {
 		opacity: .05 !important;
 	}
 }
 
-[class$='-substrate-circle'] {
+[class*='-substrate-circle'] {
 	stroke-width: 1px;
 	stroke:rgba(0, 0, 0, .5);
 }
 
-[class$='-substrate-sector'] {
+[class*='-substrate-sector'] {
 	stroke-width: 1px;
 	stroke:rgba(0, 0, 0, .5);
 }
 
-[class$='-substrate-text'] {
+[class*='-substrate-text'] {
 	fill: #fff;
 }
 
-[class$='-substrate-text-shadow'] {
+[class*='-substrate-text-shadow'] {
 	fill: rgba(0, 0, 0, .25);
 }
 
@@ -167,13 +218,27 @@ text, tspan {
 	vector-effect:non-scaling-stroke;
 }
 
+.metabolite-spline-dots {
+	stroke-width: 4px;
+	stroke-dasharray: 4, 56;
+	//opacity:.5;
+	vector-effect:non-scaling-stroke;
+
+	-webkit-animation: move-spline-dots 2s linear 0 infinite;
+	   -moz-animation: move-spline-dots 2s linear 0 infinite;
+	     -o-animation: move-spline-dots 2s linear 0 infinite;
+		    animation: move-spline-dots 2s linear 0 infinite;
+
+	
+}
+
 .transporter-arrow {
 	fill: #000;
 	stroke: #333;
 	stroke-width: 1px;
 }
 
-.spline-preview {
+.metabolite-spline-preview {
 	opacity: .8;
 	stroke-dasharray: 5,5;
 

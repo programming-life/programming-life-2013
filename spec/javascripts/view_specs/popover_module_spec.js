@@ -51,7 +51,8 @@ describe( "popover module view", function() {
 			expect( returnValue ).toBeDefined();
 		});
 
-		it( "should be able to draw metabolites", function() {
+		// Is the function this tests still needed?
+		xit( "should be able to draw metabolites", function() {
 			returnValue = view._drawMetabolite( "", "", "food");
 			expect( returnValue ).toBeDefined();
 		});
@@ -128,10 +129,6 @@ describe( "popover module view", function() {
 
 		it( "should be able to invalidate modules", function(){
 			expect( view._onModuleInvalidated ).toBeDefined();
-		});
-
-		it( "should be able to create modules", function(){
-			expect( view._onModuleCreationStarted ).toBeDefined();
 		});
 	});
 });
