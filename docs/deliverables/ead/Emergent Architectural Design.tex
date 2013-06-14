@@ -78,15 +78,18 @@
 					The pages served are HTML5 for markup with CSS3 for styling and Javascript for interaction. Pages are built by a comprehensive and solid Model-Viewer-Controller system. In such a system, data is kept in models, views are their representations - you can have multiple representations per model - and controllers add interaction to these views, control the models that are displayed and isolate all model changes. In short, such system keeps data separated from the representation, further increasing maintainability. Interaction is illustrated in Figure 3. Rails uses MVC at its core. It makes it easy to create the back end views and client side representations because displaying data, the interaction and the actual data are separated.
 					
 				\subsubsection{MVC Models and Database Design}
+					The database design was devised in a specifc way to ensure that there is no data redundancy. Specifically template/blueprint data is seperated from instance/instantiated data. The figure below is a database diagram.
 					\begin{figure}[htb]
 						\begin{center}
 							\includegraphics[width=\linewidth]{erd.pdf}
 							\caption{Database and Ruby Models}
 							\label{fig: erd}
 						\end{center}
-					\end{figure}	
-					A report always shows the current cell data, so there is a one to one relation between reports and cells. The component definitions are separated from the values. A cell contains components, called modules (module\_instance). These components are instances of blueprints (module\_template). Each component blueprint can provide multiple parameters (module\_parameter). Each instance has a value for each parameter (module\_value).\\
-					The database design was devised this way, so templates are separated from instances, resulting in no data redundancy.
+					\end{figure}
+					In the following paragraphs the words module, cell, report, module instance, module template, module parameter and module value and their instantiated forms refer to the figure abobe.
+					Solid lines and arrows are associations.  For example, a module instance belongs to a cell, a module instance also has a module template as parent and a cell is bound to a report, whereas a report belongs to a cell.
+					The dashed arrows indicate implict asociations. Since the module instance belongs to a cell and a template, a cell could query all the parents - the module templates - of all its module instances. And because a module value belongs to both a module instance and a module parameter, a module instance can query its module parameters.
+					A report (see the figure above) is only dynamically defined. There is no additional cell data present in the report model. This enables a one to one relation between reports and cells. The component definitions are separated from the values. A cell contains components, called modules (module\_instance). These components are instances of blueprints (module\_template). Each component blueprint can provide multiple parameters (module\_parameter). Each instance has a value for each parameter (module\_value).\\
 					
 				\subsubsection{Active Database}
 					Ruby models are mapped to any Relational Database Management System (RDBMS \cite{rdbms} ) such as SQLite, MySQL and PostgreSQL. By not restricting the server database technology, switching systems, servers or extending their capacity should be fairly simple and easy. Database operations are done through Active Database, part of rails, which transparently maps the query to the technology's language.
