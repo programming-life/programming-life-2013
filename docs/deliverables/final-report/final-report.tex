@@ -46,7 +46,7 @@
 		The project itself had some challenges that were conceived as difficult. Apart from these challenges, the process itself had some as well, which are listed under 'Reflection on the teamwork'. 
 		
 		\subsection{ODE modularity}
-			The model used for this project defines a set of differential equations. Each equation is composed of the effects and affects of different modules. For example: One of the components is $s\_int$ and its value is composed of $supply$, -$transporter_synthesis$, +$transportation$, $metabolism_conversion$ and more. Our challenge is to make the application modular. Some of these components might not be present or more than once. In either case, the equation as it is, is not correct.\\
+			The model used for this project defines a set of differential equations. Each equation is composed of the effects and affects of different modules. For example: One of the components is $s\_int$ and its value is composed of $supply$, -$transporter\_synthesis$, +$transportation$, $metabolism\_conversion$ and more. Our challenge is to make the application modular. Some of these components might not be present or more than once. In either case, the equation as it is, is not correct.\\
 			Step one of the solution was to break all the composition of all the modules. The example above yields:
 			\begin{lstlisting}
 s\_int: 
