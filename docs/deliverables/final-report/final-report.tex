@@ -41,6 +41,7 @@
 		During this project we have built Gigabase, an application to create the virtual cell. The creation of this application was not without its challenges, but we managed to overcome these challenges while growing as a group and on a personal level.
 		
 		This document reflects on these challenges, the teamwork and what the project itself means to us.
+\clearpage
 		
 	\section{Key challenges and Solutions}
 		The project itself had some challenges that were conceived as difficult. Apart from these challenges, the process itself had some as well, which are listed under 'Reflection on the teamwork'. 
@@ -82,7 +83,6 @@ ODE Solver( T, f, y, I )
 			\end{lstlisting}
 
 			The outer while block was deferred. Deferring in JavaScript is achieved by pushing a function to the end of the call-stack, using a time-out (setTimeout).
-			\clearpage
 		
 		\subsection{Concurrency}
 			The database operations themselves are atomic i.e. isolated, however since users can edit the same cell, or might have a copy on their local storage which is not updated back into the database, consistency between data is a problem. We offer two solutions to the problem.
@@ -104,7 +104,7 @@ ODE Solver( T, f, y, I )
 			In implementing this, it becomes evident that the interface to the entity consists of its basic functions; namely undoing (\emph{undo}), redoing (\emph{redo}), and adding (\emph{addAction}) an action. Any action that can be undone and redone is stored a tree structure, each point in time containing a reference to the previous point and all the future point that emerged from that specific snapshot in time. This allows for multiple possible time lines, and makes this functionality more powerful without adding much complexity to the use of it, because everything complicated is contained within the entity.
 
 			In addition to creating an easy to use implementation, it is also required that the functionality remains simple even when the cell model is very complex. To easily maintain the time line of the entire application, each module keeps track of it's own history and future and makes this data available. The cell also track changes made to it and makes its time line available. Because of this separation, any part of the cell model can be adapted without having to think about the consequences of the changes to other parts of the model, allowing for easier development and generally higher quality software.
-	
+	\clearpage
 	\section{Reflection on the teamwork}
 		This section covers the reflection as a group on the teamwork during the development of the software. The reflection is divided in different subsections.
 		\subsection{Preparation}
@@ -155,7 +155,7 @@ ODE Solver( T, f, y, I )
 				The code was also actively commented and documented to further improve code understanding.
 			\subsubsection*{Programmer's block}
 				To help overcome the occasional programmer's block, pair programming was introduced to the group. One member is responsible of writing the code, while the other observes and reviews the written code. This way, both members are actively coding and can come up with new ideas when the other member is stuck.
-
+\clearpage
 	\section{Individual reflections on the project}
 		This section of the report contains the personal reflections of each of the team members. It contains every member's perspective on the project, rather than the global experience of the group.
 		\subsection{Derk-Jan Karrenbeld}

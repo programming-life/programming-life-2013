@@ -126,7 +126,7 @@
 				\subsubsection{Models}
 					\begin{figure}[htb]
 						\begin{center}
-							\includegraphics[scale=0.675]{models.png}
+							\includegraphics[scale=0.95]{models.png}
 							\caption{Client Models}
 							\label{fig: cmodels}
 						\end{center}
@@ -137,7 +137,7 @@
 				\subsubsection{Views}
 					\begin{figure}[h!]
 						\begin{center}
-							\includegraphics[scale=0.675]{views.png}
+							\includegraphics[scale=0.55]{views.png}
 							\caption{Client Views}
 							\label{fig: cmodels}
 						\end{center}
@@ -146,18 +146,18 @@
 				\clearpage
 					In the figure above there are two basic types: Raphael or HTML. All views can have children and display a single model. Raphael typed views use SVG to display their contents. The views only have display functionality. They do not add interaction. Each view keeps track of changes to the displayed module. Through controllers, views can interact with the models. This is explained and displayed later on. \\
 					To keep the figure above from cluttering, a few associations are left out. The Module view has a ModuleProperties popover and Cell, Main and Module views have Notification views. Graph views are contained in a Graphs view, which is just a Collection.
-					
+\clearpage
 				\subsubsection{Controllers}
 					\begin{figure}[htb]
 						\begin{center}
-							\includegraphics[scale=0.675]{controllers.png}
+							\includegraphics[scale=0.85]{controllers.png}
 							\caption{Client Controllers}
 							\label{fig: cmodels}
 						\end{center}
 					\end{figure}	
 					Controllers add interaction to views and models. Controllers can have children. Parent controllers can alter a child controllers behaviour. This way there is no need for a large set of controllers, e.g. a MainCell controller and a ReportCell are now combined into one Cell controller. \\
 					For collections of elements, views can use unobtrusive JavaScript to enlist those elements for interaction. A view might add data-xxx attributes to elements. Controllers may or may not bind Javascript to elements with these attributes. This keeps the HTML clean and the interaction in the controllers hand. 
-					
+\clearpage
 				\subsubsection{Integration (example)}
 					\begin{figure}[h!]
 						\begin{center}
@@ -171,7 +171,11 @@
 					
 					\begin{figure}[h!]
 						\begin{center}
+<<<<<<< HEAD
 							\includegraphics{main_struct.png}
+=======
+							\includegraphics[scale=0.55]{main_struct.png}
+>>>>>>> d671b25150c73b1e5357840ea6efe0e4498b2fd0
 							\caption{The MVC structure for the main page}
 							\label{fig: main struct}
 						\end{center}
