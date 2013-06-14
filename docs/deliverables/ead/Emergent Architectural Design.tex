@@ -176,7 +176,7 @@
 			The third section describes the production/release phase, in which a tested feature is implemented.
 			
 			\subsubsection{Development}
-				During development we are making use of Coffeescript \cite{coffeescript} for writing interaction assets, SASS \cite{sass} for styling and SVG \cite{svg} with the Raphael \cite{raphael} framework for visualising part of the application.
+				During development we make use of Coffeescript \cite{coffeescript} for writing interaction assets, SASS \cite{sass} for styling and SVG \cite{svg} with the Raphael \cite{raphael} framework for visualising part of the application.
 				Coffeescript and SASS are preprocessors for respectively Javascript and CSS. Using these preprocessors gives us the advantage of cleaner syntax.
 				By making use of SVG to render the cell every graphical object is also a DOM object, this enables us to attach Javascript event handlers and modify the objects itself.
 				
@@ -187,7 +187,7 @@
 				To keep track of code coverage we are making use of the Istanbul framework \cite{istanbul} .
 				The Ruby assets (database, MVC architecture - models, controllers, views - and Rails) are tested using the Rspec framework \cite{rspec} .  
 				All tests run automatically using Continuous Integration, a practice in which tests are ran every time work has been done within critical sections of the code. 
-				Tests and coverage are used to ensure maintainability, consistency and quality of the code.
+				Tests and coverage reports are used to ensure maintainability, consistency and quality of the code.
 				
 			\subsubsection{Release}
 				During the Production release the Coffeescript assets are compiled to Javascript \cite{javascript} and the SASS assets are compiled to CSS, after which they are minified and bundled using uglifier \cite{uglifier} . Minified assets take up less space and increase page performance which results in a better user experience and less demand on the web server. 
@@ -199,7 +199,7 @@
 			
 		\subsection{API}
 			The API can be found online here: \url{http://coffeedoc.info/github/Derkje-J/programming-life/} \\
-			In the future there will be a Rubydoc online for server-side assets and is updated after each commit.
+			In the future there will be a Rubydoc online for server-side assets.
 		\newpage
 			
 	\section{Summary}
