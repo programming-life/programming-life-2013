@@ -46,10 +46,20 @@
 		The project itself had some challenges that were conceived as difficult. Apart from these challenges, the process itself had some as well, which are listed under 'Reflection on the teamwork'. 
 		
 		\subsection{ODE modularity}
-			Let's first define a component as any module or metabolite in the cell such as a transporter or substrate. The biological-cell model consists of components that interact with each other, but the differential equations are not defined by interaction, but component. Our task was to make these components modular, meaning you need to be able to change them, add more of them and so forth and so on. But since these differential equations were intertwined, a way needed to be devised to separate them and make the arguments dynamic. For example $'\frac{ds}{dt} = ks * s + kc * c'$ would need to assign $s$ and $c$ dynamically. $kc$ belongs to $c$, so it's probably its own compound. If we have two, it would become $'\frac{ds}{dt} = ks * s + kc1 * c1 + kc2 * c2'$.
-			
-			We wrote a mapping code that collects produced compounds. So $c$ would produce $c$ and $s$ and $s$ would produce $s$. The equations were separated by how operators dependencies work. We gave each compound all the effects and affects as equations. $s$ now has $'\frac{ds}{dt} = ks * s'$ and $c$ has $'\frac{ds}{dt} = kc * c'$ and $'\frac{dc}{dt} = magix'$ Now adding more $c$'s will dynamically build the correct equation. But since we have a mapping, we can use indexes to get those compound values. $'\frac{ds}{dt} = ks * compounds[s]'$. And if we make the indexer a settable parameter, we are done! $'\frac{ds}{dt} = @ks * compounds[@s]'$.
-			
+			The model used for this project defines a set of differential equations. Each equation is composed of the effects and affects of different modules. For example: One of the components is $s\_int$ and its value is composed of $supply$, -$transporter_synthesis$, +$transportation$, $metabolism_conversion$ and more. Our challenge is to make the application modular. Some of these components might not be present or more than once. In either case, the equation as it is, is not correct.\\
+			Step one of the solution was to break all the composition of all the modules. The example above yields:
+			\begin{lstlisting}
+$\frac{s\_int}{dt}$: 
+	$\frac{s\_int}{dt}$: $supply$
+
+$transporter$:
+	$\frac{s\_int}{dt}$: +$transportation$ - $synthesis$
+	
+$metabolism$:
+	$\frac{s\_int}{dt}$: -$conversion$
+			\end{lstlisting}
+			Off course each component can have multiple equations, for example: metabolism and Transporter have an equation for synthesis. When we run the ODE solver the results of each component are added. Multiple transporters would yield multiple additions, and 0 transporters would correctly not evaluate that section of the original equation\\
+			Step two of the solution was to make these equations more abstract. Instead of saying a Transporter modifies the amount of $s\_int$, the compound transported can be defined. Before the ODE runs, a mapping for each abstract key to actual compound value is created. \\
 			This way we could turn the equations from statically defined to dynamically settable.
 			
 		\subsection{ODE solver complexity}
