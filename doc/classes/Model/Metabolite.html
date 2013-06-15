@@ -2,7 +2,7 @@
 <html>
   <head>
   <meta charset='UTF-8'>
-  <title>Broyologramming Life API Documentation</title>
+  <title>CoffeeScript API Documentation</title>
   <link rel='stylesheet' href='../../assets/codo.css' type='text/css'>
   <script src='../../assets/codo.js'></script>
   <script src='../../assets/search_data.js'></script>
@@ -155,6 +155,26 @@
       <ul class='summary'>
   <li>
     <span class='signature'>
+      <a href='#getParameterDefaults-class'>
+        + (Object) <strong>getParameterDefaults</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Get parameter defaults array
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#getParameterMetaData-class'>
+        + (Object) <strong>getParameterMetaData</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Get parameter metadata
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
       <a href='#sext-class'>
         + (void) <strong>sext</strong>(params = {}, supply = 1, start = 1, name = "s")
       </a>
@@ -199,7 +219,7 @@
   <li>
     <span class='signature'>
       <a href='#constructor-instance'>
-        - (void) <strong>constructor</strong>(params = {}, start = 1, name, placement = Model.Metabolite.Outside, type = Model.Metabolite.Substrate)
+        - (void) <strong>constructor</strong>(params = {}, start, name, placement, type)
       </a>
     </span>
     <span class='constructor note title'>Constructor</span>
@@ -215,26 +235,6 @@
     </span>
     <span class='desc'>
       Define the dynamic properties of the module
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#_getParameterDefaults-instance'>
-        - (Object) <strong>_getParameterDefaults</strong>(start, placement, type)
-      </a>
-    </span>
-    <span class='desc'>
-      Get parameter defaults array
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#_getParameterMetaData-instance'>
-        - (Object) <strong>_getParameterMetaData</strong>()
-      </a>
-    </span>
-    <span class='desc'>
-      Get parameter metadata
     </span>
   </li>
 </ul>
@@ -253,7 +253,6 @@
                 <a href='../../classes/Model/Module.html#_defineDynamicProperties-instance'>#_defineDynamicProperties</a>,
                 <a href='../../classes/Model/Module.html#onActionDo-instance'>#onActionDo</a>,
                 <a href='../../classes/Model/Module.html#extractId-class'>.extractId</a>,
-                <a href='../../classes/Model/Module.html#isLocal-instance'>#isLocal</a>,
                 <a href='../../classes/Model/Module.html#getCompound-instance'>#getCompound</a>,
                 <a href='../../classes/Model/Module.html#getMetabolite-instance'>#getMetabolite</a>,
                 <a href='../../classes/Model/Module.html#getSubstrate-instance'>#getSubstrate</a>,
@@ -271,6 +270,7 @@
                 <a href='../../classes/Model/Module.html#serialize-instance'>#serialize</a>,
                 <a href='../../classes/Model/Module.html#_getModuleTemplate-instance'>#_getModuleTemplate</a>,
                 <a href='../../classes/Model/Module.html#_getModuleInstanceData-instance'>#_getModuleInstanceData</a>,
+                <a href='../../classes/Model/Module.html#getMetaboliteProperties-instance'>#getMetaboliteProperties</a>,
                 <a href='../../classes/Model/Module.html#_updateParameters-instance'>#_updateParameters</a>,
                 <a href='../../classes/Model/Module.html#_create-instance'>#_create</a>,
                 <a href='../../classes/Model/Module.html#save-instance'>#save</a>,
@@ -284,7 +284,10 @@
       <p class='inherited'>
                 <a href='../../classes/Helper/Mixable.html#extend-class'>.extend</a>,
                 <a href='../../classes/Helper/Mixable.html#include-class'>.include</a>,
-        <a href='../../classes/Helper/Mixable.html#concern-class'>.concern</a>
+                <a href='../../classes/Helper/Mixable.html#concern-class'>.concern</a>,
+                <a href='../../classes/Helper/Mixable.html#extractId-class'>.extractId</a>,
+                <a href='../../classes/Helper/Mixable.html#isLocal-instance'>#isLocal</a>,
+        <a href='../../classes/Helper/Mixable.html#parseDate-class'>.parseDate</a>
       </p>
       <h2>
         <small>Concern Method Summary</small>
@@ -328,6 +331,44 @@
       </p>
       <h2>Class Method Details</h2>
       <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='getParameterDefaults-class'>
+      + (Object) <strong>getParameterDefaults</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Get parameter defaults array</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Object</tt>)
+      &mdash;
+      <span class='desc'>default values</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='getParameterMetaData-class'>
+      + (Object) <strong>getParameterMetaData</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Get parameter metadata</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Object</tt>)
+      &mdash;
+      <span class='desc'>metadata values</span>
+    </li>
+  </ul>
+</div>
+  </div>
   <div class='method_details'>
     <p class='signature' id='sext-class'>
       + (void) <strong>sext</strong>(params = {}, supply = 1, start = 1, name = "s")
@@ -601,7 +642,7 @@
       <div class='methods'>
   <div class='method_details'>
     <p class='signature' id='constructor-instance'>
-      - (void) <strong>constructor</strong>(params = {}, start = 1, name, placement = Model.Metabolite.Outside, type = Model.Metabolite.Substrate)
+      - (void) <strong>constructor</strong>(params = {}, start, name, placement, type)
     </p>
     <div class='docstring'>
   <p>Constructor for Metabolite</p>
@@ -616,38 +657,6 @@
       </span>
       &mdash;
       <span class='desc'>parameters for this module</span>
-    </li>
-    <li>
-      <span class='name'>start</span>
-      <span class='type'>
-        (<tt>Integer</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the initial value of metabolite, defaults to 1</span>
-    </li>
-    <li>
-      <span class='name'>name</span>
-      <span class='type'>
-        (<tt>String</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the name to use</span>
-    </li>
-    <li>
-      <span class='name'>placement</span>
-      <span class='type'>
-        (<tt>Integer</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>placement of this metabolite, defaults to Model.Metabolite.Outside</span>
-    </li>
-    <li>
-      <span class='name'>type</span>
-      <span class='type'>
-        (<tt>Boolean</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>type of this metabolite, defaults to Model.Metabolite.Substrate</span>
     </li>
   </ul>
   <h3>
@@ -706,60 +715,11 @@
   </ul>
 </div>
   </div>
-  <div class='method_details'>
-    <p class='signature' id='_getParameterDefaults-instance'>
-      - (Object) <strong>_getParameterDefaults</strong>(start, placement, type)
-    </p>
-    <div class='docstring'>
-  <p>Get parameter defaults array</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>start</span>
-      <span class='type'>
-        (<tt>Integer</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the start value</span>
-    </li>
-  </ul>
-  <h3>Returns:</h3>
-  <ul class='return'>
-    <li>
-      <span class='type'></span>
-      (<tt>Object</tt>)
-      &mdash;
-      <span class='desc'>default values</span>
-    </li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='_getParameterMetaData-instance'>
-      - (Object) <strong>_getParameterMetaData</strong>()
-    </p>
-    <div class='docstring'>
-  <p>Get parameter metadata</p>
-</div>
-<div class='tags'>
-  <h3>Returns:</h3>
-  <ul class='return'>
-    <li>
-      <span class='type'></span>
-      (<tt>Object</tt>)
-      &mdash;
-      <span class='desc'>metadata values</span>
-    </li>
-  </ul>
-</div>
-  </div>
 </div>
     </div>
     <div id='footer'>
   Generated on
-  Sun Jun 02 2013 15:47:57 GMT+0200 (W. Europe Daylight Time)
+  Tue Jun 11 2013 00:05:30 GMT+0200 (W. Europe Daylight Time)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

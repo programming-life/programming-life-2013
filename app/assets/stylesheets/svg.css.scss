@@ -1,3 +1,93 @@
+@-webkit-keyframes rotate-dash {
+  from {
+    stroke-dashoffset: 10;
+  }
+  to { 
+    stroke-dashoffset: 0;
+  }
+}
+
+@-moz-keyframes rotate-dash {
+  from {
+    stroke-dashoffset: 10;
+  }
+  to { 
+    stroke-dashoffset: 0;
+  }
+}
+
+@-o-keyframes rotate-dash {
+  from {
+    stroke-dashoffset: 10;
+  }
+  to { 
+    stroke-dashoffset: 0;
+  }
+}
+
+@-ms-keyframes rotate-dash {
+  from {
+    stroke-dashoffset: 10;
+  }
+  to { 
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes rotate-dash {
+  from {
+    stroke-dashoffset: 10;
+  }
+  to { 
+    stroke-dashoffset: 0;
+  }
+}
+
+@-webkit-keyframes move-spline-dots {
+  from {
+    stroke-dashoffset: 60;
+  }
+  to { 
+    stroke-dashoffset: 0;
+  }
+}
+
+@-moz-keyframes move-spline-dots {
+  from {
+    stroke-dashoffset: 60;
+  }
+  to { 
+    stroke-dashoffset: 0;
+  }
+}
+
+@-o-keyframes move-spline-dots {
+  from {
+    stroke-dashoffset: 60;
+  }
+  to { 
+    stroke-dashoffset: 0;
+  }
+}
+
+@-ms-keyframes move-spline-dots {
+  from {
+    stroke-dashoffset: 60;
+  }
+  to { 
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes move-spline-dots {
+  from {
+    stroke-dashoffset: 60;
+  }
+  to { 
+    stroke-dashoffset: 0;
+  }
+}
+
 .cell {
 	stroke: #cacaca;
 	stroke-width: 40px;
@@ -7,13 +97,22 @@ rect, circle:not(.cell) {
 	vector-effect:non-scaling-stroke;
 }
 
+
+#module-lipid-icon {
+	fill: red;
+	-webkit-mask: url('/img/lipid.png')
+}
+
 .module-box {
 	stroke: rgba(0, 0, 0, .2);	
 	stroke-width: 1px;
 	fill: rgba( 255, 255, 255, 1 );
-	opacity:1;
+	opacity: 1;
 
-	transition: all 0.3s ease-in-out;
+	-webkit-transition: all 0.3s ease-in-out;
+	   -moz-transition: all 0.3s ease-in-out;
+	     -o-transition: all 0.3s ease-in-out;
+	        transition: all 0.3s ease-in-out;
 	
 	&.inactive {
 		stroke-dasharray: 5,5;
@@ -22,10 +121,30 @@ rect, circle:not(.cell) {
 	
 	&.hovered {
 		stroke: rgb( 100, 200, 100 );
+		
+		-webkit-animation: rotate-dash 2s linear 0 infinite;
+		   -moz-animation: rotate-dash 2s linear 0 infinite;
+		     -o-animation: rotate-dash 2s linear 0 infinite;
+			    animation: rotate-dash 2s linear 0 infinite;
 	}
 	
 	&.selected {
 		stroke: rgba(82, 168, 236, 0.8);
+		
+		&.dummy {
+			opacity: .1;
+		}
+	}
+
+	&.preview {
+		opacity: .68;
+		stroke-dasharray: 5,5;
+		stroke: #52a8ec;
+
+		-webkit-animation: rotate-dash 0.5s linear 0 infinite;
+		   -moz-animation: rotate-dash 0.5s linear 0 infinite;
+		     -o-animation: rotate-dash 0.5s linear 0 infinite;
+			    animation: rotate-dash 0.5s linear 0 infinite;
 	}
 }
 
@@ -38,7 +157,7 @@ text, tspan {
 	fill: #333;
 }
 
-[class$='-substrate-text'], [class$='-substrate-text-shadow'] {
+[class*='-substrate-text'], [class*='-substrate-text-shadow'] {
 	font-weight: bolder !important;
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
 	font-size:18px !important
@@ -60,29 +179,37 @@ text, tspan {
 }
 
 .module-shadow {
-	opacity:0 !important;
-	transition: opacity .3s ease-in-out;
+	opacity: 0 !important;
+	
+	-webkit-transition: opacity 0.3s ease-in-out;
+	   -moz-transition: opacity 0.3s ease-in-out;
+	     -o-transition: opacity 0.3s ease-in-out;
+	        transition: opacity 0.3s ease-in-out;
 
 	&.selected {
-		opacity:.182 !important;
+		opacity: .182 !important;
+	}
+
+	&.preview {
+		opacity: .05 !important;
 	}
 }
 
-[class$='-substrate-circle'] {
+[class*='-substrate-circle'] {
 	stroke-width: 1px;
 	stroke:rgba(0, 0, 0, .5);
 }
 
-[class$='-substrate-sector'] {
+[class*='-substrate-sector'] {
 	stroke-width: 1px;
 	stroke:rgba(0, 0, 0, .5);
 }
 
-[class$='-substrate-text'] {
+[class*='-substrate-text'] {
 	fill: #fff;
 }
 
-[class$='-substrate-text-shadow'] {
+[class*='-substrate-text-shadow'] {
 	fill: rgba(0, 0, 0, .25);
 }
 
@@ -91,8 +218,32 @@ text, tspan {
 	vector-effect:non-scaling-stroke;
 }
 
+.metabolite-spline-dots {
+	stroke-width: 4px;
+	stroke-dasharray: 4, 56;
+	//opacity:.5;
+	vector-effect:non-scaling-stroke;
+
+	-webkit-animation: move-spline-dots 2s linear 0 infinite;
+	   -moz-animation: move-spline-dots 2s linear 0 infinite;
+	     -o-animation: move-spline-dots 2s linear 0 infinite;
+		    animation: move-spline-dots 2s linear 0 infinite;
+
+	
+}
+
 .transporter-arrow {
 	fill: #000;
 	stroke: #333;
 	stroke-width: 1px;
+}
+
+.metabolite-spline-preview {
+	opacity: .8;
+	stroke-dasharray: 5,5;
+
+	-webkit-animation: rotate-dash 0.5s linear 0 infinite;
+	   -moz-animation: rotate-dash 0.5s linear 0 infinite;
+		 -o-animation: rotate-dash 0.5s linear 0 infinite;
+			animation: rotate-dash 0.5s linear 0 infinite;
 }

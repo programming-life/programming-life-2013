@@ -5,9 +5,57 @@ ProgrammingLife::Application.routes.draw do
 	resources :module_templates
 	resources :cells
 
-
 	post 'hook' => 'hook#post'
 	get 'hook' => 'hook#index'
+	get 'version' => 'hook#version'
+	
+	unless Rails.env.production? or ( not Rails.application.config.assets.debug )
+		offline = Rack::Offline.configure :cache_interval => 20 do      
+		
+			# Get everything from the css and js manifest
+			manifests = ["application.css", "application.js"]
+			files = manifests.map do |manifest|
+				Rails.application.assets[manifest].dependencies.map{|d| "#{d.logical_path}"}
+			end.flatten
+			
+			# Cache all these files
+			files.each do |file|
+				cache ActionController::Base.helpers.asset_path( file + '?body=1' )
+			end
+			
+			# Cache the images we have in the public folder
+			public = Rails.public_path
+			public_path = Pathname.new( public )
+			Dir[ public +  "/img/*.png", public +  "/img/*.jpg" , public +  "/img/*.gif"  ].each do |file|
+				cache "/" + Pathname.new( file ).relative_path_from(public_path).to_s
+			end
+			# cache other assets
+			network "/"  
+		end
+			
+		# SWITCH IT BABE TO GET MANIFEST
+		if false
+			match "/gigabase.manifest" => offline
+		end
+	else
+		offline = Rack::Offline.configure :cache_interval => 120 do      
+		
+			# Get everything from the css and js manifest, combined in 2 files
+			cache ActionController::Base.helpers.asset_path("application.css")
+			cache ActionController::Base.helpers.asset_path("application.js")
+			
+			# Cache the images we have in the public folder
+			public = Rails.public_path
+			public_path = Pathname.new( public )
+			Dir[ public + "/img/*.png", public +  "/img/*.jpg" , public +  "/img/*.gif"  ].each do |file|
+				cache "/" + Pathname.new( file ).relative_path_from(public_path).to_s
+			end
+			# cache other assets
+			network "/"  
+		end
+			
+		match "/gigabase.manifest" => offline
+	end
 	
 	# The priority is based upon order of creation:
 	# first created -> highest priority.

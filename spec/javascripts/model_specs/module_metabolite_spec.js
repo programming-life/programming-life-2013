@@ -1,4 +1,4 @@
-describe( "Module Substrate", function() {
+describe( "Module Metabolite", function() {
 
 	describe( "When using default constructor", function() {
 

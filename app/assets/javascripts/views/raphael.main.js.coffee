@@ -31,6 +31,7 @@ class View.Main extends View.RaphaelBase
 		@add @_leftPane, off
 		
 	# Creates the confirmation for reset modal
+	# Creates the confirmation for reset modal
 	#
 	_createConfirmReset: () ->
 		@_resetModal = new View.ConfirmModal( 
@@ -50,7 +51,22 @@ class View.Main extends View.RaphaelBase
 	_createBindings: () ->
 		$( window ).on( 'resize', => _( @resize() ).debounce( 100 ) )
 		
+	# Create action notifications
 	#
+	# @param [any] Subject model
+	# @param [String] element to show over
+	#
+	_createActionNotifications: ( subject, element ) ->
+		@_notifications?.kill()
+		
+		parent = 
+			getAbsolutePoint: ( location ) ->
+				offset = $( element ).offset()
+				return [ offset.left + $( element ).width(), offset.top ]
+					
+		@_notifications = new View.MainNotification( parent, subject )
+		
+	# Adds a view to the left pane
 	#
 	addToLeftPane: ( view ) ->
 		@_leftPane.addView view	
@@ -76,7 +92,7 @@ class View.Main extends View.RaphaelBase
 	#
 	# @param x [float] the x position of the paper point
 	# @param y [float] the y position of the paper point
-	# @return [[float, float]] a tuple of the document x and y coordinates, respectively
+	# @return [<float, float>] a tuple of the document x and y coordinates, respectively
 	#
 	getAbsoluteCoords: ( x, y ) ->
 		width = @_viewbox.width
@@ -100,8 +116,10 @@ class View.Main extends View.RaphaelBase
 	#
 	clear: () ->
 		super()
-		@_resetModal.clear()
-		@_loadModal.clear()
+		@_resetModal?.clear()
+		@_loadModal?.clear()
+		@_optionsModal?.clear()
+		@_notifications?.clear()
 		return this
 	
 	# Kills the main view
@@ -111,9 +129,10 @@ class View.Main extends View.RaphaelBase
 	kill: ( ) ->
 		super()
 		@paper.remove()
-		@_resetModal.kill()
-		@_loadModal.kill()
-		@getActionButtons().removeProp( 'disabled' )
+		@_resetModal?.kill()
+		@_loadModal?.kill()
+		@_notifications?.kill()
+		@_optionsModal?.kill()
 		$( window ).off( 'resize' )
 		$( '#actions' ).off( 'click', '[data-action]' )
 		return this
@@ -176,7 +195,9 @@ class View.Main extends View.RaphaelBase
 	# @return [self] chainable self
 	#
 	bindActionButtonClick: ( action ) ->
+		$( '#actions' ).off( 'click', '[data-action]' )
 		$( '#actions' ).on( 'click', '[data-action]', action )
+		@enableActionButtons()
 		return this
 		
 	# Gets the action buttons
@@ -184,7 +205,7 @@ class View.Main extends View.RaphaelBase
 	# @return [jQuery.Collection] the action button elements
 	#
 	getActionButtons: ( ) ->
-		return $( '#actions' ).find( '[data-action]' )
+		return $( '#actions' ).find( '[data-action], button.dropdown-toggle' )
 		
 	# Resets the action buttons visual state
 	# 
@@ -194,7 +215,7 @@ class View.Main extends View.RaphaelBase
 		@getActionButtons()
 			.removeClass( 'btn-success' )
 			.removeClass( 'btn-danger' )
-			.prop( { disabled :  true } )
+			.prop( { 'disabled': true } )
 			.filter( ':not([data-toggle])' )
 				.filter( ':not([class*="btn-warning"])' )
 				.find( 'i' )
@@ -253,20 +274,40 @@ class View.Main extends View.RaphaelBase
 	# Call modal for load
 	#
 	# @param load [Function] action on confirmed
+	# @param other [Function] action on confirmed but not load
 	# @param close [Function] action on closed
 	# @param always [Function] action always
 	# @return [self] chainable self
 	#
-	showLoad: ( load, close, always ) ->
+	showLoad: ( load, other, close, always ) ->
 	
 		func = ( caller, action ) =>
-			load?( @_loadModal.cell ) if action is 'load'
-			close?() if action is 'cancel' or action is undefined
+			if action is 'cancel' or action is undefined
+				close?()
+			else if action is 'load'
+				load?( @_loadModal.cell ) 
+			else
+				other?( action, @_loadModal.cell )
+			
 			always?()
 			
 			@_loadModal.offClosed( @, func ) 
 			
 		@_loadModal.onClosed( @, func )
 		@_loadModal.show()
-		
 		return this
+			
+	# On error, give alternative to resolve the error
+	#
+	setSolutionNotification: ( solution, action ) ->
+		@_notifications.setSolutionMessage( solution, action )
+		return this
+		
+	# Sets the notifications on
+	# 
+	# @param [any] the subject
+	# @param [String] the element
+	#
+	setNotificationsOn: ( subject, element ) ->
+		@_createActionNotifications( subject, element )
+		#@_notifications.show()

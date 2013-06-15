@@ -31,9 +31,9 @@ class Model.Module extends Helper.Mixable
 		
 		action = @_createAction( "Created #{this.constructor.name}:#{this.name}")
 		@tree.setRoot( new Model.Node(action, null) )
-					
-		@_bind( 'module.property.changed', @, @onActionDo )
-		@_bind( 'module.set.compound', @, @onActionDo )
+			
+		@_bind( 'module.property.action', @, @onActionDo )
+		@_bind( 'module.compound.action', @, @onActionDo )
 		@_trigger( 'module.creation', @, [ @creation, @id ] )	
 		
 	# Defines All the properties
@@ -92,13 +92,13 @@ class Model.Module extends Helper.Mixable
 	#
 	#
 	_defineDynamicProperties: ( params ) ->
-		@_propertiesFromParams(  
-			_( params ).defaults( {
+		@_propertiesFromParams( _( params ).defaults( {
 				id: _.uniqueId "client:#{this.constructor.name}:"
 				creation: Date.now()
 				starts: {}
 			} ),
-			'module.property.changed'
+			'module.property.changed',
+			'module.property.action'
 		)
 		return this
 		
@@ -117,19 +117,7 @@ class Model.Module extends Helper.Mixable
 	# @return [Object] extracted id data
 	#
 	@extractId: ( id ) ->
-		return id if _( id ).isObject()
-		return { id: id, origin: "server" } if _( id ).isNumber()
-		return null unless _( id ).isString()
-		data = id.split( ':' )
-		return { id: parseInt( data[0] ), origin: "server" } if data.length is 1
-		return { id: parseInt( data[2] ), origin: data[0] }
-		
-	# Returns true if this is a local instance
-	# 
-	# @return [Boolean] true if local, false if synced instance
-	#
-	isLocal : () ->
-		return Model.Module.extractId( @id ).origin isnt "server"
+		return Helper.Mixable.extractId id
 		
 	# Gets the compounds start value
 	#
@@ -172,16 +160,21 @@ class Model.Module extends Helper.Mixable
 	setCompound: ( compound, value ) ->
 		return this if  @starts[ compound ] is value
 		
-		todo = _( ( compound, value ) -> @starts[ compound ] = value ).bind( @, compound, value )
-		undo = _( ( compound, value ) -> @starts[ compound ] = value ).bind( @, compound, @starts[ compound ] )
-		
+		setter = ( action, compound, value ) ->
+			@starts[ compound ] = value
+			@_trigger( 'module.compound.changed', @, [ action, compound, value ] )	
+			
 		action = new Model.Action( 
-			@, todo, undo, 
+			@, undefined, undefined, 
 			"Change initial value for #{@[compound] ? compound} from #{ @starts[ compound ] } to #{value}" 
 		)
+		
+		todo = _( setter ).bind( @, action, compound, value )
+		undo = _( setter ).bind( @, action, compound, @starts[ compound ] )
+		action.set( todo, undo )
 		action.do()
 		
-		@_trigger( 'module.set.compound', @, [ action ] )	
+		@_trigger( 'module.compound.action', @, [ action ] )
 		
 		return this
 		
@@ -269,7 +262,6 @@ class Model.Module extends Helper.Mixable
 	# @return [Boolean] true if all are available
 	#
 	test: ( compounds, keys... ) ->
-		console.log "Testing", @, "with", compounds, "against", keys
 		tests = _( _( keys ).flatten() ).map( ( t ) => @[ t ] )
 		unless @_test( compounds, tests )
 			missing = _( _( tests ).flatten()  ).difference( _( compounds ).keys() )
@@ -280,7 +272,6 @@ class Model.Module extends Helper.Mixable
 				[ missing ],
 				Model.Module.Notification.Error
 			)
-			@_trigger "model.module.missing", @, [ missing ]
 			return false
 	
 		return true
@@ -377,7 +368,7 @@ class Model.Module extends Helper.Mixable
 	# @return [Array<String>] the properties
 	#
 	getMetaboliteProperties: () ->
-		metadata = @_getParameterMetaData()
+		metadata = @constructor.getParameterMetaData()
 		props = _( _( metadata?.properties?.metabolites ? [] ).concat( metadata?.properties?.metabolite ? [] ) ).flatten()
 		return props
 			
@@ -414,7 +405,8 @@ class Model.Module extends Helper.Mixable
 				"Succesfully saved #{ @name }",
 				[ 'update parameters' ],
 				Model.Module.Notification.Success
-			)		
+			)	
+			return this
 		)
 			
 		promise.fail( ( data ) => 		
@@ -428,6 +420,7 @@ class Model.Module extends Helper.Mixable
 				],
 				Model.Module.Notification.Error
 			)		
+			return [ data, this ]
 		)
 		
 		return promise
@@ -456,7 +449,7 @@ class Model.Module extends Helper.Mixable
 		
 			# Done
 			( data ) => 	
-				@id = data.id
+				@_id = data.id
 				
 				@_notificate( @,  @, 
 					"module.save.#{ @name }",
@@ -464,6 +457,7 @@ class Model.Module extends Helper.Mixable
 					[ 'create instance' ],
 					Model.Module.Notification.Success
 				)		
+				return this
 				
 			# Fail
 			, ( data ) => 		
@@ -477,6 +471,7 @@ class Model.Module extends Helper.Mixable
 					],
 					Model.Module.Notification.Error
 				)		
+				return [ data, this ]
 			)
 		
 		return promise
@@ -486,8 +481,8 @@ class Model.Module extends Helper.Mixable
 	# @todo if dynamic, also needs to save the template
 	# @todo error handling
 	#
-	save: ( cell ) ->
-		
+	save: ( cell, clone = off ) ->
+		@_id = {} if clone
 		serialized_data = @serialize( false )
 		
 		# if dynamic, also needs to save the template
@@ -520,7 +515,8 @@ class Model.Module extends Helper.Mixable
 						serialized_data
 					],
 					Model.Module.Notification.Error
-				)		
+				)
+				return [ data, this ]
 			)
 		
 		return promise
@@ -532,7 +528,7 @@ class Model.Module extends Helper.Mixable
 	# @return [Model.Module] the module
 	#
 	@deserialize : ( serialized ) ->
-		
+	
 		serialized = JSON.parse( serialized ) if _( serialized ).isString()
 		serialized.parameters.name = serialized.parameters.name ? serialized.name
 		serialized.parameters.amount = serialized.parameters.amount ? serialized.amount
@@ -550,7 +546,8 @@ class Model.Module extends Helper.Mixable
 	# @param cell [Model.Cell] the cell to load to
 	# @param callback [Function] function to call on completion
 	#
-	@load : ( module_id, cell, callback ) ->
+	@load : ( module_id, cell, callback, clone = off ) ->
+		
 		module = new Model.Module( { id: module_id } )
 		promise = $.get( module.url, { all: true } )
 		
@@ -558,6 +555,9 @@ class Model.Module extends Helper.Mixable
 			
 			# Done
 			( data ) =>
+				if clone
+					delete data.parameters.id
+					delete data.parameters.creation
 				result = Model.Module.deserialize( data )
 				callback.call( @, result ) if callback?
 				
@@ -567,7 +567,8 @@ class Model.Module extends Helper.Mixable
 					"Succesfully loaded #{module.name}",
 					[ 'load' ],
 					Model.Module.Notification.Success
-				)	
+				)
+				return module
 				
 			# Fail
 			( data ) =>
@@ -584,6 +585,8 @@ class Model.Module extends Helper.Mixable
 					],
 					Model.Module.Notification.Error
 				)	
+				
+				return [ data, module ]
 			)
 			
 		return promise

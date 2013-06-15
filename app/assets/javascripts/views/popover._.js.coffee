@@ -25,6 +25,7 @@ class View.HTMLPopOver extends Helper.Mixable
 		@_bind('view.drawn', @, @onViewPositioned)
 		@_bind('view.moved', @, @onViewPositioned)
 		@draw()
+		@setSelected off
 		
 	# Creates the popover element
 	#
@@ -108,6 +109,12 @@ class View.HTMLPopOver extends Helper.Mixable
 			when 'right'
 				left = x
 				top = y - height / 2 - 1
+			when 'global'
+				top = y
+				left = x - width / 2
+			else
+				top = y
+				left = x
 				
 		@_elem.css( { left: left, top: top } )
 		return this
@@ -116,14 +123,14 @@ class View.HTMLPopOver extends Helper.Mixable
 	#
 	# @param selected [Boolean] selection state
 	#
-	_setSelected: ( selected ) ->
+	setSelected: ( selected ) ->
 		if selected isnt @_selected
 			if selected
-				@_setHovered off
+				@setHovered off
 				@_elem.addClass('selected')
 			else
 				@_elem.removeClass('selected')
-
+				
 		@_selected = selected
 		return this
 
@@ -131,7 +138,7 @@ class View.HTMLPopOver extends Helper.Mixable
 	#
 	# @param hovered [Boolean] hover state
 	#
-	_setHovered: ( hovered ) ->
+	setHovered: ( hovered ) ->
 		if hovered isnt @_hovered 
 			if hovered and not @_selected
 				@_elem.addClass('hovered')

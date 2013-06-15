@@ -1,9 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'rails', '3.2.12'
-
-# Bundle edge Rails instead:
-# gem 'rails', :git => 'git://github.com/rails/rails.git'
+gem 'rack-offline'
 
 # Gems used for the database
 gem 'sqlite3'
@@ -21,6 +19,7 @@ group :assets do
   # gem 'therubyracer', :platforms => :ruby
 
   gem 'uglifier', '>= 1.0.3'
+  gem "yui-compressor", "~> 0.9.6"
   gem "teabag"
   
 end
@@ -38,7 +37,7 @@ gem 'will_paginate', '~> 3.0'
 gem 'nested_form'
 gem 'jquery-rails'
 gem 'wicked_pdf'
-gem 'wkhtmltopdf-binary', '~> 0.9.9', require: false
+gem 'wkhtmltopdf-binary', '~> 0.9.9'
 gem 'json'
 
 # To use ActiveModel has_secure_password

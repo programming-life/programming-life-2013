@@ -2,7 +2,7 @@
 <html>
   <head>
   <meta charset='UTF-8'>
-  <title>Broyologramming Life API Documentation</title>
+  <title>CoffeeScript API Documentation</title>
   <link rel='stylesheet' href='../../assets/codo.css' type='text/css'>
   <script src='../../assets/codo.js'></script>
   <script src='../../assets/search_data.js'></script>
@@ -134,7 +134,7 @@
   <li>
     <span class='signature'>
       <a href='#constructor-instance'>
-        - (void) <strong>constructor</strong>(_tree)
+        - (void) <strong>constructor</strong>(timemachine)
       </a>
     </span>
     <span class='constructor note title'>Constructor</span>
@@ -144,8 +144,18 @@
   </li>
   <li>
     <span class='signature'>
+      <a href='#_createBindings-instance'>
+        - (void) <strong>_createBindings</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Creates bindings for the view
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
       <a href='#clear-instance'>
-        - (void) <strong>clear</strong>()
+        - (self) <strong>clear</strong>()
       </a>
     </span>
     <span class='desc'>
@@ -155,7 +165,7 @@
   <li>
     <span class='signature'>
       <a href='#kill-instance'>
-        - (void) <strong>kill</strong>()
+        - (self) <strong>kill</strong>()
       </a>
     </span>
     <span class='desc'>
@@ -225,7 +235,7 @@
   <li>
     <span class='signature'>
       <a href='#_onNodeAdd-instance'>
-        - (void) <strong>_onNodeAdd</strong>(tree, node)
+        - (Boolean) <strong>_onNodeAdd</strong>(tree, node)
       </a>
     </span>
     <span class='desc'>
@@ -234,28 +244,28 @@
   </li>
   <li>
     <span class='signature'>
-      <a href='#_onNodeRemove-instance'>
-        - (void) <strong>_onNodeRemove</strong>(tree, node)
+      <a href='#_onRootSet-instance'>
+        - (Boolean) <strong>_onRootSet</strong>(tree, node)
       </a>
     </span>
     <span class='desc'>
-      Is called when a node is removed from the tree
+      Gets called when the root of the tree is set
     </span>
   </li>
   <li>
     <span class='signature'>
-      <a href='#_onNodeSelect-instance'>
-        - (void) <strong>_onNodeSelect</strong>(tree, node)
+      <a href='#_onBranch-instance'>
+        - (void) <strong>_onBranch</strong>()
       </a>
     </span>
     <span class='desc'>
-      Is called when a node is selected
+      Gets called when branching occurs
     </span>
   </li>
   <li>
     <span class='signature'>
-      <a href='#_selectNode-instance'>
-        - (void) <strong>_selectNode</strong>(node)
+      <a href='#selectNode-instance'>
+        - (void) <strong>selectNode</strong>(node)
       </a>
     </span>
     <span class='desc'>
@@ -274,44 +284,32 @@
   </li>
   <li>
     <span class='signature'>
-      <a href='#_branchLeft-instance'>
-        - (void) <strong>_branchLeft</strong>()
-      </a>
-    </span>
-    <span class='bound note title'>Bound</span>
-    <span class='desc'>
-      Move one branch to the left
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#_branchRight-instance'>
-        - (void) <strong>_branchRight</strong>()
-      </a>
-    </span>
-    <span class='bound note title'>Bound</span>
-    <span class='desc'>
-      Move one branch to the right
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#_branch-instance'>
-        - (void) <strong>_branch</strong>(direction)
-      </a>
-    </span>
-    <span class='desc'>
-      Move one branch to either direction
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
       <a href='#setTree-instance'>
         - (void) <strong>setTree</strong>(tree)
       </a>
     </span>
     <span class='desc'>
       Sets the tree of the view
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#setActive-instance'>
+        - (void) <strong>setActive</strong>(node)
+      </a>
+    </span>
+    <span class='desc'>
+      Sets the view of node to active
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#setInactive-instance'>
+        - (void) <strong>setInactive</strong>(node)
+      </a>
+    </span>
+    <span class='desc'>
+      Sets the view of node to inactive
     </span>
   </li>
 </ul>
@@ -325,13 +323,16 @@
       <p class='inherited'>
                 <a href='../../classes/Helper/Mixable.html#extend-class'>.extend</a>,
                 <a href='../../classes/Helper/Mixable.html#include-class'>.include</a>,
-        <a href='../../classes/Helper/Mixable.html#concern-class'>.concern</a>
+                <a href='../../classes/Helper/Mixable.html#concern-class'>.concern</a>,
+                <a href='../../classes/Helper/Mixable.html#extractId-class'>.extractId</a>,
+                <a href='../../classes/Helper/Mixable.html#isLocal-instance'>#isLocal</a>,
+        <a href='../../classes/Helper/Mixable.html#parseDate-class'>.parseDate</a>
       </p>
       <h2>Constructor Details</h2>
       <div class='methods'>
   <div class='method_details'>
     <p class='signature' id='constructor-instance'>
-      - (void) <strong>constructor</strong>(_tree)
+      - (void) <strong>constructor</strong>(timemachine)
     </p>
     <div class='docstring'>
   <p>Creates a new instance of this view</p>
@@ -354,23 +355,51 @@
       <h2>Instance Method Details</h2>
       <div class='methods'>
   <div class='method_details'>
-    <p class='signature' id='clear-instance'>
-      - (void) <strong>clear</strong>()
+    <p class='signature' id='_createBindings-instance'>
+      - (void) <strong>_createBindings</strong>()
     </p>
     <div class='docstring'>
-  <p>Clears this view</p>
+  <p>Creates bindings for the view</p>
 </div>
 <div class='tags'>
 </div>
   </div>
   <div class='method_details'>
+    <p class='signature' id='clear-instance'>
+      - (self) <strong>clear</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Clears this view</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>self</tt>)
+      &mdash;
+      <span class='desc'>For chaining</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
     <p class='signature' id='kill-instance'>
-      - (void) <strong>kill</strong>()
+      - (self) <strong>kill</strong>()
     </p>
     <div class='docstring'>
   <p>Removes this view</p>
 </div>
 <div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>self</tt>)
+      &mdash;
+      <span class='desc'>For chaining</span>
+    </li>
+  </ul>
 </div>
   </div>
   <div class='method_details'>
@@ -487,7 +516,7 @@ push this element into an object for future reference.</p>
   </div>
   <div class='method_details'>
     <p class='signature' id='_onNodeAdd-instance'>
-      - (void) <strong>_onNodeAdd</strong>(tree, node)
+      - (Boolean) <strong>_onNodeAdd</strong>(tree, node)
     </p>
     <div class='docstring'>
   <p>Is called when a node is added to the tree</p>
@@ -512,14 +541,23 @@ push this element into an object for future reference.</p>
       <span class='desc'>The node that was added</span>
     </li>
   </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Boolean</tt>)
+      &mdash;
+      <span class='desc'>True is the tree was our timachine, false otherwise</span>
+    </li>
+  </ul>
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='_onNodeRemove-instance'>
-      - (void) <strong>_onNodeRemove</strong>(tree, node)
+    <p class='signature' id='_onRootSet-instance'>
+      - (Boolean) <strong>_onRootSet</strong>(tree, node)
     </p>
     <div class='docstring'>
-  <p>Is called when a node is removed from the tree</p>
+  <p>Gets called when the root of the tree is set</p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
@@ -530,7 +568,7 @@ push this element into an object for future reference.</p>
         (<tt><a href='../../classes/Model/Tree.html'>Model.Tree</a></tt>)
       </span>
       &mdash;
-      <span class='desc'>The tree the node was removed from</span>
+      <span class='desc'>The tree</span>
     </li>
     <li>
       <span class='name'>node</span>
@@ -538,43 +576,33 @@ push this element into an object for future reference.</p>
         (<tt><a href='../../classes/Model/Node.html'>Model.Node</a></tt>)
       </span>
       &mdash;
-      <span class='desc'>The node that was removed</span>
+      <span class='desc'>The new root</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Boolean</tt>)
+      &mdash;
+      <span class='desc'>True is the tree was our timachine, false otherwise</span>
     </li>
   </ul>
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='_onNodeSelect-instance'>
-      - (void) <strong>_onNodeSelect</strong>(tree, node)
+    <p class='signature' id='_onBranch-instance'>
+      - (void) <strong>_onBranch</strong>()
     </p>
     <div class='docstring'>
-  <p>Is called when a node is selected</p>
+  <p>Gets called when branching occurs</p>
 </div>
 <div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>tree</span>
-      <span class='type'>
-        (<tt><a href='../../classes/Model/Tree.html'>Model.Tree</a></tt>)
-      </span>
-      &mdash;
-      <span class='desc'>The tree in which the node was selected</span>
-    </li>
-    <li>
-      <span class='name'>node</span>
-      <span class='type'>
-        (<tt><a href='../../classes/Model/Node.html'>Model.Node</a></tt>)
-      </span>
-      &mdash;
-      <span class='desc'>The node that was selected</span>
-    </li>
-  </ul>
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='_selectNode-instance'>
-      - (void) <strong>_selectNode</strong>(node)
+    <p class='signature' id='selectNode-instance'>
+      - (void) <strong>selectNode</strong>(node)
     </p>
     <div class='docstring'>
   <p>Mark a node in the list as selected</p>
@@ -615,49 +643,6 @@ push this element into an object for future reference.</p>
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='_branchLeft-instance'>
-      - (void) <strong>_branchLeft</strong>()
-      (bound)
-    </p>
-    <div class='docstring'>
-  <p>Move one branch to the left</p>
-</div>
-<div class='tags'>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='_branchRight-instance'>
-      - (void) <strong>_branchRight</strong>()
-      (bound)
-    </p>
-    <div class='docstring'>
-  <p>Move one branch to the right</p>
-</div>
-<div class='tags'>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='_branch-instance'>
-      - (void) <strong>_branch</strong>(direction)
-    </p>
-    <div class='docstring'>
-  <p>Move one branch to either direction</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>direction</span>
-      <span class='type'>
-        (<tt>int</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the direction (-1 or 1) in which to move</span>
-    </li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
     <p class='signature' id='setTree-instance'>
       - (void) <strong>setTree</strong>(tree)
     </p>
@@ -678,11 +663,53 @@ push this element into an object for future reference.</p>
   </ul>
 </div>
   </div>
+  <div class='method_details'>
+    <p class='signature' id='setActive-instance'>
+      - (void) <strong>setActive</strong>(node)
+    </p>
+    <div class='docstring'>
+  <p>Sets the view of node to active</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>node</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Model/Node.html'>Model.Node</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The node</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='setInactive-instance'>
+      - (void) <strong>setInactive</strong>(node)
+    </p>
+    <div class='docstring'>
+  <p>Sets the view of node to inactive</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>node</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Model/Node.html'>Model.Node</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The node</span>
+    </li>
+  </ul>
+</div>
+  </div>
 </div>
     </div>
     <div id='footer'>
   Generated on
-  Sun Jun 02 2013 15:47:57 GMT+0200 (W. Europe Daylight Time)
+  Tue Jun 11 2013 00:05:30 GMT+0200 (W. Europe Daylight Time)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

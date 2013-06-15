@@ -1,4 +1,5 @@
-class HookController < ApplicationController
+class HookController < ApplicationController	
+	before_filter :set_cache_buster
 	
 	def index
 		@version = `git describe`
@@ -28,5 +29,17 @@ class HookController < ApplicationController
 			`bundle install --deployment`
 			`rake db:migrate`
 		end
+	end
+	
+	def version
+		respond_to do | format |
+			format.json { render json: { major: 1, minor: 5, revision: 7, full: '1.5.7' } }
+		end
+	end
+
+	def set_cache_buster
+		response.headers["Cache-Control"] = "no-cache, no-store, max-age=0, must-revalidate"
+		response.headers["Pragma"] = "no-cache"
+		response.headers["Expires"] = "Fri, 01 Jan 1990 00:00:00 GMT"
 	end
 end

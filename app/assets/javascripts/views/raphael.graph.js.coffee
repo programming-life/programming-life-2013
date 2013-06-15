@@ -18,14 +18,14 @@ class View.Graph extends View.RaphaelBase
 	# Construct a new Graph object
 	#
 	# @param title [String] The title of the graph	
-	# @param parent [View.Cell] The cell view this graph belongs to
+	# @param parent [View.Collection] The view this graph belongs to
+	# @param width [Integer] The width of the graph
+	# @param height [Integer] The height of the graph
 	#
-	constructor: ( id , @_titletext, parent, container = "#graphs", @_width = 240, @_height = 175 ) ->
+	constructor: ( id , @_titletext, parent, @_width = 240, @_height = 175 ) ->
 		
-		@_container = $( "##{id}" )
-		 
-		unless @_container.length
-			$( container ).append( @_container = $('<div id="' + id + '" class="graph"></div>') )
+		unless ( @_container = $( "##{id}" ) ).length
+			$( parent.container[0] ).append( @_container = $('<div id="' + id + '" class="graph"></div>') )
 		
 		super Raphael( id, @_width + Graph.AXISPADDING, @_height + Graph.AXISPADDING), parent
 
@@ -39,10 +39,13 @@ class View.Graph extends View.RaphaelBase
 	#
 	clear: () ->
 		@_chart?.remove()
-		@_line?.remove()
 		@_title?.remove()
 		
+		@_line?.remove()
 		@_line = null
+		
+		@_columnText?.remove()
+		@_columnText = null;
 		super()
 		
 	# Kills the view
@@ -84,15 +87,16 @@ class View.Graph extends View.RaphaelBase
 		@_chart = @paper.linechart( Graph.AXISPADDING, 0, 
 			@_width, @_height,
 			_( xValues ).clone( true ), _( yValues ).clone( true ), options )
+		
+		requestLine = (x) =>
+			xFactor = (x - Graph.AXISPADDING - 10) / (@_width - Graph.AXISPADDING)
+			@_trigger "view.graph.hover", @, [xFactor]
+
+		@_chart.hoverColumn () ->
+			requestLine( @x )
+
 		return this
 
-
-	#	unless @_drawn
-	#		@_chart.hoverColumn ( event ) =>
-	#			unless @_parent._running
-	#				@_parent._drawRedLines( event.x - @paper.canvas.offsetLeft )
-	#	@_drawn = on
-	
 	# Move the viewbox of the chart
 	#
 	# @param x [Integer] The amount of pixels to move the viewbox to the right
@@ -118,19 +122,35 @@ class View.Graph extends View.RaphaelBase
 	
 	# Draws a red line over the chart
 	#
-	# @param x [Integer] The x position of the line, relative to the offset of the chart
+	# @param x [Integer] The x of the data to draw the line at
 	#
-	drawRedLine: ( x ) ->
+	_drawRedLine: ( x ) ->
 		unless @_line?	
 			@_line = @paper
-				.path( [ 'M', 0 + x,0, 'V', @_height ] )
+				.path( [ 'M', 0 ,0, 'V', @_height ] )
 				.attr
 					stroke : '#F00'
 				.toFront()
-			@_line.x = x + @paper.canvas.offsetLeft
-			@_line.toFront()
-		else
-			translation = (x + @paper.canvas.offsetLeft - @_line.x)
-			@_line.x = @_line.x + translation
-			@_line.translate( translation )
-			@_line.toFront()
+
+		@_line.transform( "T#{x}, 0" )
+		@_line.toFront()
+	
+	_drawColumnText: (text ) ->
+		unless @_columnText? 
+			@_columnText = $("<div></div>")
+			@_container.append @_columnText
+		@_columnText.empty()
+
+		for i,s of text
+			node = $("<p>#{s}</p>")
+			@_columnText.append node
+	
+	# Shows a column
+	showColumn: ( xFactor , text ) ->
+		x = (@_width - Graph.AXISPADDING) * xFactor + Graph.AXISPADDING
+
+		# Add 10 magically for the axis
+		x += 10 
+
+		@_drawRedLine(x)
+		@_drawColumnText(text )

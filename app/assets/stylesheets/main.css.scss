@@ -23,10 +23,10 @@ div#paper svg {
 
 div#paper svg, .pane, .btn {
 	-webkit-user-select: none;
-	-khtml-user-select: none;
-	-moz-user-select: none;
-	-o-user-select: none;
-	user-select: none;
+	 -khtml-user-select: none;
+	   -moz-user-select: none;
+	     -o-user-select: none;
+	        user-select: none;
 
 	cursor: default;
 }
@@ -41,7 +41,17 @@ div#paper svg, .pane, .btn {
 
 #progress.progress .bar {
 	-webkit-transition: none;
-	-moz-transition: none;
-	-o-transition: none;
-	transition: none;
+	   -moz-transition: none;
+	     -o-transition: none;
+	        transition: none;
 }
+
+.modal-load .dropdown-menu {
+	min-width: 100px;
+}
+
+[data-action], [data-toggle] {
+	cursor:pointer;
+}
+
+.bottom-up {top: auto; bottom: 100%; }

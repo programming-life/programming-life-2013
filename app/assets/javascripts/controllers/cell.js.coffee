@@ -1,3 +1,4 @@
+'use strict'
 # The controller for the Cell view
 #
 class Controller.Cell extends Controller.Base
@@ -26,7 +27,7 @@ class Controller.Cell extends Controller.Base
 	#
 	constructor: ( ) ->
 		view = if arguments.length is 1
-			@_interaction = arguments[ 1 ] ? off
+			@_interaction = on
 			arguments[ 0 ]
 		else
 			new View.Cell( arguments[ 0 ], arguments[ 1 ], arguments[ 2 ] ? new Model.Cell(), ( @_interaction = arguments[ 3 ] ? on ) )	
@@ -35,10 +36,12 @@ class Controller.Cell extends Controller.Base
 		Object.defineProperty( @, 'model', 
 			get: () -> 
 				return @view.model
-			set: ( value ) -> 
-				@view.model = value
+			set: @setCell
 		)
 
+		@addChild 'dummies', new Controller.Base( new View.Collection() )
+		
+		@model = @view.model
 		@_createBindings()
 		@_addInteraction() if @_interaction
 
@@ -46,187 +49,154 @@ class Controller.Cell extends Controller.Base
 	#
 	_addInteraction: () ->
 		@_automagically = on
-
-		@_bind( 'cell.module.added', @, @onModuleAdded )
-		@_bind( 'module.property.changed', @, @onModuleChanged)
-		@_bind "model.module.missing", @, @_onModuleMissing
-		
-		@_addDummyViews()
+		return this
 
 	# Adds dummy modules
 	#
 	_addDummyViews: () ->
 		
-		@view.each( (view) => @view.remove view if view instanceof View.DummyModule )
+		@controller( 'dummies' )?.kill()
 		
-		@view.add new View.DummyModule( @view.paper, @view, @model, Model.CellGrowth, 1 )
-		@view.add new View.DummyModule( @view.paper, @view, @model, Model.DNA, 1 )
-		@view.add new View.DummyModule( @view.paper, @view, @model, Model.Lipid, 1 )
-		@view.add new View.DummyModule( @view.paper, @view, @model, Model.Metabolite, -1, { placement: Model.Metabolite.Outside, type: Model.Metabolite.Substrate, amount: 0, supply: 1 } )
-		@view.add new View.DummyModule( @view.paper, @view, @model, Model.Metabolite, -1, { placement: Model.Metabolite.Inside, type: Model.Metabolite.Product, amount: 0, supply: 0 } )
-		@view.add new View.DummyModule( @view.paper, @view, @model, Model.Transporter, -1, { direction: Model.Transporter.Inward } )
-		@view.add new View.DummyModule( @view.paper, @view, @model, Model.Metabolism, -1 )
-		@view.add new View.DummyModule( @view.paper, @view, @model, Model.Protein, -1 )
-		@view.add new View.DummyModule( @view.paper, @view, @model, Model.Transporter, -1, { direction: Model.Transporter.Outward } )
+		@_addDummyView( 'cellgrowth', Model.CellGrowth, 1 )
+		@_addDummyView( 'lipid', Model.Lipid, 1 )
+		@_addDummyView( 'dna', Model.DNA, 1 )
+		@_addDummyView( 'metabolite-outside', Model.Metabolite, -1, { placement: Model.Metabolite.Outside, type: Model.Metabolite.Substrate, amount: 0, supply: 1 } )
+		@_addDummyView( 'transporter-inward', Model.Transporter, -1, { direction: Model.Transporter.Inward, transported: 's'  } )
+		@_addDummyView( 'metabolism', Model.Metabolism, -1 )
+		@_addDummyView( 'metabolite-inside', Model.Metabolite, -1, { placement: Model.Metabolite.Inside, type: Model.Metabolite.Product, amount: 0, supply: 0 } )
+		@_addDummyView( 'protein', Model.Protein, -1 )
+		@_addDummyView( 'transporter-outward', Model.Transporter, -1, { direction: Model.Transporter.Outward, transported: 'p' } )
 		
-		$( '.module-properties' ).click( '[data-action]', ( event ) => 
-			func = @["on#{ $( event.target ).data( 'action' )}"]
-			func( event ) if func?
-		)
-		
-		@_bind "module.creation.started", @, @_onModuleCreationStarted
-		@_bind "module.creation.aborted", @, @_onModuleCreationAborted
-		@_bind "module.created", @, @_onModuleCreated
-		
+		return this
+
+	# Add a dummy view
 	#
+	# @param id [String] the id
+	# @param modulector [Function] the module constructor
+	# @param number [Integer] the amount allowed or -1 for unlimited
+	# @param params [Object] the defaults
 	#
-	onCreate: ( event ) ->
-		
+	_addDummyView: ( id, modulector, number, params ) ->
+	
+		@controller( 'dummies' ).addChild id, new Controller.DummyModule( @, modulector, number, params )
+		@view.add @controller( 'dummies' ).controller( id ).view
+		return this
 		
 	# Creates the bindings for the cell
 	#
 	_createBindings: () ->
-		@_bind( 'cell.module.add', @, @onModuleAdd )		
-		@_bind( 'cell.module.remove', @, @onModuleRemove )
-		@_bind( 'cell.metabolite.add', @, @onModuleAdd )
-		@_bind( 'cell.metabolite.remove', @, @onModuleRemove )
-		@_bind( 'cell.spline.add', @, @onSplineAdd)
-		@_bind( 'cell.spline.remove', @, @onSplineRemove)
+		@_bind( 'cell.module.add', @, @_onModuleAdd )	
+		@_bind( 'cell.module.remove', @, @_onModuleRemove )
+		@_bind( 'cell.metabolite.add', @, @_onModuleAdd )
+		@_bind( 'cell.metabolite.remove', @, @_onModuleRemove )
 		
-	#
-	#
-	onModuleAdd: ( cell, module ) ->
-		return if cell isnt @model
-		@view.addModule module
-			
-	#
-	#
-	onModuleAdded: ( cell, module ) ->
-		return if cell isnt @model
-		return unless @_automagically
-		for prop in module.getMetaboliteProperties()
-			@onModuleChanged( module, undefined, prop, module[prop] )
-	#
-	#
-	onModuleRemove: ( cell, module ) ->
-		return if cell isnt @model
-		@view.removeModule module
-		
-	#
-	#
-	onSplineAdd: ( cell, spline ) ->
-		return if cell isnt @model
-		@view.addSpline spline
-		
-	#
-	#
-	onSplineRemove: ( cell, spline ) ->
-		return if cell isnt @model
-		@view.removeSpline spline
-		
-	# On Module property changed add missing metabolites
 	# 
-	# @param module [Model.Module] the module changed
-	# @param action [Model.Action] the action invoked
-	# @param key [String] the property name changed
-	# @param param [String] the property values
 	#
-	onModuleChanged: ( module, action, key, param ) =>
-		return unless @_automagically
-		return if not _( @model._getModules() ).contains module
+	setCell: ( value ) ->
+		@view.model = value
+		for module in @view.model.getModules()
+			@_onModuleAdd( value, module )
+		@_addDummyViews() if @_interaction
+		return this
+		
+	# Begin creation of a module
+	#
+	beginCreate: ( module ) ->
+		@addChild( _( 'module-' ).uniqueId(), controller = new Controller.Module( @, module, on, @_interaction ) )
+		@automagicAdd controller.model, on
+		@view.add controller.view
+		@stopSimulation()
+		return this
+		
+	# End creation of a module
+	#
+	endCreate: ( module ) ->
+		key = @findKey( ( v ) -> v.model is module ) 
+		@view.remove @controller( key ).view.kill()
+		@removeChild key
+		@stopSimulation()
+		return this
+		
+	# Runs when module is added
+	#
+	# @param cell [Model.Cell] the cell
+	# @param module [Model.Module] the module
+	#
+	_onModuleAdd: ( cell, module ) ->
+		return if cell isnt @model
+		@addChild( _( 'module-' ).uniqueId(), controller = new Controller.Module( @, module, off, @_interaction ) )
+		@view.add controller.view
+		@stopSimulation()
 
-		# Find parameters that are metabolites
-		props = module.getMetaboliteProperties()
-		return if not _( props ).contains key
-			
+	# Runs when module is removed
+	#
+	# @param cell [Model.Cell] the cell
+	# @param module [Model.Module] the module
+	#
+	_onModuleRemove: ( cell, module ) ->
+		return if cell isnt @model
+		if key = @findKey( ( c ) -> c.model is module )
+			controller = @controller( key ).kill()
+			@removeChild key
+			@view.remove controller.view
+		@stopSimulation()
+		
+	# Automagically adds the metabolite modules requires to the cell view or model
+	#
+	# @param module [Model.Module] The module for which to automagically add
+	# @todo remove is_product
+	#
+	automagicAdd: ( module, preview = off ) ->
+		return unless @_automagically
+				
 		# Expand names
 		names = []
-		param = [ param ] unless _( param ).isArray()
-		for name in param
-			name = new String( name ).toString()
-			if name.indexOf('#') is -1
-				names.push "#{name}#int"
-				names.push "#{name}#ext"
-			else
-				names.push name
-				
+		props = module.getMetaboliteProperties()
+		for key, value of props
+			values = if _( module[value] ).isArray() then module[value] else [ module[value] ]
+			for name in values
+				name = new String( name ).toString()
+				continue if not name? or name.length is 0
+				if name.indexOf('#') is -1
+					names.push "#{name}#int"
+					names.push "#{name}#ext"
+				else
+					names.push name
+
+		names = _( names ).unique()
+
 		# Find missing metabolites
-		missing = _( names ).filter( ( name ) => not _( @model._getModules() ).any( ( m ) -> name is m.name ) )
-		#module.test(@model.mapping, module.metadata.tests.compounds)
+		missing = _( names ).filter( ( name ) => not _( @model.getModules() ).any( ( m ) -> name is m.name ) )
+
 		for name in missing
-			product = 
-				( module instanceof Model.Transporter and key is 'transported' and module.direction is Model.Transporter.Outward ) or
-				( module instanceof Model.Metabolism and key is 'dest' )
-			console.log 'automagically creating ' + name
-			@model.addMetabolite( name, 0, 0, name.split( '#' )[1] is 'int', product )
-	
-	# Gets called on module.creation.started
-	#
-	# @param source [View.DummyModule] The source of the event
-	# @param module [Model.Module] The module representation of the current creation parameters
-	#
-	_onModuleCreationStarted: ( source, module ) ->
-		@_creating = on
-		@view.previewModule( source, module, on )
+			is_product = 
+				( module instanceof Model.Transporter and module.direction is Model.Transporter.Outward ) or
+				( module instanceof Model.Metabolism and name in module['dest'] )
 
-	# Gets called on module.creation.aborted
-	#
-	# @param source [View.DummyModule] The source of the event
-	# @param module [Model.Module] The module representation of the current creation parameters
-	#
-	_onModuleCreationAborted: ( source, module ) ->
-		@_creating = off
-		@view.previewModule( source, module, off )
-		
-	# Gets called on module.creation.finished
-	#
-	# @param source [View.DummyModule] The source of the event
-	# @param module [Model.Module] The module representation of the current creation parameters
-	#
-	_onModuleCreated: ( source, module ) ->
-		type = source.getFullType()
-		if source in @view.viewsByType[type] 
-			@_creating = off
-			@view.previewModule( source, module, off )
-
-			@model.add module
+			is_inside = name.split( '#' )[1] is 'int'
 			
-		#	switch @_type
-		#		when "Transporter"
-		#			if params.direction is Model.Transporter.Outward
-		#				@_cell.addProduct( params.transported , 0, false )
-		#			if params.direction is Model.Transporter.Inward
-		#				@_cell.addSubstrate( params.transported , 0, 0, true )
-		#		when "Metabolism"
-		#			for o in params.orig ? []
-		#				@_cell.addSubstrate( o , 0, 0, true )
-		#			for d in params.dest ? []
-		#				@_cell.addProduct( d , 0, true )
+			if preview
+				type = if is_product then Model.Metabolite.Product else Model.Metabolite.Substrate
+				placement = if is_inside then Model.Metabolite.Inside else Model.Metabolite.Outside
+				metabolite = new Model.Metabolite( { supply: 0, placement: placement, type: type }, 0, name )
+				@view.addPreview new View.Module( @view.paper, @view, @view.model, metabolite, on, off ) 
+			else
+				@model.addMetabolite( name, 0, 0, is_inside, is_product )
 	
-	# Gets called when a module is missing parameters
-	#
-	# @param module [Model.Module] The module
-	# @param missing [Array] The properties the module is missing values for
-	#
-	_onModuleMissing: ( module, missing ) ->
-		console.log "Module", module, "is missing", missing
-
 	# Loads a new cell into the view
 	#
 	# @param cell_id [Integer] the cell to load
 	# @param callback [Function] the callback function
 	# @return [jQuery.Promise] the promise
 	#
-	load: ( cell_id, callback ) ->
-	
-		
+	load: ( cell_id, callback, clone = off ) ->
+
 		setcallback = ( cell ) => 
 			@model = cell 
-			@_addDummyViews() if @_interaction
 			callback?.call( @, cell )
 			
 		@_automagically = off
-		promise = Model.Cell.load cell_id, setcallback
+		promise = Model.Cell.load cell_id, setcallback, clone
 		promise.always( () => @_automagically = on )
 		return promise
 		
@@ -235,75 +205,86 @@ class Controller.Cell extends Controller.Base
 	# @param name the name to save with
 	# @return [jQuery.Promise] the promise
 	#
-	save: ( name ) ->
+	save: ( name, clone = off ) ->
 		@model.name = name ? @model.name
-		return @model.save()
+		return @model.save( clone )
 		
 	# Get the simulation data from the cell
 	# 
 	# @param from [Integer] The t0 of the simulation
 	# @param to [Integer] the tn of the simulation
-	# @param dt [Float] The timestep for the graphs
+	# @options options [Float] dt The timestep for the graphs
 	# @param base_values [Array] continuation values
 	# @param token [CancelToken] the cancellation token
-	# @param interpolate [Boolean] wether to interpolate
+	# @options options [Boolean] interpolate interpolations flag
+	# @options options [Integer] iterations
+	# @options options [Float] tolerance
 	# @return [Object] Object with data such as An array of datapoints
 	#
-	solveTheSystem: ( from, to, base_values = [], token = numeric.asynccancel(), dt = 1, interpolate = off ) ->
-	
-		duration = to - from
-		promise = @model.run( from, to, base_values, undefined, token )
-		promise = promise.then( ( cell_run ) =>
-			
-			results = cell_run.results
-			mapping = cell_run.map
-	
-			xValues = []
-			
-			# Get the interpolation for a fixed timestep instead of the adaptive timestep
-			# generated by the ODE. This should be fairly fast, since the values all 
-			# already there ( ymid and f )
-			if interpolate
-				interpolation = []
-				for time in [ 0 ... duration ] by dt
-					interpolation[ time ] = results.at time
-				for val in [0 ... duration] by dt
-					xValues.push ( val + cell_run.from )
-			else
-				skip = []
-				prevVal = 0
-				prevVal = results.x[ 0 ] - Cell.SIGNIFICANCE if results.x.length
-				for index, val of results.x
-					if ( Math.abs( val - prevVal ) ) >= Cell.SIGNIFICANCE
-						xValues.push ( val + cell_run.from )
-						prevVal = val
-					else
-						skip.push index
-			datasets = {}			
-			for key, value of mapping
-				yValues = []
-
-				if interpolate
-					for time in [ 0 ... duration ] by dt
-						yValues.push( interpolation[ time ][ value ] ) 
-				else
-					for index, substance of results.y
-						unless index is _( skip ).first()
-							yValues.push(substance[value])
-						else
-							skip.pop()
-					
-				datasets[ key ] = { xValues: xValues, yValues: yValues}
-				
-			return { 
-				results: results
-				datasets: datasets
-				from: cell_run.from
-				to: cell_run.to
-			}
-		)
+	@catchable	
+		solveTheSystem: ( from, to, base_values = [], token = numeric.asynccancel(), options = {} ) ->
 		
-		return promise
+			defaults = @getDefaultOptions()
+			options = _( options ).defaults( defaults.ode )
+		
+			duration = to - from
+			promise = @model.run( from, to, base_values, undefined, token, options )
+			promise = promise.then( ( cell_run ) =>
+				
+				results = cell_run.results
+				mapping = cell_run.map
+		
+				ts = []
+				
+				# Get the interpolation for a fixed timestep instead of the adaptive timestep
+				# generated by the ODE. This should be fairly fast, since the values all 
+				# already there ( ymid and f )
+				if options.interpolate
+					interpolation = []
+					for time in [ 0 ... duration ] by options.dt
+						interpolation[ time ] = results.at time
+					for val in [0 ... duration] by options.dt
+						ts.push ( val + cell_run.from )
+				else
+					skip = []
+					prevVal = 0
+					prevVal = results.x[ 0 ] - Cell.SIGNIFICANCE if results.x.length
+					for index, val of results.x
+						if ( Math.abs( val - prevVal ) ) >= Cell.SIGNIFICANCE
+							ts.push ( val + cell_run.from )
+							prevVal = val
+						else
+							skip.push index
+						
+				console.log ts, cell_run.from, cell_run.to
+				datasets = {}			
+				for key, value of mapping
+					xs = _( ts ).clone()
+					ys = []
+
+					if options.interpolate
+						for time in [ 0 ... duration ] by options.dt
+							ys.push( interpolation[ time ][ value ] ) 
+					else
+						for index, substance of results.y
+							unless index is _( skip ).first()
+								ys.push(substance[value])
+							else
+								skip.pop()
+						
+					datasets[ key ] = {}
+					datasets[ key ].xValues = xs
+					datasets[ key ].yValues = ys
+					
+				return { 
+					results: results
+					datasets: datasets
+					from: cell_run.from
+					to: cell_run.to
+				}
+			)
+			
+			return promise
 		
 	# Sets the simulation state
 	#
@@ -314,20 +295,45 @@ class Controller.Cell extends Controller.Base
 	# @param dt [Integer] graph dt
 	# @return [ Tuple<CancelToken, jQuery.Promise> ] tuple
 	#
-	setSimulationState: ( startSimulateFlag, callback, t, iterations, dt ) ->
+	setSimulationState: ( startSimulateFlag, callback, options ) ->
 		if startSimulateFlag
-			return @startSimulation( t, iterations, callback, dt )
+			return @startSimulation( options.simulate ? {}, callback, options.ode ? {} )
 		return @stopSimulation()
+		
+	# Gets default simulations options
+	#
+	# @return [Object] the options
+	#
+	getDefaultOptions: () ->
+		defaults = 
+			simulate:
+				iteration_length: 20
+				iterations: Cell.MAX_ITERATIONS
+			ode:
+				dt: 0.001
+				tolerance: undefined
+				iterations: undefined
+				interpolate: off
+				
+		return defaults
 		
 	# Starts the simulation
 	# 
-	# @param t [Integer] duration of each step call
-	# @param iterations [Integer] maximum t to run
+	# @param simulate_options [Object]
+	# @param ode_options [Object]
+	# @options simulate_options [Integer] iteration_length duration of each step call
+	# @options simulate_options [Integer] iterations maximum t to run
 	# @param callback [Function] the callback function after each iteration
-	# @param dt [Integer] graph dt
+	# @options ode_options [Integer] dt graph dt
+	# @options ode_options [Integer] tolerance 
+	# @options ode_options [Integer] iterations 
 	# @return [ Tuple<CancelToken, jQuery.Promise> ] tuple of token and promise
 	#
-	startSimulation: ( t = 20, iterations = Cell.MAX_ITERATIONS, callback, dt = 0.001 ) ->
+	startSimulation: ( simulate_options = {}, callback, ode_options = {} ) ->
+	
+		defaults = @getDefaultOptions()	
+		simulate_options = _( simulate_options ).defaults( defaults.simulate )
+		ode_options = _( ode_options ).defaults( defaults.ode )
 		
 		@_running = on
 		@_token = numeric.asynccancel()
@@ -339,29 +345,29 @@ class Controller.Cell extends Controller.Base
 		#
 		step = _( @_step )
 			.chain()
-			.bind( @, dt, callback )
+			.bind( @, ode_options, callback )
 			.value()
 		
 		@_trigger( "simulation.start", @, [ @model ] )
 		
-		promise = @_simulate( step, t, iterations )		
+		promise = @_simulate( step, simulate_options.iteration_length, simulate_options.iterations )		
 		return [ @_token, promise ]
 		
 	# Steps the simulation
 	#
-	# @param t [Integer] the duration of this step
-	# @param dt [Integer] the dt of the graphs
+	# @param options [Object] the ode options to feed the ode
 	# @param callback [Function] the callback after each iteration
 	# @param base_values [Array<Float>] the previous values
 	# @param max [Integer] max t
 	# @return [Array<Float>] the new values
 	#
-	_step : ( dt, callback, from, to, base_values ) ->
+	_step : ( options, callback, from, to, base_values ) ->
 	
 		return base_values unless @_running
 		
-		promise = @solveTheSystem( from, to, base_values, @_token, dt )
-		promise = promise.then( ( cell_data ) =>
+		promise = @solveTheSystem( from, to, base_values, @_token, options )
+		
+		promise = promise?.then( ( cell_data ) =>
 			callback?( cell_data, cell_data.from, cell_data.to )
 			return [ _( cell_data.results.y ).last(), cell_data.from, cell_data.to ]
 		)
@@ -393,6 +399,12 @@ class Controller.Cell extends Controller.Base
 		simulation = ( step, from, to, args ) => 
 			if @_running
 				promise = step( from, to, args ) 
+				
+				if not promise
+					@stopSimulation()
+					promise = $.Deferred().reject()
+					return promise.promise()
+					
 				promise = promise.then( ( results, actual_from, actual_to ) =>
 					data = results[ 0 ]
 					actual_from = results[ 1 ]
@@ -413,3 +425,4 @@ class Controller.Cell extends Controller.Base
 		@_running = off
 		@_trigger( "simulation.stop", @, [ @model ] )
 		return [ @_token, undefined ]
+	

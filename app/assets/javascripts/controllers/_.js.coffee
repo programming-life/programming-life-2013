@@ -1,10 +1,14 @@
-# The controller for the Undo view
+# The base of all controllers
 #
 # @concern Mixin.EventBindings
+# @concern Mixin.Catcher
+# @concern Mixin.DynamicProperties
 #
 class Controller.Base extends Helper.Mixable
 
 	@concern Mixin.EventBindings
+	@concern Mixin.Catcher
+	@concern Mixin.DynamicProperties
 	
 	# Creates the controller
 	#
@@ -31,9 +35,14 @@ class Controller.Base extends Helper.Mixable
 	# @return [self] the chainable self
 	#
 	removeChild: ( id, kill = on ) ->
-		@_children[ id ].kill() if kill
+		@_children[ id ]?.kill() if kill
 		delete @_children[ id ] 
 		return this
+		
+	#
+	#
+	each: ( func ) ->
+		_( @_children ).each func
 		
 	# Gets the controller with the id
 	# 
@@ -43,10 +52,25 @@ class Controller.Base extends Helper.Mixable
 	controller: ( id ) ->
 		return @_children[ id ]
 		
+	# Returns all the controllers
 	#
+	# @return [Array<Controller.Base>] The controllers
 	#
 	controllers: () ->
 		return @_children
+		
+	# Finds the key of a controller
+	# 
+	# @param func [Function] function to evaluate a value
+	# @return [String] the key
+	# 
+	findKey: ( func ) ->
+		result = null
+		if _( @controllers() ).find( ( v, key ) -> 
+					result = key
+					return func v )
+			return result
+		return null
 		
 	# Kills the controler and all subsequent views
 	#
@@ -54,6 +78,27 @@ class Controller.Base extends Helper.Mixable
 	#
 	kill: () ->
 		@removeChild( id, on ) for id, child of @_children
-		@view.kill()
+		@view?.kill()
 		@_unbindAll()
 		return this
+		
+	# Runs when the user comes online
+	#
+	onUpdate: () ->
+		return $.Deferred().promise()
+		
+	# Runs when the user tries to unload the page
+	#
+	beforeUnload: () ->
+		return undefined
+		
+	# Runs when the user has unloaded the page
+	#
+	onUnload: () ->
+		return undefined
+		
+	# Catcher for the cell controller errors
+	#
+	_catcher: ( source, e ) ->
+		text = if _( e ).isObject() then e.message ? 'no message' else e 
+		@_notificate( @, 'global', text , text, [], View.RaphaelBase.Notification.Error)

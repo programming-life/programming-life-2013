@@ -7,16 +7,16 @@ describe("Module Transporter", function() {
 			module = new Model.Transporter();
 		});
 		
-		it( "should have 'transporter_undefined' as name", function() {
-			expect( module.name ).toBe( "transporter_undefined" );
+		it( "should have 'transporter-xxx' as name", function() {
+			expect( module.name ).toMatch( /transporter-[0-9]+/ );
 		});
 		
-		it( "should have 'undefined#ext' as orig", function() {
-			expect( module.orig ).toBe( "undefined#ext" );
+		it( "should have 's#ext' as orig", function() {
+			expect( module.orig ).toBe( "s#ext" );
 		});
 		
-		it( "should have 'undefined#tint' as dest", function() {
-			expect( module.dest ).toBe( "undefined#int" );
+		it( "should have 's#int' as dest", function() {
+			expect( module.dest ).toBe( "s#int" );
 		});
 		
 		it( "should have 's#int' as consume", function() {
@@ -84,16 +84,16 @@ describe("Module Transporter", function() {
 					deserialized = Model.Transporter.deserialize( serialized )
 				});
 				
-				it( "should have 'transporter_undefined' as name", function() {
-					expect( module.name ).toBe( "transporter_undefined" );
+				it( "should have 'transporter-xxx' as name", function() {
+					expect( module.name ).toMatch( /transporter-[0-9]+/ );
 				});
 				
-				it( "should have 'undefined#ext' as orig", function() {
-					expect( module.orig ).toBe( "undefined#ext" );
+				it( "should have 's#ext' as orig", function() {
+					expect( module.orig ).toBe( "s#ext" );
 				});
 				
-				it( "should have 'undefined#tint' as dest", function() {
-					expect( module.dest ).toBe( "undefined#int" );
+				it( "should have 's#tint' as dest", function() {
+					expect( module.dest ).toBe( "s#int" );
 				});
 				
 				it( "should have 's#int' as consume", function() {
@@ -161,31 +161,6 @@ describe("Module Transporter", function() {
 			expect( module.dna ).toMatch( 'override_dna' );
 		});
 		
-		describe( "and using named option in the constructor, not as params", function() {
-			
-			beforeEach( function() {
-				module = new Model.Transporter( { a: 'new' }, undefined, "food" );
-			});
-			
-			it( "should override default parameters", function() {
-				expect( module.orig ).toMatch( 'food#ext' );
-				expect( module.dest ).toMatch( 'food#int' );
-			});
-			
-		});
-		
-		describe( "and using named option in the constructor, also as params", function() {
-			
-			beforeEach( function() {
-				module = new Model.Transporter( { a: 'new', transported: 'winner' }, undefined, "loser" );
-			});
-			
-			it( "should not override given params ", function() {
-				expect( module.orig ).toMatch( 'winner#ext' );
-				expect( module.dest ).toMatch( 'winner#int' );
-			});
-			
-		});
 	});
 	
 	describe( "when using start in the constructor", function() {
@@ -193,7 +168,7 @@ describe("Module Transporter", function() {
 		var module;
 		beforeEach( function() {
 			module = new Model.Transporter( undefined, 2 );
-		});		
+		});	
 		
 		it( "should overide the default start value", function() {
 			expect( module.starts.name ).toBe( 2 );
@@ -204,7 +179,7 @@ describe("Module Transporter", function() {
 	describe( "when using transported in the constructor", function() {
 		
 		var module;
-		var tname = "transporter_magix";
+		var tname = /transporter-[0-9]+_magix/;
 		beforeEach( function() {
 			module = new Model.Transporter( undefined, undefined, 'magix' );
 		});		

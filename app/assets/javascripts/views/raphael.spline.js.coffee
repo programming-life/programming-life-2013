@@ -2,6 +2,12 @@
 #
 class View.Spline extends View.RaphaelBase
 
+	# The spline type
+	@Type:
+		Processing: 0
+		Synthesis: 1
+		Consuming: 2
+
 	# Creates a new spline
 	# 
 	# @param paper [Raphael.Paper] the raphael paper
@@ -9,32 +15,39 @@ class View.Spline extends View.RaphaelBase
 	# @param _cell [Model.Cell] the cell model displayed in the parent
 	# @param orig [View.Module] the origin of the spline
 	# @param dest [View.Module] the destination of the spline
-	# @param interaction [Boolean] wether to add interaction to the splines or not
+	# @param interaction [Boolean] whether to add interaction to the splines or not
+	# @param type [Integer] the type of the spline
 	#
-	constructor: ( paper, parent, @_cell, @orig, @dest, @_interaction = on ) ->
+	constructor: ( paper, parent, @_cell, @orig, @dest, @_preview = off, @_interaction = on, @_type = Spline.Type.Processing ) ->
 		super paper, parent
-
 		@addInteraction() if @_interaction is on		
-
-	# Fires a spline remove event, which should lead to this spline dying
+		
+	# Gets the spline class for this type
 	#
-	_die: ( ) ->
-		@_trigger( 'cell.spline.remove', @_cell, [ @ ] )
+	# @return [String] the class
+	#
+	getSplineClass: ( affix = '' ) ->
+		type = switch @_type
+			when Spline.Type.Processing
+				'metabolite'
+			when Spline.Type.Synthesis
+				'dna'
+			when Spline.Type.Consume
+				'consume'
+			else
+				'metabolite'
+				
+		affix = "-#{affix}" if affix isnt ''
+		affix = "#{affix}-preview" if @_preview
+		return "#{type}-spline#{affix}"
 
 	# Adds interaction to the spline
 	#
 	addInteraction: ( ) ->
-		@_bind( 'cell.module.removed', @, @onModuleRemoved )
-		@_bind( 'cell.metabolite.removed', @, @onModuleRemoved )
 
-		@_bind( 'module.property.changed', @, @onModuleInvalidated )
-
-		@_bind( 'view.moving', @, @onViewMoving )
-		@_bind( 'view.moved', @, @onViewMoved )
-		@_bind( 'view.drawn', @, @onViewDrawn )
-
-		@_trigger( 'cell.spline.add', @_cell, [ @ ] )
-
+		@_bind( 'view.moving', @, @_onViewMoving )
+		@_bind( 'view.moved', @, @_onViewMoved )
+		# @_bind( 'view.drawn', @, @_onViewDrawn )
 		return this
 
 	# Sets the correct color of the spline
@@ -46,18 +59,24 @@ class View.Spline extends View.RaphaelBase
 			@color = @dest.color
 
 		@_contents?.attr('stroke', @color)
+		return this
 
 	# Draws the spline
 	#
 	draw: ( ) ->
-		@clear()
-
 		path = @_getPathString()
+		@_contents = @paper.set()
 
-		@_contents = @paper.path(path)
-		@_contents.insertBefore(@paper.bottom)
-		$(@_contents.node).addClass('metabolite-spline')
+		@_spline = @paper.path path
+		$( @_spline.node ).addClass "#{ @getSplineClass() }"
+		@_contents.push @_spline
 
+		if @_interaction and not @_preview
+			@_splineDots = @_paper.path path
+			$( @_splineDots.node ).addClass "#{ @getSplineClass 'dots' }"
+			@_contents.push @_splineDots
+
+		@_contents.insertBefore @paper.bottom
 		@setColor()
 
 	# Returns an svg path string from orig to dest
@@ -87,31 +106,6 @@ class View.Spline extends View.RaphaelBase
 
 		return "m#{origX},#{origY}C#{x1},#{y1} #{x2},#{y2} #{destX},#{destY}"
 
-	# Gets called when a module is removed from a cell
-	#
-	# @param cell [Model.Cell] the cell from which the module was removed
-	# @param module [Module] the module that was removed
-	#
-	onModuleRemoved: ( cell, module ) =>
-		if cell is @_cell and ( module is @orig.model or module is @dest.model )
-			@_die()
-
-	# Gets called when a module is invalidated (had its properties changed)
-	#
-	# @param module [Module] the module that was invalidated
-	#
-	onModuleInvalidated: ( module ) =>
-		if module.constructor.name is 'Transporter'
-			if (module is @orig.model and @orig.model.transported isnt @dest.model.name.split('#')[0]) or
-					(module is @dest.model and @dest.model.transported isnt @orig.model.name.split('#')[0])
-				@_die()
-		else if module.constructor.name is 'Metabolism'
-			if (module is @orig.model and @dest.model.name not in @orig.model.dest) or
-					(module is @dest.model and @orig.model.name not in @dest.model.orig)
-				@_die()
-		
-		@setColor()
-
 	# Gets called when a view is about to move (animated)
 	#
 	# @param view [Raphael] the view will be moving
@@ -120,7 +114,7 @@ class View.Spline extends View.RaphaelBase
 	# @param dt [float] the amount of milliseconds for which to animate
 	# @param ease [String] the easing transition being used
 	#
-	onViewMoving: ( view, dx, dy, dt, ease ) =>
+	_onViewMoving: ( view, dx, dy, dt, ease ) =>		
 		if view is @orig
 			path = @_getPathString(dx, dy, 0, 0)
 		else if view is @dest
@@ -136,18 +130,14 @@ class View.Spline extends View.RaphaelBase
 	#
 	# @param view [Raphael] the view which has moved
 	#
-	onViewMoved: ( module ) =>
+	_onViewMoved: ( module ) =>
 		if module is @orig.model or module is @dest.model
 			@draw()
 
-	# Gets called when a view view was drawn
-	#
-	# @param view [Raphael] the view that was drawn
-	#
-	onViewDrawn: ( module ) =>
-		if module is @orig.model or module is @dest.model
-			@draw()
-
-
-
-		
+	# # Gets called when a view view was drawn
+	# #
+	# # @param view [Raphael] the view that was drawn
+	# #
+	# _onViewDrawn: ( module ) =>
+	# 	if module is @orig.model or module is @dest.model
+	# 		@draw()

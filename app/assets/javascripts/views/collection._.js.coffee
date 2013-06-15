@@ -2,7 +2,12 @@ class View.Collection extends Helper.Mixable
 
 	# Creates a collection of views
 	#
-	constructor: () ->
+	# @param id [String] The id of the container for the views
+	#
+	constructor: ( @id ) ->
+		if @id?
+			@container = $( id )
+
 		@_views = []
 	
 	# Clears the collection
@@ -13,9 +18,12 @@ class View.Collection extends Helper.Mixable
 	
 	# Kills the collection
 	#
-	kill: () ->
+	# @param reset [Boolean] if true, clears the internal array
+	#
+	kill: ( reset = off ) ->
 		@clear()
 		view.kill?() for view in @_views
+		@_views = [] if reset
 		return this
 		
 	# Add a view to draw

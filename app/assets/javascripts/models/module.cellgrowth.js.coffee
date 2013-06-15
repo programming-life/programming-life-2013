@@ -30,7 +30,7 @@ class Model.CellGrowth extends Model.Module
 	# @option params [Array<String>] infrastructure the compounds to use for cell growth
 	# @option params [String] name the name of the cell
 	#
-	constructor : ( params = { }, start = 1 ) ->	
+	constructor : ( params = { }, start ) ->	
 
 		# Define differential equations here
 		step = ( t, compounds, mu ) -> 
@@ -46,9 +46,9 @@ class Model.CellGrowth extends Model.Module
 				
 			return results
 				
-		defaults = @_getParameterDefaults( start )
+		defaults = CellGrowth.getParameterDefaults()
 		params = _( params ).defaults( defaults )
-		metadata =  @_getParameterMetaData()
+		metadata =  CellGrowth.getParameterMetaData()
 		
 		super params, step, metadata
 		
@@ -93,7 +93,7 @@ class Model.CellGrowth extends Model.Module
 	# @param start [Integer] the start value
 	# @return [Object] default values
 	#
-	_getParameterDefaults: ( start ) ->
+	@getParameterDefaults: ( start ) ->
 		return { 
 		
 			# Parameters
@@ -104,14 +104,14 @@ class Model.CellGrowth extends Model.Module
 			name: "cell"
 			
 			# Start values
-			starts : { name : start }
+			starts : { name : 1 }
 		}
 		
 	# Get parameter metadata
 	#
 	# @return [Object] metadata values
 	#
-	_getParameterMetaData: () ->
+	@getParameterMetaData: () ->
 		return {
 		
 			properties:

@@ -39,13 +39,11 @@ describe("Module Metabolism", function() {
 			expect( module.dna ).toBe( "dna" );
 		});
 		
-		it( "should have 2 substrates: dest and enzym", function() {
-			expect( _(module.starts).size() ).toBe( 2 );
+		it( "should have 1 substrate: enzym", function() {
+			expect( _(module.starts).size() ).toBe( 1 );
 			expect( module.starts.name ).toBeDefined();
 			expect( module.starts.name ).toBe( 0 );
 			expect( module.amount ).toBe( 0 );
-			expect( module.starts.dest ).toBeDefined();
-			expect( module.starts.dest ).toBe( 0 );
 		});
 		
 		it("should be able to serialize the module", function() {
@@ -104,13 +102,11 @@ describe("Module Metabolism", function() {
 					expect( module.dna ).toBe( "dna" );
 				});
 				
-				it( "should have 2 substrates: dest and enzym", function() {
-					expect( _(module.starts).size() ).toBe( 2 );
+				it( "should have 1 substrate: enzym", function() {
+					expect( _(module.starts).size() ).toBe( 1 );
 					expect( module.starts.name ).toBeDefined();
 					expect( module.starts.name ).toBe( 0 );
 					expect( module.amount ).toBe( 0 );
-					expect( module.starts.dest ).toBeDefined();
-					expect( module.starts.dest ).toBe( 0 );
 				});
 		
 				it( "should have a _step function", function() {
@@ -137,78 +133,6 @@ describe("Module Metabolism", function() {
 			expect( module.dna ).toMatch( 'override_dna' );
 		});
 		
-		describe( "and using named option in the constructor, but not as params", function() {
-			
-			beforeEach( function() {
-				module = new Model.Metabolism( { a: 'new' }, undefined, "f_int" );
-			});
-			
-			it( "should override default parameters", function() {
-				expect( module.orig ).toMatch( [ 'f_int' ] );
-			});
-			
-		});
-		
-		describe( "and using named option in the constructor, also as params", function() {
-			
-			beforeEach( function() {
-				module = new Model.Metabolism( { a: 'new', orig: 'stubborn' }, undefined, "override" );
-			});
-			
-			it( "should not override given params ", function() {
-				expect( module.orig ).toMatch( [ 'stubborn' ] );
-			});
-			
-		});
-	});
-	
-	describe( "when using start in the constructor", function() {
-		
-		var module;
-		beforeEach( function() {
-			module = new Model.Metabolism( undefined, 2 );
-		});		
-		
-		it( "should overide the default start value", function() {
-			expect( module.starts.name ).toBe( 2 );
-			expect( module.amount ).toBe( 2 );
-		});
-	});
-	
-	describe( "when using substrate in the constructor", function() {
-		
-		var module;
-		beforeEach( function() {
-			module = new Model.Metabolism( undefined, undefined, 'magix' );
-		});		
-		
-		it( "should overide the orig with that substrate", function() {
-			expect( module.orig ).toMatch( [ 'magix' ] );
-		});
-	});
-	
-	describe( "when using product in the constructor", function() {
-		
-		var module;
-		beforeEach( function() {
-			module = new Model.Metabolism( undefined, undefined, undefined, 'magix' );
-		});		
-		
-		it( "should overide the dest with that substrate", function() {
-			expect( module.dest ).toMatch( [ 'magix' ] );
-		});
-	});
-	
-	describe( "when using name in the constructor", function() {
-		
-		var module;
-		beforeEach( function() {
-			module = new Model.Metabolism( undefined, undefined, undefined, undefined, 'magix' );
-		});		
-		
-		it( "should overide the name with that substrate", function() {
-			expect( module.name ).toMatch( [ 'magix' ] );
-		});
 	});
 	
 	describe( "when stepping", function() {

@@ -101,54 +101,6 @@ describe("Module Lipid", function() {
 			expect( module.dna ).toMatch( 'override_dna' );
 		});
 		
-		describe( "when using named option in the constructor, not as params", function() {
-			
-			beforeEach( function() {
-				module = new Model.Lipid( { a: 'new' }, undefined, "p_int" );
-			});
-			
-			it( "should override default parameters", function() {
-				expect( module.consume ).toMatch( 'p_int' );
-			});
-			
-		});
-		
-		describe( "when using named option in the constructor, also as params", function() {
-			
-			beforeEach( function() {
-				module = new Model.Lipid( { a: 'new', consume: 'stubborn' }, undefined, "override" );
-			});
-			
-			it( "should not override given params ", function() {
-				expect( module.consume ).toMatch( 'stubborn' );
-			});
-			
-		});
-	});
-	
-	describe( "when using start in the constructor", function() {
-		
-		var module;
-		beforeEach( function() {
-			module = new Model.Lipid( undefined, 2 );
-		});		
-		
-		it( "should overide the default start value", function() {
-			expect( module.starts.name ).toBe( 2 );
-			expect( module.amount ).toBe( 2 );
-		});
-	});
-	
-	describe( "when using food in the constructor", function() {
-		
-		var module;
-		beforeEach( function() {
-			module = new Model.Lipid( undefined, undefined, 'magix' );
-		});		
-		
-		it( "should overide the consume with that food", function() {
-			expect( module.consume ).toMatch( ['magix'] );
-		});
 	});
 	
 	describe( "when stepping", function() {

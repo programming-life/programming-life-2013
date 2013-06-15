@@ -21,28 +21,43 @@
 				'error-text' => '<i class="icon-download icon-white"></i> Error while loading!' 
 			} 
 		%>
-		<%= f.button '<i class="icon-upload"></i> Save'.html_safe, 
-			:class => "btn", :autocomplete => 'off', :value => 'save', :type => 'button', 
-			:data => { 
-				:action => 'save', 
-				'loading-text' => '<i class="icon-upload"></i> Saving...',
-				'success-text' => '<i class="icon-upload icon-white"></i> Save',
-				'error-text' => '<i class="icon-upload icon-white"></i> Error while saving!' 
-			} 
-		%>
+				
+		<div class="btn-group">
+			<%= f.button '<i class="icon-upload"></i> Save'.html_safe, 
+				:class => "btn", :autocomplete => 'off', :value => 'save', :type => 'button', 
+				:data => { 
+					:action => 'save', 
+					'loading-text' => '<i class="icon-upload"></i> Saving...',
+					'success-text' => '<i class="icon-upload icon-white"></i> Save',
+					'error-text' => '<i class="icon-upload icon-white"></i> Error while saving!' 
+				} 
+			%>
+			<button class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
+			<ul class="dropdown-menu bottom-up">
+				<li><a href="#" data-action="save" aria-hidden="true" ><i class="icon-circle-arrow-up"></i> Save</a></li>
+				<li><a href="#" data-action="saveAs" aria-hidden="true" ><i class="icon-plus-sign"></i> Save As</a></li>
+			</ul>
+		</div>
 		<%= f.text_field :name, :class => "", :value => '', :placeholder => 'Cell Name' %>
-		<%= f.button '<i class="icon-list-alt"></i> Generate report'.html_safe, 
+		<%= f.button '<i class="icon-list-alt"></i> Report'.html_safe, 
 			:class => "btn btn", :autocomplete => 'off', :value => 'report', :type => 'button', 
 			:data => { 
 				:action => 'report', 
 				'loading-text' => '<i class="icon-list-alt"></i> Generating...',
-				'success-text' => '<i class="icon-list-alt icon-white"></i> Generate report',
+				'success-text' => '<i class="icon-list-alt icon-white"></i> Report',
 				'error-text' => '<i class="icon-list-alt icon-white"></i> Error while generating!' 
 			} 
 		%>
+		<div class="pull-right">
+		<%= f.button '<i class="icon-wrench icon-white"></i>'.html_safe, 
+			:class => "btn btn-warning", :value => 'reset', :type => 'button', 
+			:data => { :action => 'options' } 
+		%>
+		
 		<%= f.button '<i class="icon-remove-circle icon-white"></i> Reset'.html_safe, 
-			:class => "btn btn-warning pull-right", :value => 'reset', :type => 'button', 
+			:class => "btn btn-warning", :value => 'reset', :type => 'button', 
 			:data => { :action => 'reset' } 
 		%>
+		</div>
 	</div>
 <% end %>

@@ -9,26 +9,34 @@ class View.Undo extends Helper.Mixable
 	#
 	# @param tree [Model.UndoTree] The UndoTree to visualize
 	#
-	constructor: ( @tree ) ->
+	constructor: ( @timemachine ) ->
 		@_allowEventBindings()
 		@_createBindings()
 
 		@_rows = {}
-	
+
+	# Creates bindings for the view
+	#
 	_createBindings: ( ) ->
 		@_bind("tree.node.added", @, @_onNodeAdd)
-		@_bind("tree.node.removed", @, @_onNodeRemove )
-		@_bind("view.undo.branch", @, @_onBranch )
+		@_bind("tree.root.set", @, @_onRootSet )
+		@_bind("controller.undo.branch.finished", @, @_onBranch )
 
 	# Clears this view
 	#
+	# @return [self] For chaining
+	#
 	clear: ( ) ->
-		@_contents?.remove?()
+		@_contents?.remove()
+		return @
 
 	# Removes this view
 	#
+	# @return [self] For chaining
+	#
 	kill: ( ) ->
-		@_elem?.remove?()
+		@_elem?.remove()
+		return @
 
 	# Draws this view
 	#
@@ -56,7 +64,7 @@ class View.Undo extends Helper.Mixable
 
 		body = $('<div class="undo-body"></div>')
 		@_list = $('<div class="undo-list"></div>')
-		@_list.append(@_getTreeView(@tree.root))
+		@_list.append(@_getTreeView(@timemachine.root))
 
 		body.append(@_list)
 		@_contents.append(body)
@@ -77,7 +85,7 @@ class View.Undo extends Helper.Mixable
 		@_contents.append(@_footer)
 		container.append(@_contents)
 
-		@selectNode(@tree.current)
+		@selectNode(@timemachine.current)
 	
 	# Gets the view for the node
 	#
@@ -99,6 +107,8 @@ class View.Undo extends Helper.Mixable
 	# @return [jQuery] the drawn jQuery element
 	#
 	_getNodeView: ( node ) ->
+		unless node.object instanceof Model.Action
+			return
 		row = $('<div class="undo-row"></div>')
 
 		dl = $('<dl class="undo-node"></dl>')
@@ -122,7 +132,7 @@ class View.Undo extends Helper.Mixable
 	# Shows the buttons
 	#
 	_showButtons: ( ) ->
-		@_footer.addClass('active-buttons')
+		@_footer?.addClass('active-buttons')
 	
 	# Hides the buttons
 	#
@@ -133,37 +143,40 @@ class View.Undo extends Helper.Mixable
 	#
 	# @param tree [Model.Tree] The tree the node was added to
 	# @param node [Model.Node] The node that was added
+	# @return [Boolean] True is the tree was our timachine, false otherwise
 	#
 	_onNodeAdd: ( tree, node ) ->
-		if tree is @tree
+		if tree is @timemachine
 			if @_list.scrollTop() == @_list[0].scrollHeight - @_list.height()
 				doScroll = true
 
-			if node.parent?.children.length - 1 > 0
-				@_drawContents()
-			else
+			if node.parent?.children.length <= 1
 				@_list.append(@_getNodeView(node))
-				@selectNode(@tree.current)
+				@selectNode(@timemachine.current)
+			else
+				@_drawContents()
 
 			if doScroll
 				@_scrollToBottom()
 
-	# Is called when a node is removed from the tree
+		return tree is @timemachine
+
+	# Gets called when the root of the tree is set
 	#
-	# @param tree [Model.Tree] The tree the node was removed from
-	# @param node [Model.Node] The node that was removed
+	# @param tree [Model.Tree] The tree
+	# @param node [Model.Node] The new root
+	# @return [Boolean] True is the tree was our timachine, false otherwise
 	#
-	_onNodeRemove: ( tree, node ) ->
-		if tree is @tree
-			@_list.append(@_getNodeView(node))
-			@selectNode(@tree.current)
+	_onRootSet: ( tree, node ) ->
+		if tree is @timemachine
+			@_drawContents()
+		return tree is @timemachine
 	
 	# Gets called when branching occurs
 	#
-	# @param direction [String] The direction of the branching
-	#
-	_onBranch: ( direction ) ->
-		@_drawContents()
+	_onBranch: ( ) ->
+		if @_elem?
+			@_drawContents()
 
 	# Mark a node in the list as selected
 	#
@@ -173,7 +186,8 @@ class View.Undo extends Helper.Mixable
 		row = @_rows[node.id]
 
 		@_elem.find('.undo-row').removeClass('selected')
-		row.addClass('selected')
+		if row?
+			row.addClass('selected')
 
 		alternatives = (node.parent?.children.length ? 1) - 1
 		if alternatives > 0
@@ -201,7 +215,7 @@ class View.Undo extends Helper.Mixable
 	# @param tree [Model.UndoTree] The tree to view
 	#
 	setTree: ( tree ) ->
-		@tree = tree
+		@timemachine = tree
 		@_drawContents()
 	
 	# Sets the view of node to active

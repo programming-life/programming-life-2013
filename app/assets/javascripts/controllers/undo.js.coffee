@@ -59,21 +59,19 @@ class Controller.Undo extends Controller.Base
 	#
 	branch: ( direction ) ->
 		@_trigger "controller.undo.branch.started", @, []
-		length = @view.tree.current.parent.children.length
-		return unless length?
+		length = @model.current.parent.children.length
+		return unless length > 1
 
-		branchIndex = @view.tree.current.parent.children.indexOf @view.tree.current.parent.branch
+		branchIndex = @model.current.parent.children.indexOf @model.current.parent.branch
 		
 		switch length
-			when 1
-				index = 0
 			when 2
 				index = !branchIndex + 0
 			else
 				index = (branchIndex + direction + length) % length
 
-		node = @view.tree.current.parent.children[index]
-		old = @view.tree.switchBranch( node )
+		node = @model.current.parent.children[index]
+		old = @model.switchBranch( node )
 		old.object.undo()
 		node.object.redo()
 
@@ -86,9 +84,9 @@ class Controller.Undo extends Controller.Base
 	focusTimeMachine: ( timemachine ) ->
 		nodes = []
 		for otherNode in timemachine.iterator()
-			node = @view.tree.find( otherNode.object )
+			node = @model.find( otherNode.object )
 			nodes.push node if node?
-		for node in @view.tree.iterator()
+		for node in @model.iterator()
 			if node in nodes
 				@view.setActive( node )
 			else

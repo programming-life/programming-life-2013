@@ -2,7 +2,7 @@
 <html>
   <head>
   <meta charset='UTF-8'>
-  <title>Broyologramming Life API Documentation</title>
+  <title>CoffeeScript API Documentation</title>
   <link rel='stylesheet' href='../../assets/codo.css' type='text/css'>
   <script src='../../assets/codo.js'></script>
   <script src='../../assets/search_data.js'></script>
@@ -125,7 +125,8 @@
         <tr>
           <td>Concerns:</td>
           <td>
-            <a href='../../mixins/Mixin/EventBindings.html'>Mixin.EventBindings</a>
+                        <a href='../../mixins/Mixin/EventBindings.html'>Mixin.EventBindings</a>,
+            <a href='../../mixins/Mixin/Catcher.html'>Mixin.Catcher</a>
           </td>
         </tr>
       </table>
@@ -155,7 +156,57 @@
       </a>
     </span>
     <span class='desc'>
-      
+      Set the timemachine of the view
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_onNodeSelected-instance'>
+        - (void) <strong>_onNodeSelected</strong>(source, node)
+      </a>
+    </span>
+    <span class='desc'>
+      Gets called when a node is selected in the view
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_onBranch-instance'>
+        - (void) <strong>_onBranch</strong>(source, direction)
+      </a>
+    </span>
+    <span class='desc'>
+      Gets called when branching occurs
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#jump-instance'>
+        - (void) <strong>jump</strong>(node)
+      </a>
+    </span>
+    <span class='desc'>
+      Jump to a specific point in time
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#branch-instance'>
+        - (void) <strong>branch</strong>(direction)
+      </a>
+    </span>
+    <span class='desc'>
+      Move one branch to either direction
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#focusTimeMachine-instance'>
+        - (void) <strong>focusTimeMachine</strong>(timemachine)
+      </a>
+    </span>
+    <span class='desc'>
+      Focuses the undo view on a specific timemachine
     </span>
   </li>
 </ul>
@@ -170,9 +221,14 @@
                 <a href='../../classes/Controller/Base.html#constructor-instance'>#constructor</a>,
                 <a href='../../classes/Controller/Base.html#addChild-instance'>#addChild</a>,
                 <a href='../../classes/Controller/Base.html#removeChild-instance'>#removeChild</a>,
+                <a href='../../classes/Controller/Base.html#each-instance'>#each</a>,
                 <a href='../../classes/Controller/Base.html#controller-instance'>#controller</a>,
                 <a href='../../classes/Controller/Base.html#controllers-instance'>#controllers</a>,
-        <a href='../../classes/Controller/Base.html#kill-instance'>#kill</a>
+                <a href='../../classes/Controller/Base.html#kill-instance'>#kill</a>,
+                <a href='../../classes/Controller/Base.html#onUpdate-instance'>#onUpdate</a>,
+                <a href='../../classes/Controller/Base.html#beforeUnload-instance'>#beforeUnload</a>,
+                <a href='../../classes/Controller/Base.html#onUnload-instance'>#onUnload</a>,
+        <a href='../../classes/Controller/Base.html#_catcher-instance'>#_catcher</a>
       </p>
       <h3 class='inherited'>
         Methods inherited from
@@ -181,7 +237,10 @@
       <p class='inherited'>
                 <a href='../../classes/Helper/Mixable.html#extend-class'>.extend</a>,
                 <a href='../../classes/Helper/Mixable.html#include-class'>.include</a>,
-        <a href='../../classes/Helper/Mixable.html#concern-class'>.concern</a>
+                <a href='../../classes/Helper/Mixable.html#concern-class'>.concern</a>,
+                <a href='../../classes/Helper/Mixable.html#extractId-class'>.extractId</a>,
+                <a href='../../classes/Helper/Mixable.html#isLocal-instance'>#isLocal</a>,
+        <a href='../../classes/Helper/Mixable.html#parseDate-class'>.parseDate</a>
       </p>
       <h2>
         <small>Concern Method Summary</small>
@@ -198,6 +257,13 @@
                 <a href='../../mixins/Mixin/EventBindings.html#_trigger-instance'>#_trigger</a>,
                 <a href='../../mixins/Mixin/EventBindings.html#_onNotificate-instance'>#_onNotificate</a>,
         <a href='../../mixins/Mixin/EventBindings.html#_notificate-instance'>#_notificate</a>
+      </p>
+      <h3 class='included'>
+        Methods mixed in from
+        <a href='../../mixins/Mixin/Catcher.html'>Mixin.Catcher</a>
+      </h3>
+      <p class='included'>
+        <a href='../../mixins/Mixin/Catcher.html#catchable-class'>.catchable</a>
       </p>
       <h2>Constructor Details</h2>
       <div class='methods'>
@@ -218,14 +284,141 @@
     <p class='signature' id='setTimeMachine-instance'>
       - (void) <strong>setTimeMachine</strong>(timemachine)
     </p>
-    <div class='tags'>
+    <div class='docstring'>
+  <p>Set the timemachine of the view</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>timemachine</span>
+      <span class='type'>
+        (<tt>Mixin.TimeMachine</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The timemachine</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_onNodeSelected-instance'>
+      - (void) <strong>_onNodeSelected</strong>(source, node)
+    </p>
+    <div class='docstring'>
+  <p>Gets called when a node is selected in the view</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>source</span>
+      <span class='type'>
+        (<tt><a href='../../classes/View/Undo.html'>View.Undo</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The undo view in which the event occurs</span>
+    </li>
+    <li>
+      <span class='name'>node</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Model/Node.html'>Model.Node</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The node that was selected</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_onBranch-instance'>
+      - (void) <strong>_onBranch</strong>(source, direction)
+    </p>
+    <div class='docstring'>
+  <p>Gets called when branching occurs</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>direction</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The direction of the branching. -1 == left, 1 == right</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='jump-instance'>
+      - (void) <strong>jump</strong>(node)
+    </p>
+    <div class='docstring'>
+  <p>Jump to a specific point in time</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>node</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Model/Node.html'>Model.Node</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The node to jump to</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='branch-instance'>
+      - (void) <strong>branch</strong>(direction)
+    </p>
+    <div class='docstring'>
+  <p>Move one branch to either direction</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>direction</span>
+      <span class='type'>
+        (<tt>int</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the direction (-1 or 1) in which to move</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='focusTimeMachine-instance'>
+      - (void) <strong>focusTimeMachine</strong>(timemachine)
+    </p>
+    <div class='docstring'>
+  <p>Focuses the undo view on a specific timemachine</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>timemachine</span>
+      <span class='type'>
+        (<tt>Mixin.TimeMachine</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The timemachine to focus on</span>
+    </li>
+  </ul>
 </div>
   </div>
 </div>
     </div>
     <div id='footer'>
   Generated on
-  Sun Jun 02 2013 15:47:57 GMT+0200 (W. Europe Daylight Time)
+  Tue Jun 11 2013 00:05:30 GMT+0200 (W. Europe Daylight Time)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6
