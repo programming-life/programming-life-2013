@@ -96,8 +96,9 @@
 	<footer class="row">
 		<div class="form-actions span12">
 			<%= form_for(@report, :html => {:class => "no-form"} ) do |f| %>
-				<%= f.hidden_field :data, :value => nil %>
+				<%= f.hidden_field :cell_svg, :value => nil %>
 				<%= f.hidden_field :datasets, :value => nil %>
+				<%= f.hidden_field :xValues, :value => nil %>
 				<%= f.hidden_field :format, :value => :pdf %>
 				<%= f.submit :id => 'create-pdf', :class => "btn btn-primary", :disabled => :disabled, :value => 'Create PDF' %>
 				<%= f.submit :id => 'create-csv', :class => 'btn btn-primary', :disabled => :disabled, :value => 'Export to CSV' %> 

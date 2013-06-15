@@ -80,13 +80,24 @@ class ReportsController < ApplicationController
 			end
 			return
 		elsif ( params[:commit] == 'Export to CSV' )
+			@datasets = JSON.parse( params[:report][:datasets] )
+			@xValues = JSON.parse( params[:report][:xValues] )
+			@yArrays = []
+			@modules = []
+
+			@datasets.each do |key, values|
+				@modules.push(key)
+				@yArrays.push(values.first.last)
+			end
+			
 			csv_string = CSV.generate do |csv|
-				JSON.parse(params[:report][:datasets]).each do |dataset|
-					csv << [dataset[0]]
-					dataset[1].each do |key, values|
-						csv << [key]
-						csv << (values.each)						
+				csv << ["X"] + @modules
+				@xValues.each do |x|
+					@yValues = [x]
+					@yArrays.each do |array|
+						@yValues.push(array.shift)
 					end
+					csv << @yValues
 				end
 			end
 

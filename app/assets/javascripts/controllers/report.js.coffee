@@ -13,6 +13,7 @@ class Controller.Report extends Controller.Base
 		
 		@_currentIteration = 0
 		@_datasets = {}
+		@_xValues = []
 		@_createChildren()
 		@_createBindings()
 		
@@ -65,7 +66,7 @@ class Controller.Report extends Controller.Base
 	#
 	serializePaper: () ->
 		cell_svg = new XMLSerializer().serializeToString @view.paper.canvas
-		$( '#report_data' ).attr( "value", cell_svg )
+		$( '#report_cell_svg' ).attr( "value", cell_svg )
 		return cell_svg
 		
 	# Serializes the graph datasets
@@ -74,8 +75,23 @@ class Controller.Report extends Controller.Base
 	#
 	serializeDatasets: () ->
 		serializedDatasets = JSON.stringify( @_datasets )
+		serializedX = JSON.stringify( @_xValues )
 		$( '#report_datasets' ).attr( "value", serializedDatasets )
+		$( '#report_xValues' ).attr( "value", serializedX )
+
 		return serializedDatasets
+
+	# Concatinates the graph datasets
+	#
+	# @return [Object] the concatinated datasets
+	#
+	_concatDatasets: (datasets) ->
+		for key, dataset of datasets
+			if key not of @_datasets
+				@_datasets[key] = { yValues: [] }
+			@_datasets[key].yValues.push dataset.yValues...
+		
+		@_xValues.push datasets[key].xValues...
 
 	# Solve the system
 	#
@@ -88,9 +104,7 @@ class Controller.Report extends Controller.Base
 
 		iterationDone = ( results, from, to ) =>
 			@controller( 'graphs' ).show( results.datasets, @_currentIteration > 0, 'key' )
-			
-			# Send first dataset only for now, second dataset is bugged
-			@_datasets = results.datasets if @_currentIteration == 0
+			@_concatDatasets results.datasets
 
 			@_currentIteration++
 			@_setProgressBar 0
