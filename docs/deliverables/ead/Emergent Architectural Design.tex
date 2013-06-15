@@ -96,7 +96,7 @@
 					
 				\subsubsection{Views and ERB} 
 					The views are in ERB\cite{erb} which is an HTML template system. It comes with the Rails framework, so it does not require any extra software. Rails controllers written in Ruby can expose data to these views. Using a templating system such as this allows for quick translation from model to display. 
-			\begin{figure}[htb]
+			\begin{figure}[h!]
 				\begin{center}
 				\includegraphics[width=\linewidth]{SequenceDiagramLife.png}
 				\caption{Sequence Diagram}
@@ -126,54 +126,58 @@
 				\subsubsection{Models}
 					\begin{figure}[htb]
 						\begin{center}
-							\includegraphics[scale=0.675]{models.png}
+							\includegraphics[scale=0.95]{models.png}
 							\caption{Client Models}
 							\label{fig: cmodels}
 						\end{center}
 					\end{figure}	
 					In the figure above you can see the model classes. Each JavaScript class maps to one ModuleTemplate and associated ModuleParameter entries on the server. When a cell or module JavavaScript class is instantiated, it can save the instance data as ModuleInstance and associated ModuleValue entries on the server.
-				
+				\clearpage
+
 				\subsubsection{Views}
-					\begin{figure}[htb]
+					\begin{figure}[h!]
 						\begin{center}
-							\includegraphics[scale=0.675]{views.png}
+							\includegraphics[scale=0.55]{views.png}
 							\caption{Client Views}
 							\label{fig: cmodels}
 						\end{center}
 					\end{figure}	
+
+				\clearpage
 					In the figure above there are two basic types: Raphael or HTML. All views can have children and display a single model. Raphael typed views use SVG to display their contents. The views only have display functionality. They do not add interaction. Each view keeps track of changes to the displayed module. Through controllers, views can interact with the models. This is explained and displayed later on. \\
 					To keep the figure above from cluttering, a few associations are left out. The Module view has a ModuleProperties popover and Cell, Main and Module views have Notification views. Graph views are contained in a Graphs view, which is just a Collection.
-					
+\clearpage
 				\subsubsection{Controllers}
 					\begin{figure}[htb]
 						\begin{center}
-							\includegraphics[scale=0.675]{controllers.png}
+							\includegraphics[scale=0.7]{controllers.png}
 							\caption{Client Controllers}
 							\label{fig: cmodels}
 						\end{center}
 					\end{figure}	
 					Controllers add interaction to views and models. Controllers can have children. Parent controllers can alter a child controllers behaviour. This way there is no need for a large set of controllers, e.g. a MainCell controller and a ReportCell are now combined into one Cell controller. \\
 					For collections of elements, views can use unobtrusive JavaScript to enlist those elements for interaction. A view might add data-xxx attributes to elements. Controllers may or may not bind Javascript to elements with these attributes. This keeps the HTML clean and the interaction in the controllers hand. 
-					
+\clearpage
 				\subsubsection{Integration (example)}
-					\begin{figure}[htb]
+					\begin{figure}[h!]
 						\begin{center}
-							\includegraphics[width=\linewidth]{cell_struct.png}
+							\includegraphics[scale=1.4]{cell_struct.png}
 							\caption{Displaying a Cell}
 							\label{fig: cellstruct}
 						\end{center}
 					\end{figure}	
+					\clearpage
 					In the figure above you can see how models, views and controllers come together to display a cell. By creating a cell controller, the subsequent children are added automatically. References are only traversable down the structure, meaning a controller can access its view, but a view can't directly access its controller. The figure shows how displaying a cell is achieved by different components. Editing a cell adds additional views - ModuleProperties - which are yielded from the Module Controller. \\
 					
-					\begin{figure}[htb]
+					\begin{figure}[h!]
 						\begin{center}
-							\includegraphics[width=\linewidth]{main_struct.png}
+							\includegraphics{main_struct.png}
 							\caption{The MVC structure for the main page}
 							\label{fig: main struct}
 						\end{center}
 					\end{figure}	
 					In the figure above you can see how the main page is structured. Displaying a cell is not the only functionality, so a new controller and view supply the glue between the cell and other functionality. The main controller adds interaction to the action buttons on the main page and it holds a main view and that in turn holds a pane view with the undo view. This is an example of how views can have children, but controller don't need to interact with the children of views. For the undo view a separate controller does the interaction.
-					
+
 				\subsubsection{Local storage}
 					Javascript determines the local storage engine that is available and uses that to maintain an offline copy of the application and the created cells/modules. This makes it very easy to design new cells or edit saved cells even when the user isn't connected to the internet. This is communicated to the user, but requires no further interaction. Synchronization is completely transparent, but if it fails for whatever reason and the fallbacks that are in place don't kick in, a notification is displayed.
 		
