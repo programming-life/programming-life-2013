@@ -1,5 +1,4 @@
 class ReportsController < ApplicationController
-
 	# GET /reports
 	def index
 		@reports = Report.paginate( :page => params[:page], :per_page => 15 )
@@ -65,18 +64,19 @@ class ReportsController < ApplicationController
 		@report = Report.find(params[:id])
 		@module_instances = @report.cell.module_instances
 		@report_params = params[:report]
-		@isPDF = true
+		@isPDF = (params[:commit] == 'Create PDF')
 
-		if ( @report_params[:format] == 'pdf' )
+		if ( @isPDF )
+			@graphs = JSON.parse(params[:report][:graph_data])
 			respond_to do |format|
 				format.html { 
 					render	:pdf 					=> "#{@report.created_at.strftime("%Y-%m-%d")}_#{@report.id}_#{@report.cell.id}",
 							:disable_internal_links		=> true,
-		           			:disable_external_links		=> true,
-	           				:template					=> 'reports/show.html.erb'
-	           	}
-	        end
-	        return
+							:disable_external_links		=> true,
+							:template					=> 'reports/show.html.erb'
+				}
+			end
+			return
 		end	
 	end
 

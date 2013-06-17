@@ -81,22 +81,24 @@
 					</tbody>
 				</table>
 				<!-- End parameter table -->
-				
-				<div id="graph-<%= ( module_instance.name.gsub("#","_") ) %>">
-							
+				<% if @isPDF %>
+					<% @graph = @graphs[module_instance.name.gsub("#","_")] %>
+					<img src= "<%= "data:image/svg+xml;base64,#{Base64.encode64(@graph)}" %>"></img>
+				<% else %>
+					<div class="graph-report" id="graph-<%= ( module_instance.name.gsub("#","_") ) %>">
+				<% end -%>
 			</td>
 		</tr>
 		<% end %>
 	</tbody>
 </table>
 
-<% if @isPDF %>
-
-<% else %>
+<% if not @isPDF %>
 	<footer class="row">
 		<div class="form-actions span12">
 			<%= form_for(@report, :html => {:class => "no-form"} ) do |f| %>
 				<%= f.hidden_field :data, :value => nil %>
+				<%= f.hidden_field :graph_data, :value=> nil %>
 				<%= f.hidden_field :format, :value => :pdf %>
 				<%= f.submit :id => 'create-pdf', :class => "btn btn-primary", :disabled => :disabled, :value => 'Create PDF' %>
 			<% end %>

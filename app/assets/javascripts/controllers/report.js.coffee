@@ -33,6 +33,8 @@ class Controller.Report extends Controller.Base
 
 		rules = rules.reduce (x, y) -> x + " " + y
 		$('#paper').find('svg').prepend("<defs><style type='text/css'><![CDATA[#{rules}]]></style></defs>")
+		$('.graph-report').find('svg').prepend("<defs><style type='text/css'><![CDATA[#{rules}]]></style></defs>")
+		$('#paper').find('svg').attr("xmlns:xlink", "http://www.w3.org/1999/xlink")
 		
 	# Creates children
 	#
@@ -67,10 +69,6 @@ class Controller.Report extends Controller.Base
 		
 		promise = @controller('cell').load cell_id, callback
 		promise.done( () => 
-			@prependStyles()
-			setTimeout( =>
-				@serializePaper()
-			, 3000)
 			@solveTheSystem()
 		)
 			
@@ -83,6 +81,16 @@ class Controller.Report extends Controller.Base
 	serializePaper: () ->
 		cell_svg = new XMLSerializer().serializeToString @view.paper.canvas
 		$( '#report_data' ).attr( "value", cell_svg )
+
+		graphs_svg = {}
+		$( '.graph-report').each( () ->
+			graph_id = ( $( this ).attr('id') ).replace /graph-/, ""
+			graph_svg = new XMLSerializer().serializeToString $( this ).find('svg')[0]
+			graphs_svg[graph_id] = graph_svg
+		)	
+		
+		$( '#report_graph_data' ).attr( "value", JSON.stringify( graphs_svg ) )
+		
 		return cell_svg
 		
 	# Solve the system
@@ -101,8 +109,12 @@ class Controller.Report extends Controller.Base
 
 		@view.showProgressBar()
 		[ token, promise ] = @controller('cell').startSimulation( { iterations: @_iterations, iteration_length: 20 }, iterationDone )
-		promise.done () => $('#create-pdf').removeProp 'disabled'
-		promise.done () => @view.hideProgressBar()
+		promise.done( () => 
+			$('#create-pdf').removeProp 'disabled'
+			@view.hideProgressBar()
+			@prependStyles()
+			@serializePaper()
+		)
 		promise.progress @_setProgressBar
 		
 	# Runs on an action (click)
