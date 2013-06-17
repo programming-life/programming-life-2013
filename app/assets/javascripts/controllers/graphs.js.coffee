@@ -9,7 +9,7 @@ class Controller.Graphs extends Controller.Base
 	#
 	constructor: ( id ) ->
 		super new View.Collection( id )
-	
+
 	# Clears the view
 	#
 	clear: () ->
@@ -32,8 +32,16 @@ class Controller.Graphs extends Controller.Base
 			unless @controller( key )?
 				id = template({ id: _.uniqueId(), key: key.replace(/#/g, '_') }) 
 				graph = new View.Graph( id, key, @view )
-				@addChild key, new Controller.Graph( graph )
+				@addChild key, new Controller.Graph( @, graph )
 				@view.add graph, false
 			@controller( key ).show( dataset, append ) 
 
 		return this
+	
+	# Shows the column data for the column where xData is displayed
+	#
+	# @param xData [Integer] The data x of the column to show
+	#
+	showColumnData: ( xData ) ->
+		@each( (child) -> child.showColumnData( xData ) )
+			

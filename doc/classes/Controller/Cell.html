@@ -2,7 +2,7 @@
 <html>
   <head>
   <meta charset='UTF-8'>
-  <title>Broyologramming Life API Documentation</title>
+  <title>CoffeeScript API Documentation</title>
   <link rel='stylesheet' href='../../assets/codo.css' type='text/css'>
   <script src='../../assets/codo.js'></script>
   <script src='../../assets/search_data.js'></script>
@@ -125,7 +125,8 @@
         <tr>
           <td>Concerns:</td>
           <td>
-            <a href='../../mixins/Mixin/EventBindings.html'>Mixin.EventBindings</a>
+                        <a href='../../mixins/Mixin/EventBindings.html'>Mixin.EventBindings</a>,
+            <a href='../../mixins/Mixin/Catcher.html'>Mixin.Catcher</a>
           </td>
         </tr>
       </table>
@@ -140,7 +141,10 @@
         <dt id='MAX_ITERATIONS-constant'>
           MAX_ITERATIONS
           =
-          <div class='tags'>
+          <div class='docstring'>
+  <p>Maximum number of iterations for the simulation</p>
+</div>
+<div class='tags'>
 </div>
         </dt>
         <dd>
@@ -149,7 +153,10 @@
         <dt id='SIGNIFICANCE-constant'>
           SIGNIFICANCE
           =
-          <div class='tags'>
+          <div class='docstring'>
+  <p>The minimum change required for a data point to be significant</p>
+</div>
+<div class='tags'>
 </div>
         </dt>
         <dd>
@@ -166,7 +173,48 @@
     </span>
     <span class='constructor note title'>Constructor</span>
     <span class='desc'>
-      Creates a new instance of Cell Creates the cell view from parameters @param parent [View.<em>] the parent view @param model [Model.</em>] the model Sets the cell view @param view [View.Cell] the view
+      Creates a new instance of Cell Creates the cell view from parameters @param parent [View.<em>] the parent view @param model [Model.</em>] the model @param interaction [Boolean] the interation Sets the cell view @param view [View.Cell] the view @param interaction [Boolean] the interation
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_addInteraction-instance'>
+        - (void) <strong>_addInteraction</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Adds interaction to the cell
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_addDummyViews-instance'>
+        - (void) <strong>_addDummyViews</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Adds dummy modules
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#onAction-instance'>
+        - (void) <strong>onAction</strong>(event)
+      </a>
+    </span>
+    <span class='bound note title'>Bound</span>
+    <span class='desc'>
+      On Action click
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#onCreate-instance'>
+        - (void) <strong>onCreate</strong>(event)
+      </a>
+    </span>
+    <span class='desc'>
+      
     </span>
   </li>
   <li>
@@ -176,13 +224,174 @@
       </a>
     </span>
     <span class='desc'>
-      Create event bindings
+      Creates the bindings for the cell
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#kill-instance'>
+        - (void) <strong>kill</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Kills this controller
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_onModuleAdd-instance'>
+        - (void) <strong>_onModuleAdd</strong>(cell, module)
+      </a>
+    </span>
+    <span class='desc'>
+      Runs when module is added
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_onModuleAdded-instance'>
+        - (void) <strong>_onModuleAdded</strong>(cell, module)
+      </a>
+    </span>
+    <span class='desc'>
+      Runs after module is added
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_onModuleRemove-instance'>
+        - (void) <strong>_onModuleRemove</strong>(cell, module)
+      </a>
+    </span>
+    <span class='desc'>
+      Runs when module is removed
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#onSplineAdd-instance'>
+        - (void) <strong>onSplineAdd</strong>(cell, spline)
+      </a>
+    </span>
+    <span class='desc'>
+      Runs when spline is added
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#onSplineRemove-instance'>
+        - (void) <strong>onSplineRemove</strong>(cell, spline)
+      </a>
+    </span>
+    <span class='desc'>
+      Runs when splice is removed
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_onDummyModuleChanged-instance'>
+        - (void) <strong>_onDummyModuleChanged</strong>(source, params, key, value, modulector)
+      </a>
+    </span>
+    <span class='bound note title'>Bound</span>
+    <span class='desc'>
+      On Module property changed add missing metabolites
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_onModuleChanged-instance'>
+        - (void) <strong>_onModuleChanged</strong>(source, params, key, value, currents)
+      </a>
+    </span>
+    <span class='desc'>
+      On Module property changed add missing metabolites
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#killPreviews-instance'>
+        - (void) <strong>killPreviews</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Kill and remove all previews
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_automagicAdd-instance'>
+        - (void) <strong>_automagicAdd</strong>(module)
+      </a>
+    </span>
+    <span class='desc'>
+      Automagically adds the metabolite modules requires to the cell view or model
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_onModuleCreationStarted-instance'>
+        - (void) <strong>_onModuleCreationStarted</strong>(source, module)
+      </a>
+    </span>
+    <span class='desc'>
+      Gets called on module.creation.started
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_onModuleUpdateStarted-instance'>
+        - (void) <strong>_onModuleUpdateStarted</strong>(source, module)
+      </a>
+    </span>
+    <span class='desc'>
+      
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_onModuleCreationAborted-instance'>
+        - (void) <strong>_onModuleCreationAborted</strong>(source)
+      </a>
+    </span>
+    <span class='desc'>
+      Gets called on module.creation.aborted
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_onModuleUpdateAborted-instance'>
+        - (void) <strong>_onModuleUpdateAborted</strong>(source, model)
+      </a>
+    </span>
+    <span class='desc'>
+      
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_onModuleCreated-instance'>
+        - (void) <strong>_onModuleCreated</strong>(source, module)
+      </a>
+    </span>
+    <span class='desc'>
+      Gets called on module.creation.finished
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_onModuleUpdated-instance'>
+        - (void) <strong>_onModuleUpdated</strong>(source, module)
+      </a>
+    </span>
+    <span class='desc'>
+      
     </span>
   </li>
   <li>
     <span class='signature'>
       <a href='#load-instance'>
-        - (jQuery.Promise) <strong>load</strong>(cell_id, callback)
+        - (jQuery.Promise) <strong>load</strong>(cell_id, callback, clone = false)
       </a>
     </span>
     <span class='desc'>
@@ -192,27 +401,17 @@
   <li>
     <span class='signature'>
       <a href='#save-instance'>
-        - (jQuery.Promise) <strong>save</strong>(name)
+        - (jQuery.Promise) <strong>save</strong>(name, clone = false)
       </a>
     </span>
     <span class='desc'>
-      Saves the cell view model
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#solveTheSystem-instance'>
-        - (Object) <strong>solveTheSystem</strong>(from, to, base_values = [], token = numeric.asynccancel(), dt = 1, interpolate = false)
-      </a>
-    </span>
-    <span class='desc'>
-      Get the simulation data from the cell
+      Saves the cell view model @param name the name to save with
     </span>
   </li>
   <li>
     <span class='signature'>
       <a href='#setSimulationState-instance'>
-        - ( [ token, promise ) <strong>setSimulationState</strong>(startSimulateFlag, callback, t, iterations, dt)
+        - ( Tuple&lt;CancelToken, jQuery.Promise&gt; ) <strong>setSimulationState</strong>(startSimulateFlag, callback, options)
       </a>
     </span>
     <span class='desc'>
@@ -221,18 +420,28 @@
   </li>
   <li>
     <span class='signature'>
-      <a href='#startSimulation-instance'>
-        - (void) <strong>startSimulation</strong>(t = 20, iterations = Cell.MAX_ITERATIONS, callback, dt = 0.001)
+      <a href='#getDefaultOptions-instance'>
+        - (Object) <strong>getDefaultOptions</strong>()
       </a>
     </span>
     <span class='desc'>
-      Starts the simulation
+      Gets default simulations options
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#startSimulation-instance'>
+        - ( Tuple&lt;CancelToken, jQuery.Promise&gt; ) <strong>startSimulation</strong>(simulate_options = {}, callback, ode_options = {})
+      </a>
+    </span>
+    <span class='desc'>
+      Starts the simulation @options simulate_options [Integer] iteration_length duration of each step call @options simulate_options [Integer] iterations maximum t to run @options ode_options [Integer] dt graph dt @options ode_options [Integer] tolerance @options ode_options [Integer] iterations
     </span>
   </li>
   <li>
     <span class='signature'>
       <a href='#_step-instance'>
-        - (Array&lt;Float&gt;) <strong>_step</strong>(dt, callback, from, to, base_values)
+        - (Array&lt;Float&gt;) <strong>_step</strong>(options, callback, from, to, base_values)
       </a>
     </span>
     <span class='desc'>
@@ -242,7 +451,7 @@
   <li>
     <span class='signature'>
       <a href='#_simulate-instance'>
-        - (void) <strong>_simulate</strong>(step, t, iterations)
+        - (jQuery.Promise) <strong>_simulate</strong>(step, t, iterations)
       </a>
     </span>
     <span class='desc'>
@@ -252,11 +461,31 @@
   <li>
     <span class='signature'>
       <a href='#stopSimulation-instance'>
-        - (void) <strong>stopSimulation</strong>()
+        - ( Tuple&lt;CancelToken, jQuery.Promise&gt; ) <strong>stopSimulation</strong>()
       </a>
     </span>
     <span class='desc'>
       Stops the simulation
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#preview-instance'>
+        - (void) <strong>preview</strong>(module)
+      </a>
+    </span>
+    <span class='desc'>
+      Starts a preview for the module
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#previewChange-instance'>
+        - (void) <strong>previewChange</strong>(module, source)
+      </a>
+    </span>
+    <span class='desc'>
+      
     </span>
   </li>
 </ul>
@@ -271,9 +500,14 @@
                 <a href='../../classes/Controller/Base.html#constructor-instance'>#constructor</a>,
                 <a href='../../classes/Controller/Base.html#addChild-instance'>#addChild</a>,
                 <a href='../../classes/Controller/Base.html#removeChild-instance'>#removeChild</a>,
+                <a href='../../classes/Controller/Base.html#each-instance'>#each</a>,
                 <a href='../../classes/Controller/Base.html#controller-instance'>#controller</a>,
                 <a href='../../classes/Controller/Base.html#controllers-instance'>#controllers</a>,
-        <a href='../../classes/Controller/Base.html#kill-instance'>#kill</a>
+                <a href='../../classes/Controller/Base.html#kill-instance'>#kill</a>,
+                <a href='../../classes/Controller/Base.html#onUpdate-instance'>#onUpdate</a>,
+                <a href='../../classes/Controller/Base.html#beforeUnload-instance'>#beforeUnload</a>,
+                <a href='../../classes/Controller/Base.html#onUnload-instance'>#onUnload</a>,
+        <a href='../../classes/Controller/Base.html#_catcher-instance'>#_catcher</a>
       </p>
       <h3 class='inherited'>
         Methods inherited from
@@ -282,7 +516,10 @@
       <p class='inherited'>
                 <a href='../../classes/Helper/Mixable.html#extend-class'>.extend</a>,
                 <a href='../../classes/Helper/Mixable.html#include-class'>.include</a>,
-        <a href='../../classes/Helper/Mixable.html#concern-class'>.concern</a>
+                <a href='../../classes/Helper/Mixable.html#concern-class'>.concern</a>,
+                <a href='../../classes/Helper/Mixable.html#extractId-class'>.extractId</a>,
+                <a href='../../classes/Helper/Mixable.html#isLocal-instance'>#isLocal</a>,
+        <a href='../../classes/Helper/Mixable.html#parseDate-class'>.parseDate</a>
       </p>
       <h2>
         <small>Concern Method Summary</small>
@@ -300,6 +537,13 @@
                 <a href='../../mixins/Mixin/EventBindings.html#_onNotificate-instance'>#_onNotificate</a>,
         <a href='../../mixins/Mixin/EventBindings.html#_notificate-instance'>#_notificate</a>
       </p>
+      <h3 class='included'>
+        Methods mixed in from
+        <a href='../../mixins/Mixin/Catcher.html'>Mixin.Catcher</a>
+      </h3>
+      <p class='included'>
+        <a href='../../mixins/Mixin/Catcher.html#catchable-class'>.catchable</a>
+      </p>
       <h2>Constructor Details</h2>
       <div class='methods'>
   <div class='method_details'>
@@ -309,8 +553,10 @@
     <div class='docstring'>
   <p>Creates a new instance of Cell</p><p>Creates the cell view from parameters
     @param parent [View.<em>] the parent view
-    @param model [Model.</em>] the model</p><p> Sets the cell view
- @param view [View.Cell] the view</p>
+    @param model [Model.</em>] the model
+ @param interaction [Boolean] the interation</p><p> Sets the cell view
+ @param view [View.Cell] the view
+ @param interaction [Boolean] the interation</p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
@@ -318,7 +564,7 @@
     <li>
       <span class='name'>paper</span>
       <span class='type'>
-        (<tt>Rapahel</tt>)
+        (<tt>Raphael</tt>)
       </span>
       &mdash;
       <span class='desc'>the paper</span>
@@ -330,18 +576,464 @@
       <h2>Instance Method Details</h2>
       <div class='methods'>
   <div class='method_details'>
-    <p class='signature' id='_createBindings-instance'>
-      - (void) <strong>_createBindings</strong>()
+    <p class='signature' id='_addInteraction-instance'>
+      - (void) <strong>_addInteraction</strong>()
     </p>
     <div class='docstring'>
-  <p>Create event bindings</p>
+  <p>Adds interaction to the cell</p>
 </div>
 <div class='tags'>
 </div>
   </div>
   <div class='method_details'>
+    <p class='signature' id='_addDummyViews-instance'>
+      - (void) <strong>_addDummyViews</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Adds dummy modules</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='onAction-instance'>
+      - (void) <strong>onAction</strong>(event)
+      (bound)
+    </p>
+    <div class='docstring'>
+  <p>On Action click</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>event</span>
+      <span class='type'>
+        (<tt>jQuery.Event</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the event raised</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='onCreate-instance'>
+      - (void) <strong>onCreate</strong>(event)
+    </p>
+    <div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_createBindings-instance'>
+      - (void) <strong>_createBindings</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Creates the bindings for the cell</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='kill-instance'>
+      - (void) <strong>kill</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Kills this controller</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_onModuleAdd-instance'>
+      - (void) <strong>_onModuleAdd</strong>(cell, module)
+    </p>
+    <div class='docstring'>
+  <p>Runs when module is added</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>cell</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Model/Cell.html'>Model.Cell</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the cell</span>
+    </li>
+    <li>
+      <span class='name'>module</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Model/Module.html'>Model.Module</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the module</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_onModuleAdded-instance'>
+      - (void) <strong>_onModuleAdded</strong>(cell, module)
+    </p>
+    <div class='docstring'>
+  <p>Runs after module is added</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>cell</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Model/Cell.html'>Model.Cell</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the cell</span>
+    </li>
+    <li>
+      <span class='name'>module</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Model/Module.html'>Model.Module</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the module</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_onModuleRemove-instance'>
+      - (void) <strong>_onModuleRemove</strong>(cell, module)
+    </p>
+    <div class='docstring'>
+  <p>Runs when module is removed</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>cell</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Model/Cell.html'>Model.Cell</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the cell</span>
+    </li>
+    <li>
+      <span class='name'>module</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Model/Module.html'>Model.Module</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the module</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='onSplineAdd-instance'>
+      - (void) <strong>onSplineAdd</strong>(cell, spline)
+    </p>
+    <div class='docstring'>
+  <p>Runs when spline is added</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>cell</span>
+      <span class='type'>
+        (<tt><a href='../../classes/View/Cell.html'>View.Cell</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the cell view</span>
+    </li>
+    <li>
+      <span class='name'>spline</span>
+      <span class='type'>
+        (<tt><a href='../../classes/View/Spline.html'>View.Spline</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the spline</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='onSplineRemove-instance'>
+      - (void) <strong>onSplineRemove</strong>(cell, spline)
+    </p>
+    <div class='docstring'>
+  <p>Runs when splice is removed</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>cell</span>
+      <span class='type'>
+        (<tt><a href='../../classes/View/Cell.html'>View.Cell</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the cell view</span>
+    </li>
+    <li>
+      <span class='name'>spline</span>
+      <span class='type'>
+        (<tt><a href='../../classes/View/Spline.html'>View.Spline</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the spline</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_onDummyModuleChanged-instance'>
+      - (void) <strong>_onDummyModuleChanged</strong>(source, params, key, value, modulector)
+      (bound)
+    </p>
+    <div class='docstring'>
+  <p>On Module property changed add missing metabolites</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>module</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Model/Module.html'>Model.Module</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the module changed</span>
+    </li>
+    <li>
+      <span class='name'>params</span>
+      <span class='type'>
+        (<tt>Array</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The keys and values</span>
+    </li>
+    <li>
+      <span class='name'>key</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the actual changed key</span>
+    </li>
+    <li>
+      <span class='name'>value</span>
+      <span class='type'>
+        (<tt>any</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the new value</span>
+    </li>
+    <li>
+      <span class='name'>modulector</span>
+      <span class='type'>
+        (<tt>Constructor</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the contstructor for this dummy module</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_onModuleChanged-instance'>
+      - (void) <strong>_onModuleChanged</strong>(source, params, key, value, currents)
+    </p>
+    <div class='docstring'>
+  <p>On Module property changed add missing metabolites</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>module</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Model/Module.html'>Model.Module</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the module changed</span>
+    </li>
+    <li>
+      <span class='name'>params</span>
+      <span class='type'>
+        (<tt>Array</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The keys and values</span>
+    </li>
+    <li>
+      <span class='name'>key</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the actual changed key</span>
+    </li>
+    <li>
+      <span class='name'>value</span>
+      <span class='type'>
+        (<tt>any</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the new value</span>
+    </li>
+    <li>
+      <span class='name'>modulector</span>
+      <span class='type'>
+        (<tt>Constructor</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the contstructor for this dummy module</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='killPreviews-instance'>
+      - (void) <strong>killPreviews</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Kill and remove all previews</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_automagicAdd-instance'>
+      - (void) <strong>_automagicAdd</strong>(module)
+    </p>
+    <div class='docstring'>
+  <div class='note todo'>
+    <strong>TODO:</strong>
+    remove is_product
+  </div>
+  <p>Automagically adds the metabolite modules requires to the cell view or model</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>module</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Model/Module.html'>Model.Module</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The module for which to automagically add</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_onModuleCreationStarted-instance'>
+      - (void) <strong>_onModuleCreationStarted</strong>(source, module)
+    </p>
+    <div class='docstring'>
+  <p>Gets called on module.creation.started</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>source</span>
+      <span class='type'>
+        (<tt><a href='../../classes/View/DummyModule.html'>View.DummyModule</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The source of the event</span>
+    </li>
+    <li>
+      <span class='name'>module</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Model/Module.html'>Model.Module</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The module representation of the current creation parameters</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_onModuleUpdateStarted-instance'>
+      - (void) <strong>_onModuleUpdateStarted</strong>(source, module)
+    </p>
+    <div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_onModuleCreationAborted-instance'>
+      - (void) <strong>_onModuleCreationAborted</strong>(source)
+    </p>
+    <div class='docstring'>
+  <p>Gets called on module.creation.aborted</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>source</span>
+      <span class='type'>
+        (<tt><a href='../../classes/View/DummyModule.html'>View.DummyModule</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The source of the event</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_onModuleUpdateAborted-instance'>
+      - (void) <strong>_onModuleUpdateAborted</strong>(source, model)
+    </p>
+    <div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_onModuleCreated-instance'>
+      - (void) <strong>_onModuleCreated</strong>(source, module)
+    </p>
+    <div class='docstring'>
+  <p>Gets called on module.creation.finished</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>source</span>
+      <span class='type'>
+        (<tt><a href='../../classes/View/DummyModule.html'>View.DummyModule</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The source of the event</span>
+    </li>
+    <li>
+      <span class='name'>module</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Model/Module.html'>Model.Module</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The module representation of the current creation parameters</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_onModuleUpdated-instance'>
+      - (void) <strong>_onModuleUpdated</strong>(source, module)
+    </p>
+    <div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
     <p class='signature' id='load-instance'>
-      - (jQuery.Promise) <strong>load</strong>(cell_id, callback)
+      - (jQuery.Promise) <strong>load</strong>(cell_id, callback, clone = false)
     </p>
     <div class='docstring'>
   <p>Loads a new cell into the view</p>
@@ -379,10 +1071,10 @@
   </div>
   <div class='method_details'>
     <p class='signature' id='save-instance'>
-      - (jQuery.Promise) <strong>save</strong>(name)
+      - (jQuery.Promise) <strong>save</strong>(name, clone = false)
     </p>
     <div class='docstring'>
-  <p>Saves the cell view model</p>
+  <p>Saves the cell view model</p><p>@param name the name to save with</p>
 </div>
 <div class='tags'>
   <h3>Returns:</h3>
@@ -397,54 +1089,8 @@
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='solveTheSystem-instance'>
-      - (Object) <strong>solveTheSystem</strong>(from, to, base_values = [], token = numeric.asynccancel(), dt = 1, interpolate = false)
-    </p>
-    <div class='docstring'>
-  <p>Get the simulation data from the cell</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>duration</span>
-      <span class='type'>
-        (<tt>Integer</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>The duration of the simulation</span>
-    </li>
-    <li>
-      <span class='name'>dt</span>
-      <span class='type'>
-        (<tt>Float</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>The timestep for the graphs</span>
-    </li>
-    <li>
-      <span class='name'>base_values</span>
-      <span class='type'>
-        (<tt>Array</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>continuation values</span>
-    </li>
-  </ul>
-  <h3>Returns:</h3>
-  <ul class='return'>
-    <li>
-      <span class='type'></span>
-      (<tt>Object</tt>)
-      &mdash;
-      <span class='desc'>Object with data such as An array of datapoints</span>
-    </li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
     <p class='signature' id='setSimulationState-instance'>
-      - ( [ token, promise ) <strong>setSimulationState</strong>(startSimulateFlag, callback, t, iterations, dt)
+      - ( Tuple&lt;CancelToken, jQuery.Promise&gt; ) <strong>setSimulationState</strong>(startSimulateFlag, callback, options)
     </p>
     <div class='docstring'>
   <p>Sets the simulation state</p>
@@ -497,38 +1143,57 @@
   <ul class='return'>
     <li>
       <span class='type'></span>
-      (<tt>[ token, promise</tt>)
+      (<tt>Tuple&lt;CancelToken, jQuery.Promise&gt;</tt>)
       &mdash;
-      <span class='desc'>] tuple</span>
+      <span class='desc'>tuple</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='getDefaultOptions-instance'>
+      - (Object) <strong>getDefaultOptions</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Gets default simulations options</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Object</tt>)
+      &mdash;
+      <span class='desc'>the options</span>
     </li>
   </ul>
 </div>
   </div>
   <div class='method_details'>
     <p class='signature' id='startSimulation-instance'>
-      - (void) <strong>startSimulation</strong>(t = 20, iterations = Cell.MAX_ITERATIONS, callback, dt = 0.001)
+      - ( Tuple&lt;CancelToken, jQuery.Promise&gt; ) <strong>startSimulation</strong>(simulate_options = {}, callback, ode_options = {})
     </p>
     <div class='docstring'>
-  <p>Starts the simulation</p>
+  <p>Starts the simulation</p><p>@options simulate_options [Integer] iteration_length duration of each step call
+@options simulate_options [Integer] iterations maximum t to run
+@options ode_options [Integer] dt graph dt
+@options ode_options [Integer] tolerance 
+@options ode_options [Integer] iterations </p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
   <ul class='param'>
     <li>
-      <span class='name'>t</span>
+      <span class='name'>simulate_options</span>
       <span class='type'>
-        (<tt>Integer</tt>)
+        (<tt>Object</tt>)
       </span>
-      &mdash;
-      <span class='desc'>duration of each step call</span>
     </li>
     <li>
-      <span class='name'>iterations</span>
+      <span class='name'>ode_options</span>
       <span class='type'>
-        (<tt>Integer</tt>)
+        (<tt>Object</tt>)
       </span>
-      &mdash;
-      <span class='desc'>maximum t to run</span>
     </li>
     <li>
       <span class='name'>callback</span>
@@ -538,46 +1203,35 @@
       &mdash;
       <span class='desc'>the callback function after each iteration</span>
     </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
     <li>
-      <span class='name'>dt</span>
-      <span class='type'>
-        (<tt>Integer</tt>)
-      </span>
+      <span class='type'></span>
+      (<tt>Tuple&lt;CancelToken, jQuery.Promise&gt;</tt>)
       &mdash;
-      <span class='desc'>graph dt</span>
+      <span class='desc'>tuple of token and promise</span>
     </li>
   </ul>
 </div>
   </div>
   <div class='method_details'>
     <p class='signature' id='_step-instance'>
-      - (Array&lt;Float&gt;) <strong>_step</strong>(dt, callback, from, to, base_values)
+      - (Array&lt;Float&gt;) <strong>_step</strong>(options, callback, from, to, base_values)
     </p>
     <div class='docstring'>
-  <div class='note todo'>
-    <strong>TODO:</strong>
-    view.drawGraphs should be extracted
-  </div>
   <p>Steps the simulation</p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
   <ul class='param'>
     <li>
-      <span class='name'>t</span>
+      <span class='name'>options</span>
       <span class='type'>
-        (<tt>Integer</tt>)
+        (<tt>Object</tt>)
       </span>
       &mdash;
-      <span class='desc'>the duration of this step</span>
-    </li>
-    <li>
-      <span class='name'>dt</span>
-      <span class='type'>
-        (<tt>Integer</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>the dt of the graphs</span>
+      <span class='desc'>the ode options to feed the ode</span>
     </li>
     <li>
       <span class='name'>callback</span>
@@ -617,30 +1271,103 @@
   </div>
   <div class='method_details'>
     <p class='signature' id='_simulate-instance'>
-      - (void) <strong>_simulate</strong>(step, t, iterations)
+      - (jQuery.Promise) <strong>_simulate</strong>(step, t, iterations)
     </p>
     <div class='docstring'>
   <p>Simulation handler</p><p>Actually loops the simulation. Expects step to be a throttled function
 and gracefully defers execution of this step function. </p>
 </div>
 <div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>step</span>
+      <span class='type'>
+        (<tt>Function</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the step function</span>
+    </li>
+    <li>
+      <span class='name'>t</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the duration T of a step</span>
+    </li>
+    <li>
+      <span class='name'>iterations</span>
+      <span class='type'>
+        (<tt>Integer</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the number of iterations/steps</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>jQuery.Promise</tt>)
+      &mdash;
+      <span class='desc'>the promise</span>
+    </li>
+  </ul>
 </div>
   </div>
   <div class='method_details'>
     <p class='signature' id='stopSimulation-instance'>
-      - (void) <strong>stopSimulation</strong>()
+      - ( Tuple&lt;CancelToken, jQuery.Promise&gt; ) <strong>stopSimulation</strong>()
     </p>
     <div class='docstring'>
   <p>Stops the simulation</p>
 </div>
 <div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Tuple&lt;CancelToken, jQuery.Promise&gt;</tt>)
+      &mdash;
+      <span class='desc'>tuple of token and promise</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='preview-instance'>
+      - (void) <strong>preview</strong>(module)
+    </p>
+    <div class='docstring'>
+  <p>Starts a preview for the module</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>module</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Model/Module.html'>Model.Module</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The module to preview</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='previewChange-instance'>
+      - (void) <strong>previewChange</strong>(module, source)
+    </p>
+    <div class='tags'>
 </div>
   </div>
 </div>
     </div>
     <div id='footer'>
   Generated on
-  Sun Jun 02 2013 15:47:57 GMT+0200 (W. Europe Daylight Time)
+  Tue Jun 11 2013 00:05:30 GMT+0200 (W. Europe Daylight Time)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

@@ -36,12 +36,12 @@ class Controller.Cell extends Controller.Base
 		Object.defineProperty( @, 'model', 
 			get: () -> 
 				return @view.model
-			set: ( value ) -> 
-				@view.model = value
+			set: @setCell
 		)
 
-		@_previews = new View.Collection()
-
+		@addChild 'dummies', new Controller.Base( new View.Collection() )
+		
+		@model = @view.model
 		@_createBindings()
 		@_addInteraction() if @_interaction
 
@@ -49,67 +49,74 @@ class Controller.Cell extends Controller.Base
 	#
 	_addInteraction: () ->
 		@_automagically = on
-		@_addDummyViews()
+		return this
 
 	# Adds dummy modules
 	#
 	_addDummyViews: () ->
 		
-		@view.each( (view) => @view.remove view if view instanceof View.DummyModule )
+		@controller( 'dummies' )?.kill()
 		
-		@view.add new View.DummyModule( @view.paper, @view, @model, Model.CellGrowth, 1 )
-		@view.add new View.DummyModule( @view.paper, @view, @model, Model.DNA, 1 )
-		@view.add new View.DummyModule( @view.paper, @view, @model, Model.Lipid, 1 )
-		@view.add new View.DummyModule( @view.paper, @view, @model, Model.Metabolite, -1, { placement: Model.Metabolite.Outside, type: Model.Metabolite.Substrate, amount: 0, supply: 1 } )
-		@view.add new View.DummyModule( @view.paper, @view, @model, Model.Metabolite, -1, { placement: Model.Metabolite.Inside, type: Model.Metabolite.Product, amount: 0, supply: 0 } )
-		@view.add new View.DummyModule( @view.paper, @view, @model, Model.Transporter, -1, { direction: Model.Transporter.Inward } )
-		@view.add new View.DummyModule( @view.paper, @view, @model, Model.Metabolism, -1 )
-		@view.add new View.DummyModule( @view.paper, @view, @model, Model.Protein, -1 )
-		@view.add new View.DummyModule( @view.paper, @view, @model, Model.Transporter, -1, { direction: Model.Transporter.Outward, transported: 'p' } )
+		@_addDummyView( 'cellgrowth', Model.CellGrowth, 1 )
+		@_addDummyView( 'lipid', Model.Lipid, 1 )
+		@_addDummyView( 'dna', Model.DNA, 1 )
+		@_addDummyView( 'metabolite-outside', Model.Metabolite, -1, { placement: Model.Metabolite.Outside, type: Model.Metabolite.Substrate, amount: 0, supply: 1 } )
+		@_addDummyView( 'transporter-inward', Model.Transporter, -1, { direction: Model.Transporter.Inward, transported: 's'  } )
+		@_addDummyView( 'metabolism', Model.Metabolism, -1 )
+		@_addDummyView( 'metabolite-inside', Model.Metabolite, -1, { placement: Model.Metabolite.Inside, type: Model.Metabolite.Product, amount: 0, supply: 0 } )
+		@_addDummyView( 'protein', Model.Protein, -1 )
+		@_addDummyView( 'transporter-outward', Model.Transporter, -1, { direction: Model.Transporter.Outward, transported: 'p' } )
 		
-		$( '.module-properties' ).click( '[data-action]', ( event ) => 
-			func = @["on#{ $( event.target ).data( 'action' )}"]
-			func( event ) if func?
-		)
+		return this
 
-	# On Action click
+	# Add a dummy view
 	#
-	# @param event [jQuery.Event] the event raised
+	# @param id [String] the id
+	# @param modulector [Function] the module constructor
+	# @param number [Integer] the amount allowed or -1 for unlimited
+	# @param params [Object] the defaults
 	#
-	onAction: ( event ) =>
-		func = @["on#{ $( event.target ).data( 'action' )}"]
-		func( event ) if func?
-		
-	#
-	#
-	onCreate: ( event ) ->
-		
+	_addDummyView: ( id, modulector, number, params ) ->
+	
+		@controller( 'dummies' ).addChild id, new Controller.DummyModule( @, modulector, number, params )
+		@view.add @controller( 'dummies' ).controller( id ).view
+		return this
 		
 	# Creates the bindings for the cell
 	#
 	_createBindings: () ->
-		@_bind( 'cell.module.add', @, @_onModuleAdd )		
+		@_bind( 'cell.module.add', @, @_onModuleAdd )	
 		@_bind( 'cell.module.remove', @, @_onModuleRemove )
 		@_bind( 'cell.metabolite.add', @, @_onModuleAdd )
 		@_bind( 'cell.metabolite.remove', @, @_onModuleRemove )
-		@_bind( 'cell.spline.add', @, @onSplineAdd)
-		@_bind( 'cell.spline.remove', @, @onSplineRemove)
-		@_bind( 'module.creation.started', @, @_onModuleCreationStarted )
-		@_bind( 'module.creation.aborted', @, @_onModuleCreationAborted )
-		@_bind( 'module.update.started', @, @_onModuleUpdateStarted )
-		@_bind( 'module.update.aborted', @, @_onModuleUpdateAborted )
-		@_bind( 'module.created', @, @_onModuleCreated )
-		@_bind( 'module.updated', @, @_onModuleUpdated )
-		@_bind( 'cell.module.added', @, @_onModuleAdded )
-		@_bind( 'dummy.properties.change', @, @_onDummyModuleChanged)
-		@_bind( 'module.properties.change', @, @_onModuleChanged )
 		
-	# Kills this controller
+	# 
 	#
-	kill: () ->
-		$( '.module-properties' ).off( 'click', '[data-action]', @onAction )
-		return super()
-			
+	setCell: ( value ) ->
+		@view.model = value
+		for module in @view.model.getModules()
+			@_onModuleAdd( value, module )
+		@_addDummyViews() if @_interaction
+		return this
+		
+	# Begin creation of a module
+	#
+	beginCreate: ( module ) ->
+		@addChild( _( 'module-' ).uniqueId(), controller = new Controller.Module( @, module, on, @_interaction ) )
+		@automagicAdd controller.model, on
+		@view.add controller.view
+		@stopSimulation()
+		return this
+		
+	# End creation of a module
+	#
+	endCreate: ( module ) ->
+		key = @findKey( ( v ) -> v.model is module ) 
+		@view.remove @controller( key ).view.kill()
+		@removeChild key
+		@stopSimulation()
+		return this
+		
 	# Runs when module is added
 	#
 	# @param cell [Model.Cell] the cell
@@ -117,19 +124,9 @@ class Controller.Cell extends Controller.Base
 	#
 	_onModuleAdd: ( cell, module ) ->
 		return if cell isnt @model
-		@view.addModule module
+		@addChild( _( 'module-' ).uniqueId(), controller = new Controller.Module( @, module, off, @_interaction ) )
+		@view.add controller.view
 		@stopSimulation()
-			
-	# Runs after module is added
-	#
-	# @param cell [Model.Cell] the cell
-	# @param module [Model.Module] the module
-	#
-	_onModuleAdded: ( cell, module ) ->
-		return if cell isnt @model
-		return unless @_automagically
-		@_automagicAdd( module )
-
 
 	# Runs when module is removed
 	#
@@ -138,78 +135,20 @@ class Controller.Cell extends Controller.Base
 	#
 	_onModuleRemove: ( cell, module ) ->
 		return if cell isnt @model
-		@view.removeModule module
+		if key = @findKey( ( c ) -> c.model is module )
+			controller = @controller( key ).kill()
+			@removeChild key
+			@view.remove controller.view
 		@stopSimulation()
 		
-	# Runs when spline is added
-	#
-	# @param cell [View.Cell] the cell view
-	# @param spline [View.Spline] the spline
-	#
-	onSplineAdd: ( cell, spline ) ->
-		return if cell isnt @view
-		@view.addSpline spline
-		
-	# Runs when splice is removed
-	#
-	# @param cell [View.Cell] the cell view
-	# @param spline [View.Spline] the spline
-	#
-	onSplineRemove: ( cell, spline ) ->
-		return if cell isnt @view
-		@view.removeSpline spline
-		
-	# On Module property changed add missing metabolites
-	# 
-	# @param module [Model.Module] the module changed
-	# @param params [Array] The keys and values
-	# @param key [String] the actual changed key
-	# @param value [any] the new value
-	# @param modulector [Constructor] the contstructor for this dummy module
-	#
-	_onDummyModuleChanged: ( source, params, key, value, modulector ) =>
-		return unless @_automagically
-
-		# Create a new module
-		module = new modulector( _( params ).clone( true ) )
-
-		@killPreviews()
-		@preview module
-		
-	# On Module property changed add missing metabolites
-	# 
-	# @param module [Model.Module] the module changed
-	# @param params [Array] The keys and values
-	# @param key [String] the actual changed key
-	# @param value [any] the new value
-	# @param modulector [Constructor] the contstructor for this dummy module
-	#
-	_onModuleChanged: ( source, params, key, value, currents ) ->
-		return unless @_automagically
-		@_updating = on
-		
-		# Create a new module
-		module = new source.model.constructor( _( _( params ).clone( true ) ).defaults( currents ) )
-		@_trigger "module.preview.ended", source
-		
-		@killPreviews()
-		@previewChange module, source
-
-	# Kill and remove all previews
-	#
-	killPreviews: ( ) ->
-		@_previews.each( (preview) =>
-			@view.remove preview.kill()
-			@_trigger "module.preview.ended", preview
-		)
-		@_previews.kill on
-	
 	# Automagically adds the metabolite modules requires to the cell view or model
 	#
 	# @param module [Model.Module] The module for which to automagically add
 	# @todo remove is_product
 	#
-	_automagicAdd: ( module ) ->
+	automagicAdd: ( module, preview = off ) ->
+		return unless @_automagically
+				
 		# Expand names
 		names = []
 		props = module.getMetaboliteProperties()
@@ -227,7 +166,7 @@ class Controller.Cell extends Controller.Base
 		names = _( names ).unique()
 
 		# Find missing metabolites
-		missing = _( names ).filter( ( name ) => not _( @model._getModules() ).any( ( m ) -> name is m.name ) )
+		missing = _( names ).filter( ( name ) => not _( @model.getModules() ).any( ( m ) -> name is m.name ) )
 
 		for name in missing
 			is_product = 
@@ -236,81 +175,14 @@ class Controller.Cell extends Controller.Base
 
 			is_inside = name.split( '#' )[1] is 'int'
 			
-			if @_creating or @_updating
+			if preview
 				type = if is_product then Model.Metabolite.Product else Model.Metabolite.Substrate
 				placement = if is_inside then Model.Metabolite.Inside else Model.Metabolite.Outside
 				metabolite = new Model.Metabolite( { supply: 0, placement: placement, type: type }, 0, name )
-				@preview metabolite
+				@view.addPreview new View.Module( @view.paper, @view, @view.model, metabolite, on, off ) 
 			else
 				@model.addMetabolite( name, 0, 0, is_inside, is_product )
 	
-	# Gets called on module.creation.started
-	#
-	# @param source [View.DummyModule] The source of the event
-	# @param module [Model.Module] The module representation of the current creation parameters
-	#
-	_onModuleCreationStarted: ( source, module ) ->
-		type = source.getFullType()
-		if _( @view.viewsByType[type] ).contains( source )
-			@_creating = on
-			@_updating = off
-			@preview module
-			
-	#
-	#
-	_onModuleUpdateStarted: ( source, module ) ->
-		return if source instanceof View.DummyModule
-		type = source.getFullType()
-		if _( @view.viewsByType[type] ).contains( source )
-			@_updating = on
-			@_creating = off
-			@previewChange module ,source
-
-	# Gets called on module.creation.aborted
-	#
-	# @param source [View.DummyModule] The source of the event
-	#
-	_onModuleCreationAborted: ( source ) ->
-		type = source.getFullType()
-		if _( @view.viewsByType[type] ).contains( source )
-			@_creating = off
-			@killPreviews()
-			
-	#
-	#
-	_onModuleUpdateAborted: ( source, model ) ->
-		return if source instanceof View.DummyModule
-		return if not @_updating or not source
-		@_trigger "module.preview.ended", source
-		type = source.getFullType()
-		if _( @view.viewsByType[type] ).contains( source )
-			@_updating = off
-			@killPreviews()
-		
-	# Gets called on module.creation.finished
-	#
-	# @param source [View.DummyModule] The source of the event
-	# @param module [Model.Module] The module representation of the current creation parameters
-	#
-	_onModuleCreated: ( source, module ) ->
-		type = source.getFullType()
-		if _( @view.viewsByType[type] ).contains( source )
-			@_creating = off
-			@killPreviews()
-
-			@model.add module
-			
-	# 
-	#
-	_onModuleUpdated: ( source, module ) ->
-		@_trigger "module.preview.ended", source
-		type = source.getFullType()
-		if _( @view.viewsByType[type] ).contains( source )
-			@_updating = off
-			@killPreviews()
-
-			@_automagicAdd module if module
-			
 	# Loads a new cell into the view
 	#
 	# @param cell_id [Integer] the cell to load
@@ -321,7 +193,6 @@ class Controller.Cell extends Controller.Base
 
 		setcallback = ( cell ) => 
 			@model = cell 
-			@_addDummyViews() if @_interaction
 			callback?.call( @, cell )
 			
 		@_automagically = off
@@ -363,7 +234,7 @@ class Controller.Cell extends Controller.Base
 				results = cell_run.results
 				mapping = cell_run.map
 		
-				xValues = []
+				ts = []
 				
 				# Get the interpolation for a fixed timestep instead of the adaptive timestep
 				# generated by the ODE. This should be fairly fast, since the values all 
@@ -373,32 +244,37 @@ class Controller.Cell extends Controller.Base
 					for time in [ 0 ... duration ] by options.dt
 						interpolation[ time ] = results.at time
 					for val in [0 ... duration] by options.dt
-						xValues.push ( val + cell_run.from )
+						ts.push ( val + cell_run.from )
 				else
 					skip = []
 					prevVal = 0
 					prevVal = results.x[ 0 ] - Cell.SIGNIFICANCE if results.x.length
 					for index, val of results.x
 						if ( Math.abs( val - prevVal ) ) >= Cell.SIGNIFICANCE
-							xValues.push ( val + cell_run.from )
+							ts.push ( val + cell_run.from )
 							prevVal = val
 						else
 							skip.push index
+						
+				console.log ts, cell_run.from, cell_run.to
 				datasets = {}			
 				for key, value of mapping
-					yValues = []
+					xs = _( ts ).clone()
+					ys = []
 
 					if options.interpolate
 						for time in [ 0 ... duration ] by options.dt
-							yValues.push( interpolation[ time ][ value ] ) 
+							ys.push( interpolation[ time ][ value ] ) 
 					else
 						for index, substance of results.y
 							unless index is _( skip ).first()
-								yValues.push(substance[value])
+								ys.push(substance[value])
 							else
 								skip.pop()
 						
-					datasets[ key ] = { xValues: xValues, yValues: yValues}
+					datasets[ key ] = {}
+					datasets[ key ].xValues = xs
+					datasets[ key ].yValues = ys
 					
 				return { 
 					results: results
@@ -550,17 +426,3 @@ class Controller.Cell extends Controller.Base
 		@_trigger( "simulation.stop", @, [ @model ] )
 		return [ @_token, undefined ]
 	
-
-	# Starts a preview for the module
-	#
-	# @param module [Model.Module] The module to preview
-	#
-	preview: ( module ) ->
-		@_automagicAdd module
-		@_previews.add @view.previewModule( @view , module, on )
-		
-	#
-	#
-	previewChange: ( module, source ) ->
-		@_automagicAdd module
-		source.createSplines( module, on )

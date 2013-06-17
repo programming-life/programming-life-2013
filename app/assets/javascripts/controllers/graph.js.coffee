@@ -12,11 +12,16 @@ class Controller.Graph extends Controller.Base
 	#
 	# @param view [View.Graph] The view to control
 	#
-	constructor: ( view ) -> #@container, title, parentview, id = _( 'graph-' ).uniqueId() ) ->
+	constructor: ( @_parent, view ) -> #@container, title, parentview, id = _( 'graph-' ).uniqueId() ) ->
 		super view #new View.Graph( id, title, parentview, @container )
 	
 		@_datasets = []
 		@_automagically = on
+
+		@_createBindings()
+
+	_createBindings: ( ) ->
+		@_bind "view.graph.hover", @, @_onGraphHover
 		
 	# Add a dataset to visualize in this graphs
 	#
@@ -56,3 +61,22 @@ class Controller.Graph extends Controller.Base
 		@add dataset unless append
 		@append dataset if append
 		@view.draw @_datasets
+	
+	_onGraphHover:( graph, xFactor ) ->
+		unless graph is @
+			dataset = _(@_datasets).first().xValues
+			index = Math.round(xFactor * (dataset.length - 1))
+			xData = dataset[index]
+			@_parent.showColumnData( xData )
+	
+	showColumnData: ( xData ) ->
+		dataset = _(@_datasets).first().xValues
+		xFactor = (xData- _( dataset ).first()) / (_( dataset ).last() - _(dataset).first())
+
+		text = []
+		for dataset in @_datasets
+			index = Math.round(xFactor * (dataset.yValues.length - 1))
+			yData = dataset.yValues[index]
+			text.push yData
+
+		@view.showColumn( xFactor, text )

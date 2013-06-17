@@ -41,7 +41,7 @@ class View.HTMLModal extends Helper.Mixable
 	# Toggles the modal
 	#
 	toggle: () ->
-		@elem.modal 'toggle'
+		@_elem.modal 'toggle'
 		return this
 		
 	# Binds function on close (before transition)

@@ -92,7 +92,7 @@ class View.Main extends View.RaphaelBase
 	#
 	# @param x [float] the x position of the paper point
 	# @param y [float] the y position of the paper point
-	# @return [[float, float]] a tuple of the document x and y coordinates, respectively
+	# @return [<float, float>] a tuple of the document x and y coordinates, respectively
 	#
 	getAbsoluteCoords: ( x, y ) ->
 		width = @_viewbox.width

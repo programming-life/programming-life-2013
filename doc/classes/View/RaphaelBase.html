@@ -2,7 +2,7 @@
 <html>
   <head>
   <meta charset='UTF-8'>
-  <title>Broyologramming Life API Documentation</title>
+  <title>CoffeeScript API Documentation</title>
   <link rel='stylesheet' href='../../assets/codo.css' type='text/css'>
   <script src='../../assets/codo.js'></script>
   <script src='../../assets/search_data.js'></script>
@@ -122,6 +122,14 @@
             <a href='../../classes/View/Collection.html'>View.Collection</a>
           </td>
         </tr>
+        <tr>
+          <td>Concerns:</td>
+          <td>
+                        <a href='../../mixins/Mixin/EventBindings.html'>Mixin.EventBindings</a>,
+                        <a href='../../mixins/Mixin/Catcher.html'>Mixin.Catcher</a>,
+            <a href='../../mixins/Mixin/DynamicProperties.html'>Mixin.DynamicProperties</a>
+          </td>
+        </tr>
       </table>
       <h2>Overview</h2>
       <div class='docstring'>
@@ -155,7 +163,7 @@
   <li>
     <span class='signature'>
       <a href='#_catcher-instance'>
-        - (void) <strong>_catcher</strong>(e)
+        - (void) <strong>_catcher</strong>(source, e)
       </a>
     </span>
     <span class='bound note title'>Bound</span>
@@ -268,7 +276,8 @@
                 <a href='../../classes/View/Collection.html#add-instance'>#add</a>,
                 <a href='../../classes/View/Collection.html#remove-instance'>#remove</a>,
                 <a href='../../classes/View/Collection.html#draw-instance'>#draw</a>,
-        <a href='../../classes/View/Collection.html#redraw-instance'>#redraw</a>
+                <a href='../../classes/View/Collection.html#redraw-instance'>#redraw</a>,
+        <a href='../../classes/View/Collection.html#each-instance'>#each</a>
       </p>
       <h3 class='inherited'>
         Methods inherited from
@@ -277,7 +286,46 @@
       <p class='inherited'>
                 <a href='../../classes/Helper/Mixable.html#extend-class'>.extend</a>,
                 <a href='../../classes/Helper/Mixable.html#include-class'>.include</a>,
-        <a href='../../classes/Helper/Mixable.html#concern-class'>.concern</a>
+                <a href='../../classes/Helper/Mixable.html#concern-class'>.concern</a>,
+                <a href='../../classes/Helper/Mixable.html#extractId-class'>.extractId</a>,
+                <a href='../../classes/Helper/Mixable.html#isLocal-instance'>#isLocal</a>,
+        <a href='../../classes/Helper/Mixable.html#parseDate-class'>.parseDate</a>
+      </p>
+      <h2>
+        <small>Concern Method Summary</small>
+      </h2>
+      <h3 class='included'>
+        Methods mixed in from
+        <a href='../../mixins/Mixin/EventBindings.html'>Mixin.EventBindings</a>
+      </h3>
+      <p class='included'>
+                <a href='../../mixins/Mixin/EventBindings.html#_allowEventBindings-instance'>#_allowEventBindings</a>,
+                <a href='../../mixins/Mixin/EventBindings.html#_unbindAll-instance'>#_unbindAll</a>,
+                <a href='../../mixins/Mixin/EventBindings.html#_bind-instance'>#_bind</a>,
+                <a href='../../mixins/Mixin/EventBindings.html#_unbind-instance'>#_unbind</a>,
+                <a href='../../mixins/Mixin/EventBindings.html#_trigger-instance'>#_trigger</a>,
+                <a href='../../mixins/Mixin/EventBindings.html#_onNotificate-instance'>#_onNotificate</a>,
+        <a href='../../mixins/Mixin/EventBindings.html#_notificate-instance'>#_notificate</a>
+      </p>
+      <h3 class='included'>
+        Methods mixed in from
+        <a href='../../mixins/Mixin/Catcher.html'>Mixin.Catcher</a>
+      </h3>
+      <p class='included'>
+        <a href='../../mixins/Mixin/Catcher.html#catchable-class'>.catchable</a>
+      </p>
+      <h3 class='included'>
+        Methods mixed in from
+        <a href='../../mixins/Mixin/DynamicProperties.html'>Mixin.DynamicProperties</a>
+      </h3>
+      <p class='included'>
+                <a href='../../mixins/Mixin/DynamicProperties.html#setter-instance'>#setter</a>,
+                <a href='../../mixins/Mixin/DynamicProperties.html#getter-instance'>#getter</a>,
+                <a href='../../mixins/Mixin/DynamicProperties.html#property-instance'>#property</a>,
+                <a href='../../mixins/Mixin/DynamicProperties.html#_defineProperty-instance'>#_defineProperty</a>,
+                <a href='../../mixins/Mixin/DynamicProperties.html#_propertiesFromParams-instance'>#_propertiesFromParams</a>,
+                <a href='../../mixins/Mixin/DynamicProperties.html#_nonEnumerableValue-instance'>#_nonEnumerableValue</a>,
+        <a href='../../mixins/Mixin/DynamicProperties.html#_nonEnumerableGetter-instance'>#_nonEnumerableGetter</a>
       </p>
       <h2>Constructor Details</h2>
       <div class='methods'>
@@ -307,7 +355,7 @@
       <div class='methods'>
   <div class='method_details'>
     <p class='signature' id='_catcher-instance'>
-      - (void) <strong>_catcher</strong>(e)
+      - (void) <strong>_catcher</strong>(source, e)
       (bound)
     </p>
     <div class='docstring'>
@@ -538,7 +586,7 @@
     </div>
     <div id='footer'>
   Generated on
-  Sun Jun 02 2013 15:47:57 GMT+0200 (W. Europe Daylight Time)
+  Tue Jun 11 2013 00:05:30 GMT+0200 (W. Europe Daylight Time)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

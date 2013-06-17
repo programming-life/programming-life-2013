@@ -2,11 +2,13 @@
 #
 # @concern Mixin.EventBindings
 # @concern Mixin.Catcher
+# @concern Mixin.DynamicProperties
 #
 class Controller.Base extends Helper.Mixable
 
 	@concern Mixin.EventBindings
 	@concern Mixin.Catcher
+	@concern Mixin.DynamicProperties
 	
 	# Creates the controller
 	#
@@ -50,10 +52,25 @@ class Controller.Base extends Helper.Mixable
 	controller: ( id ) ->
 		return @_children[ id ]
 		
+	# Returns all the controllers
 	#
+	# @return [Array<Controller.Base>] The controllers
 	#
 	controllers: () ->
 		return @_children
+		
+	# Finds the key of a controller
+	# 
+	# @param func [Function] function to evaluate a value
+	# @return [String] the key
+	# 
+	findKey: ( func ) ->
+		result = null
+		if _( @controllers() ).find( ( v, key ) -> 
+					result = key
+					return func v )
+			return result
+		return null
 		
 	# Kills the controler and all subsequent views
 	#
@@ -61,7 +78,7 @@ class Controller.Base extends Helper.Mixable
 	#
 	kill: () ->
 		@removeChild( id, on ) for id, child of @_children
-		@view.kill()
+		@view?.kill()
 		@_unbindAll()
 		return this
 		
