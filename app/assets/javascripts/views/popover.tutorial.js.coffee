@@ -12,7 +12,7 @@ class View.Tutorial extends View.HTMLPopOver
 	# @param model [any] the subject to display stuff for
 	#
 	constructor: ( parent ) ->
-		@message = 'Nope. Start that tutorial first dude!'
+		@messages = 'Nope. Start that tutorial first dude!'
 		@_nextOnEvent = off
 		@_visible = off
 		super parent, 'Tutorial', 'tutorial', 'tutorial'
@@ -57,14 +57,14 @@ class View.Tutorial extends View.HTMLPopOver
 	_createFooter: ( ) ->
 		@_footer = $('<div class="modal-footer"></div>')
 
-		@_cancelButton = $('<button class="btn pull-left" title="Stop the tutorial">' + '<i class="icon-stop"></i> Stop' + '</button>')
-		@_cancelButton.on('click', @_cancel )
+		@_cancelButton = $('<button class="btn pull-left" title="Stop the tutorial">' + '<i class="icon-remove"></i> Stop' + '</button>')
+		@_cancelButton.on( 'click', @_cancel )
 
-		@_backButton = $('<button class="btn" title="Go back to the previous step">' + '<i class="icon-backward"></i> Back' + '</button>')
-		@_backButton.on('click', @_back )
+		@_backButton = $('<button class="btn" title="Go back to the previous step">' + '<i class="icon-chevron-left"></i> Back' + '</button>')
+		@_backButton.on( 'click', @_back )
 		
-		@_nextButton = $('<button class="btn btn-primary" title="Advance to the next step">' + '<i class="icon-forward icon-white"></i> Next' + '</button>')
-		@_nextButton.on('click', @_next )
+		@_nextButton = $('<button class="btn btn-primary" title="Advance to the next step">' + 'Next <i class="icon-chevron-right icon-white"></i>' + '</button>')
+		@_nextButton.on( 'click', @_next )
 
 		@_footer.append @_cancelButton 
 		@_footer.append @_backButton
@@ -74,24 +74,38 @@ class View.Tutorial extends View.HTMLPopOver
 	# Draws the body of the popover
 	#
 	_drawContents: ( ) ->
-		contents = $('<div>' + @message + '</div>')
-		@_body.append contents
+		for message in @messages
+			contents = $('<div>' + message + '</div>')
+			@_body.append contents
 		return contents
 		
 	# Shows the tutorial popover
 	#
-	show: ( callback ) =>
+	show: ( callback, animate = 'top', amount = 10 ) =>
 		elem = $ @_elem
+		value = parseFloat( elem.css( animate ) )
+		properties = {}
+		properties[ 'opacity' ] = .85
+		properties[ animate ] = value
 		elem.css( 'display', 'block' )
-		elem.animate( { opacity: .85 }, 300, callback )
+		elem.css( animate, value + amount )
+		elem.animate( properties, 200, () =>
+			elem.css( animate, value )
+			callback?()
+		)
 		@_visible = on
 		
 	# Hides the tutorial popover
 	#
-	hide: ( callback ) =>
+	hide: ( callback, animate = 'top', amount = 10 ) =>
 		elem = $ @_elem
-		elem.animate( { opacity: 0 }, 300, () => 
+		value = parseFloat( elem.css( animate ) )
+		properties = {}
+		properties[ 'opacity' ] = 0
+		properties[ animate ] = value + amount
+		elem.animate( properties, 200, () => 
 			elem.css( 'display', 'none' )
+			elem.css( animate, value )
 			callback?()
 		)
 		@_visible = off
@@ -102,26 +116,26 @@ class View.Tutorial extends View.HTMLPopOver
 	# @param nextOnEvent [Boolean] if true, wait on event
 	# @returns [self] chainable self
 	#
-	showMessage: ( message, nextOnEvent = off ) ->
-		@message = message
+	showMessage: ( messages, nextOnEvent = off, animate = 'left', amount = 10 ) ->
+		@messages = messages
 		
 		@_nextOnEvent = nextOnEvent
 		@draw()
 		@setPosition()
-		@show()
+		@show( undefined, animate, amount )
 		return this
 		
 	# Progresses to the next event in the tutorial
 	#
 	_back: () =>
 		return unless @_visible
-		@hide( () => @_trigger( 'view.tutorial.back', @, [] ) )
+		@hide( ( () => @_trigger( 'view.tutorial.back', @, [] ) ), 'left', -10 )
 
 	# Progresses to the next event in the tutorial
 	#
 	_next: () =>
 		return unless @_visible
-		@hide( () => @_trigger( 'view.tutorial.next', @, [] ) )
+		@hide( ( () => @_trigger( 'view.tutorial.next', @, [] ) ), 'left' )
 
 	# Cancels the tutorial sequence until it is started again
 	#
