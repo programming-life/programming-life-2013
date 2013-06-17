@@ -9,15 +9,21 @@ Mixin.Nomad =
 	
 	InstanceMethods:
 
-		RepelDistance: 200
-		RepelForce: 4
+		# RepelDistance: 200
+		# RepelForce: 3
+		# _drag: .1
+
+		repelForce: 60
+		repelDistance: 120
+		_drag: .2
+
+		included: ( ) ->
+
 
 		Vector: class Vector
 			constructor: ( @magnitude, @direction)  ->
 
 			add: ( other ) ->
-
-
 				x1 = @magnitude * Math.cos(@direction)
 				y1 = @magnitude * Math.sin(@direction)
 
@@ -61,72 +67,142 @@ Mixin.Nomad =
 
 				return new Vector(distance, direction)
 
-		yolo: ( ) ->
+		distance: ( other ) ->
+			return @migrationLocation.distance(other.migrationLocation)
 
+		direction: ( other ) ->
+			return @migrationLocation.direction(other.migrationLocation)
+
+		to: ( other ) ->
+			return @migrationLocation.to(other.migrationLocation)
+
+		migrate: ( ) ->
 			@startMigration()
 
-			for i in [0...5]
+			iterations = 200
+
+			for i in [0...iterations]
 				@doMigrationLogic()
 				@doMigrationPhysics()
 
 			@finishMigration()
 
-		_drag: .1
-		
-
-		startMigration: ( ) ->			
-			@location = new Point(@x, @y)
-			@_momentum = new Vector(0, 0)
+		startMigration: ( ) ->
+			@migrationLocation = new @Point(@x, @y)			
 			@_forces = []
 
 			view.startMigration() for view in @_views
 
 		doMigrationLogic: ( ) ->
-			@_momentum = new Vector(0, 0)
 
-			for view in @_views
-				for otherView in @_views
-					unless view is otherView
-						distance = view.location.distance(otherView.location)
-						
-						if distance < @RepelDistance
-							fraction = 1 - distance / @RepelDistance
+			# for a in @_views
+			# 	for b in @_views when a isnt b
+			# 		if a.migrationLocation.distance(b.migrationLocation) < @repelDistance and a not instanceof View.Spline and b not instanceof View.Spline
+			# 			fraction = Math.pow(a.migrationLocation.distance(b.migrationLocation) / @repelDistance, 2) + .1
 
-							magnitude = @RepelForce
-							direction = view.location.direction(otherView)
-							force = new Vector(magnitude, direction).multiply(fraction)
+			# 			magnitude = @repelForce * fraction
+			# 			direction = b.migrationLocation.direction(a.migrationLocation)
 
-							otherView.addForce(force)
+			# 			force = new @Vector(magnitude, direction)
+			# 			force = force.multiply(.4) if a.getFullType() is b.getFullType() and a.type is 'Metabolite'
+			# 			a.addForce(force)
 
 			view.doMigrationLogic() for view in @_views
 
-
-		doMigrationPhysics: ( dt = 5 ) ->
+		doMigrationPhysics: ( dt = .1 ) ->
+			@migrationMomentum = new @Vector(0, 0)
 
 			while force = @_forces.pop()
-				@applyForce(force)
+				@_applyForce(force)
 
-			@_momentum = @_momentum.multiply(1 - @_drag)
+			@migrationMomentum = @migrationMomentum.multiply(1 - @_drag)
 
-			dx = @_momentum.magnitude * Math.cos(@_momentum.direction) * dt
-			dy = @_momentum.magnitude * Math.sin(@_momentum.direction) * dt
+			dx = @migrationMomentum.magnitude * Math.cos(@migrationMomentum.direction) * dt
+			dy = @migrationMomentum.magnitude * Math.sin(@migrationMomentum.direction) * dt
 
-			console.log @, @location.x, dx, @location.y, dy
+			x = @migrationLocation.x + dx
+			y = @migrationLocation.y + dy
 
-			x = @location.x + dx
-			y = @location.y + dy
-			@location = new Point(x, y)
+			@migrationLocation = new @Point(x, y)
+			@_forces = []
 
 			view.doMigrationPhysics(dt) for view in @_views
 
 		finishMigration: ( ) ->
-			view.finishMigration() for view in @_views
-			#console.log @x, @y, @location.x, @location.y
-			@moveTo(@location.x, @location.y, on)
+			@moveTo(@migrationLocation.x, @migrationLocation.y, on)
+			
+			for view in @_views
+				( ( view ) ->
+					_.defer( -> view.finishMigration() )
+				) view
 
 		addForce: ( force ) ->
 			@_forces.push(force)
 
-		applyForce: ( force ) ->
-			@_momentum = @_momentum.add(force)
+		_applyForce: ( force ) ->
+			@migrationMomentum = @migrationMomentum.add(force)
+
+
+		# migrate: ( ) ->
+
+		# 	@startMigration()
+
+		# 	for i in [0...5000]
+		# 		@doMigrationLogic()
+		# 		@doMigrationPhysics()
+
+		# 	@finishMigration()		
+
+		# startMigration: ( ) ->			
+		# 	@location = new Point(@x, @y)
+		# 	@_momentum = new Vector(0, 0)
+		# 	@_forces = []
+
+		# 	view.startMigration() for view in @_views
+
+		# doMigrationLogic: ( ) ->
+		# 	@_momentum = new Vector(0, 0)
+
+		# 	for view in @_views
+		# 		for otherView in @_views
+		# 			unless view is otherView
+		# 				distance = view.location.distance(otherView.location)
+						
+		# 				if distance < @RepelDistance
+		# 					fraction = 1 - distance / @RepelDistance
+
+		# 					magnitude = @RepelForce
+		# 					direction = view.location.direction(otherView)
+		# 					force = new Vector(magnitude, direction).multiply(fraction)
+
+		# 					otherView.addForce(force)
+
+		# 	view.doMigrationLogic() for view in @_views
+
+
+		# doMigrationPhysics: ( dt = 5 ) ->
+
+		# 	while force = @_forces.pop()
+		# 		@applyForce(force)
+
+		# 	@_momentum = @_momentum.multiply(1 - @_drag)
+
+		# 	dx = @_momentum.magnitude * Math.cos(@_momentum.direction) * dt
+		# 	dy = @_momentum.magnitude * Math.sin(@_momentum.direction) * dt
+
+		# 	x = @location.x + dx
+		# 	y = @location.y + dy
+		# 	@location = new Point(x, y)
+
+		# 	view.doMigrationPhysics(dt) for view in @_views
+
+		# finishMigration: ( ) ->
+		# 	view.finishMigration() for view in @_views
+		# 	@moveTo(@location.x, @location.y, on)
+
+		# addForce: ( force ) ->
+		# 	@_forces.push(force)
+
+		# applyForce: ( force ) ->
+		# 	@_momentum = @_momentum.add(force)
 

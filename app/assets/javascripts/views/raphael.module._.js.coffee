@@ -50,7 +50,7 @@ class View.Module extends View.RaphaelBase
 			when 'Transporter', 'DNA', 'Lipid', 'CellGrowth', 'Protein'
 				@_drag = 1
 			when 'Metabolism'
-				@_drag = .5
+				@_drag = .7
 		
 	# Adds interaction to the module ( popovers )
 	#
@@ -550,23 +550,155 @@ class View.Module extends View.RaphaelBase
 		return [ enzymOrigCircles, enzymDestCircles ]
 
 	doMigrationLogic: ( ) ->
-		super()
+		radius = 120
 
-		switch @type
-			when 'Transporter'
-				metabolites = [@model.orig, @model.dest]
-			when 'Metabolism'
-				metabolites = @model.orig.concat(@model.dest)
+		if @type is 'Transporter'
 
-		if metabolites? 
-			for metabolite in metabolites
-				view = @_parent.getViewByName(metabolite)
+			# Attract origin metabolite
+			view = @_parent.getViewByName(@model.orig)
 
-				direction = view.location.direction(@location)
-				magnitude = view.location.distance(@location) / 100
+			[x, y] = @getPoint(View.Module.Location.Entrance)
+
+			x += @migrationLocation.x - @x
+			y += @migrationLocation.y - @y
+			target = new @Point(x - radius, y)
+
+			magnitude = 30
+			direction = view.migrationLocation.direction(target)
+
+			force = new @Vector(magnitude, direction)
+			view.addForce(force)
+
+			# Attract destination metabolite
+			view = @_parent.getViewByName(@model.dest)
+
+			[x, y] = @getPoint(View.Module.Location.Exit)
+			x += @migrationLocation.x - @x
+			y += @migrationLocation.y - @y
+
+			target = new @Point(x + radius, y)
+
+			magnitude = 80
+			direction = view.migrationLocation.direction(target)
+
+			force = new @Vector(magnitude, direction)
+			view.addForce(force)
+
+		if @type is 'Metabolism'
+			for orig in @model.orig
+				view = @_parent.getViewByName(orig)
+
+				for other in @model.orig when other isnt orig
+					otherView = @_parent.getViewByName(other)
+
+					magnitude = 30
+					direction = view.direction(otherView)
+
+					force = new @Vector(magnitude, direction)
+					view.addForce(force)
+
+				[x, y] = @getPoint(View.Module.Location.Entrance)
+				x += @migrationLocation.x - @x
+				y += @migrationLocation.y - @y
+
+				angle = Math.atan2(view.migrationLocation.y - y, view.migrationLocation.x - x)
+
+				if angle < Math.PI / 2
+					angle = Math.PI / 2
+				else if angle > 3 * Math.PI / 2
+					angle = 3 * Math.PI / 2 
+
+				targetX = radius * Math.cos(angle) + x
+				targetY = radius * Math.sin(angle) + y
+				target = new @Point(targetX, targetY)
+
+				magnitude = 80
+				direction = view.migrationLocation.direction(target)
+
 				force = new @Vector(magnitude, direction)
 				view.addForce(force)
-				@addForce(force.multiply(-.5))
+				@addForce(force.multiply(-.2))
+
+			for dest in @model.dest
+				view = @_parent.getViewByName(dest)
+
+				unless view?
+					return
+
+				for other in @model.dest when other isnt dest
+					otherView = @_parent.getViewByName(other)
+
+					magnitude = 30
+					direction = view.direction(otherView)
+
+					force = new @Vector(magnitude, direction)
+					view.addForce(force)
+
+				[x, y] = @getPoint(View.Module.Location.Exit)
+				x += @migrationLocation.x - @x
+				y += @migrationLocation.y - @y
+
+				angle = Math.atan2(view.migrationLocation.y - y, view.migrationLocation.x - x)
+
+				if angle > Math.PI / 2 and angle < Math.PI
+					angle = Math.PI / 2
+				else if angle < 3 * Math.PI / 2 and angle > Math.PI
+					angle = 3 * Math.PI / 2 
+
+				targetX = radius * Math.cos(angle) + x
+				targetY = radius * Math.sin(angle) + y
+				target = new @Point(targetX, targetY)
+
+				magnitude = 80
+				direction = view.migrationLocation.direction(target)
+
+				force = new @Vector(magnitude, direction)
+				view.addForce(force)
+				@addForce(force.multiply(-.2))
+
+
+
+		# switch @type
+		# 	when 'Transporter'
+		# 		orig = [@model.orig]
+		# 		dest = [@model.dest]
+
+		# 	when 'Metabolism'
+		# 		orig = @model.orig
+		# 		dest = @model.dest
+
+		# if orig? 
+		# 	for metabolite in orig
+		# 		view = @_parent.getViewByName(metabolite)
+
+		# 		[targetX, targetY] = @getPoint(View.Module.Location.Exit)
+		# 		location = new @Point(targetX + 200, targetY)
+
+		# 		direction = view.migrationLocation.direction(@migrationLocation)
+		# 		magnitude = view.migrationLocation.distance(@migrationLocation) / 20
+
+		# 		force = new @Vector(magnitude, direction)
+
+		# 		view.addForce(force)
+		# 		@addForce(force.multiply(-.3))
+
+		# if dest? 
+		# 	for metabolite in dest
+		# 		view = @_parent.getViewByName(metabolite)
+
+		# 		[targetX, targetY] = @getPoint(View.Module.Location.Entrance)
+		# 		location = new @Point(targetX - 200, targetY)
+
+		# 		direction = view.migrationLocation.direction(@migrationLocation)
+		# 		magnitude = view.migrationLocation.distance(@migrationLocation) / 20
+
+		# 		force = new @Vector(magnitude, direction)
+
+		# 		view.addForce(force)
+		# 		@addForce(force.multiply(-.3))
+
+		super()
+
 
 	# Runs if module is invalidated
 	# 

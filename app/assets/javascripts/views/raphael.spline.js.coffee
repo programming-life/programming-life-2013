@@ -8,6 +8,8 @@ class View.Spline extends View.RaphaelBase
 		Synthesis: 1
 		Consuming: 2
 
+	_drag: 1
+
 	# Creates a new spline
 	# 
 	# @param paper [Raphael.Paper] the raphael paper
@@ -123,14 +125,14 @@ class View.Spline extends View.RaphaelBase
 		if view is @orig
 			@_origDX = dx
 			@_origDY = dy
-			path = @_getPathString(dx, dy, @_destDX, @_destDY)
+			path = @_getPathString(dx, dy, 0, 0)
 		else if view is @dest
 			@_destDX = dx
 			@_destDY = dy
-			path = @_getPathString(@_origDX, @_origDY, dx, dy)
+			path = @_getPathString(0, 0, dx, dy)
 
 		if path?
-			@_contents?.stop()
+			#@_contents?.stop()
 			@_contents?.animate
 				path: path
 			, dt, ease

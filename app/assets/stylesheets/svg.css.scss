@@ -106,7 +106,7 @@ rect, circle:not(.cell) {
 .module-box {
 	stroke: rgba(0, 0, 0, .2);	
 	stroke-width: 1px;
-	fill: rgba( 255, 255, 255, 1 );
+	fill: rgba( 255, 255, 255, .8 );
 	opacity: 1;
 
 	-webkit-transition: all 0.3s ease-in-out;
@@ -197,7 +197,7 @@ text, tspan {
 
 [class*='-substrate-circle'] {
 	stroke-width: 1px;
-	stroke:rgba(0, 0, 0, .5);
+	stroke:rgba(0, 0, 0, .3);
 }
 
 [class*='-substrate-sector'] {

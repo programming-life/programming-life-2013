@@ -27,6 +27,11 @@ class View.Cell extends View.RaphaelBase
 		@_defineAccessors()
 		@model = cell
 
+		$(window).keyup( ( event ) =>
+			if event.keyCode is 65
+				@migrate()
+		)
+
 		
 	# Defines the accessors for this view
 	#
@@ -278,25 +283,112 @@ class View.Cell extends View.RaphaelBase
 		return [x, y]
 
 	doMigrationLogic: ( ) ->
-		super()
+		margin = 200
 
 		for view in @_views
+
+			for otherView in @_views when view isnt otherView
+
+				distance = view.distance(otherView)
+				
+				# Push others away when they're too close
+				if distance < margin
+					fraction = distance / margin
+
+					magnitude = 200 * (1 - fraction)
+					direction = view.direction(otherView)
+
+					force = new @Vector(magnitude, direction)
+					otherView.addForce(force)
+
+				# Attract others of the same type
+				if view.getFullType() is otherView.getFullType() and view.type is 'Metabolite'
+					magnitude = 40
+					direction = view.direction(otherView)
+
+					force = new @Vector(magnitude, direction)
+					view.addForce(force)
+			
+				if view.getFullType() is otherView.getFullType() and view.type is 'Metabolism'
+					magnitude = 15
+					direction = view.direction(otherView)
+
+					force = new @Vector(magnitude, direction)
+					otherView.addForce(force)
+
+			target = null
+			# Add a force toward target positions
 			switch view.getFullType()
-				when 'Metabolite-substrate-outside'
-					target = new @Point(@x - @_radius - 300, 0)
-				when'Metabolite-substrate-inside', 'Metabolite-product-inside', 'Metabolism'
+				when 'Metabolite-substrate-outside', 'Metabolite-product-outside'
+					angle = Math.atan2(view.migrationLocation.y - @y, view.migrationLocation.x - @x)
+					targetX = (@_radius + 150) * Math.cos(angle)
+					targetY = (@_radius + 150) * Math.sin(angle)
+
+					target = new @Point(targetX, targetY)
+					force = view.migrationLocation.to(target)
+					view.addForce(force)
+					
+
+				when 'Metabolite-substrate-inside', 'Metabolite-product-inside'
+					angle = Math.atan2(view.migrationLocation.y - @y, view.migrationLocation.x - @x)
+					targetX = (@_radius - 150) * Math.cos(angle)
+					targetY = (@_radius - 150) * Math.sin(angle)
+
+					target = new @Point(targetX, targetY)
+					force = view.migrationLocation.to(target)
+					view.addForce(force)
+
+				when 'Metabolism'
 					target = new @Point(@x, @y)
-				when 'Metabolite-product-outside'
-					target = new @Point(@x + @_radius + 300, 0)
+
+					magnitude = 40
+					direction = view.migrationLocation.direction(target)
+					
+					force = new @Vector(magnitude, direction)
+					view.addForce(force)
 
 			if target
-				fraction = view.location.distance(target) / 100
-
-				magnitude = 1 * fraction
-				direction = view.location.direction(target)
+				magnitude = 20
+				direction = view.migrationLocation.direction(target)
 
 				force = new @Vector(magnitude, direction)
-				view.addForce(force)
+				#view.addForce(force)
+
+
+			# switch view.getFullType()
+			# 	when 'Metabolite-substrate-outside', 'Metabolite-product-outside'
+
+			# 		angle = Math.atan2(view.migrationLocation.y - @y, view.migrationLocation.x - @x)
+			# 		targetX = (@_radius + 200) * Math.cos(angle)
+			# 		targetY = (@_radius + 200) * Math.sin(angle)
+			# 		target = new @Point(targetX, targetY)
+
+
+
+			# 	when 'Metabolite-substrate-inside', 'Metabolite-product-inside'
+			# 		angle = Math.atan2(view.migrationLocation.y - @y, view.migrationLocation.x - @x)
+			# 		targetX = (@_radius - 300) * Math.cos(angle)
+			# 		targetY = (@_radius - 300) * Math.sin(angle)
+			# 		target = new @Point(targetX, targetY)
+
+			# 	when 'Metabolism'
+			# 		target = new @Point(@x, @y + @_radius / 3)
+			# 	# when 'Metabolite-product-outside'
+			# 	# 	target = new @Point(@x + @_radius + 300, 0)
+
+			# if target
+			# 	#fraction = view.migrationLocation.distance(target) / 50
+
+			# 	magnitude = 6
+			# 	direction = view.migrationLocation.direction(target)
+
+			# 	force = new @Vector(magnitude, direction)
+			# 	view.addForce(force)
+
+			
+
+		super()
+
 	
 
 	# On spline added, add it to the cell and draw
