@@ -23,20 +23,47 @@ class Controller.Tutorial extends Controller.Base
 		
 		# Automagic/Previews
 		CreatePrecursors: 8
+		
+	#
+	#
+	@Group:
+		Start: 		[ 'Start' ]
+		Finished: 	[ 'Finished' ]
+		
+		Inspecting:	[ 'OverviewHover', 'OverviewSelect', 'OverviewClose', 'OverviewEnd' ]
+		Adding: 	[ 'CreateDummy', 'CreatedAutomagic', 'ModuleDelete' ]
+		Automagic:	[ 'CreatePrecursors' ]
+		
+	#
+	#
+	@Order: [
+		'Start'
+		'Inspecting'
+		'Adding'
+		'Automagic'
+		'Finished'
+		]
+	
+	#
+	#
+	@Title:
+		Inspecting: 'Inspecting modules'
+		Adding: 'Adding modules'
+		Automagic: 'Precursors and Previews'
 
 	# Creates a new instance of Tutorial
 	#
 	# @param parent [Controller.Main] the main controller
 	# @param view [View.Tutorial] the view for this controller
 	#
-	constructor: ( @parent, view ) ->
-	
+	constructor: ( @parent, view ) ->	
 		parent =
 			getAbsolutePoint: ( location ) ->
 				return [ $( window ).width() - 20, 20 ]
 			
 		@_canceled = locache.get( 'tutorial.cancelled' ) ? off
 		@_step = locache.get( 'tutorial.at' ) ? Tutorial.Step.Start
+		@InverseStep = _( Tutorial.Step ).invert() 
 	
 		super view ? ( new View.Tutorial parent )
 		
@@ -63,10 +90,32 @@ class Controller.Tutorial extends Controller.Base
 		@_unbindFor @_step
 		@_step = step
 		locache.async.set( 'tutorial.at', @_step )
+		title = @_getTitle @_step
 		message = @_getMessage @_step
 		nextOnEvent = @_bindFor @_step
 		@view.showMessage( message, nextOnEvent, animate, amount )
 
+	# Gets the title for a step
+	#
+	# @param step [Integer] the step
+	# @return [String] the title
+	# 
+	_getTitle: ( step ) ->
+		name = @InverseStep[ step ]
+		return Tutorial.Title[ @_getGroupKey name ] ? 'Tutorial'
+			
+	# Gets the pgoress for this step
+	#
+	_getProgress: ( step ) ->
+		name = @InverseStep[ step ]
+		group = Tutorial.Group[ @_getGroupKey name ]
+		result = null
+		if _( group ).find( ( _name, index ) -> 
+			result = index
+			return name is _name  )
+			return [ index, group.length ]
+		return [ '?', group.length ]
+		
 	#
 	#
 	#
@@ -130,7 +179,6 @@ class Controller.Tutorial extends Controller.Base
 	#
 	#
 	_OverviewHoverTest: ( view, event, state ) =>
-		console.log 'hover', arguments
 		return unless state
 		if view instanceof View.Module and view.model instanceof Model.CellGrowth
 			@view.hide( ( () => @_nextStep( @_getNextStep( @_step ) ) ), 'left', 10 )
@@ -139,7 +187,6 @@ class Controller.Tutorial extends Controller.Base
 	#
 	#
 	_OverviewSelectTest: ( view, event, state ) =>
-		console.log 'selected', arguments
 		return unless state
 		if view instanceof View.Module and view.model instanceof Model.CellGrowth
 			@view.hide( ( () => @_nextStep( @_getNextStep( @_step ) ) ), 'left', 10 )
@@ -148,88 +195,95 @@ class Controller.Tutorial extends Controller.Base
 	#
 	#
 	_OverviewCloseTest: ( view, event, state ) =>
-		console.log 'close', arguments
 		return if state
 		if view instanceof View.Module and view.model instanceof Model.CellGrowth
 			@view.hide( ( () => @_nextStep( @_getNextStep( @_step ) ) ), 'left', 10 )
 			
+	# Gets the next step
 	#
+	# @param step [Integer] the current step
+	# @return [Integer] the next step
 	#
 	_getNextStep: ( step ) ->
-		switch step
-			when Tutorial.Step.Start
-				return Tutorial.Step.OverviewHover
-				
-			# Inspecting modules
-			when Tutorial.Step.OverviewHover
-				return Tutorial.Step.OverviewSelect
-			when Tutorial.Step.OverviewSelect
-				return Tutorial.Step.OverviewClose
-			when Tutorial.Step.OverviewClose
-				return Tutorial.Step.OverviewEnd
-			when Tutorial.Step.OverviewEnd
-				return Tutorial.Step.CreateDummy
-				
-			# Adding module
-			when Tutorial.Step.CreateDummy
-				return Tutorial.Step.CreatedAutomagic
-			when Tutorial.Step.CreatedAutomagic
-				return Tutorial.Step.ModuleDelete
-			when Tutorial.Step.ModuleDelete
-				return Tutorial.Step.CreatePrecursors
-				
-			# Previews / Automagic
-			when Tutorial.Step.CreatePrecursors
-				return Tutorial.Step.Finished
+		name = @InverseStep[ step ]
+		group_key = @_getGroupKey name
+		group = Tutorial.Group[ group_key ]
+		result = null
+		if _( group ).find( ( _name, index ) -> 
+			result = index
+			return name is _name  )
+			if group.length > result + 1
+				return Tutorial.Step[ group[ result + 1] ]
+			return Tutorial.Step[ _( @_getNextGroup( group_key ) ).first() ]
 			
-			# Changing module
-			
-			# Simulate 
-			
-			# Save
-			
-			# Load
-			
-			# Settings
-				
-			when Tutorial.Step.Finished
-				return Tutorial.Step.Start
-				
 		return step
 		
+	# Gets the next group
 	#
+	# @param group_key [String] the current group key
+	# @return [Array<String>] the next group 
+	#
+	_getNextGroup: ( group_key ) ->
+		result = null
+		if _( Tutorial.Order ).find( ( _group, index ) -> 
+			result = index
+			return group_key is _group  )
+			if Tutorial.Order.length > result + 1
+				return Tutorial.Group[ Tutorial.Order[ result + 1 ] ]
+			return Tutorial.Group[ _( Tutorial.Order ).first() ]
+		return Tutorial.Group[ group_key ]
+		
+	# Gets the previous step
+	#
+	# @param step [Integer] the current step
+	# @return [Integer] the previous step
 	#
 	_getBackStep: ( step ) ->
-		switch step
-			when Tutorial.Step.Start
-				return Tutorial.Step.Finished
-				
-			# Inspeciting module
-			when Tutorial.Step.OverviewHover
-				return Tutorial.Step.Start	
-			when Tutorial.Step.OverviewSelect
-				return Tutorial.Step.OverviewHover
-			when Tutorial.Step.OverviewClose
-				return Tutorial.Step.OverviewSelect
-			when Tutorial.Step.OverviewEnd	
-				return Tutorial.Step.OverviewClose
-				
-			# Adding module
-			when Tutorial.Step.CreateDummy
-				return Tutorial.Step.OverviewEnd
-			when Tutorial.Step.CreatedAutomagic
-				return Tutorial.Step.CreateDummy
-			when Tutorial.Step.ModuleDelete
-				return Tutorial.Step.CreatedAutomagic
-				
-			# Previews / Automagic
-			when Tutorial.Step.CreatePrecursors
-				return Tutorial.Step.ModuleDelete
-			when Tutorial.Step.Finished
-				return Tutorial.Step.CreatePrecursors
+		name = @InverseStep[ step ]
+		group_key = @_getGroupKey name
+		group = Tutorial.Group[ group_key ]
+		result = null
+		if _( group ).find( ( _name, index ) -> 
+			result = index
+			return name is _name  )
+			if result > 0
+				return Tutorial.Step[ group[ result - 1 ] ]
+			return Tutorial.Step[ _( @_getBackGroup( group_key ) ).last() ]
+			
 		return step
-	
+		
+	# Gets the previous group
 	#
+	# @param group_key [String] the current group key
+	# @return [Array<String>] the previous group 
+	#
+	_getBackGroup: ( group_key ) ->
+		result = null
+		if _( Tutorial.Order ).find( ( _group, index ) -> 
+			result = index
+			return group_key is _group  )
+			if result > 0
+				return Tutorial.Group[ Tutorial.Order[ result - 1 ] ]
+			return Tutorial.Group[ _( Tutorial.Order ).last() ]
+		return Tutorial.Group[ group_key ]
+
+	# Gets the group key for a step name
+	#
+	# @param name [String] the step name/key
+	# @return [String] the group name/key
+	#
+	_getGroupKey: ( name ) ->
+		result = null
+		if _( Tutorial.Group ).find( ( group, key ) -> 
+			result = key
+			return name in group  )
+			return result
+		return null
+		
+	# Binds events for the step
+	#
+	# @param step [Integer] the step id
+	# @return [Boolean] true if something was bound
 	#
 	_bindFor: ( step ) =>
 		switch step
@@ -246,7 +300,10 @@ class Controller.Tutorial extends Controller.Base
 			else 
 				return off
 		
+	# Unbinds events for the step
 	#
+	# @param step [Integer] the step id
+	# @return [Boolean] true if something was unbound
 	#
 	_unbindFor: ( step ) =>
 		switch step
@@ -262,7 +319,7 @@ class Controller.Tutorial extends Controller.Base
 			else 
 				return off
 		
-	#
+	# Shows the view
 	#
 	show: ( ) ->
 		return unless @_canceled or not @view.visible
