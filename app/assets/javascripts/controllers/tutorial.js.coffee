@@ -78,7 +78,7 @@ class Controller.Tutorial extends Controller.Base
 					'<p>It seems like this is your first time here. Let me guide you through the process of creating your first cell.</p>'
 					'<p>At any time you can cancel the tutorial by pressing the close button or the &times; mark in the top right corner. To resume, simply press the <i class="icon-question-sign"></i>.</p>'
 					'<p>You can also minimize the tutorial by pressing <i class="icon-minus"></i>. Complete your task or press the <i class="icon-question-sign"></i> to resume.</p>'
-					'<p>Let' + "'" + 's start! Press the <span class="badge badge-inverse"><i class="icon-chevron-right"></i></span> button.</p>'
+					'<p>Let' + "'" + 's start! Press the <span class="badge badge-inverse"><i class="icon-chevron-right icon-white"></i></span> button.</p>'
 				]
 			
 			when Tutorial.Step.OverviewHover
@@ -102,7 +102,7 @@ class Controller.Tutorial extends Controller.Base
 					'<p>This is how we can edit the properties of a module. All the information has turned editable, except for the name.</p>'
 					'<p class="alert alert-warning">Once a module is named, <b>its name is fixed</b>. Recreate the module if you want to change the name.</p>'
 					'<p>I still think this module needs some company. There is a button below the popover that I can not quite see.</p>'
-					'<p class="alert alert-info"><b>Close the popover</b>, by clicking the <span class="badge badge-inverse">&times;</span> button or clicing the module again.</p>'
+					'<p class="alert alert-info"><b>Close the Cell Growth popover</b>, by clicking the <span class="badge badge-inverse">&times;</span> button or clicing the module again.</p>'
 				]
 				
 			when Tutorial.Step.OverviewEnd
@@ -234,6 +234,7 @@ class Controller.Tutorial extends Controller.Base
 	_bindFor: ( step ) =>
 		switch step
 			when Tutorial.Step.OverviewHover
+				@parent.view.hidePanes()
 				@_bind( 'view.module.hovered', @, @_OverviewHoverTest )
 				return on
 			when Tutorial.Step.OverviewSelect
