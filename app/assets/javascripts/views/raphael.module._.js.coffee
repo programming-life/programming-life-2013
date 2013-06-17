@@ -417,9 +417,12 @@ class View.Module extends View.RaphaelBase
 		
 		$(hitbox.node).off( 'mouseenter' ).off( 'mouseleave' ).off( 'click' )
 		
-		$(hitbox.node).on( 'mouseenter', ( event ) => @_trigger( 'view.module.hovered', @, @, [ event, on ] ) )
-		$(hitbox.node).on( 'mouseleave', ( event ) => @_trigger( 'view.module.hovered', @, @, [ event, off ] ) )
-		$(hitbox.node).on( 'click', ( event ) => @_trigger( 'view.module.selected', @, @, [ event, undefined ] ) )
+		$(hitbox.node).on( 'mouseenter', ( event ) => @_trigger( 'view.module.hovered', @, [ event, on ] ) )
+		$(hitbox.node).on( 'mouseleave', ( event ) => @_trigger( 'view.module.hovered', @, [ event, off ] ) )
+		$(hitbox.node).on( 'click', ( event ) => 
+			@_trigger( 'view.module.select', @, [ event, not @_selected ] ) 
+			@_trigger( 'view.module.selected', @, [ event, not @_selected ] ) 
+		)
 		return hitbox
 
 	# Draw the processing arrow
