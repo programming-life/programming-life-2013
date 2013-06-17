@@ -39,7 +39,7 @@ class Controller.Main extends Controller.Base
 		@addChild 'cell', new Controller.Cell( @view.paper, @view, @cellFromCache( 'main.cell' ) )
 		@addChild 'graphs', new Controller.Graphs( "#graphs" )
 		@addChild 'undo', new Controller.Undo( @timemachine )
-		@addChild 'tutorial', new Controller.Tutorial( @view )
+		@addChild 'tutorial', new Controller.Tutorial( this )
 
 		# Child Views
 		@view.add @controller('cell').view
