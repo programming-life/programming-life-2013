@@ -74,9 +74,12 @@ class View.DummyModule extends View.RaphaelBase
 		
 		# Draw hitbox
 		hitbox = @drawHitbox( @_box )
-		$( hitbox.node ).on( 'mouseenter', ( event ) => @_trigger( 'view.module.hovered', @, @, [ event, on ] ) )
-		$( hitbox.node ).on( 'mouseleave', ( event ) => @_trigger( 'view.module.hovered', @, @, [ event, off ] ) )
-		$( hitbox.node ).on( 'click', ( event ) => @_trigger( 'view.module.selected', @, @, [ event, undefined ] ) )
+		$( hitbox.node ).on( 'mouseenter', ( event ) => @_trigger( 'view.module.hovered', @, [ event, on ] ) )
+		$( hitbox.node ).on( 'mouseleave', ( event ) => @_trigger( 'view.module.hovered', @, [ event, off ] ) )
+		$( hitbox.node ).on( 'click', ( event ) => 
+			@_trigger( 'view.module.select', @, [ event, not @_selected ] ) 
+			@_trigger( 'view.module.selected', @, [ event, not @_selected ] ) 
+		)
 		
 		@_contents.push hitbox
 		@_contents.push contents

@@ -293,29 +293,4 @@ class View.Cell extends View.RaphaelBase
 		
 		@_splines.push spline
 		spline.draw()
-
-	# On spline removed, remove it from the cell and kill it
-	# 
-	# @param spline [View.Spline] spline removed
-	#
-	removeSpline: ( spline ) =>
-		@_splines = _( @_splines ).without spline
-		spline.kill()
 	
-	# Creates or removes a preview view for a module
-	#
-	# @param source [Model.View] The source of the preview request
-	# @param module [Model.Module] The module that needs to be previewed
-	# @param selected [boolean] The selected state of the module view
-	#
-	previewModule: ( source, module, selected ) ->
-		if source is @
-			if selected
-				preview = new View.ModulePreview( @_paper, @, @model, module, off )
-				@add preview
-			else
-				preview = @getView( module )
-				if preview
-					@remove preview
-					@_trigger "module.preview.ended", preview
-			return preview

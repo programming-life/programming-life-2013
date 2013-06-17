@@ -99,3 +99,30 @@
 		}
 	}
 }
+
+.tutorial {
+	width: 350px;
+	max-width: 350px;
+	line-height: 24px;
+	
+	p {
+		line-height: 24px;
+	}
+		
+	&.active {
+		display: block;
+		opacity: .75;
+		
+		&:hover {
+			opacity: .9;
+		}
+	}
+}
+
+.close {
+	margin-left: 10px;
+	
+	i {
+		vertical-align: baseline;
+	}
+}

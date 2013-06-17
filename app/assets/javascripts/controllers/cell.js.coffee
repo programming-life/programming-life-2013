@@ -256,7 +256,6 @@ class Controller.Cell extends Controller.Base
 						else
 							skip.push index
 						
-				console.log ts, cell_run.from, cell_run.to
 				datasets = {}			
 				for key, value of mapping
 					xs = _( ts ).clone()

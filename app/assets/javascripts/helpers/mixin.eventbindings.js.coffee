@@ -81,8 +81,8 @@ Mixin.EventBindings =
 			bound_source = source
 			@_bind( 'notification', context, 
 				( caller, source, args... ) -> 
-					if source is bound_source
-						callback.apply( context, [ caller, source ].concat( args ) )
+					if source is undefined or source is bound_source
+						callback.apply( context, [ caller, bound_source ].concat( args ) )
 			)	
 			
 		# Notificates all listeners

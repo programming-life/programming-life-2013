@@ -9,7 +9,8 @@
 				:action => 'simulate',
 				:toggle => 'button',
 				'toggle-text' => '<i class="icon-stop icon-white"></i> Simulating...',
-			} 
+			} ,
+			:title => "Simulate the system of Ordinary Differential Equations"
 		%>
 		
 		<%= f.button '<i class="icon-download"></i> Load'.html_safe, 
@@ -19,7 +20,8 @@
 				'loading-text' => '<i class="icon-download"></i> Loading...',
 				'success-text' => '<i class="icon-download icon-white"></i> Load',
 				'error-text' => '<i class="icon-download icon-white"></i> Error while loading!' 
-			} 
+			} ,
+			:title => "Load this cell"
 		%>
 				
 		<div class="btn-group">
@@ -30,12 +32,13 @@
 					'loading-text' => '<i class="icon-upload"></i> Saving...',
 					'success-text' => '<i class="icon-upload icon-white"></i> Save',
 					'error-text' => '<i class="icon-upload icon-white"></i> Error while saving!' 
-				} 
+				},
+				:title => "Save this cell"
 			%>
 			<button class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
 			<ul class="dropdown-menu bottom-up">
-				<li><a href="#" data-action="save" aria-hidden="true" ><i class="icon-circle-arrow-up"></i> Save</a></li>
-				<li><a href="#" data-action="saveAs" aria-hidden="true" ><i class="icon-plus-sign"></i> Save As</a></li>
+				<li><a href="#" data-action="save" aria-hidden="true" title="Save this cell" ><i class="icon-circle-arrow-up"></i> Save</a></li>
+				<li><a href="#" data-action="saveAs" aria-hidden="true" title="Save this cell as a copy" ><i class="icon-plus-sign"></i> Save As</a></li>
 			</ul>
 		</div>
 		<%= f.text_field :name, :class => "", :value => '', :placeholder => 'Cell Name' %>
@@ -46,17 +49,26 @@
 				'loading-text' => '<i class="icon-list-alt"></i> Generating...',
 				'success-text' => '<i class="icon-list-alt icon-white"></i> Report',
 				'error-text' => '<i class="icon-list-alt icon-white"></i> Error while generating!' 
-			} 
+			},
+			:title => "Generate a report"
 		%>
 		<div class="pull-right">
-		<%= f.button '<i class="icon-wrench icon-white"></i>'.html_safe, 
-			:class => "btn btn-warning", :value => 'reset', :type => 'button', 
-			:data => { :action => 'options' } 
+		<%= f.button '<i class=" icon-question-sign	 icon-white"></i>'.html_safe, 
+			:class => "btn btn-info", :value => 'reset', :type => 'button', 
+			:data => { :action => 'help' }, 
+			:title => "Show the tutorial"
 		%>
 		
+		<%= f.button '<i class="icon-wrench icon-white"></i>'.html_safe, 
+			:class => "btn btn-warning", :value => 'reset', :type => 'button', 
+			:data => { :action => 'options' },
+			:title => "Change the settings for the virtual cell and its simulation"
+		%>
+
 		<%= f.button '<i class="icon-remove-circle icon-white"></i> Reset'.html_safe, 
 			:class => "btn btn-warning", :value => 'reset', :type => 'button', 
-			:data => { :action => 'reset' } 
+			:data => { :action => 'reset' },
+			:title => "Reset the virtual cell. Removes all modules, parameters and settings"
 		%>
 		</div>
 	</div>
