@@ -20,7 +20,7 @@ class View.LoadModal extends View.HTMLModal
 	#
 	_createFooter: () ->
 		footer = $ '<div class="modal-footer"></div>'
-		only_local = $ '<button id="origin-local-button" class="btn pull-left" data-toggle="button" aria-hidden="true"><i class="icon-download-alt"></i> Show local cache</button>'
+		only_local = $ '<button id="origin-local-button" class="btn pull-left" data-toggle="button" aria-hidden="true" title="Switch between local cache and server list"><i class="icon-download-alt"></i> Show local cache</button>'
 		only_local.click( () =>
 			$( '#cells-list' ).find( '[data-origin]' ).toggle()
 		)
@@ -28,7 +28,7 @@ class View.LoadModal extends View.HTMLModal
 		@offClose( @, @_resetButton )
 		@onClose( @, @_resetButton )
 		
-		cancel_button = $ '<button class="btn" data-dismiss="modal" data-action="cancel" aria-hidden="true"><i class="icon-remove"></i> Cancel</button>'
+		cancel_button = $ '<button class="btn" data-dismiss="modal" data-action="cancel" aria-hidden="true" title="Close this window and cancel loading"><i class="icon-remove"></i> Cancel</button>'
 		footer.append only_local
 		footer.append cancel_button
 		return [ footer, cancel_button, only_local ]
@@ -66,7 +66,7 @@ class View.LoadModal extends View.HTMLModal
 						
 				else
 					row = $ '<tr class="server" data-origin="server"></tr>'
-					row.append $ "<td colspan='3'>No server cells to show. Try local storage.</td>"
+					row.append $ "<td colspan='3'><div class='alert alert-warning'>No server cells to show. Try local storage.</div></td>"
 					tbody.append row
 				
 				table.append thead
@@ -93,18 +93,15 @@ class View.LoadModal extends View.HTMLModal
 			row.append ( time = $ "<td></td>" )
 			time.append @_parseDate cell.updated_at ? cell.creation
 			
-			# The load button
-			load_button = $ '<button class="btn btn-primary" data-dismiss="modal" data-action="load" aria-hidden="true" data-id="' + cell.id + '"><i class="icon-download icon-white"></i> Load</button>'
-			
 			# The load actions
 			load_group  = $ '<div class="btn-group"></div>'
-			load_group.append( load_button = $ '<button class="btn btn-primary" aria-hidden="true" data-id="' + cell.id + '" data-dismiss="modal" data-action="load"><i class="icon-circle-arrow-down icon-white"></i> Load</button></button>' )
+			load_group.append( load_button = $ '<button class="btn btn-primary" aria-hidden="true" data-id="' + cell.id + '" data-dismiss="modal" data-action="load" title="Load this cell"><i class="icon-circle-arrow-down icon-white"></i> Load</button></button>' )
 			
 			load_group.append( load_caret = $ '<button class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>' )
 			load_group.append( load_dropdown = $ '<ul class="dropdown-menu"></ul>' )
 			
-			load_dropdown.append( load_action = $ '<li><a href="#" data-dismiss="modal" data-action="load" aria-hidden="true" data-id="' + cell.id + '" ><i class="icon-circle-arrow-down"></i> Load</a></li>' )
-			load_dropdown.append( clone_action = $ '<li><a href="#" data-dismiss="modal" data-action="clone" aria-hidden="true" data-id="' + cell.id + '" ><i class="icon-plus-sign"></i> Clone</a></li>' )
+			load_dropdown.append( load_action = $ '<li><a href="#" data-dismiss="modal" data-action="load" aria-hidden="true" data-id="' + cell.id + '" ><i class="icon-circle-arrow-down" title="Load this cell"></i> Load</a></li>' )
+			load_dropdown.append( clone_action = $ '<li><a href="#" data-dismiss="modal" data-action="clone" aria-hidden="true" data-id="' + cell.id + '" title="Clone this cell and load the clone"><i class="icon-plus-sign"></i> Clone</a></li>' )
 			#load_dropdown.append( merge_action = $ '<li><a href="#" data-dismiss="modal" data-action="merge" aria-hidden="true" data-id="' + cell.id + '" ><i class="icon-random"></i> Merge</a></li>' )
 			
 			# The load data set action
