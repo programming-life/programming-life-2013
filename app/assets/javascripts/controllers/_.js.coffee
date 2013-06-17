@@ -95,6 +95,7 @@ class Controller.Base extends Helper.Mixable
 	# Runs when the user has unloaded the page
 	#
 	onUnload: () ->
+		@each( ( child ) -> child.onUnload() )
 		return undefined
 		
 	# Catcher for the cell controller errors
