@@ -102,7 +102,6 @@ class View.DummyModule extends View.RaphaelBase
 		else
 			done()
 			
-		console.log 'hide'
 		return this
 		
 	# Shows this view
@@ -110,7 +109,6 @@ class View.DummyModule extends View.RaphaelBase
 	show: ( animate = on ) ->
 		done = ( ) =>
 			@_visible = on
-			console.log 'done'
 
 		@setPosition off
 
@@ -125,7 +123,6 @@ class View.DummyModule extends View.RaphaelBase
 			@_contents.show()
 			done()
 
-		console.log 'show'
 		return this
 		
 	# Returns the full type of this view's module.
