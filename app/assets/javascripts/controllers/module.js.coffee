@@ -24,6 +24,7 @@ class Controller.Module extends Controller.Base
 	# Create bindings for the buttons
 	#
 	_createBindings: () ->
+		@_bind( 'view.module.select', @view, @_setSelect )
 		@_bind( 'view.module.selected', @view, @_setSelected )
 		@_bind( 'view.module.hovered', @view, @_setHovered )
 		@_bind( 'view.module.removed', @view, @_setRemoved )
@@ -67,6 +68,13 @@ class Controller.Module extends Controller.Base
 		@view.createSplines module, on
 		return this
 		
+	#
+	#
+	_setSelect: ( view, event, state = not @_selected ) =>
+		if view is @view
+			@_parent.view.removePreviews()
+			
+		
 	# Runs when view is selected or deselected
 	#
 	# @param view [View.Module] the view selected
@@ -74,9 +82,9 @@ class Controller.Module extends Controller.Base
 	# @param state [Boolean] the selection state
 	#
 	_setSelected: ( view, event, state = not @_selected ) =>
-		if state is off
+		if view is @view and not state
 			@_parent.view.removePreviews()
-				
+			
 		if view is @view and state
 			@_parent.automagicAdd @model, on
 			@view.createSplines @model, on
