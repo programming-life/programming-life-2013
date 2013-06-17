@@ -147,6 +147,10 @@ class View.Graph extends View.RaphaelBase
 			@_columnText.append node
 	
 	# Shows a column
+	#
+	# @param xFactor [Float] The relative location of the column to the width of the graph
+	# @param text [String] The text to show for the column
+	#
 	showColumn: ( xFactor , text ) ->
 		x = (@_width - Graph.AXISPADDING) * xFactor + Graph.AXISPADDING
 
