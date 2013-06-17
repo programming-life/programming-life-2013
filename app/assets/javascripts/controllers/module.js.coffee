@@ -25,6 +25,7 @@ class Controller.Module extends Controller.Base
 	#
 	_createBindings: () ->
 		@_bind( 'view.module.selected', @view, @_setSelected )
+		@_bind( 'view.undo.node.selected', @view, @_setSelected )
 		@_bind( 'view.module.hovered', @view, @_setHovered )
 		@_bind( 'view.module.removed', @view, @_setRemoved )
 		@_bind( 'view.module.saved', @view, @_setChanged )
