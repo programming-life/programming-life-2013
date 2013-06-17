@@ -17,12 +17,14 @@ class Controller.Graph extends Controller.Base
 	
 		@_datasets = []
 		@_automagically = on
-
+		@_xMax = 0
 		@_createBindings()
 
+	# Create event bindings
+	#
 	_createBindings: ( ) ->
 		@_bind "view.graph.hover", @, @_onGraphHover
-		
+
 	# Add a dataset to visualize in this graphs
 	#
 	# @param data [Array] An array of datapoints
@@ -30,6 +32,8 @@ class Controller.Graph extends Controller.Base
 	#
 	add: ( data ) ->
 		@_datasets.unshift data
+		xMax = _(data.xValues).last()
+		@_xMax = xMax if xMax > @_xMax
 		return @
 	
 	# Append a dataset to the most recently added dataset
@@ -46,6 +50,9 @@ class Controller.Graph extends Controller.Base
 
 		newest.xValues.push data.xValues...
 		newest.yValues.push data.yValues...
+
+		xMax = _(data.xValues).last()
+		@_xMax = xMax if xMax > @_xMax
 		return @
 		
 	# Shows a dataset in the graph view
@@ -64,19 +71,26 @@ class Controller.Graph extends Controller.Base
 	
 	_onGraphHover:( graph, xFactor ) ->
 		unless graph is @
-			dataset = _(@_datasets).first().xValues
-			index = Math.round(xFactor * (dataset.length - 1))
-			xData = dataset[index]
-			@_parent.showColumnData( xData )
+			@_parent.showColumnData( xFactor )
 	
-	showColumnData: ( xData ) ->
-		dataset = _(@_datasets).first().xValues
-		xFactor = (xData- _( dataset ).first()) / (_( dataset ).last() - _(dataset).first())
+	# Shows the column data of the column at the relative location
+	#
+	# @param xFactor [Float] The relative location of the column to the width of the graph
+	#
+	showColumnData: ( xFactor ) ->
+		dataset = _(@_datasets).first()
+
+		xValue = @_xMax * xFactor
+
+		# Set new xFactor so the line is only drawn on steps
+		#xFactor = dataset.xValues[index] / max
 
 		text = []
 		for dataset in @_datasets
-			index = Math.round(xFactor * (dataset.yValues.length - 1))
-			yData = dataset.yValues[index]
-			text.push yData
+			for index, value of dataset.xValues
+				break if value > xValue
+			if value > xValue
+				yData = dataset.yValues[index]
+				text.push yData
 
 		@view.showColumn( xFactor, text )

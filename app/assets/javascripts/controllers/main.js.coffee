@@ -39,6 +39,7 @@ class Controller.Main extends Controller.Base
 		@addChild 'cell', new Controller.Cell( @view.paper, @view, @cellFromCache( 'main.cell' ) )
 		@addChild 'graphs', new Controller.Graphs( "#graphs" )
 		@addChild 'undo', new Controller.Undo( @timemachine )
+		@addChild 'tutorial', new Controller.Tutorial( this )
 
 		# Child Views
 		@view.add @controller('cell').view
@@ -290,6 +291,18 @@ class Controller.Main extends Controller.Base
 			.fail( error )
 			.always( enable )
 			
+	# On Tutorial Button clicked
+	#
+	# @param target [jQuery.Elem] target element
+	# @param enable [Function] function to re-enable buttons
+	# @param succes [Function] function to run on success
+	# @param error [Function] function to run on error
+	# @todo action should be more dynamic for child controllers and views
+	#
+	_onHelp: ( target, enable, success, error ) ->
+		@view.resetActionButtonState()
+		@controller( 'tutorial' ).show( )
+			
 	# On Options Button clicked
 	#
 	# @param target [jQuery.Elem] target element
@@ -348,6 +361,7 @@ class Controller.Main extends Controller.Base
 		[ token, progress_promise ] = @controller('cell').setSimulationState startSimulateFlag, iterationDone, @controller( 'settings' ).options
 		if startSimulateFlag is on
 			@_token = token
+			@view.hidePanes()
 			@view.showProgressBar()
 			progress_promise.progress @_setProgressBar
 			progress_promise.always enable

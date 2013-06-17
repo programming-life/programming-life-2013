@@ -29,14 +29,22 @@ class Controller.DummyModule extends Controller.Base
 	# Create bindings for the buttons
 	#
 	_createBindings: () ->
+		@_bind( 'view.module.select', @view, @_setSelect )
 		@_bind( 'view.module.selected', @view, @_setSelected )
 		@_bind( 'view.module.hovered', @view, @_setHovered )
+		@_bind( 'view.undo.node.selected', @view, @_setSelected )
 		
 		@_bind( 'cell.module.added', @, @_onModuleAdd )
 		@_bind( 'cell.module.removed', @, @_onModuleRemove )
 		@_bind( 'cell.metabolite.added', @, @_onModuleAdd )		
 		@_bind( 'cell.metabolite.removed', @, @_onModuleRemove )
 		return this
+		
+	#
+	#
+	_setSelect: ( view, event, state = not @_selected ) =>
+		if view is @view
+			@_parent.view.removePreviews()
 		
 	# Runs when view is selected or deselected
 	#
@@ -55,7 +63,6 @@ class Controller.DummyModule extends Controller.Base
 			if view is @view and state
 				@view.model = new @_modulector( _( @_params ).clone( true ) )
 				@_parent.beginCreate @view.model
-				
 				
 		return this
 		

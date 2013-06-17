@@ -190,6 +190,11 @@ class View.Main extends View.RaphaelBase
 		@getProgressBar().css( 'opacity', 1 )
 		return this
 		
+	# Hides the panes
+	#
+	hidePanes:( ) ->
+		@_leftPane.retract()
+	
 	# Binds an action on the action buttons
 	#
 	# @return [self] chainable self
@@ -218,6 +223,7 @@ class View.Main extends View.RaphaelBase
 			.prop( { 'disabled': true } )
 			.filter( ':not([data-toggle])' )
 				.filter( ':not([class*="btn-warning"])' )
+				.filter( ':not([class*="btn-info"])' )
 				.find( 'i' )
 					.removeClass( 'icon-white' )
 		return this

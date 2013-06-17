@@ -40,8 +40,8 @@ class Controller.Graphs extends Controller.Base
 	
 	# Shows the column data for the column where xData is displayed
 	#
-	# @param xData [Integer] The data x of the column to show
+	# @param xFactor [Float] The relative location of the column to the width of the graph
 	#
-	showColumnData: ( xData ) ->
-		@each( (child) -> child.showColumnData( xData ) )
+	showColumnData: ( xFactor ) ->
+		@each( (child) -> child.showColumnData( xFactor ) )
 			

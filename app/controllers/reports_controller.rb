@@ -1,4 +1,7 @@
 class ReportsController < ApplicationController
+	require 'csv'
+	require 'json'
+
 	# GET /reports
 	def index
 		@reports = Report.paginate( :page => params[:page], :per_page => 15 )
@@ -65,6 +68,7 @@ class ReportsController < ApplicationController
 		@module_instances = @report.cell.module_instances
 		@report_params = params[:report]
 		@isPDF = (params[:commit] == 'Create PDF')
+		@isCSV = (params[:commit] == 'Export to CSV')
 
 		if ( @isPDF )
 			@graphs = JSON.parse(params[:report][:graph_data])
@@ -76,7 +80,31 @@ class ReportsController < ApplicationController
 							:template					=> 'reports/show.html.erb'
 				}
 			end
-			return
+		elsif ( params[:commit] == 'Export to CSV' )
+			@datasets = JSON.parse( params[:report][:datasets] )
+			@xValues = JSON.parse( params[:report][:xValues] )
+			@yArrays = []
+			@modules = []
+
+			@datasets.each do |key, values|
+				@modules.push(key)
+				@yArrays.push(values.first.last)
+			end
+			
+			csv_string = CSV.generate do |csv|
+				csv << ["X"] + @modules
+				@xValues.each do |x|
+					@yValues = [x]
+					@yArrays.each do |array|
+						@yValues.push(array.shift)
+					end
+					csv << @yValues
+				end
+			end
+
+			send_data csv_string,
+					:type => 'text/csv; charset=iso-8859-1; header=present',
+					:disposition => "attachment; filename=#{@report.id}_#{@report.cell.id}.csv"
 		end	
 	end
 

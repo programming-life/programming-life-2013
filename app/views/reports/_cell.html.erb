@@ -1,5 +1,5 @@
 <% if @isPDF %>
-<img src= "<%= "data:image/svg+xml;base64,#{Base64.encode64(@report_params[:data])}" %>"></img>
+<img src= "<%= "data:image/svg+xml;base64,#{Base64.encode64(@report_params[:cell_svg])}" %>"></img>
 <% else %>
 <script>RouteTo( <%= @controller %>, <%= @report.cell.id %> );</script>
 <div id="paper"></div>
