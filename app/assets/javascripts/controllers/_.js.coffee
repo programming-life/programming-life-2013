@@ -35,6 +35,7 @@ class Controller.Base extends Helper.Mixable
 	# @return [self] the chainable self
 	#
 	removeChild: ( id, kill = on ) ->
+		console.log id, kill
 		@_children[ id ]?.kill() if kill
 		delete @_children[ id ] 
 		return this

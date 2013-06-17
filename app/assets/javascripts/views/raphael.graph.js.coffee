@@ -51,7 +51,6 @@ class View.Graph extends View.RaphaelBase
 	# Kills the view
 	#
 	kill: () ->
-		@clear()
 		@_container.remove()
 		super()
 	
