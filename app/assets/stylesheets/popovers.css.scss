@@ -103,6 +103,11 @@
 .tutorial {
 	width: 350px;
 	max-width: 350px;
+	line-height: 24px;
+	
+	p {
+		line-height: 24px;
+	}
 		
 	&.active {
 		display: block;
