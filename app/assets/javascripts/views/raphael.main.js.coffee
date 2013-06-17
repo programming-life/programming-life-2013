@@ -190,6 +190,11 @@ class View.Main extends View.RaphaelBase
 		@getProgressBar().css( 'opacity', 1 )
 		return this
 		
+	# Hides the panes
+	#
+	hidePanes:( ) ->
+		@_leftPane.retract()
+	
 	# Binds an action on the action buttons
 	#
 	# @return [self] chainable self

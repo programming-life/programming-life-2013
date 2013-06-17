@@ -348,6 +348,7 @@ class Controller.Main extends Controller.Base
 		[ token, progress_promise ] = @controller('cell').setSimulationState startSimulateFlag, iterationDone, @controller( 'settings' ).options
 		if startSimulateFlag is on
 			@_token = token
+			@view.hidePanes()
 			@view.showProgressBar()
 			progress_promise.progress @_setProgressBar
 			progress_promise.always enable
