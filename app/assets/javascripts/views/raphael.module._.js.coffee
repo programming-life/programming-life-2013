@@ -4,13 +4,16 @@ class View.Module extends View.RaphaelBase
 	# Module Location
 	#
 	@Location:
+	
 		Entrance: 0
 		Exit: 1
 		Top: 2
 		Bottom: 3
 		Left: 0
 		Right: 1
+		
 		Global: -1
+		Tutorial: -1
 
 	# Module Direction
 	#
