@@ -32,6 +32,7 @@ class Controller.DummyModule extends Controller.Base
 		@_bind( 'view.module.select', @view, @_setSelect )
 		@_bind( 'view.module.selected', @view, @_setSelected )
 		@_bind( 'view.module.hovered', @view, @_setHovered )
+		@_bind( 'view.undo.node.selected', @view, @_setSelected )
 		
 		@_bind( 'cell.module.added', @, @_onModuleAdd )
 		@_bind( 'cell.module.removed', @, @_onModuleRemove )
