@@ -9,10 +9,11 @@ class View.Graph extends View.RaphaelBase
 	@DEFAULTS : 
 		smooth: on
 		axis: '0 0 1 1'
+		axisxstep: 10
 		shade : on
 		colors: [ "rgba(140, 137, 132, 0.3)",  "rgba(1, 145, 200, 0.5)", "rgba(0, 91, 154, 0.85)" ]
 		
-	@AXISPADDING : 20
+	@AXISPADDING : 38
 	
 	# Construct a new Graph object
 	#
@@ -21,7 +22,7 @@ class View.Graph extends View.RaphaelBase
 	# @param width [Integer] The width of the graph
 	# @param height [Integer] The height of the graph
 	#
-	constructor: ( id , @_titletext, parent, @_width = 240, @_height = 175 ) ->
+	constructor: ( id , @_titletext, parent, @_width = 230, @_height = 175 ) ->
 		
 		unless ( @_container = $( "##{id}" ) ).length
 			$( parent.container[0] ).append( @_container = $('<div id="' + id + '" class="graph"></div>') )
@@ -95,6 +96,19 @@ class View.Graph extends View.RaphaelBase
 		@_chart = @paper.linechart( Graph.AXISPADDING, 0, 
 			@_width, @_height,
 			_( xValues ).clone( true ), _( yValues ).clone( true ), options )
+
+		@_chart.axis[1].text.forEach( (text) ->
+			value = +(text.attr("text"))
+			if value < 1e-3 
+				if value is 0 
+					t = 0 
+				else 
+					t = value.toExponential( 2 ) 
+			else 
+				t = Math.round( value * 10000 ) / 10000
+
+			text.attr("text", t)
+		)
 
 		return this
 
