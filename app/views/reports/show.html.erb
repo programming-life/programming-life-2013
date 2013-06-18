@@ -93,11 +93,33 @@
 		<% end %>
 	</tbody>
 </table>
+ 
+<a href="#modalGenerate" role="button" class="btn" data-toggle="modal">Launch demo modal</a>
+
+<div id="modalGenerate" data-backdrop="static" data-keyboard="false" class="modal fade" tabindex="-1" 
+	role="dialog" aria-labelledby="generateLabel" aria-hidden="true">
+	<div class="modal-header">
+		<h3 id="myModalLabel">Generating</h3>
+	</div>
+	<div class="modal-body center">
+		<p>Hold on, this could take a moment...</p>
+		<div id="floatingCirclesG">
+			<div class="f_circleG" id="frotateG_01"></div>
+			<div class="f_circleG" id="frotateG_02"></div>
+			<div class="f_circleG" id="frotateG_03"></div>
+			<div class="f_circleG" id="frotateG_04"></div>
+			<div class="f_circleG" id="frotateG_05"></div>
+			<div class="f_circleG" id="frotateG_06"></div>
+			<div class="f_circleG" id="frotateG_07"></div>
+			<div class="f_circleG" id="frotateG_08"></div>
+		</div>
+	</div>
+</div>
 
 <% if not @isPDF %>
 	<footer class="row">
 		<div class="form-actions span12">
-			<%= form_for(@report, :html => {:class => "no-form"} ) do |f| %>
+			<%= form_for(@report, :html => {:class => "no-form", :onsubmit =>"$('#modalGenerate').modal('show')"} ) do |f| %>
 				<%= f.hidden_field :graph_data, :value=> nil %>
 				<%= f.hidden_field :cell_svg, :value => nil %>
 				<%= f.hidden_field :datasets, :value => nil %>
