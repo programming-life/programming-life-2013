@@ -3,10 +3,11 @@
 // You can use Sass (SCSS) here: http://sass-lang.com/
 .graph {
 
+	position: relative;
 	display: -moz-inline-stack;
 	display: inline-block;
 	vertical-align: top;
-    margin-right: 32px;
+    margin-right: 24px;
 	margin-bottom: 8px;
     zoom: 1;
     *display: inline;
@@ -16,4 +17,19 @@
 	}
 	
 	padding: 0px;
+
+	.information {
+		position: absolute;
+		left: 53px;
+		background: rgba( 255, 255, 255, .8 );
+		z-index: 100;
+		padding: 4px;
+		border-radius: 4px;
+		box-shadow: rgba( 0, 0, 0, .1 ) 1px 1px 5px;
+		
+		span {
+			display: block;
+			font-size: 11px;
+		}
+	}
 }

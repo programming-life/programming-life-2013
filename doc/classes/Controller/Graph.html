@@ -2,7 +2,7 @@
 <html>
   <head>
   <meta charset='UTF-8'>
-  <title>Broyologramming Life API Documentation</title>
+  <title>CoffeeScript API Documentation</title>
   <link rel='stylesheet' href='../../assets/codo.css' type='text/css'>
   <script src='../../assets/codo.js'></script>
   <script src='../../assets/search_data.js'></script>
@@ -125,7 +125,8 @@
         <tr>
           <td>Concerns:</td>
           <td>
-            <a href='../../mixins/Mixin/EventBindings.html'>Mixin.EventBindings</a>
+                        <a href='../../mixins/Mixin/EventBindings.html'>Mixin.EventBindings</a>,
+            <a href='../../mixins/Mixin/Catcher.html'>Mixin.Catcher</a>
           </td>
         </tr>
       </table>
@@ -167,12 +168,12 @@
   <li>
     <span class='signature'>
       <a href='#constructor-instance'>
-        - (void) <strong>constructor</strong>(container, title, parentview)
+        - (void) <strong>constructor</strong>(view)
       </a>
     </span>
     <span class='constructor note title'>Constructor</span>
     <span class='desc'>
-      
+      Constructs a new graph controller
     </span>
   </li>
   <li>
@@ -198,11 +199,11 @@
   <li>
     <span class='signature'>
       <a href='#show-instance'>
-        - (void) <strong>show</strong>(dataset, append)
+        - (void) <strong>show</strong>(dataset, append = false)
       </a>
     </span>
     <span class='desc'>
-      
+      Shows a dataset in the graph view
     </span>
   </li>
 </ul>
@@ -217,9 +218,14 @@
                 <a href='../../classes/Controller/Base.html#constructor-instance'>#constructor</a>,
                 <a href='../../classes/Controller/Base.html#addChild-instance'>#addChild</a>,
                 <a href='../../classes/Controller/Base.html#removeChild-instance'>#removeChild</a>,
+                <a href='../../classes/Controller/Base.html#each-instance'>#each</a>,
                 <a href='../../classes/Controller/Base.html#controller-instance'>#controller</a>,
                 <a href='../../classes/Controller/Base.html#controllers-instance'>#controllers</a>,
-        <a href='../../classes/Controller/Base.html#kill-instance'>#kill</a>
+                <a href='../../classes/Controller/Base.html#kill-instance'>#kill</a>,
+                <a href='../../classes/Controller/Base.html#onUpdate-instance'>#onUpdate</a>,
+                <a href='../../classes/Controller/Base.html#beforeUnload-instance'>#beforeUnload</a>,
+                <a href='../../classes/Controller/Base.html#onUnload-instance'>#onUnload</a>,
+        <a href='../../classes/Controller/Base.html#_catcher-instance'>#_catcher</a>
       </p>
       <h3 class='inherited'>
         Methods inherited from
@@ -228,7 +234,10 @@
       <p class='inherited'>
                 <a href='../../classes/Helper/Mixable.html#extend-class'>.extend</a>,
                 <a href='../../classes/Helper/Mixable.html#include-class'>.include</a>,
-        <a href='../../classes/Helper/Mixable.html#concern-class'>.concern</a>
+                <a href='../../classes/Helper/Mixable.html#concern-class'>.concern</a>,
+                <a href='../../classes/Helper/Mixable.html#extractId-class'>.extractId</a>,
+                <a href='../../classes/Helper/Mixable.html#isLocal-instance'>#isLocal</a>,
+        <a href='../../classes/Helper/Mixable.html#parseDate-class'>.parseDate</a>
       </p>
       <h2>
         <small>Concern Method Summary</small>
@@ -246,13 +255,34 @@
                 <a href='../../mixins/Mixin/EventBindings.html#_onNotificate-instance'>#_onNotificate</a>,
         <a href='../../mixins/Mixin/EventBindings.html#_notificate-instance'>#_notificate</a>
       </p>
+      <h3 class='included'>
+        Methods mixed in from
+        <a href='../../mixins/Mixin/Catcher.html'>Mixin.Catcher</a>
+      </h3>
+      <p class='included'>
+        <a href='../../mixins/Mixin/Catcher.html#catchable-class'>.catchable</a>
+      </p>
       <h2>Constructor Details</h2>
       <div class='methods'>
   <div class='method_details'>
     <p class='signature' id='constructor-instance'>
-      - (void) <strong>constructor</strong>(container, title, parentview)
+      - (void) <strong>constructor</strong>(view)
     </p>
-    <div class='tags'>
+    <div class='docstring'>
+  <p>Constructs a new graph controller</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>view</span>
+      <span class='type'>
+        (<tt><a href='../../classes/View/Graph.html'>View.Graph</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The view to control</span>
+    </li>
+  </ul>
 </div>
   </div>
 </div>
@@ -320,16 +350,38 @@
   </div>
   <div class='method_details'>
     <p class='signature' id='show-instance'>
-      - (void) <strong>show</strong>(dataset, append)
+      - (void) <strong>show</strong>(dataset, append = false)
     </p>
-    <div class='tags'>
+    <div class='docstring'>
+  <p>Shows a dataset in the graph view</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>dataset</span>
+      <span class='type'>
+        (<tt>Object</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>An object containing an xValues and yValues array</span>
+    </li>
+    <li>
+      <span class='name'>append</span>
+      <span class='type'>
+        (<tt>Boolean</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>Whether to append the dataset or add it as a new dataset</span>
+    </li>
+  </ul>
 </div>
   </div>
 </div>
     </div>
     <div id='footer'>
   Generated on
-  Sun Jun 02 2013 15:47:57 GMT+0200 (W. Europe Daylight Time)
+  Tue Jun 11 2013 00:05:30 GMT+0200 (W. Europe Daylight Time)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

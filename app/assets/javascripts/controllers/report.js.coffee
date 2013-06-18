@@ -2,6 +2,10 @@
 #
 class Controller.Report extends Controller.Base
 
+	# Interpolation step size
+	#
+	@INTERPOLATE_DT: 1
+
 	# Creates a new instance of Main
 	#
 	# @param container [String, Object] A string with an id or a DOM node to serve as a container for the view
@@ -12,17 +16,38 @@ class Controller.Report extends Controller.Base
 		super view ? new View.Report( @container )
 		
 		@_currentIteration = 0
+		@_datasets = {}
+		@_xValues = []
 		@_createChildren()
 		@_createBindings()
-		
 		@load( cell_id )
 		
+	
+	# Prepends the CSS styles in the SVG
+	#
+	prependStyles: () ->
+		# Get the right CSS file
+		for sheet in document.styleSheets
+			if /svg/.test(sheet.href)
+				stylesheet = sheet
+				break
+
+		rules = []
+		# Get all the rules in said CSS file		
+		for rule in stylesheet.cssRules
+			rules.push rule.cssText
+
+		rules = rules.reduce (x, y) -> x + " " + y
+		$('#paper').find('svg').prepend("<defs><style type='text/css'><![CDATA[#{rules}]]></style></defs>")
+		$('.graph-report').find('svg').prepend("<defs><style type='text/css'><![CDATA[#{rules}]]></style></defs>")
+		$('#paper').find('svg').attr("xmlns:xlink", "http://www.w3.org/1999/xlink")
 		
 	# Creates children
 	#
 	_createChildren: () ->
 		@addChild 'cell', new Controller.Cell( @view.paper, @view, undefined, off )
 		@addChild 'graphs', new Controller.Graphs( @view.paper )
+		@addChild 'settings', new Controller.Settings()
 		
 		@view.add @controller('cell').view
 		@view.add @controller('graphs').view
@@ -51,7 +76,6 @@ class Controller.Report extends Controller.Base
 		
 		promise = @controller('cell').load cell_id, callback
 		promise.done( () => 
-			@serializePaper()
 			@solveTheSystem()
 		)
 			
@@ -63,27 +87,72 @@ class Controller.Report extends Controller.Base
 	#
 	serializePaper: () ->
 		cell_svg = new XMLSerializer().serializeToString @view.paper.canvas
-		$( '#report_data' ).attr( "value", cell_svg )
+		$( '#report_cell_svg' ).attr( "value", cell_svg )
+
+		graphs_svg = {}
+		$( '.graph-report').each( () ->
+			graph_id = ( $( this ).attr('id') ).replace /graph-/, ""
+			graph_svg = new XMLSerializer().serializeToString $( this ).find('svg')[0]
+			graphs_svg[graph_id] = graph_svg
+			console.log graph_svg
+		)	
+		
+		$( '#report_graph_data' ).attr( "value", JSON.stringify( graphs_svg ) )
+		
 		return cell_svg
 		
+	# Serializes the graph datasets
+	#
+	# @return [JSON] the serialized datasets
+	#
+	serializeDatasets: () ->
+		serializedDatasets = JSON.stringify( @_datasets )
+		serializedX = JSON.stringify( @_xValues )
+		$( '#report_datasets' ).attr( "value", serializedDatasets )
+		$( '#report_xValues' ).attr( "value", serializedX )
+
+		return serializedDatasets
+
+	# Concatinates the graph datasets
+	#
+	# @return [Object] the concatinated datasets
+	#
+	_concatDatasets: (datasets) ->
+		for key, dataset of datasets
+			if key not of @_datasets
+				@_datasets[key] = { yValues: [] }
+			@_datasets[key].yValues.push dataset.yValues...
+		
+		@_xValues.push datasets[key].xValues...
+
 	# Solve the system
 	#
 	# @return [Tuple<CancelToken, jQuery.Promise>] a token and the promise
 	#
 	solveTheSystem: () ->
 		
-		@_iterations = 2
+		@_iterations = @controller('settings').options.simulate.iterations
 		@_currentIteration = 0
-	
+
 		iterationDone = ( results, from, to ) =>
 			@controller( 'graphs' ).show( results.datasets, @_currentIteration > 0, 'key' )
+			@_concatDatasets results.datasets
+
 			@_currentIteration++
 			@_setProgressBar 0
 
 		@view.showProgressBar()
-		[ token, promise ] = @controller('cell').startSimulation( { iterations: @_iterations, iteration_length: 20 }, iterationDone )
-		promise.done () => $('#create-pdf').removeProp 'disabled'
-		promise.done () => @view.hideProgressBar()
+		settings = @controller('settings').options
+		override = { dt: Report.INTERPOLATE_DT, interpolate: on }
+		[ token, promise ] = @controller('cell').startSimulation( settings.simulate, iterationDone, _( override ).defaults (settings.ode) )
+		promise.done( () => 
+			$('#create-pdf').removeProp 'disabled'
+			$('#create-csv').removeProp 'disabled'
+			@view.hideProgressBar()
+			@prependStyles()
+			@serializePaper()
+			@serializeDatasets()
+		)
 		promise.progress @_setProgressBar
 		
 	# Runs on an action (click)

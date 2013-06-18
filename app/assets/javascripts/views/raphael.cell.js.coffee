@@ -17,7 +17,6 @@ class View.Cell extends View.RaphaelBase
 	constructor: ( paper, parent, cell, @_interaction = on ) ->
 		super paper, parent
 		
-		@_drawn = []
 		@viewsByType = {}
 		@_splines = []
 
@@ -63,14 +62,8 @@ class View.Cell extends View.RaphaelBase
 		@kill()
 		
 		@_model = value
-		for module in @_model._getModules()
-			view = new View.Module( @paper, @, @_model, module, @_interaction )
-			@add view
-			@_drawn.push { model: module, view: view } 
-		
 		@_addInteraction() if @_interaction
-		
-		
+			
 		@_trigger( 'view.cell.set', @, [ @model ] )
 
 		@redraw() if @x? and @y?
@@ -82,8 +75,6 @@ class View.Cell extends View.RaphaelBase
 		super()
 		
 		@_notificationsView?.kill()
-		
-		@_drawn = []
 		@viewsByType = {}
 		
 	# Returns the bounding box of this view
@@ -96,7 +87,7 @@ class View.Cell extends View.RaphaelBase
 	# Returns the coordinates of either the entrance or exit of this view
 	#
 	# @param location [View.Module.Location] the location (entrance or exit)
-	# @return [[float, float]] a tuple of the x and y coordinates
+	# @return [<float, float>] a tuple of the x and y coordinates
 	#
 	getPoint: ( location ) ->
 		box = @getBBox()
@@ -110,6 +101,8 @@ class View.Cell extends View.RaphaelBase
 				return [@x, box.y]
 			when View.Module.Location.Bottom
 				return [@x, box.y2]
+			when View.Module.Location.Center
+				return [@x, @y]
 
 	#
 	#
@@ -122,26 +115,42 @@ class View.Cell extends View.RaphaelBase
 	# @param view [View.Base] The view to add
 	#
 	add: ( view ) ->
-		type = view.getFullType()
+		type = view.model.getFullType()
 
-		unless @viewsByType[type]?
-			@viewsByType[type] = []
+		unless @viewsByType[ type ]?
+			@viewsByType[ type ] = []
 
-		dummies = _(@viewsByType[type]).filter( (v) -> v instanceof View.DummyModule)
-		@viewsByType[type].push(view)
-		@viewsByType[type] = _(@viewsByType[type]).difference(dummies).concat(dummies)
+		@viewsByType[ type ].push view unless view instanceof View.DummyModule
 		view.draw()
 		@_notificationsView?.hide()
-
+		return this
+		
+	# Add a preview
+	#
+	addPreview: ( view ) ->
+		@add view
+		unless @viewsByType[ '__previews' ]?
+			@viewsByType[ '__previews' ] = []
+		@viewsByType[ '__previews' ].push view
+		
 	# Removes a view from the container
 	#
 	# @param [View.Base] The view to remove
 	#
 	remove: ( view, kill = on ) ->
-		type = view.getFullType()
+		type = view.model.getFullType()
 		@viewsByType[type] = _( @viewsByType[type] ? [] ).without view
 		view.kill() if kill
 		@_notificationsView?.hide()
+		return this
+		
+	# Remove all preview
+	#
+	removePreviews: () ->
+		return this unless @viewsByType[ '__previews' ]?
+		@remove view.kill() for view in @viewsByType[ '__previews' ]
+		@viewsByType[ '__previews' ] = []
+		return this
 
 	# Get module view for the given module
 	#
@@ -164,6 +173,15 @@ class View.Cell extends View.RaphaelBase
 			view = _( views ).find( (view) -> view.model?.name is name )
 			return view if view?
 		return null
+	 	
+	# Gets number of views by type
+	#
+	# @param type [String] the type
+	# @return [Integer] the number of views
+	#
+	numberOf: ( type ) ->
+		return 0 unless @viewsByType[ type ]?
+		return @viewsByType[ type ].length
 
 	# Draws the cell
 	#
@@ -197,34 +215,36 @@ class View.Cell extends View.RaphaelBase
 
 	# Returns the location for a module view
 	#
-	# @return [[float, float]] a type of the x and y coordinates
+	# @return [<float, float>] a type of the x and y coordinates
 	#
 	getViewPlacement: ( view ) ->
-		type = view.getFullType()
+		type = view.model.getFullType()
 		views = @viewsByType[type] ? []
 
-		index = views.indexOf(view)
+		index = views.indexOf view
+		if view instanceof View.DummyModule
+			index = views.length
 		
 		switch type
 		
 			when "CellGrowth"
-				alpha = -3 * Math.PI / 4 + ( ( index + 1 ) * Math.PI / 12 )
+				alpha = -3 * Math.PI / 4 + ( index * Math.PI / 12 )
 				x = @x + @_radius * Math.cos( alpha )
 				y = @y + @_radius * Math.sin( alpha )
 			
 			when "Lipid"
-				alpha = -3 * Math.PI / 4 + ( index * Math.PI / 12 )
+				alpha = -2 * Math.PI / 3 + ( index * Math.PI / 12 )
 				x = @x + @_radius * Math.cos( alpha )
 				y = @y + @_radius * Math.sin( alpha )
 
 			when "Transporter-inward"
-				dx = 80 * index				
+				dx = 65 * index				
 				alpha = Math.PI - Math.asin( dx / @_radius )
 				x = @x + @_radius * Math.cos( alpha )
 				y = @y + @_radius * Math.sin( alpha )
 
 			when "Transporter-outward"
-				dx = 80 * index	
+				dx = 65 * index	
 				alpha = Math.asin( dx / @_radius )
 				x = @x + @_radius * Math.cos( alpha )
 				y = @y + @_radius * Math.sin( alpha )
@@ -234,90 +254,40 @@ class View.Cell extends View.RaphaelBase
 				y = @y - @_radius / 2 + ( Math.floor( index / 3 ) * 40 )
 
 			when "Metabolism"
-				x = @x + ( index % 2 * 130 )
-				y = @y + @_radius / 2 + ( Math.floor( index / 2 ) * 60 )
+				x = @x
+				y = @y + 65 * index
 
 			when "Protein"
 				x = @x + @_radius / 2 + ( index % 3 * 40 )
 				y = @y - @_radius / 2 + ( Math.floor( index / 3 ) * 40 )
 				
 			when "Metabolite-substrate-inside"
-				x = @x - 200
-				y = @y + index * 80
+				radius = @_radius - 150
+				angle = Math.PI - (Math.PI / 12) * index
+
+				x = radius * Math.cos(angle)
+				y = radius * Math.sin(angle)
 
 			when "Metabolite-product-inside"
-				x = @x + 200
-				y = @y + index * 80
+				radius = @_radius - 150
+				angle = (Math.PI / 12) * index
+
+				x = radius * Math.cos(angle)
+				y = radius * Math.sin(angle)
 
 			when "Metabolite-substrate-outside"
-				x = @x - @_radius - 200
-				y = @y + index * 80
+				radius = @_radius + 150
+				angle = Math.PI - (Math.PI / 22) * index
+
+				x = radius * Math.cos(angle)
+				y = radius * Math.sin(angle)
 
 			when "Metabolite-product-outside"
-				x = @x + @_radius + 200
-				y = @y + index * 80
+				radius = @_radius + 150
+				angle = (Math.PI / 22) * index
+
+				x = radius * Math.cos(angle)
+				y = radius * Math.sin(angle)
 
 		return [x, y]
 	
-	# On module added, add it to the cell
-	#
-	# @param module [Model.Module] module added
-	#
-	addModule: ( module ) =>
-		unless ( _( @_drawn ).find( ( d ) -> d.model is module ) )?
-			view = new View.Module( @paper, @, @model, module, @_interaction )
-			@_drawn.push({view: view, model: module})
-			@add view
-			
-	# On module removed, remove it from the cell
-	# 
-	# @param module [Model.Module] module removed
-	#
-	removeModule: ( module ) =>
-		if ( drawn = _( @_drawn ).find( ( d ) -> d.model is module ) )?
-			view = drawn.view.kill()				
-			@_drawn = _( @_drawn ).without drawn
-			@remove view
-
-	# On spline added, add it to the cell and draw
-	# 
-	# @param spline [View.Spline] spline added
-	#
-	addSpline: ( spline ) =>
-		return if spline in @_splines
-		
-		if _(@_splines).find( ( s ) -> 
-			( s.orig is spline.orig and s.dest is spline.dest ) or 
-			( s.dest is spline.orig and s.orig is spline.dest )	)?
-			spline.kill()
-			return
-		
-		@_splines.push spline
-		spline.draw()
-
-	# On spline removed, remove it from the cell and kill it
-	# 
-	# @param spline [View.Spline] spline removed
-	#
-	removeSpline: ( spline ) =>
-		@_splines = _( @_splines ).without spline
-		spline.kill()
-	
-	# Creates or removes a preview view for a module
-	#
-	# @param source [Model.View] The source of the preview request
-	# @param module [Model.Module] The module that needs to be previewed
-	# @param selected [boolean] The selected state of the module view
-	#
-	previewModule: ( source, module, selected ) ->
-		if source is @
-			if selected
-				preview = new View.ModulePreview( @_paper, @, @model, module, off )
-				@_drawn.push({view: preview, model: module})
-				@add preview
-			else
-				preview = @getView( module )
-				if preview
-					@remove preview
-					@_trigger "module.preview.ended", preview
-			return preview

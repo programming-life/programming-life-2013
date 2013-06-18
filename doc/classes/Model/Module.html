@@ -2,7 +2,7 @@
 <html>
   <head>
   <meta charset='UTF-8'>
-  <title>Broyologramming Life API Documentation</title>
+  <title>CoffeeScript API Documentation</title>
   <link rel='stylesheet' href='../../assets/codo.css' type='text/css'>
   <script src='../../assets/codo.js'></script>
   <script src='../../assets/search_data.js'></script>
@@ -172,7 +172,7 @@
   <li>
     <span class='signature'>
       <a href='#load-class'>
-        + (void) <strong>load</strong>(module_id, cell, callback)
+        + (void) <strong>load</strong>(module_id, cell, callback, clone = false)
       </a>
     </span>
     <span class='desc'>
@@ -242,16 +242,6 @@
     <span class='bound note title'>Bound</span>
     <span class='desc'>
       Triggered when an action is done
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#isLocal-instance'>
-        - (Boolean) <strong>isLocal</strong>()
-      </a>
-    </span>
-    <span class='desc'>
-      Returns true if this is a local instance
     </span>
   </li>
   <li>
@@ -426,6 +416,16 @@
   </li>
   <li>
     <span class='signature'>
+      <a href='#getMetaboliteProperties-instance'>
+        - (Array&lt;String&gt;) <strong>getMetaboliteProperties</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Gets the properties that have metabolites
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
       <a href='#_updateParameters-instance'>
         - (jQuery.Promise) <strong>_updateParameters</strong>(parameters)
       </a>
@@ -447,7 +447,7 @@
   <li>
     <span class='signature'>
       <a href='#save-instance'>
-        - (void) <strong>save</strong>(cell)
+        - (void) <strong>save</strong>(cell, clone = false)
       </a>
     </span>
     <span class='desc'>
@@ -465,7 +465,10 @@
       <p class='inherited'>
                 <a href='../../classes/Helper/Mixable.html#extend-class'>.extend</a>,
                 <a href='../../classes/Helper/Mixable.html#include-class'>.include</a>,
-        <a href='../../classes/Helper/Mixable.html#concern-class'>.concern</a>
+                <a href='../../classes/Helper/Mixable.html#concern-class'>.concern</a>,
+                <a href='../../classes/Helper/Mixable.html#extractId-class'>.extractId</a>,
+                <a href='../../classes/Helper/Mixable.html#isLocal-instance'>#isLocal</a>,
+        <a href='../../classes/Helper/Mixable.html#parseDate-class'>.parseDate</a>
       </p>
       <h2>
         <small>Concern Method Summary</small>
@@ -575,7 +578,7 @@
   </div>
   <div class='method_details'>
     <p class='signature' id='load-class'>
-      + (void) <strong>load</strong>(module_id, cell, callback)
+      + (void) <strong>load</strong>(module_id, cell, callback, clone = false)
     </p>
     <div class='docstring'>
   <p>Loads a module</p>
@@ -735,25 +738,6 @@
       </span>
       &mdash;
       <span class='desc'>the action invoked</span>
-    </li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='isLocal-instance'>
-      - (Boolean) <strong>isLocal</strong>()
-    </p>
-    <div class='docstring'>
-  <p>Returns true if this is a local instance</p>
-</div>
-<div class='tags'>
-  <h3>Returns:</h3>
-  <ul class='return'>
-    <li>
-      <span class='type'></span>
-      (<tt>Boolean</tt>)
-      &mdash;
-      <span class='desc'>true if local, false if synced instance</span>
     </li>
   </ul>
 </div>
@@ -1322,6 +1306,25 @@
 </div>
   </div>
   <div class='method_details'>
+    <p class='signature' id='getMetaboliteProperties-instance'>
+      - (Array&lt;String&gt;) <strong>getMetaboliteProperties</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Gets the properties that have metabolites</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Array&lt;String&gt;</tt>)
+      &mdash;
+      <span class='desc'>the properties</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
     <p class='signature' id='_updateParameters-instance'>
       - (jQuery.Promise) <strong>_updateParameters</strong>(parameters)
     </p>
@@ -1390,7 +1393,7 @@
   </div>
   <div class='method_details'>
     <p class='signature' id='save-instance'>
-      - (void) <strong>save</strong>(cell)
+      - (void) <strong>save</strong>(cell, clone = false)
     </p>
     <div class='docstring'>
   <div class='note todo'>
@@ -1410,7 +1413,7 @@
     </div>
     <div id='footer'>
   Generated on
-  Sun Jun 02 2013 15:47:57 GMT+0200 (W. Europe Daylight Time)
+  Tue Jun 11 2013 00:05:30 GMT+0200 (W. Europe Daylight Time)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

@@ -271,6 +271,13 @@ parameters = ModuleParameter.create(
 			module_template_id: templates.at(6).id 
 			#CellGrowth
 		},
+		
+		# parameter 29
+		{ 
+			key: 'k_d', 
+			module_template_id: templates.at(3).id 
+			#Protein
+		},
 				
 	]
 )

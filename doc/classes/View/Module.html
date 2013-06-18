@@ -2,7 +2,7 @@
 <html>
   <head>
   <meta charset='UTF-8'>
-  <title>Broyologramming Life API Documentation</title>
+  <title>CoffeeScript API Documentation</title>
   <link rel='stylesheet' href='../../assets/codo.css' type='text/css'>
   <script src='../../assets/codo.js'></script>
   <script src='../../assets/search_data.js'></script>
@@ -122,6 +122,14 @@
             <a href='../../classes/View/RaphaelBase.html'>View.RaphaelBase</a>
           </td>
         </tr>
+        <tr>
+          <td>Concerns:</td>
+          <td>
+                        <a href='../../mixins/Mixin/EventBindings.html'>Mixin.EventBindings</a>,
+                        <a href='../../mixins/Mixin/Catcher.html'>Mixin.Catcher</a>,
+            <a href='../../mixins/Mixin/DynamicProperties.html'>Mixin.DynamicProperties</a>
+          </td>
+        </tr>
       </table>
       <h2>Overview</h2>
       <div class='docstring'>
@@ -158,8 +166,8 @@
   </li>
   <li>
     <span class='signature'>
-      <a href='#onNotificate-instance'>
-        - (void) <strong>onNotificate</strong>(context, source, identifier, type, message, args)
+      <a href='#_onNotificate-instance'>
+        - (void) <strong>_onNotificate</strong>(context, source, identifier, type, message, args)
       </a>
     </span>
     <span class='desc'>
@@ -289,7 +297,7 @@
   <li>
     <span class='signature'>
       <a href='#_getSplineDirection-instance'>
-        - (View.Module.Direction) <strong>_getSplineDirection</strong>(metabolitePlacement)
+        - (View.Module.Direction) <strong>_getSplineDirection</strong>(metabolitePlacement, model = @model)
       </a>
     </span>
     <span class='desc'>
@@ -378,8 +386,8 @@
   </li>
   <li>
     <span class='signature'>
-      <a href='#drawProtein-instance'>
-        - (Array&lt;Raphael&gt;) <strong>drawProtein</strong>()
+      <a href='#drawAsProtein-instance'>
+        - (Array&lt;Raphael&gt;) <strong>drawAsProtein</strong>()
       </a>
     </span>
     <span class='desc'>
@@ -429,7 +437,7 @@
   <li>
     <span class='signature'>
       <a href='#createSplines-instance'>
-        - (void) <strong>createSplines</strong>()
+        - (void) <strong>createSplines</strong>(model = @model, preview = false)
       </a>
     </span>
     <span class='desc'>
@@ -469,7 +477,7 @@
   <li>
     <span class='signature'>
       <a href='#_createSpline-instance'>
-        - (View.Spline) <strong>_createSpline</strong>(orig, dest)
+        - (View.Spline) <strong>_createSpline</strong>(orig, dest, preview = false)
       </a>
     </span>
     <span class='desc'>
@@ -478,13 +486,45 @@
   </li>
   <li>
     <span class='signature'>
-      <a href='#onModuleInvalidated-instance'>
-        - (void) <strong>onModuleInvalidated</strong>(module)
+      <a href='#_createPreviewSpline-instance'>
+        - (void) <strong>_createPreviewSpline</strong>(orig, dest)
+      </a>
+    </span>
+    <span class='desc'>
+      Creates a spline preview
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_onModuleInvalidated-instance'>
+        - (void) <strong>_onModuleInvalidated</strong>(module)
       </a>
     </span>
     <span class='bound note title'>Bound</span>
     <span class='desc'>
       Runs if module is invalidated
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_onModuleChanged-instance'>
+        - (void) <strong>_onModuleChanged</strong>(source, params, key, value, currents)
+      </a>
+    </span>
+    <span class='bound note title'>Bound</span>
+    <span class='desc'>
+      Runs if module is changed
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#_onModuleUpdateEnded-instance'>
+        - (void) <strong>_onModuleUpdateEnded</strong>(source)
+      </a>
+    </span>
+    <span class='bound note title'>Bound</span>
+    <span class='desc'>
+      Runs if module is no longer updated
     </span>
   </li>
   <li>
@@ -509,8 +549,8 @@
   </li>
   <li>
     <span class='signature'>
-      <a href='#onModuleAdded-instance'>
-        - (void) <strong>onModuleAdded</strong>(cell, module)
+      <a href='#_onModuleAdded-instance'>
+        - (void) <strong>_onModuleAdded</strong>(cell, module)
       </a>
     </span>
     <span class='desc'>
@@ -519,8 +559,8 @@
   </li>
   <li>
     <span class='signature'>
-      <a href='#onModuleRemoved-instance'>
-        - (void) <strong>onModuleRemoved</strong>(cell, module)
+      <a href='#_onModuleRemoved-instance'>
+        - (void) <strong>_onModuleRemoved</strong>(cell, module)
       </a>
     </span>
     <span class='desc'>
@@ -529,8 +569,8 @@
   </li>
   <li>
     <span class='signature'>
-      <a href='#onMetaboliteAdded-instance'>
-        - (void) <strong>onMetaboliteAdded</strong>(cell, metabolite)
+      <a href='#_onMetaboliteAdded-instance'>
+        - (void) <strong>_onMetaboliteAdded</strong>(cell, metabolite)
       </a>
     </span>
     <span class='desc'>
@@ -539,8 +579,8 @@
   </li>
   <li>
     <span class='signature'>
-      <a href='#onMetaboliteRemoved-instance'>
-        - (void) <strong>onMetaboliteRemoved</strong>(cell, metabolite)
+      <a href='#_onMetaboliteRemoved-instance'>
+        - (void) <strong>_onMetaboliteRemoved</strong>(cell, metabolite)
       </a>
     </span>
     <span class='desc'>
@@ -579,7 +619,8 @@
                 <a href='../../classes/View/Collection.html#add-instance'>#add</a>,
                 <a href='../../classes/View/Collection.html#remove-instance'>#remove</a>,
                 <a href='../../classes/View/Collection.html#draw-instance'>#draw</a>,
-        <a href='../../classes/View/Collection.html#redraw-instance'>#redraw</a>
+                <a href='../../classes/View/Collection.html#redraw-instance'>#redraw</a>,
+        <a href='../../classes/View/Collection.html#each-instance'>#each</a>
       </p>
       <h3 class='inherited'>
         Methods inherited from
@@ -588,7 +629,46 @@
       <p class='inherited'>
                 <a href='../../classes/Helper/Mixable.html#extend-class'>.extend</a>,
                 <a href='../../classes/Helper/Mixable.html#include-class'>.include</a>,
-        <a href='../../classes/Helper/Mixable.html#concern-class'>.concern</a>
+                <a href='../../classes/Helper/Mixable.html#concern-class'>.concern</a>,
+                <a href='../../classes/Helper/Mixable.html#extractId-class'>.extractId</a>,
+                <a href='../../classes/Helper/Mixable.html#isLocal-instance'>#isLocal</a>,
+        <a href='../../classes/Helper/Mixable.html#parseDate-class'>.parseDate</a>
+      </p>
+      <h2>
+        <small>Concern Method Summary</small>
+      </h2>
+      <h3 class='included'>
+        Methods mixed in from
+        <a href='../../mixins/Mixin/EventBindings.html'>Mixin.EventBindings</a>
+      </h3>
+      <p class='included'>
+                <a href='../../mixins/Mixin/EventBindings.html#_allowEventBindings-instance'>#_allowEventBindings</a>,
+                <a href='../../mixins/Mixin/EventBindings.html#_unbindAll-instance'>#_unbindAll</a>,
+                <a href='../../mixins/Mixin/EventBindings.html#_bind-instance'>#_bind</a>,
+                <a href='../../mixins/Mixin/EventBindings.html#_unbind-instance'>#_unbind</a>,
+                <a href='../../mixins/Mixin/EventBindings.html#_trigger-instance'>#_trigger</a>,
+                <a href='../../mixins/Mixin/EventBindings.html#_onNotificate-instance'>#_onNotificate</a>,
+        <a href='../../mixins/Mixin/EventBindings.html#_notificate-instance'>#_notificate</a>
+      </p>
+      <h3 class='included'>
+        Methods mixed in from
+        <a href='../../mixins/Mixin/Catcher.html'>Mixin.Catcher</a>
+      </h3>
+      <p class='included'>
+        <a href='../../mixins/Mixin/Catcher.html#catchable-class'>.catchable</a>
+      </p>
+      <h3 class='included'>
+        Methods mixed in from
+        <a href='../../mixins/Mixin/DynamicProperties.html'>Mixin.DynamicProperties</a>
+      </h3>
+      <p class='included'>
+                <a href='../../mixins/Mixin/DynamicProperties.html#setter-instance'>#setter</a>,
+                <a href='../../mixins/Mixin/DynamicProperties.html#getter-instance'>#getter</a>,
+                <a href='../../mixins/Mixin/DynamicProperties.html#property-instance'>#property</a>,
+                <a href='../../mixins/Mixin/DynamicProperties.html#_defineProperty-instance'>#_defineProperty</a>,
+                <a href='../../mixins/Mixin/DynamicProperties.html#_propertiesFromParams-instance'>#_propertiesFromParams</a>,
+                <a href='../../mixins/Mixin/DynamicProperties.html#_nonEnumerableValue-instance'>#_nonEnumerableValue</a>,
+        <a href='../../mixins/Mixin/DynamicProperties.html#_nonEnumerableGetter-instance'>#_nonEnumerableGetter</a>
       </p>
       <h2>Constructor Details</h2>
       <div class='methods'>
@@ -635,8 +715,8 @@
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='onNotificate-instance'>
-      - (void) <strong>onNotificate</strong>(context, source, identifier, type, message, args)
+    <p class='signature' id='_onNotificate-instance'>
+      - (void) <strong>_onNotificate</strong>(context, source, identifier, type, message, args)
     </p>
     <div class='docstring'>
   <p>Forwards any notification from the model</p>
@@ -923,7 +1003,7 @@
   </div>
   <div class='method_details'>
     <p class='signature' id='_getSplineDirection-instance'>
-      - (View.Module.Direction) <strong>_getSplineDirection</strong>(metabolitePlacement)
+      - (View.Module.Direction) <strong>_getSplineDirection</strong>(metabolitePlacement, model = @model)
     </p>
     <div class='docstring'>
   <p>Returns the direction in which a spline should be drawn wrt a metabolite</p>
@@ -1097,8 +1177,8 @@
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='drawProtein-instance'>
-      - (Array&lt;Raphael&gt;) <strong>drawProtein</strong>()
+    <p class='signature' id='drawAsProtein-instance'>
+      - (Array&lt;Raphael&gt;) <strong>drawAsProtein</strong>()
     </p>
     <div class='docstring'>
   <p>Draws this view as a protein</p>
@@ -1193,12 +1273,31 @@
   </div>
   <div class='method_details'>
     <p class='signature' id='createSplines-instance'>
-      - (void) <strong>createSplines</strong>()
+      - (void) <strong>createSplines</strong>(model = @model, preview = false)
     </p>
     <div class='docstring'>
   <p>Creates splines for this module</p>
 </div>
 <div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>model</span>
+      <span class='type'>
+        (<tt>Model</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the module to create for</span>
+    </li>
+    <li>
+      <span class='name'>preview</span>
+      <span class='type'>
+        (<tt>Boolean</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>the preview flag</span>
+    </li>
+  </ul>
 </div>
   </div>
   <div class='method_details'>
@@ -1325,7 +1424,7 @@
   </div>
   <div class='method_details'>
     <p class='signature' id='_createSpline-instance'>
-      - (View.Spline) <strong>_createSpline</strong>(orig, dest)
+      - (View.Spline) <strong>_createSpline</strong>(orig, dest, preview = false)
     </p>
     <div class='docstring'>
   <p>Creates a new spline</p>
@@ -1362,8 +1461,18 @@
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='onModuleInvalidated-instance'>
-      - (void) <strong>onModuleInvalidated</strong>(module)
+    <p class='signature' id='_createPreviewSpline-instance'>
+      - (void) <strong>_createPreviewSpline</strong>(orig, dest)
+    </p>
+    <div class='docstring'>
+  <p>Creates a spline preview</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_onModuleInvalidated-instance'>
+      - (void) <strong>_onModuleInvalidated</strong>(module)
       (bound)
     </p>
     <div class='docstring'>
@@ -1381,6 +1490,28 @@
       <span class='desc'>the module invalidated</span>
     </li>
   </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_onModuleChanged-instance'>
+      - (void) <strong>_onModuleChanged</strong>(source, params, key, value, currents)
+      (bound)
+    </p>
+    <div class='docstring'>
+  <p>Runs if module is changed</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='_onModuleUpdateEnded-instance'>
+      - (void) <strong>_onModuleUpdateEnded</strong>(source)
+      (bound)
+    </p>
+    <div class='docstring'>
+  <p>Runs if module is no longer updated</p>
+</div>
+<div class='tags'>
 </div>
   </div>
   <div class='method_details'>
@@ -1442,8 +1573,8 @@
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='onModuleAdded-instance'>
-      - (void) <strong>onModuleAdded</strong>(cell, module)
+    <p class='signature' id='_onModuleAdded-instance'>
+      - (void) <strong>_onModuleAdded</strong>(cell, module)
     </p>
     <div class='docstring'>
   <p>Gets called when a module is added to a cell</p>
@@ -1471,8 +1602,8 @@
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='onModuleRemoved-instance'>
-      - (void) <strong>onModuleRemoved</strong>(cell, module)
+    <p class='signature' id='_onModuleRemoved-instance'>
+      - (void) <strong>_onModuleRemoved</strong>(cell, module)
     </p>
     <div class='docstring'>
   <p>Gets called when a module is removed from a cell</p>
@@ -1500,8 +1631,8 @@
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='onMetaboliteAdded-instance'>
-      - (void) <strong>onMetaboliteAdded</strong>(cell, metabolite)
+    <p class='signature' id='_onMetaboliteAdded-instance'>
+      - (void) <strong>_onMetaboliteAdded</strong>(cell, metabolite)
     </p>
     <div class='docstring'>
   <p>Gets called when a metabolite is added to a cell</p>
@@ -1529,8 +1660,8 @@
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='onMetaboliteRemoved-instance'>
-      - (void) <strong>onMetaboliteRemoved</strong>(cell, metabolite)
+    <p class='signature' id='_onMetaboliteRemoved-instance'>
+      - (void) <strong>_onMetaboliteRemoved</strong>(cell, metabolite)
     </p>
     <div class='docstring'>
   <p>Gets called when a metabolite is removed from a cell</p>
@@ -1561,7 +1692,7 @@
     </div>
     <div id='footer'>
   Generated on
-  Sun Jun 02 2013 15:47:57 GMT+0200 (W. Europe Daylight Time)
+  Tue Jun 11 2013 00:05:30 GMT+0200 (W. Europe Daylight Time)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.5.6

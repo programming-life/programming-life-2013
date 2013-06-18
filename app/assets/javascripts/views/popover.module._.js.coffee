@@ -12,9 +12,8 @@ class View.ModuleProperties extends View.HTMLPopOver
 	# @param module [Model.Module] the module for which to display its properties
 	# @param cellView [View.Cell] the accompanying cell view
 	# @param cell [Model.Cell] the parent cell of the module
-	# @param params [Object] options
 	#
-	constructor: ( parent, @_cellView, @_cell, @module, params = {} ) ->
+	constructor: ( parent, @_cellView, @_cell, @module, @_preview ) ->
 		@_changes = {}
 
 		@_compounds = @_cell.getCompoundNames()
@@ -23,17 +22,15 @@ class View.ModuleProperties extends View.HTMLPopOver
 
 		super parent, module.constructor.name, 'module-properties', 'bottom'
 		
-		@_bind('module.hovered.changed', @, @_onModuleHovered)
-		@_bind('module.selected.changed', @, @_onModuleSelected)
-		@_bind('module.property.changed', @, @_onModuleInvalidated)
-		@_bind('module.compound.changed', @, @_onModuleInvalidated)
-		
-		@_bind('module.creation.started', @, @_onModuleCreationStarted)
+		@_bind( 'module.property.changed', @, @_onModuleInvalidated )
+		@_bind( 'module.compound.changed', @, @_onModuleInvalidated )
 
-		@_bind('cell.module.added', @, @_onCompoundsChanged)
-		@_bind('cell.module.removed', @, @_onCompoundsChanged)
-		@_bind('cell.metabolite.added', @, @_onMetabolitesChanged)
-		@_bind('cell.metabolite.removed', @, @_onMetabolitesChanged)
+		@_bind( 'cell.module.added', @, @_onCompoundsChanged )
+		@_bind( 'cell.module.removed', @, @_onCompoundsChanged )
+		@_bind( 'cell.metabolite.added', @, @_onMetabolitesChanged )
+		@_bind( 'cell.metabolite.removed', @, @_onMetabolitesChanged )
+		
+		@setSelected on if @_preview
 		
 	# Gets the id for this popover
 	#
@@ -74,16 +71,22 @@ class View.ModuleProperties extends View.HTMLPopOver
 	# @param saveText [String] the text on the save button
 	# @return [Array<jQuery.Elem>] the footer and the button element
 	#
-	_createFooter: ( removeText = '<i class="icon-trash icon-white"></i>', saveText = '<i class=" icon-ok icon-white"></i> Save' ) ->
+	_createFooter: ( removeText = '<i class="icon-trash icon-white"></i>', saveText ) ->
 		@_footer = $('<div class="modal-footer"></div>')
 
 		@_removeButton = $('<button class="btn btn-danger pull-left">' + removeText + '</button>')
 		@_removeButton.on('click', @_remove )
 
+		unless saveText?
+			saveText = if @_preview
+					'<i class=" icon-ok icon-white"></i> Create'
+				else
+					'<i class=" icon-ok icon-white"></i> Save'
+		
 		@_saveButton = $('<button class="btn btn-primary">' + saveText + '</button>')
 		@_saveButton.click @_save
-	
-		@_footer.append @_removeButton
+
+		@_footer.append @_removeButton unless @_preview
 		@_footer.append @_saveButton
 		return [ @_footer, @_removeButton, @_saveButton ]
 		
@@ -104,7 +107,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 	_drawForm: ( ) ->
 		@_currents = {}
 		
-		form = $('<div class="form-horizontal" id="' + @getFormId() + '"></div>')
+		form = $('<form class="form-horizontal" id="' + @getFormId() + '"></form>')
 		sections = []
 
 		properties = @_getModuleProperties()
@@ -142,6 +145,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 		)
 
 		@_body.append form
+		return form
 
 	# Draws input 
 	#
@@ -160,8 +164,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 		controlGroup.append('<label class="control-label" for="' + id + '">' + keyLabel + '</label>')
 
 		controls = $('<div class="controls"></div>')
-		
-
+	
 		drawtype = type
 		if drawtype is 'metabolite' or drawtype is 'compound'
 			value =  if value? then [ value ] else ['']
@@ -173,24 +176,16 @@ class View.ModuleProperties extends View.HTMLPopOver
 		switch drawtype
 			when 'name'
 				controls.append @_drawName( id, key, value )
-
 			when 'parameter'
 				controls.append @_drawParameter( id, key, value )
-
 			when 'metabolites'
-				#controls.append @_drawMetabolite( id, key, v ) for v in value
 				controls.append @_drawSelectionFor( type, drawtype, id, key, value )
-					
 			when 'dna'
 				controls.append @_drawDNA( id, key, value )
-				
 			when 'population'
 				controls.append @_drawPopulation( id, key, value )
-			
 			when 'compounds'
-				#controls.append @_drawCompound( id, key, v ) for v in value
 				controls.append @_drawSelectionFor( type, drawtype, id, key, value )
-
 			when 'enumeration'
 				controls.append @_drawEnumeration( id, key, value, params )
 
@@ -206,6 +201,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 	_drawName: ( id, key, value ) ->
 		input = $('<input disabled type="text" id="' + id + '" class="input-small disabled" data-multiple="false" value="' + value + '" />')
 		@_bindOnChange( key, input )
+		input.removeClass( 'disabled' ) if @_preview
 		return input
 	
 	# Draws the input for a parameter
@@ -227,7 +223,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 	#
 	_drawMetabolite: ( id, key, value ) ->
 		text = value?.split( '#' )[0]
-		color = View.Module::hashColor text				
+		color = @::hashColor text				
 		label = $('<div class="badge badge-metabolite" data-selectable-value="' + key + '">' + text + '</div> ')
 		label.css( 'background-color', color )
 		return label
@@ -342,7 +338,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 	#
 	_triggerChange: ( key, value ) ->
 		console.debug "trigger change #{key} to #{value}"
-		@_trigger( 'module.properties.change', @_parent, [ @_changes, key, value, @_currents ] )
+		@_trigger( 'view.module.changed', @_parent, [ @_changes, key, value, @_currents ] )
 		
 	# Draws the selectable selection for
 	#
@@ -392,11 +388,12 @@ class View.ModuleProperties extends View.HTMLPopOver
 			
 			label = $( "<label class='option-selectable #{selectable.type}' for='#{selectable.id}-#{option}'></label>" )
 			elem = $( "<input type='#{selectable.type}' name='#{selectable.name}' id='#{selectable.id}-#{option}' value='#{option}'>" )
-			elem.prop( 'checked', values.contains(option) )
+			elem.attr( 'checked', values.contains(option) ) #default value
+			elem.prop( 'checked', values.contains(option) ) #current value
 			@_bindOnSelectableChange( selectable.key, elem )
 
 			text = option?.split( '#' )[0]
-			color = View.Module::hashColor text	
+			color = Helper.Mixable.hashColor text	
 			
 			display_name = option.replace( /#(.*)/, '' )
 			labeltext = $("<span class='badge #{selectable.drawtype} #{if !options.contains(option) then 'unknown' else ''}'>#{display_name}</span>")
@@ -424,8 +421,6 @@ class View.ModuleProperties extends View.HTMLPopOver
 			@_getThisForm().find( '[data-selectable]').find('input').parent().removeClass('selectable-hide')
 		else
 			@_getThisForm().find( '[data-selectable]').find('input:not(:checked)').parent().addClass('selectable-hide')			
-			
-		#.css( 'display', if selected then 'inline-block' else 'none' )
 		
 	# Gets this form element
 	#
@@ -434,11 +429,18 @@ class View.ModuleProperties extends View.HTMLPopOver
 	_getThisForm: () ->
 		return $( "##{@getFormId()}" )
 		
+	# Resets this form element
+	#
+	_resetThisForm: () ->
+		@_getThisForm()[0].reset()
+		@_getThisForm().find( '.control-group' ).removeClass( 'error' )
+		return this
+		
 	# Sets the selection state of this popover
 	# 
 	# @param selected [Boolean] the selection state
 	#
-	_setSelected: ( selected ) ->
+	setSelected: ( selected ) ->
 		super selected
 		
 		@_getThisForm()
@@ -449,9 +451,8 @@ class View.ModuleProperties extends View.HTMLPopOver
 		@_setSelectablesVisibility( selected )
 
 		if selected	
-		
 			@_elem.focus()
-			@_elem.find('input[type=text]:enabled').first().select()
+			@_elem.find('input[type=text]:enabled, input[type=number]:enabled').first().select()
 
 			@_elem.keyup( ( e ) => 
 				switch e.keyCode
@@ -460,14 +461,10 @@ class View.ModuleProperties extends View.HTMLPopOver
 					when 13
 						@_save()
 			)
-						
-			@_trigger( 'module.update.started', @_parent, [ @module ] )
 		else
-			@_trigger( 'module.update.aborted',  @_parent, [ @module ] )
-			
 			@_elem.find( 'input' ).blur()
 			@_elem.off( 'keyup' )
-			@_reset()
+			@_resetThisForm()
 
 	# Returns the properties of our module
 	#
@@ -478,7 +475,8 @@ class View.ModuleProperties extends View.HTMLPopOver
 	#
 	_close: ( ) =>
 		@_changes = {}
-		@_trigger( 'module.selected.changed', @module, [ off ] )
+		@_trigger( 'view.module.select', @_parent, [ undefined, off ] )
+		@_trigger( 'view.module.selected', @_parent, [ undefined, off ] )
 
 	# Resets this view
 	#
@@ -491,9 +489,14 @@ class View.ModuleProperties extends View.HTMLPopOver
 	#
 	_save: ( ) =>	
 		return if not @_saveChanges()
-		@_trigger( 'module.updated', @_parent, [ @module ] )
 		@_changes = {}
-		@_trigger( 'module.selected.changed', @module, [ off ] )
+		@_trigger( 'view.module.select', @_parent, [ undefined, off ] )
+		@_trigger( 'view.module.selected', @_parent, [ undefined, off ] )
+		
+	# Remove button clicked
+	#
+	_remove: () =>
+		@_trigger( 'view.module.removed', @_parent, [] )
 		
 	# Saves the changes
 	#
@@ -502,6 +505,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 			result = true
 			missing_keys = []
 			wrong_keys = []
+			invalid_keys = []
 			for key, value of @_changes
 				input = $( '#' + @getInputId( key ) )
 				input.closest( '.control-group' ).removeClass( 'error')
@@ -513,15 +517,19 @@ class View.ModuleProperties extends View.HTMLPopOver
 					result = false
 					wrong_keys.push key
 					input.closest( '.control-group' ).addClass( 'error' )
+				else if input.attr( 'type') is 'number' and value < 0
+					result = false
+					invalid_keys.push key
+					input.closest( '.control-group' ).addClass( 'error' )
 				
 			if not result
 				message = ''
 				message += "I need #{missing_keys}. " if missing_keys.length
 				message += "I need valid values for #{wrong_keys}." if wrong_keys.length
+				message += "Positive values only for #{invalid_keys}." if invalid_keys.length
 				throw new Error message
 			
-			for key, value of @_changes
-				@module[ key ] = value
+			@_trigger( 'view.module.saved', @_parent, [ @_changes ] )
 			return true
 			
 	# Catcher function for Mixin.Catcher that will notificate any thrown Error on catchable methods
@@ -531,12 +539,6 @@ class View.ModuleProperties extends View.HTMLPopOver
 	_catcher: ( source, e ) =>
 		text = if _( e ).isObject() then e.message ? 'no message' else e 
 		@_notificate( @, @module, text , text, [], View.RaphaelBase.Notification.Error)
-	
-	# Removes this module from the cell
-	#
-	_remove: ( ) =>	
-		@_trigger('module.selected.changed', @module, [ off ])
-		@_cell.remove @module
 			
 	# Runs when a compound is changed (added/removed)
 	#
@@ -565,40 +567,9 @@ class View.ModuleProperties extends View.HTMLPopOver
 	_onModuleDrawn: ( module ) ->
 		@setPosition() if module is @module
 
-	# Gets called when a module view selected.
-	#
-	# @param module [Module] the module that is being selected
-	# @param selected [Boolean] the selection state of the module
-	#
-	_onModuleSelected: ( module, selected ) ->
-		if module is @module 
-			if @_selected isnt selected
-				@_setSelected selected 
-		else if selected and @_selected is on
-			@_setSelected off
-
-	# Gets called when a module view hovered.
-	#
-	# @param module [Module] the module that is being hovered
-	# @param selected [Boolean] the hover state of the module
-	#
-	_onModuleHovered: ( module, hovered ) ->
-		if module is @module 
-			if @_hovered isnt hovered
-				@_setHovered hovered
-		else if hovered and @_hovered is on
-			@_setHovered off
-
 	# Gets called when a module's parameters have changed
 	#
 	# @param module [Module] the module that has changed
 	#
 	_onModuleInvalidated: ( module, action ) ->
-		if module is @module
-			@_reset()
-
-	# Gets called when a module creation process has started
-	#
-	_onModuleCreationStarted: ( ) ->
-		@_close() if @_selected
-			
+		@_reset() if module is @module

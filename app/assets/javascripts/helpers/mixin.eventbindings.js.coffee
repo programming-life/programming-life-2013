@@ -20,6 +20,7 @@ Mixin.EventBindings =
 		#
 		_allowEventBindings: () ->
 			@_bindings = {} unless @_bindings?
+			@_handlers = {}
 			return this 
 				 
 		# Unbinds all events
@@ -81,8 +82,8 @@ Mixin.EventBindings =
 			bound_source = source
 			@_bind( 'notification', context, 
 				( caller, source, args... ) -> 
-					if source is bound_source
-						callback.apply( context, [ caller, source ].concat( args ) )
+					if source is undefined or source is bound_source
+						callback.apply( context, [ caller, bound_source ].concat( args ) )
 			)	
 			
 		# Notificates all listeners
@@ -96,3 +97,30 @@ Mixin.EventBindings =
 		#
 		_notificate: ( caller, source, identifier, message, args, type = Mixin.EventBindings.ClassMethods.Notification.Info ) ->
 			return @_trigger( 'notification', caller, [ source, identifier, type, message, args ] )
+
+
+		# Bind keys to a specific function
+		#
+		# @param keys [Array] A array of keys, in the form of: [charCode, alt, ctrl, shift]
+		# @param element [JQuery] The DOM element to bind to
+		# @param context [Object] The context of the callback
+		# @param callback [Function] The function to call
+		#
+		_bindKeys: ( keys, context, callback ) ->
+			handler = (event) ->
+				trigger = [event.which, event.altKey, event.ctrlKey, event.shiftKey]
+				if _.isEqual trigger, keys
+					_.debounce( callback.apply( context ), 300 )
+					event.stopPropagation()
+					event.preventDefault()
+			@_handlers[ JSON.stringify keys ] = handler
+			$(document).on("keydown", handler)
+
+		_unbindKeys: ( keys ) ->
+			handler = @_handlers[ JSON.stringify keys ]
+			if handler?
+				$( document ).off("keyup", handler)
+
+		_unbindAllKeys: ( ) ->
+			for keys, handler of @_handlers
+				$( document ).unbind("keydown", handler)

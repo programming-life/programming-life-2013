@@ -92,7 +92,7 @@ class View.Main extends View.RaphaelBase
 	#
 	# @param x [float] the x position of the paper point
 	# @param y [float] the y position of the paper point
-	# @return [[float, float]] a tuple of the document x and y coordinates, respectively
+	# @return [<float, float>] a tuple of the document x and y coordinates, respectively
 	#
 	getAbsoluteCoords: ( x, y ) ->
 		width = @_viewbox.width
@@ -190,6 +190,16 @@ class View.Main extends View.RaphaelBase
 		@getProgressBar().css( 'opacity', 1 )
 		return this
 		
+	# Hides the panes
+	#
+	hidePanes:( ) ->
+		@_leftPane.retract()
+		
+	# Shows the panes
+	#
+	showPanes:( ) ->
+		@_leftPane.extend()
+	
 	# Binds an action on the action buttons
 	#
 	# @return [self] chainable self
@@ -218,6 +228,7 @@ class View.Main extends View.RaphaelBase
 			.prop( { 'disabled': true } )
 			.filter( ':not([data-toggle])' )
 				.filter( ':not([class*="btn-warning"])' )
+				.filter( ':not([class*="btn-info"])' )
 				.find( 'i' )
 					.removeClass( 'icon-white' )
 		return this

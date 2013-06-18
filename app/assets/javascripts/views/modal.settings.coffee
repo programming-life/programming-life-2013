@@ -95,4 +95,5 @@ class View.SettingsModal extends View.HTMLModal
 		footer = $ '<div class="modal-footer"></div>'
 		close = $ '<button class="btn" data-action="close" data-dismiss="modal" aria-hidden="true">Close</button>'
 		footer.append close
+		@_bindKeys( [13, false, false, false], @, () -> close.click() )
 		return [ footer, close ]
