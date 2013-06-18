@@ -139,7 +139,7 @@ class Controller.Tutorial extends Controller.Base
 		[ now, max ] = @_getProgress @_step
 		message = @_getMessage @_step
 		nextOnEvent = @_bindFor @_step
-		title = "#{title} #{now}/#{max}" if max > 1 and not Tutorial.FallBack[ @InverseStep[ @_step ] ]? and not title is 'Tutorial'
+		title = "#{title} #{now}/#{max}" if max > 1 and ( not Tutorial.FallBack[ @InverseStep[ @_step ] ]? ) and title isnt 'Tutorial'
 		@view.showMessage( title, message, nextOnEvent, animate, amount )
 
 	# Gets the title for a step
