@@ -260,7 +260,8 @@ class View.Module extends View.RaphaelBase
 		@_box = @drawBox contents
 		@_box.insertBefore contents
 		@_shadow = @drawShadow @_box
-		@_hitbox = @drawHitbox @_box
+		if @_interaction
+			@_hitbox = @drawHitbox @_box
 		return @paper.setFinish()
 		
 	# Draws this view with basic visualisation
