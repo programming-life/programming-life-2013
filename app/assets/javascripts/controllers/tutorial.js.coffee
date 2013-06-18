@@ -343,25 +343,36 @@ class Controller.Tutorial extends Controller.Base
 				
 			when Tutorial.Step.ChangedAndUndoModule
 				return [
-					'<p><b>Splendid!</b> Do you see the new actions in that History list?</p>'
+					'<p><b>Splendid!</b> Do you see the new actions in that History list? Those are the properties you have just changed.</p>'
+					'<p class="alert alert-success">When you select a module, the <b>timemachine</b> for that module will be highlighted. This way, you can keep track of your changes.</p>'
+					'<p>You can also batch undo or redo actions. You are going to try that now by undoing our last three changes, all at once. I will check if you are undoing exactly those three actions, do don' + "'" + 't try to be a cool kid.</p>'
+					'<p class="alert alert-info"><b>Undo the last three actions</b>, by clicking <b>above</b> the <span class="badge badge-inverse">Change ... from ... to ...</span> actions in the history pane.</p>'
 					
 				]
 			
 			when Tutorial.Step.ChangedAndUndoneModule
+				pintText = $("<span class='badge metabolites'>p</span>")
+				pintText.css('background', Helper.Mixable.hashColor 'p' )
+				vintText = $("<span class='badge metabolites'>v</span>")
+				vintText.css('background', Helper.Mixable.hashColor 'v' )
 				return [
-					''
+					'<p>You are getting so good at this! Well done.</p>'
+					'<p>I think we are ready to re-add that outward transporter, this time transporting the default ' + $( '<div></div>' ).append( pintText ).html() + ' instead of that obnoxious ' + $( '<div></div>' ).append( vintText ).html() + ' we still have.</p>'
+					'<p class="alert alert-info"><b>Click on the <span class="badge badge-inverse">Add Transporter</span></b> button and save the transporter by clicking the <span class="badge badge-inverse"><i class=" icon-ok icon-white"></i> Create</span> button.</p>'
+					'<p class="alert alert-success">If the cell palette is blocked because of the tutorial, this would be a good moment to minimize the window by clicking the <span class="badge badge-inverse"><i class="icon-minus icon-white"></i></span> button. The tutorial will re-appear once you have completed your task.</p>'
 				]	
 				
 			when Tutorial.Step.BranchModule
 				return [
-					''
+					'<p class="alert alert-success">When your history cursor is not at the end of the list, and you invoke a new action, branching occurs. The action that held the cursor now has more options. It could resume the old action list or continue the new path.</p>'
+					'<p>Cool! The history list automatically purged the items below the cursor. Or did it? Something changed. The previous action now reads 1 alternative actions.</p>'
+					'<p class="alert">Branching can be usefull, when used correctly, but one can easily lose track of all the branches. Additionally, the history is not saved, so you might be better of saving a clone than to rely on branching.</p>'
 				]
 
 
 			when Tutorial.Step.Finished
 				return [ 'You have completed the tutorial!', 'Now start building your own cell.' ]
-				
-								#I did so by pressing the <span class="badge badge-inverse"><i class="icon-chevron-left icon-white"></i> button</span> on the left side.
+
 			else
 				return []
 	
@@ -512,6 +523,12 @@ class Controller.Tutorial extends Controller.Base
 			@_latestTest = @_successes is 2
 			@_incurEventNextOnTestOrResetDebounce()	
 			
+	# Test if transpoter is added
+	#
+	_TransporterOutwardAddedTest: ( cell, module ) =>
+		if module instanceof Model.Transporter and module.direction is Model.Transporter.Outward
+			@_incurEventNext()
+			
 	# Gets the next step
 	#
 	# @param step [Integer] the current step
@@ -612,7 +629,7 @@ class Controller.Tutorial extends Controller.Base
 				@_bind( 'view.module.select', @, @_CellGrowthSelectTest )
 				return on
 			when Tutorial.Step.OverviewClose
-				@_bind( 'view.module.select', @, @_CellGrowthCloseTest )
+				@_bind( 'view.module.selected', @, @_CellGrowthCloseTest )
 				return on
 			when Tutorial.Step.CreateFromDummy
 				@_bind( 'view.module.select', @, @_LipidSelectTest )
@@ -664,6 +681,9 @@ class Controller.Tutorial extends Controller.Base
 			when Tutorial.Step.ChangedAndUndoModule
 				@_bind( 'controller.undo.jump.finished', @, @_TransportedUndoneThreeTest )
 				return on
+			when Tutorial.Step.ChangedAndUndoneModule
+				@_bind( 'cell.module.added', @, @_TransporterOutwardAddedTest )
+				return on
 			else
 				return off
 		
@@ -681,7 +701,7 @@ class Controller.Tutorial extends Controller.Base
 				@_unbind( 'view.module.select', @, @_CellGrowthSelectTest )
 				return on
 			when Tutorial.Step.OverviewClose
-				@_unbind( 'view.module.select', @, @_CellGrowthCloseTest )
+				@_unbind( 'view.module.selected', @, @_CellGrowthCloseTest )
 				return on
 			when Tutorial.Step.CreateFromDummy
 				@_unbind( 'view.module.select', @, @_LipidSelectTest )
@@ -729,6 +749,9 @@ class Controller.Tutorial extends Controller.Base
 				return on
 			when Tutorial.Step.ChangedAndUndoModule
 				@_unbind( 'controller.undo.jump.finished', @, @_TransportedUndoneThreeTest )
+				return on
+			when Tutorial.Step.ChangedAndUndoneModule
+				@_unbind( 'cell.module.added', @, @_TransporterOutwardAddedTest )
 				return on
 			else 
 				return off

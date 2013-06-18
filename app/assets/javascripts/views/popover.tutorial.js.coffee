@@ -85,7 +85,7 @@ class View.Tutorial extends View.HTMLPopOver
 		elem = $ @_elem
 		value = parseFloat( elem.css( animate ) )
 		properties = {}
-		properties[ 'opacity' ] = .85
+		properties[ 'opacity' ] = .92
 		properties[ animate ] = value
 		elem.css( 'display', 'block' )
 		elem.css( animate, value + amount )
