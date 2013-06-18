@@ -66,14 +66,17 @@ class Controller.Module extends Controller.Base
 
 		module = new @model.constructor( _( _( params ).clone( true ) ).defaults( currents ) )
 		@_parent.automagicAdd module, on
-		@view.createSplines module, on
+		@view.previewDraw module, on
 		return this
 		
 	#
 	#
 	_setSelect: ( view, event, state = not @_selected ) =>
+	
+		# Selected this
 		if view is @view
 			@_parent.view.removePreviews()
+			@view.draw()
 			
 		
 	# Runs when view is selected or deselected
@@ -83,9 +86,7 @@ class Controller.Module extends Controller.Base
 	# @param state [Boolean] the selection state
 	#
 	_setSelected: ( view, event, state = not @_selected ) =>
-		if view is @view and not state
-			@_parent.view.removePreviews()
-			
+					
 		if view is @view and state
 			@_parent.automagicAdd @model, on
 			@view.createSplines @model, on
@@ -94,6 +95,7 @@ class Controller.Module extends Controller.Base
 			state = off
 			
 		if @_selected isnt state
+			@view.draw() if @_selected
 			@view.setSelected state
 			@_selected = state
 			@_parent.endCreate @model if @_preview and not state

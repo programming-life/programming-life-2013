@@ -195,12 +195,24 @@ class View.Module extends View.RaphaelBase
 	# @return [self] chainable self
 	#
 	redraw: ( ) ->
-		_( @draw() ).debounce( 50 )
+		@draw()
 		return this
+		
+	#
+	#
+	previewDraw: ( module = @model, preview = @_preview ) -> 
+	
+		temp_module = @model
+		temp_preview = @_preview
+		@model = module
+		
+		@draw( undefined, undefined, preview )
+		
+		@model = temp_module
 			
 	# Draws this view and thus the model
 	#
-	draw: ( x = null, y = null ) ->
+	draw: ( x = null, y = null, splinepreview = @_preview ) ->
 		@clear()
 		unless x? and y?
 			[x, y] = @_parent?.getViewPlacement(@) ? [0, 0]
@@ -214,8 +226,7 @@ class View.Module extends View.RaphaelBase
 		@_contents.push @drawMetaContents( contents = @drawContents() )
 		@_contents.push contents
 
-		@createSplines()
-
+		@createSplines @model, splinepreview
 		@setPreview @_preview
 		
 		@_propertiesView?.setPosition()
@@ -592,4 +603,4 @@ class View.Module extends View.RaphaelBase
 				view.kill()
 	
 	_onChanged: ( ) ->
-		#@redraw()
+		console.log arguments
