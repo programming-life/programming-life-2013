@@ -238,13 +238,13 @@ class View.Cell extends View.RaphaelBase
 				y = @y + @_radius * Math.sin( alpha )
 
 			when "Transporter-inward"
-				dx = 80 * index				
+				dx = 65 * index				
 				alpha = Math.PI - Math.asin( dx / @_radius )
 				x = @x + @_radius * Math.cos( alpha )
 				y = @y + @_radius * Math.sin( alpha )
 
 			when "Transporter-outward"
-				dx = 80 * index	
+				dx = 65 * index	
 				alpha = Math.asin( dx / @_radius )
 				x = @x + @_radius * Math.cos( alpha )
 				y = @y + @_radius * Math.sin( alpha )
@@ -254,28 +254,40 @@ class View.Cell extends View.RaphaelBase
 				y = @y - @_radius / 2 + ( Math.floor( index / 3 ) * 40 )
 
 			when "Metabolism"
-				x = @x + ( index % 2 * 130 )
-				y = @y + @_radius / 2 + ( Math.floor( index / 2 ) * 60 )
+				x = @x
+				y = @y + 65 * index
 
 			when "Protein"
 				x = @x + @_radius / 2 + ( index % 3 * 40 )
 				y = @y - @_radius / 2 + ( Math.floor( index / 3 ) * 40 )
 				
 			when "Metabolite-substrate-inside"
-				x = @x - 200
-				y = @y + index * 80
+				radius = @_radius - 150
+				angle = Math.PI - (Math.PI / 12) * index
+
+				x = radius * Math.cos(angle)
+				y = radius * Math.sin(angle)
 
 			when "Metabolite-product-inside"
-				x = @x + 200
-				y = @y + index * 80
+				radius = @_radius - 150
+				angle = (Math.PI / 12) * index
+
+				x = radius * Math.cos(angle)
+				y = radius * Math.sin(angle)
 
 			when "Metabolite-substrate-outside"
-				x = @x - @_radius - 200
-				y = @y + index * 80
+				radius = @_radius + 150
+				angle = Math.PI - (Math.PI / 22) * index
+
+				x = radius * Math.cos(angle)
+				y = radius * Math.sin(angle)
 
 			when "Metabolite-product-outside"
-				x = @x + @_radius + 200
-				y = @y + index * 80
+				radius = @_radius + 150
+				angle = (Math.PI / 22) * index
+
+				x = radius * Math.cos(angle)
+				y = radius * Math.sin(angle)
 
 		return [x, y]
 	
