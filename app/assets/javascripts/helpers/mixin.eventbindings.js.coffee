@@ -112,8 +112,9 @@ Mixin.EventBindings =
 				if _.isEqual trigger, keys
 					_.debounce( callback.apply( context ), 300 )
 					event.stopPropagation()
+					event.preventDefault()
 			@_handlers[ JSON.stringify keys ] = handler
-			$(document).on("keyup", handler)
+			$(document).on("keydown", handler)
 
 		_unbindKeys: ( keys ) ->
 			handler = @_handlers[ JSON.stringify keys ]
@@ -122,4 +123,4 @@ Mixin.EventBindings =
 
 		_unbindAllKeys: ( ) ->
 			for keys, handler of @_handlers
-				$( document ).unbind("keyup", handler)
+				$( document ).unbind("keydown", handler)

@@ -103,6 +103,7 @@ class Controller.Main extends Controller.Base
 
 		@controller("undo").view.bindKeys([90,false,true,false], @controller("undo"), @controller("undo").undo ) # Bind ctrl + z to undo
 		@controller("undo").view.bindKeys([89,false,true,false], @controller("undo"), @controller("undo").redo ) # Bind ctrl + y to redo
+		@view.bindKeys([82,false,true,false], @, () -> $('[data-action="reset"]').click() ) # Bind ctrl + r to reset
 	
 	# Gets called when a node is added to a tree
 	#
