@@ -51,7 +51,7 @@ class Controller.Undo extends Controller.Base
 		for redo in nodes.forward
 			redo.object.redo()
 
-		@_trigger "controller.undo.jump.finished", @, []
+		@_trigger "controller.undo.jump.finished", @, [ nodes ]
 	
 	# Move one branch to either direction
 	#
