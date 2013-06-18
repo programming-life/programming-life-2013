@@ -146,7 +146,7 @@ class View.Graph extends View.RaphaelBase
 		else @_columnText.empty()
 
 		for i,s of text when s?
-			@_columnText.append $( "<span>#{s}</span>" ).css( 'color', Graph.DEFAULTS.colors[ Graph.DEFAULTS.colors.length - 1 - i ] )
+			@_columnText.append $( "<span>#{ if s < 1e-3 then ( if s is 0 then 0 else s.toExponential( 3 ) ) else Math.round( s * 10000 ) / 10000 }</span>" ).css( 'color', Graph.DEFAULTS.colors[ Graph.DEFAULTS.colors.length - 1 - i ] )
 	
 	# Shows a column
 	#
