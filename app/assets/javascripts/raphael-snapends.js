@@ -4,6 +4,5 @@ Raphael.g.snapEnds = function() {
 	if (arguments[1] < ret.to) {
 		ret.to = arguments[1];
 	}
-	//ret.power = 1;
 	return ret;
 };
