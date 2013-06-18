@@ -11,6 +11,7 @@ class View.Module extends View.RaphaelBase
 		Bottom: 3
 		Left: 0
 		Right: 1
+		Center: 4
 		
 		Global: -1
 		Tutorial: -1
@@ -163,6 +164,8 @@ class View.Module extends View.RaphaelBase
 				return [@x, box.y]
 			when View.Module.Location.Bottom
 				return [@x, box.y2]
+			when View.Module.Location.Center
+				return [@x, @y]
 
 	# Returns the absolute coordinates of a location
 	#
@@ -234,6 +237,8 @@ class View.Module extends View.RaphaelBase
 			transform: 'S1'
 		, 900, 'elastic', => @_propertiesView?.setPosition()
 		)
+		
+		@_trigger( 'view.drawn', @, [] )
 
 	# Draws the contents (module)
 	#
@@ -384,6 +389,7 @@ class View.Module extends View.RaphaelBase
 	#
 	createSplines: ( model = @model, preview = @_preview ) ->
 		@_clearSplines()
+		
 		if @type in ['Transporter', 'Metabolism']
 
 			orig = [].concat(model.orig)
@@ -397,6 +403,18 @@ class View.Module extends View.RaphaelBase
 				if view = @_parent.getViewByName metabolite
 					@add new View.Spline( @paper, @_parent, @_cell, @, view, preview, on, View.Spline.Type.Processing )
 
+		# DNA
+		if model.dna?
+			if view = @_parent.getViewByName model.dna
+				@add new View.Spline( @paper, @_parent, @_cell, view, @, preview, on, View.Spline.Type.Synthesis  )
+		
+		# Consuming modules
+		if model.consume?
+			for view_name in model.consume
+				if view = @_parent.getViewByName view_name
+					@add new View.Spline( @paper, @_parent, @_cell, view, @, preview, on, View.Spline.Type.Consuming  )
+		
+		
 		return this
 
 	# Draws this view shadow
@@ -577,6 +595,10 @@ class View.Module extends View.RaphaelBase
 		return if cell isnt @_cell
 		if @getFullType() is module.getFullType() and module isnt @model
 			@setPosition()
+			
+		for view in @_views when view instanceof View.Spline
+			if module is view.orig.model or module is view.dest.model
+				view.kill()
 
 	# Gets called when a metabolite is added to a cell
 	#
