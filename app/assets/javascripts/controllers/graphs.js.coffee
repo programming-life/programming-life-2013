@@ -13,7 +13,7 @@ class Controller.Graphs extends Controller.Base
 	# Clears the view
 	#
 	clear: () ->
-		@each( ( child ) => @removeChild child, on )
+		@each( ( child, id ) => @removeChild id, on )
 		@view.kill()
 			
 	# Shows the graphs with the data from the datasets

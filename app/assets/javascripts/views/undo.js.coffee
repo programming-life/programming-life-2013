@@ -49,7 +49,7 @@ class View.Undo extends Helper.Mixable
 		@_drawContents(@_elem)
 		
 		return @_elem
-
+	
 	# Draws the actual undo tree into container
 	#
 	# @param container [jQuery] the container in which to draw the contents
@@ -237,3 +237,12 @@ class View.Undo extends Helper.Mixable
 		if view?
 			view.removeClass("active")
 			view.addClass("inactive")
+	
+	# Bind keys to a specific function
+	#
+	# @param keys [Array] A array of keys
+	# @param context [Object] The context of the callback
+	# @param callback [Function] The function to call
+	#
+	bindKeys: ( keys, context, callback ) ->
+		@_bindKeys( keys, @_elem, context, callback )
