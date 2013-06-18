@@ -505,6 +505,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 			result = true
 			missing_keys = []
 			wrong_keys = []
+			invalid_keys = []
 			for key, value of @_changes
 				input = $( '#' + @getInputId( key ) )
 				input.closest( '.control-group' ).removeClass( 'error')
@@ -516,11 +517,16 @@ class View.ModuleProperties extends View.HTMLPopOver
 					result = false
 					wrong_keys.push key
 					input.closest( '.control-group' ).addClass( 'error' )
+				else if input.attr( 'type') is 'number' and value < 0
+					result = false
+					invalid_keys.push key
+					input.closest( '.control-group' ).addClass( 'error' )
 				
 			if not result
 				message = ''
 				message += "I need #{missing_keys}. " if missing_keys.length
 				message += "I need valid values for #{wrong_keys}." if wrong_keys.length
+				message += "Positive values only for #{invalid_keys}." if invalid_keys.length
 				throw new Error message
 			
 			@_trigger( 'view.module.saved', @_parent, [ @_changes ] )
