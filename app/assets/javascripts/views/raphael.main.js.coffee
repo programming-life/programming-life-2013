@@ -194,6 +194,11 @@ class View.Main extends View.RaphaelBase
 	#
 	hidePanes:( ) ->
 		@_leftPane.retract()
+		
+	# Shows the panes
+	#
+	showPanes:( ) ->
+		@_leftPane.extend()
 	
 	# Binds an action on the action buttons
 	#
