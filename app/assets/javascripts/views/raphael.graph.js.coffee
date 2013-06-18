@@ -131,21 +131,22 @@ class View.Graph extends View.RaphaelBase
 			@_line = @paper
 				.path( [ 'M', 0 ,0, 'V', @_height ] )
 				.attr
-					stroke : '#F00'
+					stroke : '#333'
 				.toFront()
 
 		@_line.toFront()
 		@_line.transform("T#{x}, 0")
 		
-	
+	#
+	#
 	_drawColumnText: (text ) ->
 		unless @_columnText? 
-			@_columnText = $("<div></div>")
-			@_container.append @_columnText
+			@_columnText = $("<div class='information'></div>")
+			@_columnText.insertAfter @_title
 		else @_columnText.empty()
 
-		for i,s of text
-			@_columnText.append "<p>#{s}</p>"
+		for i,s of text when s?
+			@_columnText.append $( "<span>#{s}</span>" ).css( 'color', Graph.DEFAULTS.colors[ Graph.DEFAULTS.colors.length - 1 - i ] )
 	
 	# Shows a column
 	#
