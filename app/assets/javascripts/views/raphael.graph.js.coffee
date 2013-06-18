@@ -30,6 +30,15 @@ class View.Graph extends View.RaphaelBase
 		super Raphael( id, @_width + Graph.AXISPADDING, @_height + Graph.AXISPADDING), parent
 
 		@options = _( Graph.DEFAULTS ).clone( true )
+
+		requestLine = (x) =>
+			xFactor = (x - Graph.AXISPADDING - 10) / (@_width - Graph.AXISPADDING)
+			@_trigger "view.graph.hover", @, [xFactor]
+
+		$(@_container).mousemove ( event ) =>
+			offset = @_container.offset()
+			x = event.pageX - offset.left
+			requestLine( x )
 		
 		Object.defineProperty( @, 'id', 
 			get: () -> return id 
@@ -88,13 +97,6 @@ class View.Graph extends View.RaphaelBase
 		@_chart = @paper.linechart( Graph.AXISPADDING, 0, 
 			@_width, @_height,
 			_( xValues ).clone( true ), _( yValues ).clone( true ), options )
-		
-		requestLine = (x) =>
-			xFactor = (x - Graph.AXISPADDING - 10) / (@_width - Graph.AXISPADDING)
-			@_trigger "view.graph.hover", @, [xFactor]
-
-		@_chart.hoverColumn () ->
-			requestLine( @x )
 
 		return this
 
@@ -133,18 +135,18 @@ class View.Graph extends View.RaphaelBase
 					stroke : '#F00'
 				.toFront()
 
-		@_line.transform( "T#{x}, 0" )
 		@_line.toFront()
+		@_line.transform("T#{x}, 0")
+		
 	
 	_drawColumnText: (text ) ->
 		unless @_columnText? 
 			@_columnText = $("<div></div>")
 			@_container.append @_columnText
-		@_columnText.empty()
+		else @_columnText.empty()
 
 		for i,s of text
-			node = $("<p>#{s}</p>")
-			@_columnText.append node
+			@_columnText.append "<p>#{s}</p>"
 	
 	# Shows a column
 	#
@@ -158,4 +160,5 @@ class View.Graph extends View.RaphaelBase
 		x += 10 
 
 		@_drawRedLine(x)
-		@_drawColumnText(text )
+		_.defer( ( ( ) => @_drawColumnText(text) ) , 100)
+		
