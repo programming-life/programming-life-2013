@@ -371,7 +371,9 @@ class Controller.Tutorial extends Controller.Base
 
 
 			when Tutorial.Step.Finished
-				return [ 'You have completed the tutorial!', 'Now start building your own cell.' ]
+				return [ '<p>You have completed the tutorial!</p>', 
+					'<p class="alert alert-info">Now start building your own cell.</p>' 
+				]
 
 			else
 				return []
