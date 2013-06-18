@@ -91,5 +91,7 @@ class Controller.Graph extends Controller.Base
 			unless index >= dataset.xValues.length
 				yData = dataset.yValues[index]
 				text.push yData
+			else
+				text.push undefined
 
 		@view.showColumn( xFactor, text )

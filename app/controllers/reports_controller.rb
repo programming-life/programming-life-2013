@@ -66,19 +66,21 @@ class ReportsController < ApplicationController
 	def update
 		@report = Report.find(params[:id])
 		@module_instances = @report.cell.module_instances
-		@isPDF = false
+		@report_params = params[:report]
+		@isPDF = (params[:commit] == 'Create PDF')
+		@isCSV = (params[:commit] == 'Export to CSV')
 
-		if ( params[:commit] == 'Create PDF' )
-			@isPDF = true
+		if ( @isPDF )
+			@graphs = JSON.parse(params[:report][:graph_data])
 			respond_to do |format|
 				format.html { 
 					render	:pdf 					=> "#{@report.created_at.strftime("%Y-%m-%d")}_#{@report.id}_#{@report.cell.id}",
 							:disable_internal_links		=> true,
 							:disable_external_links		=> true,
-							:template					=> 'reports/show.html.erb'
+							:show_as_html                   => false,
+							:template					=> 'reports/show'
 				}
-			end
-			return
+			end	
 		elsif ( params[:commit] == 'Export to CSV' )
 			@datasets = JSON.parse( params[:report][:datasets] )
 			@xValues = JSON.parse( params[:report][:xValues] )
@@ -103,7 +105,7 @@ class ReportsController < ApplicationController
 
 			send_data csv_string,
 					:type => 'text/csv; charset=iso-8859-1; header=present',
-					:disposition => "attachment; filename=#{@report.id}_#{@report.cell.id}.csv"
+					:disposition => "attachment; filename=#{@report.created_at.strftime("%Y-%m-%d")}_#{@report.id}_#{@report.cell.id}.csv"
 		end	
 	end
 
