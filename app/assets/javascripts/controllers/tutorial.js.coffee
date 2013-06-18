@@ -520,7 +520,7 @@ class Controller.Tutorial extends Controller.Base
 				@_bind( 'view.module.select', @, @_CellGrowthSelectTest )
 				return on
 			when Tutorial.Step.OverviewClose
-				@_bind( 'view.module.select', @, @_CellGrowthCloseTest )
+				@_bind( 'view.module.selected', @, @_CellGrowthCloseTest )
 				return on
 			when Tutorial.Step.CreateFromDummy
 				@_bind( 'view.module.select', @, @_LipidSelectTest )
@@ -572,7 +572,7 @@ class Controller.Tutorial extends Controller.Base
 				@_unbind( 'view.module.select', @, @_CellGrowthSelectTest )
 				return on
 			when Tutorial.Step.OverviewClose
-				@_unbind( 'view.module.select', @, @_CellGrowthCloseTest )
+				@_unbind( 'view.module.selected', @, @_CellGrowthCloseTest )
 				return on
 			when Tutorial.Step.CreateFromDummy
 				@_unbind( 'view.module.select', @, @_LipidSelectTest )
