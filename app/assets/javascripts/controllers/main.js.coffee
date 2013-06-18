@@ -46,8 +46,6 @@ class Controller.Main extends Controller.Base
 		@view.add @controller('graphs').view
 		@view.addToLeftPane @controller('undo').view
 
-		@controller("undo").view.bindKeys([90,false,true,false], @controller("undo"), @controller("undo").undo ) # Bind ctrl + z to undo
-		@controller("undo").view.bindKeys([89,false,true,false], @controller("undo"), @controller("undo").redo ) # Bind ctrl + y to redo
 		
 		# Update view
 		@_setCellNameActionField( if @controller( 'cell' ).model.isLocal() then '' else  @controller( 'cell' ).model.name )
@@ -101,6 +99,9 @@ class Controller.Main extends Controller.Base
 		@_bind( 'cell.module.added', @, @addTimeMachine )
 		@_bind( 'tree.node.added', @, @_onNodeAdd )
 		@_onNotificate( @, 'global', _( () -> @_globalNotifications?.hide() ).debounce( Main.NOTIFICATION_TIMEOUT ) )
+
+		@controller("undo").view.bindKeys([90,false,true,false], @controller("undo"), @controller("undo").undo ) # Bind ctrl + z to undo
+		@controller("undo").view.bindKeys([89,false,true,false], @controller("undo"), @controller("undo").redo ) # Bind ctrl + y to redo
 	
 	# Gets called when a node is added to a tree
 	#

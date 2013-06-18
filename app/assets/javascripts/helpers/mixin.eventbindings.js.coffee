@@ -20,6 +20,7 @@ Mixin.EventBindings =
 		#
 		_allowEventBindings: () ->
 			@_bindings = {} unless @_bindings?
+			@_handlers = {}
 			return this 
 				 
 		# Unbinds all events
@@ -105,12 +106,20 @@ Mixin.EventBindings =
 		# @param context [Object] The context of the callback
 		# @param callback [Function] The function to call
 		#
-		_bindKeys: ( keys, element, context, callback ) ->
-			console.log "Binding",element, "to",context,callback,"on",keys
-			$(document).on("keyup", (event) ->
+		_bindKeys: ( keys, context, callback ) ->
+			handler = (event) ->
 				trigger = [event.which, event.altKey, event.ctrlKey, event.shiftKey]
 				if _.isEqual trigger, keys
 					_.debounce( callback.apply( context ), 300 )
 					event.stopPropagation()
-			)
-			
+			@_handlers[ JSON.stringify keys ] = handler
+			$(document).on("keyup", handler)
+
+		_unbindKeys: ( keys ) ->
+			handler = @_handlers[ JSON.stringify keys ]
+			if handler?
+				$( document ).off("keyup", handler)
+
+		_unbindAllKeys: ( ) ->
+			for keys, handler of @_handlers
+				$( document ).unbind("keyup", handler)
