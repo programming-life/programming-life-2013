@@ -179,7 +179,7 @@ class Controller.Tutorial extends Controller.Base
 				
 			when Tutorial.Step.CreateSave
 				return [
-					'<p class="alert alert-succes">Clicking a <b>template module</b>, indicated by the transparent background and the dashed border, starts te creation process.</p>'
+					'<p class="alert alert-success">Clicking a <b>template module</b>, indicated by the transparent background and the dashed border, starts te creation process.</p>'
 					'<p>Marvelous! You started the create-a-module process, or as I like to call it friend-for-cellgrowth process. We could change all these values, but lets not. I will show you how to deal with that later.</p>'
 					'<p class="alert alert-info"><b>Save the module</b>, by clicking the <span class="badge badge-inverse"><i class=" icon-ok icon-white"></i> Create</span> button.</p>'
 				]
