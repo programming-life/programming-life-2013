@@ -37,9 +37,11 @@ class Controller.Tutorial extends Controller.Base
 		
 		# Timemachine
 		UndoThemPrecursor: 16
-		ChangeAndUndoModule: 17
-		RedoModule: 18
-		BranchModule: 19
+		RedoModule: 17
+		ChangeAndUndoModule: 18
+		ChangedAndUndoModule: 19
+		ChangedAndUndoneModule: 20
+		BranchModule: 21
 		
 		# Simulate 
 		
@@ -55,7 +57,7 @@ class Controller.Tutorial extends Controller.Base
 		Inspecting:	[ 'OverviewHover', 'OverviewSelect', 'OverviewClose', 'OverviewEnd' ]
 		Adding: 	[ 'CreateFromDummy', 'CreateSave', 'CreatedAutomagic', 'ModuleDeleted' ]
 		Automagic:	[ 'CreatePrecursors', 'CreatedPrecursors', 'MoreOptions', 'CreateFromOptions', 'SwitchPreviews', 'SwitchedPreviews', 'AddedUneccesary' ]
-		TimeMachine:[ 'UndoThemPrecursor', 'ChangeAndUndoModule', 'RedoModule', 'BranchModule' ]
+		TimeMachine:[ 'UndoThemPrecursor',  'RedoModule', 'ChangeAndUndoModule', 'ChangedAndUndoModule', 'ChangedAndUndoneModule', 'BranchModule' ]
 		
 		# Special fallback group
 		FallBack: [ 'SwitchTransporterToInward', 'SwitchTransporterToOutward' ]
@@ -102,6 +104,7 @@ class Controller.Tutorial extends Controller.Base
 		@_canceled = locache.get( 'tutorial.cancelled' ) ? off
 		@_step = locache.get( 'tutorial.at' ) ? Tutorial.Step.Start
 		@_incurEventNextOnTestDebounce = _( @_incurEventNextOnTest ).debounce 300
+		@_incurEventNextOnTestOrResetDebounce =  _( @_incurEventNextOnTestOrReset ).debounce 150
 	
 		super view ? ( new View.Tutorial parent )
 		
@@ -315,6 +318,45 @@ class Controller.Tutorial extends Controller.Base
 					'<p>On the other hand - do you really need that ' + $( '<div></div>' ).append( vintText ).html() + '? You could edit the transporter - change transported back to ' + $( '<div></div>' ).append( pintText ).html() + ' - but you would still be left with 2 loose ' + $( '<div></div>' ).append( vintText ).html() + ' metabolites. If there was only a way to undo your changes...</p>'
 					'<p>Step into <b>The Vitual TimeMachine</b> by pressing the <span class="badge badge-inverse">Next <i class="icon-chevron-right icon-white"></i></span> button.</p>'
 				]
+				
+			when Tutorial.Step.UndoThemPrecursor
+				return [
+					'<p>I extended that pane I closed earlier. Look at your history!</p>'
+					'<p class="alert alert-success">The TimeMachine is available in the cell and its components. All your actions during one session are recorded and saved. It can be a handy tool to quickly try out different settings and to undo and redo certain actions.</p>'
+					'<p>This would be perfect to undo our latests changes. Let' + "'" + 's try that.</p>'
+					'<p class="alert alert-info"><b>Undo Added Metabolite v</b>, by clicking <b>above</b> the <span class="badge badge-inverse">Added Metabolite</span> action in the history pane.</p>'
+				] 
+			
+			when Tutorial.Step.RedoModule
+				return [
+					'<p class="alert alert-success">You can undoing an action by moving the action cursor above the action you want to undo. You can also press <span class="badge badge-inverse"><abbr title="control">CTRL</abbr></span> + <span class="badge badge-inverse">Z</span> on your keyboard.</p>'
+					'<p>You have just undone your add action. But perhaps that was not what you wanted to do. Luckily you can also redo your undone actions.</p>'
+					'<p class="alert alert-info"><b>Redo Added Metabolite v</b>, by clicking <b>on</b> the <span class="badge badge-inverse">Added Metabolite</span> action in the history pane.</p>'
+				] 
+				
+			when Tutorial.Step.ChangeAndUndoModule
+				return [
+					'<p class="alert alert-success">You can redo an undone action by moving the action cursor on the action you want to redo. You can also press <span class="badge badge-inverse"><abbr title="control">CTRL</abbr></span> + <span class="badge badge-inverse">Y</span> on your keyboard.</p>'
+					'<p>I have shown you that this works for adding and removing modules, but I have also implemented this behaviour for module properties! Time to try that out.</p>'
+					'<p class="alert alert-info">Open up the Transporter and change three - <b>exactly <i>three</i></b> - properties. When you are done, save your changes by pressing the <span class="badge badge-inverse"><i class="icon-ok icon-white"></i> Save</span> button.</p>'
+				] 
+				
+			when Tutorial.Step.ChangedAndUndoModule
+				return [
+					'<p><b>Splendid!</b> Do you see the new actions in that History list?</p>'
+					
+				]
+			
+			when Tutorial.Step.ChangedAndUndoneModule
+				return [
+					''
+				]	
+				
+			when Tutorial.Step.BranchModule
+				return [
+					''
+				]
+
 
 			when Tutorial.Step.Finished
 				return [ 'You have completed the tutorial!', 'Now start building your own cell.' ]
@@ -338,6 +380,13 @@ class Controller.Tutorial extends Controller.Base
 	# Incurs the next event only if a test has passed
 	#
 	_incurEventNextOnTest: () ->
+		return unless @_latestTest
+		@_incurEventNext()
+		
+	# Incurs the next event only if a test has passed
+	#
+	_incurEventNextOnTestOrReset: () ->
+		@_successes = 0
 		return unless @_latestTest
 		@_incurEventNext()
 	
@@ -378,7 +427,6 @@ class Controller.Tutorial extends Controller.Base
 		return unless state
 		if view instanceof View.DummyModule and view.model instanceof Model.Transporter
 			if view.model.direction is Model.Transporter.Inward
-				console.log 'yay'
 				@_incurEventNext Tutorial.Step.SwitchTransporterToOutward
 			else
 				@_incurEventNext()
@@ -410,7 +458,7 @@ class Controller.Tutorial extends Controller.Base
 			
 	# Test if transporter transported was changed to VInt
 	#
-	_TransporterChangedTransported: ( view, changes, key, value, currents ) =>
+	_TransporterChangedTransportedTest: ( view, changes, key, value, currents ) =>
 		if key is 'transported' and value is 'v'
 			@_incurEventNext()
 			
@@ -419,6 +467,50 @@ class Controller.Tutorial extends Controller.Base
 	_SIntRemovedTest: ( cell, module ) =>
 		if module instanceof Model.Metabolite
 			@_incurEventNext()
+	
+	#
+	#
+	_TransportedUndoneThreeTest: ( controller, nodes ) =>
+		if nodes.reverse? and nodes.reverse.length is 3
+			@_incurEventNext()
+	
+	#
+	#
+	_TransporterChangedThreeTest: ( view, changes ) =>
+		if _( changes ).keys().length is 3
+			@_incurEventNext()
+	
+	#
+	#
+	_VRedoneTest: ( html, action ) =>
+		if action.object._description.indexOf( "Added Metabolite" ) > -1
+			@_successes += 1
+			@_latestTest = @_successes is 2
+			@_incurEventNextOnTestOrResetDebounce()
+			
+	# Test if v is added
+	#
+	_VAddedTest: ( cell, module ) =>
+		if module instanceof Model.Metabolite and module.name.split( '#' )[0] is 'v'
+			@_successes += 1
+			@_latestTest = @_successes is 2
+			@_incurEventNextOnTestOrResetDebounce()
+		
+	#
+	#
+	_VUndoneTest: ( html, action ) =>
+		if action.object._description.indexOf( "Added a Transporter" ) > -1
+			@_successes += 1
+			@_latestTest = @_successes is 2
+			@_incurEventNextOnTestOrResetDebounce()
+			
+	# Test if v is removed
+	#
+	_VRemovedTest: ( cell, module ) =>
+		if module instanceof Model.Metabolite and module.name.split( '#' )[0] is 'v'
+			@_successes += 1
+			@_latestTest = @_successes is 2
+			@_incurEventNextOnTestOrResetDebounce()	
 			
 	# Gets the next step
 	#
@@ -550,10 +642,27 @@ class Controller.Tutorial extends Controller.Base
 				@_bind( 'view.module.select', @, @_TransporterSelectOutwardTest )
 				return on
 			when Tutorial.Step.SwitchPreviews
-				@_bind( 'view.module.changed', @, @_TransporterChangedTransported )
+				@_bind( 'view.module.changed', @, @_TransporterChangedTransportedTest )
 				return on
 			when Tutorial.Step.SwitchedPreviews
 				@_bind( 'cell.module.added', @, @_TransporterAddedTest )
+				return on
+			when Tutorial.Step.UndoThemPrecursor
+				@parent.view.showPanes()
+				@_successes = 0
+				@_bind( 'view.undo.node.selected', @, @_VUndoneTest )
+				@_bind( 'cell.metabolite.removed', @, @_VRemovedTest )
+				return on
+			when Tutorial.Step.RedoModule
+				@_successes = 0
+				@_bind( 'view.undo.node.selected', @, @_VRedoneTest )
+				@_bind( 'cell.metabolite.added', @, @_VAddedTest )
+				return on
+			when Tutorial.Step.ChangeAndUndoModule
+				@_bind( 'view.module.saved', @, @_TransporterChangedThreeTest )
+				return on
+			when Tutorial.Step.ChangedAndUndoModule
+				@_bind( 'controller.undo.jump.finished', @, @_TransportedUndoneThreeTest )
 				return on
 			else
 				return off
@@ -602,10 +711,24 @@ class Controller.Tutorial extends Controller.Base
 				@_unbind( 'view.module.select', @, @_TransporterSelectOutwardTest )
 				return on
 			when Tutorial.Step.SwitchPreviews
-				@_unbind( 'view.module.changed', @, @_TransporterChangedTransported )
+				@_unbind( 'view.module.changed', @, @_TransporterChangedTransportedTest )
 				return on
 			when Tutorial.Step.SwitchedPreviews
 				@_unbind( 'cell.module.added', @, @_TransporterAddedTest )
+				return on
+			when Tutorial.Step.UndoThemPrecursor
+				@_unbind( 'view.undo.node.selected', @, @_VUndoneTest )
+				@_unbind( 'cell.metabolite.removed', @, @_VRemovedTest )
+				return on
+			when Tutorial.Step.RedoModule
+				@_unbind( 'view.undo.node.selected', @, @_VRedoneTest )
+				@_unbind( 'cell.metabolite.added', @, @_VAddedTest )
+				return on
+			when Tutorial.Step.ChangeAndUndoModule
+				@_unbind( 'view.module.saved', @, @_TransporterChangedThreeTest )
+				return on
+			when Tutorial.Step.ChangedAndUndoModule
+				@_unbind( 'controller.undo.jump.finished', @, @_TransportedUndoneThreeTest )
 				return on
 			else 
 				return off
