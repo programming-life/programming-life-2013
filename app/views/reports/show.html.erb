@@ -81,8 +81,12 @@
 					</tbody>
 				</table>
 				<!-- End parameter table -->
-
+				<% if @isPDF
+					@graph = URI.unescape(@graphs[module_instance.name.gsub("#","_")]) %>
+					 <img src= "<%= "data:image/svg+xml;base64,#{Base64.encode64(@graph)}" %>"></img>
+				<% else %>
 					<div class="graph-report" id="graph-<%= ( module_instance.name.gsub("#","_") ) %>">
+				<% end -%>
 
 			</td>
 		</tr>

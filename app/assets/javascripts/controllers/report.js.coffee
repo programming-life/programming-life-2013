@@ -2,7 +2,7 @@
 #
 class Controller.Report extends Controller.Base
 
-	@INTERPOLATE_DT: 10
+	@INTERPOLATE_DT: 1
 	# Creates a new instance of Main
 	#
 	# @param container [String, Object] A string with an id or a DOM node to serve as a container for the view
