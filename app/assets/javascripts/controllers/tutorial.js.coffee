@@ -307,10 +307,12 @@ class Controller.Tutorial extends Controller.Base
 				]
 				
 			when Tutorial.Step.AddedUneccesary
+				pintText = $("<span class='badge metabolites'>p</span>")
+				pintText.css('background', Helper.Mixable.hashColor 'p' )
 				vintText = $("<span class='badge metabolites'>v</span>")
 				vintText.css('background', Helper.Mixable.hashColor 'v' )
 				return [
-					'<p>On the other hand - do you really need that ' + $( '<div></div>' ).append( vintText ).html() + '? You could edit the transporter, but you would still be left with 2 loose ' + $( '<div></div>' ).append( vintText ).html() + ' metabolites. If there was only a way to undo your changes...</p>'
+					'<p>On the other hand - do you really need that ' + $( '<div></div>' ).append( vintText ).html() + '? You could edit the transporter - change transported back to ' + $( '<div></div>' ).append( pintText ).html() + ' - but you would still be left with 2 loose ' + $( '<div></div>' ).append( vintText ).html() + ' metabolites. If there was only a way to undo your changes...</p>'
 					'<p>Step into <b>The Vitual TimeMachine</b> by pressing the <span class="badge badge-inverse">Next <i class="icon-chevron-right icon-white"></i></span> button.</p>'
 				]
 
@@ -376,6 +378,7 @@ class Controller.Tutorial extends Controller.Base
 		return unless state
 		if view instanceof View.DummyModule and view.model instanceof Model.Transporter
 			if view.model.direction is Model.Transporter.Inward
+				console.log 'yay'
 				@_incurEventNext Tutorial.Step.SwitchTransporterToOutward
 			else
 				@_incurEventNext()
@@ -514,13 +517,13 @@ class Controller.Tutorial extends Controller.Base
 				@_bind( 'view.module.hovered', @, @_CellGrowthHoverTest )
 				return on
 			when Tutorial.Step.OverviewSelect
-				@_bind( 'view.module.selected', @, @_CellGrowthSelectTest )
+				@_bind( 'view.module.select', @, @_CellGrowthSelectTest )
 				return on
 			when Tutorial.Step.OverviewClose
-				@_bind( 'view.module.selected', @, @_CellGrowthCloseTest )
+				@_bind( 'view.module.select', @, @_CellGrowthCloseTest )
 				return on
 			when Tutorial.Step.CreateFromDummy
-				@_bind( 'view.module.selected', @, @_LipidSelectTest )
+				@_bind( 'view.module.select', @, @_LipidSelectTest )
 				return on
 			when Tutorial.Step.CreateSave
 				@_bind( 'cell.module.added', @, @_LipidAddedTest )
@@ -529,10 +532,10 @@ class Controller.Tutorial extends Controller.Base
 				@_bind( 'cell.metabolite.removed', @, @_SIntRemovedTest )
 				return on
 			when Tutorial.Step.CreatePrecursors
-				@_bind( 'view.module.selected', @, @_TransporterSelectInwardTest )
+				@_bind( 'view.module.select', @, @_TransporterSelectInwardTest )
 				return on
 			when Tutorial.Step.SwitchTransporterToInward
-				@_bind( 'view.module.selected', @, @_TransporterSelectInwardTest )
+				@_bind( 'view.module.select', @, @_TransporterSelectInwardTest )
 				return on
 			when Tutorial.Step.CreatedPrecursors
 				@_bind( 'cell.module.added', @, @_TransporterAddedTest )
@@ -541,10 +544,10 @@ class Controller.Tutorial extends Controller.Base
 				@_bind( 'cell.metabolite.added', @, @_VIntAddedTest )
 				return on
 			when Tutorial.Step.CreateFromOptions
-				@_bind( 'view.module.selected', @, @_TransporterSelectOutwardTest ) 
+				@_bind( 'view.module.select', @, @_TransporterSelectOutwardTest ) 
 				return on
 			when Tutorial.Step.SwitchTransporterToOutward
-				@_bind( 'view.module.selected', @, @_TransporterSelectOutwardTest )
+				@_bind( 'view.module.select', @, @_TransporterSelectOutwardTest )
 				return on
 			when Tutorial.Step.SwitchPreviews
 				@_bind( 'view.module.changed', @, @_TransporterChangedTransported )
@@ -566,13 +569,13 @@ class Controller.Tutorial extends Controller.Base
 				@_unbind( 'view.module.hovered', @, @_CellGrowthHoverTest )
 				return on
 			when Tutorial.Step.OverviewSelect
-				@_unbind( 'view.module.selected', @, @_CellGrowthSelectTest )
+				@_unbind( 'view.module.select', @, @_CellGrowthSelectTest )
 				return on
 			when Tutorial.Step.OverviewClose
-				@_unbind( 'view.module.selected', @, @_CellGrowthCloseTest )
+				@_unbind( 'view.module.select', @, @_CellGrowthCloseTest )
 				return on
 			when Tutorial.Step.CreateFromDummy
-				@_unbind( 'view.module.selected', @, @_LipidSelectTest )
+				@_unbind( 'view.module.select', @, @_LipidSelectTest )
 				return on
 			when Tutorial.Step.CreateSave
 				@_unbind( 'cell.module.added', @, @_LipidAddedTest )
@@ -581,22 +584,22 @@ class Controller.Tutorial extends Controller.Base
 				@_unbind( 'cell.metabolite.removed', @, @_SIntRemovedTest )
 				return on
 			when Tutorial.Step.CreatePrecursors
-				@_unbind( 'view.module.selected', @, @_TransporterSelectTest )
+				@_unbind( 'view.module.select', @, @_TransporterSelectInwardTest )
 				return on
 			when Tutorial.Step.SwitchTransporterToInward
-				@_unbind( 'view.module.selected', @, @_TransporterSelectTest )
+				@_unbind( 'view.module.select', @, @_TransporterSelectInwardTest )
 				return on
 			when Tutorial.Step.CreatedPrecursors
 				@_unbind( 'cell.module.added', @, @_TransporterAddedTest )
 				return on
 			when Tutorial.Step.MoreOptions
-				@_unbind( 'cell.module.added', @, @_VIntAddedTest )
+				@_unbind( 'cell.metabolite.added', @, @_VIntAddedTest )
 				return on
 			when Tutorial.Step.CreateFromOptions
-				@_unbind( 'view.module.selected', @, @_TransporterSelectOutwardTest ) 
+				@_unbind( 'view.module.select', @, @_TransporterSelectOutwardTest ) 
 				return on
 			when Tutorial.Step.SwitchTransporterToOutward
-				@_unbind( 'view.module.selected', @, @_TransporterSelectOutwardTest )
+				@_unbind( 'view.module.select', @, @_TransporterSelectOutwardTest )
 				return on
 			when Tutorial.Step.SwitchPreviews
 				@_unbind( 'view.module.changed', @, @_TransporterChangedTransported )
