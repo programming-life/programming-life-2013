@@ -264,11 +264,13 @@ class Model.Module extends Helper.Mixable
 	test: ( compounds, keys... ) ->
 		tests = _( _( keys ).flatten() ).map( ( t ) => @[ t ] )
 		unless @_test( compounds, tests )
+			if @starts.name > 0
+				message = "Although I won't function correctly, I did insert the initial amount of #{ @starts.name } into the cell. #{ message ? '' }"
 			missing = _( _( tests ).flatten()  ).difference( _( compounds ).keys() )
 			@_notificate( 
 				@, @, 
 				"module.test.#{ @name }",
-				"I need #{ @_listify missing } #{ message ? '' }",
+				"I need #{ @_listify missing }. #{ message ? '' }",
 				[ missing ],
 				Model.Module.Notification.Error
 			)
