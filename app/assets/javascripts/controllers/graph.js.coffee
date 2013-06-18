@@ -23,7 +23,7 @@ class Controller.Graph extends Controller.Base
 	# Create event bindings
 	#
 	_createBindings: ( ) ->
-		@_bind "view.graph.hover", @, @_onGraphHover
+		@_bind "view.graph.hover", @, _.throttle(@_onGraphHover, 33)
 
 	# Add a dataset to visualize in this graphs
 	#
@@ -87,9 +87,8 @@ class Controller.Graph extends Controller.Base
 
 		text = []
 		for dataset in @_datasets
-			for index, value of dataset.xValues
-				break if value > xValue
-			if value > xValue
+			index = _.sortedIndex dataset.xValues, xValue
+			unless index is dataset.length
 				yData = dataset.yValues[index]
 				text.push yData
 
