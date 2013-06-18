@@ -12,7 +12,7 @@ class View.Tutorial extends View.HTMLPopOver
 	# @param model [any] the subject to display stuff for
 	#
 	constructor: ( parent ) ->
-		@messages = 'Nope. Start that tutorial first dude!'
+		@messages = [ 'Nope. Start that tutorial first dude!' ]
 		@_nextOnEvent = off
 		@_visible = off
 		super parent, 'Tutorial', 'tutorial', 'tutorial'
@@ -116,7 +116,8 @@ class View.Tutorial extends View.HTMLPopOver
 	# @param nextOnEvent [Boolean] if true, wait on event
 	# @returns [self] chainable self
 	#
-	showMessage: ( messages, nextOnEvent = off, animate = 'left', amount = 10 ) ->
+	showMessage: ( title, messages, nextOnEvent = off, animate = 'left', amount = 10 ) ->
+		@title = title
 		@messages = messages
 		
 		@_nextOnEvent = nextOnEvent

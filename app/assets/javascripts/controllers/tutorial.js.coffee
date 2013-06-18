@@ -17,9 +17,10 @@ class Controller.Tutorial extends Controller.Base
 		OverviewEnd: 4
 		
 		# Adding Module
-		CreateDummy: 5
-		CreatedAutomagic: 6
-		ModuleDelete: 7
+		CreateFromDummy: 5
+		CreateSave: 6
+		CreatedAutomagic: 7
+		ModuleDelete: 8
 		
 		# Automagic/Previews
 		CreatePrecursors: 8
@@ -31,7 +32,7 @@ class Controller.Tutorial extends Controller.Base
 		Finished: 	[ 'Finished' ]
 		
 		Inspecting:	[ 'OverviewHover', 'OverviewSelect', 'OverviewClose', 'OverviewEnd' ]
-		Adding: 	[ 'CreateDummy', 'CreatedAutomagic', 'ModuleDelete' ]
+		Adding: 	[ 'CreateFromDummy', 'CreateSave', 'CreatedAutomagic', 'ModuleDelete' ]
 		Automagic:	[ 'CreatePrecursors' ]
 		
 	#
@@ -57,13 +58,16 @@ class Controller.Tutorial extends Controller.Base
 	# @param view [View.Tutorial] the view for this controller
 	#
 	constructor: ( @parent, view ) ->	
+	
+		@InverseStep = _( Tutorial.Step ).invert() 
+	
 		parent =
 			getAbsolutePoint: ( location ) ->
 				return [ $( window ).width() - 20, 20 ]
 			
 		@_canceled = locache.get( 'tutorial.cancelled' ) ? off
 		@_step = locache.get( 'tutorial.at' ) ? Tutorial.Step.Start
-		@InverseStep = _( Tutorial.Step ).invert() 
+		@_incurEventNextOnTestDebounce = _( @_incurEventNextOnTest ).debounce 300
 	
 		super view ? ( new View.Tutorial parent )
 		
@@ -91,9 +95,11 @@ class Controller.Tutorial extends Controller.Base
 		@_step = step
 		locache.async.set( 'tutorial.at', @_step )
 		title = @_getTitle @_step
+		[ now, max ] = @_getProgress @_step
 		message = @_getMessage @_step
 		nextOnEvent = @_bindFor @_step
-		@view.showMessage( message, nextOnEvent, animate, amount )
+		title = "#{title} #{now}/#{max}" if max > 1
+		@view.showMessage( title, message, nextOnEvent, animate, amount )
 
 	# Gets the title for a step
 	#
@@ -113,7 +119,7 @@ class Controller.Tutorial extends Controller.Base
 		if _( group ).find( ( _name, index ) -> 
 			result = index
 			return name is _name  )
-			return [ index, group.length ]
+			return [ result + 1, group.length ]
 		return [ '?', group.length ]
 		
 	#
@@ -125,8 +131,8 @@ class Controller.Tutorial extends Controller.Base
 				return [ 
 					'<p>This is <strong>Gigabase</strong>. Your <i>virtual</i> cell.</p>'
 					'<p>It seems like this is your first time here. Let me guide you through the process of creating your first cell.</p>'
-					'<p>At any time you can cancel the tutorial by pressing the close button or the &times; mark in the top right corner. To resume, simply press the <i class="icon-question-sign"></i>.</p>'
-					'<p>You can also minimize the tutorial by pressing <i class="icon-minus"></i>. Complete your task or press the <i class="icon-question-sign"></i> to resume.</p>'
+					'<p>At any time you can cancel the tutorial by pressing the <span class="badge badge-inverse"><i class="icon-remove icon-white"></i> stop</span> button or the &times; mark in the top right corner. To resume, simply press the <span class="badge badge-inverse"> <i class="icon-question-sign icon-white"></i></span>.</p>'
+					'<p>You can also minimize the tutorial by pressing <i class="icon-minus"></i>. Complete your task or press the <span class="badge badge-inverse"><i class="icon-question-sign icon-white"></i></span> to resume.</p>'
 					'<p>Let' + "'" + 's start! Press the <span class="badge badge-inverse"><i class="icon-chevron-right icon-white"></i></span> button.</p>'
 				]
 			
@@ -150,8 +156,8 @@ class Controller.Tutorial extends Controller.Base
 				return [
 					'<p>This is how we can edit the properties of a module. All the information has turned editable, except for the name.</p>'
 					'<p class="alert alert-warning">Once a module is named, <b>its name is fixed</b>. Recreate the module if you want to change the name.</p>'
-					'<p>I still think this module needs some company. There is a button below the popover that I can not quite see.</p>'
-					'<p class="alert alert-info"><b>Close the Cell Growth popover</b>, by clicking the <span class="badge badge-inverse">&times;</span> button or clicing the module again.</p>'
+					'<p>Opening the properties popover of this module has hidden something on the palette. There is a button below the popover that I can not quite see.</p>'
+					'<p class="alert alert-info"><b>Close the Cell Growth popover</b>, by clicking the <span class="badge badge-inverse">&times;</span> button or clicking the module again.</p>'
 				]
 				
 			when Tutorial.Step.OverviewEnd
@@ -161,8 +167,22 @@ class Controller.Tutorial extends Controller.Base
 					'<p>No one likes solitude. So let me teach you about <b>Adding modules</b>. Press the <span class="badge badge-inverse"><i class="icon-chevron-right icon-white"></i></span> button.</p>'
 				]
 				
-			when Tutorial.Step.CreateDummy
-				return []
+			when Tutorial.Step.CreateFromDummy
+				lipidText = $("<span class='badge compounds'>lipid</span>")
+				lipidText.css('background', Helper.Mixable.hashColor 'lipid' )
+				
+				return [
+					'<p>For the cell to live, we will need some <i>infrastructure</i>. We have seen the infrastructure properties of the <i>Cell Growth</i> module. One of those items was ' + $( '<div></div>' ).append( lipidText ).html() + '. I still think some company is in order.</p>'
+					'<p>Look! We have a template on our palette. Time to find that loner a friend.</p>'
+					'<p class="alert alert-info"><b>Click <span class="badge badge-inverse">Add Lipid</span></b> to start adding the lipid.</p>'
+				]
+				
+			when Tutorial.Step.CreateSave
+				return [
+					'<p class="alert alert-succes">Clicking a <b>template module</b>, indicated by the transparent background and the dashed border, starts te creation process.</p>'
+					'<p>Marvelous! You started the create-a-module process, or as I like to call it friend-for-cellgrowth process. We could change all these values, but lets not. I will show you how to deal with that later.</p>'
+					'<p class="alert alert-info"><b>Save the module</b>, by clicking the <span class="badge badge-inverse"><i class=" icon-ok icon-white"></i> Create</span> button.</p>'
+				]
 				
 			when Tutorial.Step.CreatedAutomagic
 				return []
@@ -178,26 +198,45 @@ class Controller.Tutorial extends Controller.Base
 	
 	#
 	#
-	_OverviewHoverTest: ( view, event, state ) =>
-		return unless state
+	_incurEventNext: () ->
+		@view.hide( ( () => @_nextStep( @_getNextStep( @_step ) ) ), 'left', 10 )
+		
+	#
+	#
+	_incurEventNextOnTest: () ->
+		return unless @_latestTest
+		@_incurEventNext()
+	
+	#
+	#
+	_CellGrowthHoverTest: ( view, event, state ) =>
 		if view instanceof View.Module and view.model instanceof Model.CellGrowth
-			@view.hide( ( () => @_nextStep( @_getNextStep( @_step ) ) ), 'left', 10 )
-			
-	#
-	#
-	#
-	_OverviewSelectTest: ( view, event, state ) =>
-		return unless state
-		if view instanceof View.Module and view.model instanceof Model.CellGrowth
-			@view.hide( ( () => @_nextStep( @_getNextStep( @_step ) ) ), 'left', 10 )
+			@_latestTest = state
+			@_incurEventNextOnTestDebounce()
 	
 	#
 	#
 	#
-	_OverviewCloseTest: ( view, event, state ) =>
+	_CellGrowthSelectTest: ( view, event, state ) =>
+		return unless state
+		if view instanceof View.Module and view.model instanceof Model.CellGrowth
+			@_incurEventNext()
+			
+	#
+	#
+	#
+	_LipidSelectTest: ( view, event, state ) =>
+		return unless state
+		if view instanceof View.DummyModule and view.model instanceof Model.Lipid
+			@_incurEventNext()
+	
+	#
+	#
+	#
+	_CellGrowthCloseTest: ( view, event, state ) =>
 		return if state
 		if view instanceof View.Module and view.model instanceof Model.CellGrowth
-			@view.hide( ( () => @_nextStep( @_getNextStep( @_step ) ) ), 'left', 10 )
+			@_incurEventNext()
 			
 	# Gets the next step
 	#
@@ -289,13 +328,16 @@ class Controller.Tutorial extends Controller.Base
 		switch step
 			when Tutorial.Step.OverviewHover
 				@parent.view.hidePanes()
-				@_bind( 'view.module.hovered', @, @_OverviewHoverTest )
+				@_bind( 'view.module.hovered', @, @_CellGrowthHoverTest )
 				return on
 			when Tutorial.Step.OverviewSelect
-				@_bind( 'view.module.selected', @, @_OverviewSelectTest )
+				@_bind( 'view.module.selected', @, @_CellGrowthSelectTest )
 				return on
 			when Tutorial.Step.OverviewClose
-				@_bind( 'view.module.selected', @, @_OverviewCloseTest )
+				@_bind( 'view.module.selected', @, @_CellGrowthCloseTest )
+				return on
+			when Tutorial.Step.CreateFromDummy
+				@_bind( 'view.module.selected', @, @_LipidSelectTest )
 				return on
 			else 
 				return off
@@ -308,13 +350,16 @@ class Controller.Tutorial extends Controller.Base
 	_unbindFor: ( step ) =>
 		switch step
 			when Tutorial.Step.OverviewHover
-				@_unbind( 'view.module.hovered', @, @_OverviewHoverTest )
+				@_unbind( 'view.module.hovered', @, @_CellGrowthHoverTest )
 				return on
 			when Tutorial.Step.OverviewSelect
-				@_unbind( 'view.module.selected', @, @_OverviewSelectTest )
+				@_unbind( 'view.module.selected', @, @_CellGrowthSelectTest )
 				return on
 			when Tutorial.Step.OverviewClose
-				@_unbind( 'view.module.selected', @, @_OverviewCloseTest )
+				@_unbind( 'view.module.selected', @, @_CellGrowthCloseTest )
+				return on
+			when Tutorial.Step.CreateFromDummy
+				@_unbind( 'view.module.selected', @, @_LipidSelectTest )
 				return on
 			else 
 				return off
