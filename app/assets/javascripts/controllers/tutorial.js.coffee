@@ -131,9 +131,9 @@ class Controller.Tutorial extends Controller.Base
 				return [ 
 					'<p>This is <strong>Gigabase</strong>. Your <i>virtual</i> cell.</p>'
 					'<p>It seems like this is your first time here. Let me guide you through the process of creating your first cell.</p>'
-					'<p>At any time you can cancel the tutorial by pressing the <span class="badge badge-inverse"><i class="icon-remove icon-white"></i> stop</span> button or the &times; mark in the top right corner. To resume, simply press the <span class="badge badge-inverse"> <i class="icon-question-sign icon-white"></i></span>.</p>'
-					'<p>You can also minimize the tutorial by pressing <i class="icon-minus"></i>. Complete your task or press the <span class="badge badge-inverse"><i class="icon-question-sign icon-white"></i></span> to resume.</p>'
-					'<p>Let' + "'" + 's start! Press the <span class="badge badge-inverse"><i class="icon-chevron-right icon-white"></i></span> button.</p>'
+					'<p>At any time you can cancel the tutorial by pressing the <span class="badge badge-inverse"><i class="icon-remove icon-white"></i> stop</span> button or the <span class="badge badge-inverse">&times;</span> mark in the top right corner. To resume, simply press the <span class="badge badge-inverse"> <i class="icon-question-sign icon-white"></i></span>.</p>'
+					'<p>You can also minimize the tutorial by pressing <span class="badge badge-inverse"><i class="icon-minus icon-white"></i></span>. Complete your task or press the <span class="badge badge-inverse"><i class="icon-question-sign icon-white"></i></span> to resume.</p>'
+					'<p>Let' + "'" + 's start! Press the <span class="badge badge-inverse">Next <i class="icon-chevron-right icon-white"></i></span> button.</p>'
 				]
 			
 			when Tutorial.Step.OverviewHover
