@@ -134,7 +134,6 @@ class View.RaphaelBase extends View.Collection
 
 		@_anchor = @_paper.circle(x, y, 0)
 		@_contents.push(@_anchor)
-
 		super()		
 		return @_contents
 	

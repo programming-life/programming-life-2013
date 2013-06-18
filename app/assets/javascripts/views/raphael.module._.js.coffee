@@ -232,9 +232,10 @@ class View.Module extends View.RaphaelBase
 		@_propertiesView?.setPosition()
 		@_contents.transform('S.1').animate Raphael.animation(
 			transform: 'S1'
-		, 900, 'elastic', => @_propertiesView?.setPosition()
+		, 900, 'elastic', => 
+			@_propertiesView?.setPosition()
+			#@_trigger( 'view.drawn', @, [] )
 		)
-
 	# Draws the contents (module)
 	#
 	# @return [Raphael.Set] the contents
@@ -384,18 +385,31 @@ class View.Module extends View.RaphaelBase
 	#
 	createSplines: ( model = @model, preview = @_preview ) ->
 		@_clearSplines()
+		
+		orig = {}
+		dest = {}
+		for name, type of View.Spline.Type
+			orig[ type ] = []
+			dest[ type ] = []
+		
 		if @type in ['Transporter', 'Metabolism']
-
-			orig = [].concat(model.orig)
-			dest = [].concat(model.dest)
-
-			for metabolite in orig
-				if view = @_parent.getViewByName metabolite
-					@add new View.Spline( @paper, @_parent, @_cell, view, @, preview, on, View.Spline.Type.Processing )
-
-			for metabolite in dest
-				if view = @_parent.getViewByName metabolite
-					@add new View.Spline( @paper, @_parent, @_cell, @, view, preview, on, View.Spline.Type.Processing )
+			orig[ View.Spline.Type.Processing ] = orig[ View.Spline.Type.Processing ].concat model.orig
+			orig[ View.Spline.Type.Processing ] = dest[ View.Spline.Type.Processing ].concat model.dest
+			
+		#orig[ View.Spline.Type.Synthesis ] = orig[ View.Spline.Type.Synthesis ].concat [ model.dna ] if ( model.dna? )
+		#orig[ View.Spline.Type.Consuming ] = orig[ View.Spline.Type.Consuming ].concat model.consume if ( model.consume? )
+		
+		console.log model.dna, @_parent.getViewByName model.dna
+		
+		for spline_type, type_orig of orig
+			for view_name in type_orig
+				if view = @_parent.getViewByName view_name
+					@add new View.Spline( @paper, @_parent, @_cell, view, @, preview, on, spline_type )
+					
+		for spline_type, type_dest of dest
+			for view_name in type_dest
+				if view = @_parent.getViewByName view_name
+					@add new View.Spline( @paper, @_parent, @_cell, @, view, preview, on, spline_type )
 
 		return this
 
@@ -577,6 +591,10 @@ class View.Module extends View.RaphaelBase
 		return if cell isnt @_cell
 		if @getFullType() is module.getFullType() and module isnt @model
 			@setPosition()
+			
+		#for view in @_views when view instanceof View.Spline
+			#if module is view.orig.model or module is view.dest.model
+				#view.kill()
 
 	# Gets called when a metabolite is added to a cell
 	#
@@ -602,5 +620,8 @@ class View.Module extends View.RaphaelBase
 			if metabolite is view.orig.model or metabolite is view.dest.model
 				view.kill()
 	
+	#
+	#
+	#
 	_onChanged: ( ) ->
 		console.log arguments
