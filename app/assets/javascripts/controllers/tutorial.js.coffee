@@ -312,7 +312,7 @@ class Controller.Tutorial extends Controller.Base
 				vintText = $("<span class='badge metabolites'>v</span>")
 				vintText.css('background', Helper.Mixable.hashColor 'v' )
 				return [
-					'<p>On the other hand - do you really need that ' + $( '<div></div>' ).append( vintText ).html() + '? You could edit the transporter, change transported back to ' + $( '<div></div>' ).append( pintText ).html() + ', but you would still be left with 2 loose ' + $( '<div></div>' ).append( vintText ).html() + ' metabolites. If there was only a way to undo your changes...</p>'
+					'<p>On the other hand - do you really need that ' + $( '<div></div>' ).append( vintText ).html() + '? You could edit the transporter - change transported back to ' + $( '<div></div>' ).append( pintText ).html() + ' - but you would still be left with 2 loose ' + $( '<div></div>' ).append( vintText ).html() + ' metabolites. If there was only a way to undo your changes...</p>'
 					'<p>Step into <b>The Vitual TimeMachine</b> by pressing the <span class="badge badge-inverse">Next <i class="icon-chevron-right icon-white"></i></span> button.</p>'
 				]
 
