@@ -32,12 +32,14 @@ class Controller.Tutorial extends Controller.Base
 		CreateFromOptions: 12
 		SwitchTransporterToOutward: 12.5
 		SwitchPreviews: 13
+		SwitchedPreviews: 14
+		AddedUneccesary: 15
 		
 		# Timemachine
-		UndoThemPrecursor: 14
-		ChangeAndUndoModule: 15
-		RedoModule: 16
-		BranchModule: 17
+		UndoThemPrecursor: 16
+		ChangeAndUndoModule: 17
+		RedoModule: 18
+		BranchModule: 19
 		
 		# Simulate 
 		
@@ -52,7 +54,7 @@ class Controller.Tutorial extends Controller.Base
 		
 		Inspecting:	[ 'OverviewHover', 'OverviewSelect', 'OverviewClose', 'OverviewEnd' ]
 		Adding: 	[ 'CreateFromDummy', 'CreateSave', 'CreatedAutomagic', 'ModuleDeleted' ]
-		Automagic:	[ 'CreatePrecursors', 'CreatedPrecursors', 'MoreOptions', 'CreateFromOptions', 'SwitchPreviews' ]
+		Automagic:	[ 'CreatePrecursors', 'CreatedPrecursors', 'MoreOptions', 'CreateFromOptions', 'SwitchPreviews', 'SwitchedPreviews', 'AddedUneccesary' ]
 		TimeMachine:[ 'UndoThemPrecursor', 'ChangeAndUndoModule', 'RedoModule', 'BranchModule' ]
 		
 		# Special fallback group
@@ -133,7 +135,7 @@ class Controller.Tutorial extends Controller.Base
 		[ now, max ] = @_getProgress @_step
 		message = @_getMessage @_step
 		nextOnEvent = @_bindFor @_step
-		title = "#{title} #{now}/#{max}" if max > 1
+		title = "#{title} #{now}/#{max}" if max > 1 and not Tutorial.FallBack[ @InverseStep[ @_step ] ]?
 		@view.showMessage( title, message, nextOnEvent, animate, amount )
 
 	# Gets the title for a step
@@ -296,6 +298,21 @@ class Controller.Tutorial extends Controller.Base
 					'<p>The default is selected, but let me show you how previews are updated when we have more options and pick another option.</p>'
 					'<p class="alert alert-info"><b>Switch the transported metabolite</b> to your newly created ' + $( '<div></div>' ).append( vintText ).html() + ' and see the magic happen.</p>'
 				]
+				
+			when Tutorial.Step.SwitchedPreviews
+				return [
+					'<p class="alert alert-success">Auto<i>magic</i>ally adding metabolites speeds up your modelling process. Don' + "'" + 't forget there are some defaults though.</p>'
+					'<p>This looks about right. Please finalize the creation process.</p>'
+					'<p class="alert alert-info"><b>Save the transporter</b>, by clicking the <span class="badge badge-inverse"><i class=" icon-ok icon-white"></i> Create</span> button.</p>'
+				]
+				
+			when Tutorial.Step.AddedUneccesary
+				vintText = $("<span class='badge metabolites'>v</span>")
+				vintText.css('background', Helper.Mixable.hashColor 'v' )
+				return [
+					'<p>On the other hand - do you really need that ' + $( '<div></div>' ).append( vintText ).html() + '? You could edit the transporter, but you would still be left with 2 loose ' + $( '<div></div>' ).append( vintText ).html() + ' metabolites. If there was only a way to undo your changes...</p>'
+					'<p>Step into <b>The Vitual TimeMachine</b> by pressing the <span class="badge badge-inverse">Next <i class="icon-chevron-right icon-white"></i></span> button.</p>'
+				]
 
 			when Tutorial.Step.Finished
 				return [ 'You have completed the tutorial!', 'Now start building your own cell.' ]
@@ -386,6 +403,12 @@ class Controller.Tutorial extends Controller.Base
 	#
 	_VIntAddedTest: ( cell, module ) =>
 		if module instanceof Model.Metabolite and module.name is 'v#int'
+			@_incurEventNext()
+			
+	# Test if transporter transported was changed to VInt
+	#
+	_TransporterChangedTransported: ( view, changes, key, value, currents ) =>
+		if key is 'transported' and value is 'v'
 			@_incurEventNext()
 			
 	# Test is Sint is removed
@@ -523,7 +546,13 @@ class Controller.Tutorial extends Controller.Base
 			when Tutorial.Step.SwitchTransporterToOutward
 				@_bind( 'view.module.selected', @, @_TransporterSelectOutwardTest )
 				return on
-			else 
+			when Tutorial.Step.SwitchPreviews
+				@_bind( 'view.module.changed', @, @_TransporterChangedTransported )
+				return on
+			when Tutorial.Step.SwitchedPreviews
+				@_bind( 'cell.module.added', @, @_TransporterAddedTest )
+				return on
+			else
 				return off
 		
 	# Unbinds events for the step
@@ -568,6 +597,12 @@ class Controller.Tutorial extends Controller.Base
 				return on
 			when Tutorial.Step.SwitchTransporterToOutward
 				@_unbind( 'view.module.selected', @, @_TransporterSelectOutwardTest )
+				return on
+			when Tutorial.Step.SwitchPreviews
+				@_unbind( 'view.module.changed', @, @_TransporterChangedTransported )
+				return on
+			when Tutorial.Step.SwitchedPreviews
+				@_unbind( 'cell.module.added', @, @_TransporterAddedTest )
 				return on
 			else 
 				return off
