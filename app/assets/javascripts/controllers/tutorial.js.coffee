@@ -131,7 +131,7 @@ class Controller.Tutorial extends Controller.Base
 				return [ 
 					'<p>This is <strong>Gigabase</strong>. Your <i>virtual</i> cell.</p>'
 					'<p>It seems like this is your first time here. Let me guide you through the process of creating your first cell.</p>'
-					'<p>At any time you can cancel the tutorial by pressing the <span class="badge badge-inverse"><i class="icon-remove icon-white"></i> stop</span> button or the <span class="badge badge-inverse">&times;</span> mark in the top right corner. To resume, simply press the <span class="badge badge-inverse"> <i class="icon-question-sign icon-white"></i></span>.</p>'
+					'<p>At any time you can cancel the tutorial by pressing the <span class="badge badge-inverse"><i class="icon-remove icon-white"></i> stop</span> button or the <span class="badge badge-inverse"><i class="icon-remove icon-white"></i></span> mark in the top right corner. To resume, simply press the <span class="badge badge-inverse"> <i class="icon-question-sign icon-white"></i></span>.</p>'
 					'<p>You can also minimize the tutorial by pressing <span class="badge badge-inverse"><i class="icon-minus icon-white"></i></span>. Complete your task or press the <span class="badge badge-inverse"><i class="icon-question-sign icon-white"></i></span> to resume.</p>'
 					'<p>Let' + "'" + 's start! Press the <span class="badge badge-inverse">Next <i class="icon-chevron-right icon-white"></i></span> button.</p>'
 				]
@@ -157,14 +157,14 @@ class Controller.Tutorial extends Controller.Base
 					'<p>This is how we can edit the properties of a module. All the information has turned editable, except for the name.</p>'
 					'<p class="alert alert-warning">Once a module is named, <b>its name is fixed</b>. Recreate the module if you want to change the name.</p>'
 					'<p>Opening the properties popover of this module has hidden something on the palette. There is a button below the popover that I can not quite see.</p>'
-					'<p class="alert alert-info"><b>Close the Cell Growth popover</b>, by clicking the <span class="badge badge-inverse">&times;</span> button or clicking the module again.</p>'
+					'<p class="alert alert-info"><b>Close the Cell Growth popover</b>, by clicking the <span class="badge badge-inverse"><i class="icon-remove icon-white"></i></span> button or clicking the module again.</p>'
 				]
 				
 			when Tutorial.Step.OverviewEnd
 				return [
 					'<p>Good job! That is it for inspecting modules.</p>'
-					'<p class="alert alert-success">You can close modules by clicking the <span class="badge badge-inverse">&times;</span> button, clicking the module, or any other module, or pressing <span class="badge badge-inverse"><abbr title="escape">ESC</abbr></span> on your keyboard.</p>'
-					'<p>No one likes solitude. So let me teach you about <b>Adding modules</b>. Press the <span class="badge badge-inverse"><i class="icon-chevron-right icon-white"></i></span> button.</p>'
+					'<p class="alert alert-success">You can close modules by clicking the <span class="badge badge-inverse"><i class="icon-remove icon-white"></i></span> button, clicking the module, or any other module, or pressing <span class="badge badge-inverse"><abbr title="escape">ESC</abbr></span> on your keyboard.</p>'
+					'<p>No one likes solitude. So let me teach you about <b>Adding modules</b>. Press the <span class="badge badge-inverse">Next <i class="icon-chevron-right icon-white"></i></span> button.</p>'
 				]
 				
 			when Tutorial.Step.CreateFromDummy
