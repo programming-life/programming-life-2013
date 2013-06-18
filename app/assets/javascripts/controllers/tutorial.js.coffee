@@ -24,6 +24,22 @@ class Controller.Tutorial extends Controller.Base
 		
 		# Automagic/Previews
 		CreatePrecursors: 9
+		SwitchTransporterToInward: 9.5
+		CreatedPrecursors: 10
+		MoreOptions: 11
+		CreateFromOptions: 12
+		SwitchPreviews: 13
+		
+		# Timemachine
+		UndoThemPrecursor: 14
+		ChangeAndUndoModule: 15
+		RedoModule: 16
+		BranchModule: 17
+		
+		# Simulate 
+
+		# Save
+
 		
 	#
 	#
@@ -33,7 +49,15 @@ class Controller.Tutorial extends Controller.Base
 		
 		Inspecting:	[ 'OverviewHover', 'OverviewSelect', 'OverviewClose', 'OverviewEnd' ]
 		Adding: 	[ 'CreateFromDummy', 'CreateSave', 'CreatedAutomagic', 'ModuleDeleted' ]
-		Automagic:	[ 'CreatePrecursors' ]
+		Automagic:	[ 'CreatePrecursors', 'CreatedPrecursors', 'MoreOptions', 'CreateFromOptions', 'SwitchPreviews' ]
+		TimeMachine:[ 'UndoThemPrecursor', 'ChangeAndUndoModule', 'RedoModule', 'BranchModule' ]
+		
+		FallBack: [ 'SwitchTransporterToInward' ]
+		
+	#
+	#
+	@FallBack:
+		SwitchTransporterToInward: 'CreatedPrecursors'
 		
 	#
 	#
@@ -42,6 +66,7 @@ class Controller.Tutorial extends Controller.Base
 		'Inspecting'
 		'Adding'
 		'Automagic'
+		'TimeMachine'
 		'Finished'
 		]
 	
@@ -51,6 +76,8 @@ class Controller.Tutorial extends Controller.Base
 		Inspecting: 'Inspecting modules'
 		Adding: 'Adding modules'
 		Automagic: 'Precursors and Previews'
+		TimeMachine: 'The Virtual TimeMachine'
+		FallBack: 'Woops! Almost, but not exactly...'
 
 	# Creates a new instance of Tutorial
 	#
@@ -120,7 +147,7 @@ class Controller.Tutorial extends Controller.Base
 			result = index
 			return name is _name  )
 			return [ result + 1, group.length ]
-		return [ '?', group.length ]
+		return [ '?', 0 ]
 		
 	#
 	#
@@ -200,20 +227,43 @@ class Controller.Tutorial extends Controller.Base
 				]
 				
 			when Tutorial.Step.CreatePrecursors
-				return []
+				return [
+					'<p>Most of these components simply do not like to be alone. A lot of them have prerequisites. If these are metabolites, a component will automatically, or as I call it auto<i>magic</i>ally try to add it to the cell.</p>'
+					'<p>The cell will actually show you these precursors and I will show you too.</p>'
+					'<p class="alert alert-info"><b>Click on the <span class="badge badge-inverse">Add Transporter</span></b> button to start adding a transporter.</p>'
+				]
+				
+			when Tutorial.Step.SwitchTransporterToInward
+				return [
+					'<p>Jup! You selected a transporter, but this one exports product to the exterior of the cell. I would like you click on the other <b><span class="badge badge-inverse">Add Transporter</span></b> button to start creating an inward transporter.</p>'
+					'<p class="alert alert-info"><b>Click on the <i>other</i> <span class="badge badge-inverse">Add Transporter</span></b> button to start adding an inward transporter.</p>'
+				]
+				
+			when Tutorial.Step.CreatedPrecursors
+				sintText = $("<span class='badge metabolites'>s</span>")
+				sintText.css('background', Helper.Mixable.hashColor 's' )
+				return [
+					'<p>Look at that. This transporter wants to transport ' + $( '<div></div>' ).append( sintText ).html() + ' into the cell. But since we did not add a metabolite outside the cell, the transporter wants to create it. Similarly, because we did not add a metabolite inside the cell, the transporter wants to create that too.</p>'
+					'<p>' + $( '<div></div>' ).append( sintText ).html() + ' is actually the default for an inward transporter. If you want to transporter something else, you would need to add something to transport. I will come to that in a minute.</p>'
+					'<p>Have you noticed those dashed lines? These indicate the flow of the metabolites when you would create this transporter. It gives you an impression of what your action will incur.</p>'
+					'<p class="alert alert-info"><b>Save the module</b>, by clicking the <span class="badge badge-inverse"><i class=" icon-ok icon-white"></i> Create</span> button.</p>'
+				]
+
 				
 			when Tutorial.Step.Finished
 				return [ 'You have completed the tutorial!', 'Now start building your own cell.' ]
 				
 								#I did so by pressing the <span class="badge badge-inverse"><i class="icon-chevron-left icon-white"></i> button</span> on the left side.
+			else
+				return []
 	
 	#
 	#
-	_incurEventNext: () ->
+	_incurEventNext: ( next =  @_getNextStep( @_step ) ) ->
 		return if @_incurred
 		@_incurred = on
 		@view.hide( ( () => 
-			@_nextStep @_getNextStep( @_step )
+			@_nextStep next
 			@_incurred = off
 		), 'left', 10 )
 		
@@ -232,7 +282,6 @@ class Controller.Tutorial extends Controller.Base
 	
 	#
 	#
-	#
 	_CellGrowthSelectTest: ( view, event, state ) =>
 		return unless state
 		if view instanceof View.Module and view.model instanceof Model.CellGrowth
@@ -240,13 +289,32 @@ class Controller.Tutorial extends Controller.Base
 			
 	#
 	#
-	#
 	_LipidSelectTest: ( view, event, state ) =>
 		return unless state
 		if view instanceof View.DummyModule and view.model instanceof Model.Lipid
 			@_incurEventNext()
-	
+			
 	#
+	#
+	_TransporterSelectTest: ( view, event, state ) =>
+		return unless state
+		console.log  view instanceof View.DummyModule, view.model 
+		if view instanceof View.DummyModule and view.model instanceof Model.Transporter
+			if view.model.direction is Model.Transporter.Outward
+				@_incurEventNext Tutorial.Step.SwitchTransporterToInward
+			else
+				@_incurEventNext()
+	
+	###
+	
+		MoreOptions: 11
+		CreateFromOptions: 12
+		SwitchPreviews: 13
+				
+			MoreOptions: 10
+		SwitchPreviews
+	###
+	
 	#
 	#
 	_CellGrowthCloseTest: ( view, event, state ) =>
@@ -256,12 +324,16 @@ class Controller.Tutorial extends Controller.Base
 			
 	#
 	#
-	#
 	_LipidAddedTest: ( cell, module ) =>
 		if module instanceof Model.Lipid
 			@_incurEventNext()
 			
 	#
+	#
+	_TransporterAddedTest: ( cell, module ) =>
+		if module instanceof Model.Transporter
+			@_incurEventNext()
+			
 	#
 	#
 	_SIntRemovedTest: ( cell, module ) =>
@@ -275,6 +347,8 @@ class Controller.Tutorial extends Controller.Base
 	#
 	_getNextStep: ( step ) ->
 		name = @InverseStep[ step ]
+		if ( Tutorial.FallBack[ name ]? )
+			return Tutorial.Step[ Tutorial.FallBack[ name ] ]
 		group_key = @_getGroupKey name
 		group = Tutorial.Group[ group_key ]
 		result = null
@@ -309,6 +383,8 @@ class Controller.Tutorial extends Controller.Base
 	#
 	_getBackStep: ( step ) ->
 		name = @InverseStep[ step ]
+		if ( Tutorial.FallBack[ name ]? )
+			return @_getBackStep( Tutorial.Step[ Tutorial.FallBack[ name ] ] )
 		group_key = @_getGroupKey name
 		group = Tutorial.Group[ group_key ]
 		result = null
@@ -375,6 +451,15 @@ class Controller.Tutorial extends Controller.Base
 			when Tutorial.Step.CreatedAutomagic
 				@_bind( 'cell.metabolite.removed', @, @_SIntRemovedTest )
 				return on
+			when Tutorial.Step.CreatePrecursors
+				@_bind( 'view.module.selected', @, @_TransporterSelectTest )
+				return on
+			when Tutorial.Step.SwitchTransporterToInward
+				@_bind( 'view.module.selected', @, @_TransporterSelectTest )
+				return on
+			when Tutorial.Step.CreatedPrecursors
+				@_bind( 'cell.module.added', @, @_TransporterAddedTest )
+				return on
 			else 
 				return off
 		
@@ -402,6 +487,15 @@ class Controller.Tutorial extends Controller.Base
 				return on
 			when Tutorial.Step.CreatedAutomagic
 				@_unbind( 'cell.metabolite.removed', @, @_SIntRemovedTest )
+				return on
+			when Tutorial.Step.CreatePrecursors
+				@_unbind( 'view.module.selected', @, @_TransporterSelectTest )
+				return on
+			when Tutorial.Step.SwitchTransporterToInward
+				@_unbind( 'view.module.selected', @, @_TransporterSelectTest )
+				return on
+			when Tutorial.Step.CreatedPrecursors
+				@_unbind( 'cell.module.added', @, @_TransporterAddedTest )
 				return on
 			else 
 				return off
