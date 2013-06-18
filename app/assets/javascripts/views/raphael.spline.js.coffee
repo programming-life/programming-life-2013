@@ -30,12 +30,12 @@ class View.Spline extends View.RaphaelBase
 		type = switch @_type
 			when Spline.Type.Processing
 				'metabolite'
-			when Spline.Type.Synthesis
-				'dna'
-			when Spline.Type.Consume
-				'consume'
+			#when Spline.Type.Synthesis
+			#	'dna'
+			#when Spline.Type.Consume
+			#	'consume'
 			else
-				'metabolite'
+				'none fade hide'
 				
 		affix = "-#{affix}" if affix isnt ''
 		affix = "#{affix}-preview" if @_preview
@@ -47,7 +47,7 @@ class View.Spline extends View.RaphaelBase
 
 		@_bind( 'view.moving', @, @_onViewMoving )
 		@_bind( 'view.moved', @, @_onViewMoved )
-		# @_bind( 'view.drawn', @, @_onViewDrawn )
+		@_bind( 'view.drawn', @, @_onViewDrawn )
 		return this
 
 	# Sets the correct color of the spline
@@ -64,6 +64,8 @@ class View.Spline extends View.RaphaelBase
 	# Draws the spline
 	#
 	draw: ( ) ->
+		@clear()
+		
 		path = @_getPathString()
 		@_contents = @paper.set()
 
@@ -88,8 +90,19 @@ class View.Spline extends View.RaphaelBase
 	# @return [String] a string representing the path
 	#
 	_getPathString: ( origOffsetX = 0, origOffsetY = 0, destOffsetX = 0, destOffsetY = 0 ) ->
-		[origX, origY] = @orig.getPoint(View.Module.Location.Exit)
-		[destX, destY] = @dest.getPoint(View.Module.Location.Entrance)
+	
+		[ op, dp ] = switch @_type
+			when Spline.Type.Processing
+				[ View.Module.Location.Exit, View.Module.Location.Entrance ]
+			when Spline.Type.Synthesis
+				[ View.Module.Location.Center, View.Module.Location.Top ]
+			#when Spline.Type.Consume
+			#	'consume'
+			else
+				[ View.Module.Location.Center, View.Module.Location.Center ]
+
+		[origX, origY] = @orig.getPoint op
+		[destX, destY] = @dest.getPoint dp
 
 		origX += origOffsetX
 		origY += origOffsetY
@@ -130,14 +143,14 @@ class View.Spline extends View.RaphaelBase
 	#
 	# @param view [Raphael] the view which has moved
 	#
-	_onViewMoved: ( module ) =>
-		if module is @orig.model or module is @dest.model
+	_onViewMoved: ( view ) =>
+		if view is @orig or view is @dest
 			@draw()
 
-	# # Gets called when a view view was drawn
-	# #
-	# # @param view [Raphael] the view that was drawn
-	# #
-	# _onViewDrawn: ( module ) =>
-	# 	if module is @orig.model or module is @dest.model
-	# 		@draw()
+	# Gets called when a view view was drawn
+	#
+	# @param view [Raphael] the view that was drawn
+	#
+	_onViewDrawn: ( view ) =>
+		if view is @orig or view is @dest
+			@draw()

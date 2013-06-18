@@ -84,6 +84,7 @@ class View.HTMLModal extends Helper.Mixable
 	kill: () ->
 		@_elem?.remove()
 		@_unbindAll()
+		@_unbindAllKeys()
 		return this
 		
 	# Removes the properties' modal from the body
@@ -139,4 +140,3 @@ class View.HTMLModal extends Helper.Mixable
 		button = $ '<button class="btn" data-dismiss="modal" data-action="close" aria-hidden="true">Close</button>'
 		footer.append button
 		return [ footer, button ]
-	

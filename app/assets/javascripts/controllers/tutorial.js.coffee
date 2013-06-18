@@ -11,6 +11,7 @@ class Controller.Tutorial extends Controller.Base
 		Finished: -1
 		
 		Start: 0
+		ResetAfterStart: 0.5
 		
 		# Inspecting modules
 		OverviewHover: 1
@@ -51,7 +52,7 @@ class Controller.Tutorial extends Controller.Base
 	# Groups of tutorial steps
 	#
 	@Group:
-		Start: 		[ 'Start' ]
+		Start: 		[ 'Start', 'ResetAfterStart' ]
 		Finished: 	[ 'Finished' ]
 		
 		Inspecting:	[ 'OverviewHover', 'OverviewSelect', 'OverviewClose', 'OverviewEnd' ]
@@ -138,7 +139,7 @@ class Controller.Tutorial extends Controller.Base
 		[ now, max ] = @_getProgress @_step
 		message = @_getMessage @_step
 		nextOnEvent = @_bindFor @_step
-		title = "#{title} #{now}/#{max}" if max > 1 and not Tutorial.FallBack[ @InverseStep[ @_step ] ]?
+		title = "#{title} #{now}/#{max}" if max > 1 and ( not Tutorial.FallBack[ @InverseStep[ @_step ] ]? ) and title isnt 'Tutorial'
 		@view.showMessage( title, message, nextOnEvent, animate, amount )
 
 	# Gets the title for a step
@@ -175,9 +176,16 @@ class Controller.Tutorial extends Controller.Base
 				return [ 
 					'<p>This is <strong>Gigabase</strong>. Your <i>virtual</i> cell.</p>'
 					'<p>It seems like this is your first time here. Let me guide you through the process of creating your first cell.</p>'
-					'<p>At any time you can cancel the tutorial by pressing the <span class="badge badge-inverse"><i class="icon-remove icon-white"></i> stop</span> button or the <span class="badge badge-inverse"><i class="icon-remove icon-white"></i></span> mark in the top right corner. To resume, simply press the <span class="badge badge-inverse"> <i class="icon-question-sign icon-white"></i></span>.</p>'
-					'<p>You can also minimize the tutorial by pressing <span class="badge badge-inverse"><i class="icon-minus icon-white"></i></span>. Complete your task or press the <span class="badge badge-inverse"><i class="icon-question-sign icon-white"></i></span> to resume.</p>'
+					'<p class="alert alert-success">At any time you can cancel the tutorial by pressing the <span class="badge badge-inverse"><i class="icon-remove icon-white"></i> stop</span> button or the <span class="badge badge-inverse"><i class="icon-remove icon-white"></i></span> mark in the top right corner. To resume, simply press the <span class="badge badge-inverse"> <i class="icon-question-sign icon-white"></i></span>. You can also minimize the tutorial by pressing <span class="badge badge-inverse"><i class="icon-minus icon-white"></i></span>. Complete your task or press the <span class="badge badge-inverse"><i class="icon-question-sign icon-white"></i></span> to resume.</p>'
 					'<p>Let' + "'" + 's start! Press the <span class="badge badge-inverse">Next <i class="icon-chevron-right icon-white"></i></span> button.</p>'
+					'<p class="alert alert-danger">Because I want to start with a clean slate, I will <b>reset</b> the palette. If you have any pending changes, please <span class="badge badge-inverse"><i class="icon-upload icon-white"></i> Save</span> now.</p>'
+				]
+				
+			when Tutorial.Step.ResetAfterStart
+				return [
+					'<p>There. A clean cell. Do you like what you are seeing?</p>'
+					'<p>During this tutorial I will teach you how to <i>add</i> modules, all about precursors and auto<i>magic</i> actions, about the <i>timemachine</i>, where to change the <i>settings</i>, how to change the <i>simulation</i> to <i>generate reports</i> and more!</p>'
+					'<p>But before all that, let me tell you all about you are seeing. Press the <span class="badge badge-inverse">Next <i class="icon-chevron-right icon-white"></i></span> button to learn how to <b>Inspect Modules</b></p>'
 				]
 			
 			when Tutorial.Step.OverviewHover
@@ -623,6 +631,9 @@ class Controller.Tutorial extends Controller.Base
 	#
 	_bindFor: ( step ) =>
 		switch step
+			when Tutorial.Step.ResetAfterStart
+				@parent.controller( 'cell' ).model = new Model.Cell()
+				return off
 			when Tutorial.Step.OverviewHover
 				@parent.view.hidePanes()
 				@_bind( 'view.module.hovered', @, @_CellGrowthHoverTest )

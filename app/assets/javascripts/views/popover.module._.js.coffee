@@ -216,7 +216,6 @@ class View.ModuleProperties extends View.HTMLPopOver
 		return input
 				
 	# Draws the input for a metabolite
-	# @TODO Is this function still needed?
 	#
 	# @param id [String] the form id
 	# @param key [String] property to set
@@ -453,7 +452,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 
 		if selected	
 			@_elem.focus()
-			@_elem.find('input[type=text]:enabled').first().select()
+			@_elem.find('input[type=text]:enabled, input[type=number]:enabled').first().select()
 
 			@_elem.keyup( ( e ) => 
 				switch e.keyCode
@@ -476,6 +475,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 	#
 	_close: ( ) =>
 		@_changes = {}
+		@_trigger( 'view.module.select', @_parent, [ undefined, off ] )
 		@_trigger( 'view.module.selected', @_parent, [ undefined, off ] )
 
 	# Resets this view
@@ -490,6 +490,7 @@ class View.ModuleProperties extends View.HTMLPopOver
 	_save: ( ) =>	
 		return if not @_saveChanges()
 		@_changes = {}
+		@_trigger( 'view.module.select', @_parent, [ undefined, off ] )
 		@_trigger( 'view.module.selected', @_parent, [ undefined, off ] )
 		
 	# Remove button clicked

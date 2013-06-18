@@ -11,7 +11,5 @@ class View.ConfirmModal extends View.HTMLModal
 		confirm = $ '<button class="btn btn-primary" data-action="confirm" data-dismiss="modal" aria-hidden="true">Confirm</button>'
 		footer.append cancel
 		footer.append confirm
+		@_bindKeys( [13, false, false, false], @, () -> confirm.click() )
 		return [ footer, cancel, confirm ]
-		
-	
-	
