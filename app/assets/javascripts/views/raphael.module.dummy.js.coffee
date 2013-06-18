@@ -47,6 +47,8 @@ class View.DummyModule extends View.RaphaelBase
 				return [@x, box.y]
 			when View.Module.Location.Bottom
 				return [@x, box.y2]
+			when View.Module.Location.Center
+				return [@x, @y]
 
 	#
 	#

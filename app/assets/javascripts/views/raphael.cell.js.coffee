@@ -101,6 +101,8 @@ class View.Cell extends View.RaphaelBase
 				return [@x, box.y]
 			when View.Module.Location.Bottom
 				return [@x, box.y2]
+			when View.Module.Location.Center
+				return [@x, @y]
 
 	#
 	#
@@ -276,21 +278,4 @@ class View.Cell extends View.RaphaelBase
 				y = @y + index * 80
 
 		return [x, y]
-	
-
-	# On spline added, add it to the cell and draw
-	# 
-	# @param spline [View.Spline] spline added
-	#
-	addSpline: ( spline ) =>
-		return if spline in @_splines
-		
-		if _(@_splines).find( ( s ) -> 
-			( s.orig is spline.orig and s.dest is spline.dest ) or 
-			( s.dest is spline.orig and s.orig is spline.dest )	)?
-			spline.kill()
-			return
-		
-		@_splines.push spline
-		spline.draw()
 	

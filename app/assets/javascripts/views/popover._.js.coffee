@@ -21,8 +21,7 @@ class View.HTMLPopOver extends Helper.Mixable
 
 		@_allowEventBindings()
 		@_bind('paper.resize', @, @setPosition)
-
-		@_bind('view.drawn', @, @onViewPositioned)
+		
 		@_bind('view.moved', @, @onViewPositioned)
 		@draw()
 		@setSelected off
