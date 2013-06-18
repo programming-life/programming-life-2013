@@ -40,6 +40,7 @@ class Controller.Main extends Controller.Base
 		@addChild 'graphs', new Controller.Graphs( "#graphs" )
 		@addChild 'undo', new Controller.Undo( @timemachine )
 		@addChild 'tutorial', new Controller.Tutorial( this )
+		@addChild 'presentation', new Controller.Presentation( this )
 
 		# Child Views
 		@view.add @controller('cell').view
