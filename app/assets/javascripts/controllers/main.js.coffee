@@ -45,6 +45,9 @@ class Controller.Main extends Controller.Base
 		@view.add @controller('cell').view
 		@view.add @controller('graphs').view
 		@view.addToLeftPane @controller('undo').view
+
+		@controller("undo").view.bindKeys([90,false,true,false], @controller("undo"), @controller("undo").undo ) # Bind ctrl + z to undo
+		@controller("undo").view.bindKeys([89,false,true,false], @controller("undo"), @controller("undo").redo ) # Bind ctrl + y to redo
 		
 		# Update view
 		@_setCellNameActionField( if @controller( 'cell' ).model.isLocal() then '' else  @controller( 'cell' ).model.name )

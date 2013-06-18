@@ -28,7 +28,14 @@ class Controller.Undo extends Controller.Base
 	_onNodeSelected: ( source, node ) ->
 		if source is @view
 			@jump node
-			@view.selectNode(node)
+			@focus node
+	
+	# Focusses a node in the view
+	#
+	# @param [Model.Node] The node to focus
+	#
+	focus: ( node = @model.current ) ->
+		@view.selectNode(node)
 	
 	# Gets called when branching occurs
 	#
@@ -91,3 +98,17 @@ class Controller.Undo extends Controller.Base
 				@view.setActive( node )
 			else
 				@view.setInactive( node )
+	
+	# Undoes the current action
+	#
+	undo: ( ) ->
+		action = @model.undo()
+		action?.undo()
+		@focus()
+
+	# Redoes the next action
+	#
+	redo: ( ) ->
+		action = @model.redo()
+		action?.redo()
+		@focus()

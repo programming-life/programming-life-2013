@@ -96,3 +96,21 @@ Mixin.EventBindings =
 		#
 		_notificate: ( caller, source, identifier, message, args, type = Mixin.EventBindings.ClassMethods.Notification.Info ) ->
 			return @_trigger( 'notification', caller, [ source, identifier, type, message, args ] )
+
+
+		# Bind keys to a specific function
+		#
+		# @param keys [Array] A array of keys, in the form of: [charCode, alt, ctrl, shift]
+		# @param element [JQuery] The DOM element to bind to
+		# @param context [Object] The context of the callback
+		# @param callback [Function] The function to call
+		#
+		_bindKeys: ( keys, element, context, callback ) ->
+			console.log "Binding",element, "to",context,callback,"on",keys
+			$(document).on("keyup", (event) ->
+				trigger = [event.which, event.altKey, event.ctrlKey, event.shiftKey]
+				if _.isEqual trigger, keys
+					_.debounce( callback.apply( context ), 300 )
+					event.stopPropagation()
+			)
+			
