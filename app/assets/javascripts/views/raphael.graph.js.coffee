@@ -7,9 +7,8 @@ class View.Graph extends View.RaphaelBase
 	
 	# The default options for this graph
 	@DEFAULTS : 
-		smooth: true
+		smooth: on
 		axis: '0 0 1 1'
-		#axisxstep: @_dt
 		shade : on
 		colors: [ "rgba(140, 137, 132, 0.3)",  "rgba(1, 145, 200, 0.5)", "rgba(0, 91, 154, 0.85)" ]
 		
