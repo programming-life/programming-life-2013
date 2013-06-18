@@ -58,8 +58,9 @@ class Controller.Main extends Controller.Base
 	_createTimeMachine: ( ) ->
 		@timemachines = []
 		@timemachine.setRoot new Model.Node(@controller("cell").model.tree.root.object)
+		@timemachine.current = @timemachine.root
 
-		modules =  @controller("cell").model.getModules()
+		modules = @controller("cell").model.getModules()
 		modules.unshift @controller("cell").model
 		for module in modules
 			timemachine = @addTimeMachine @controller("cell").model, module
