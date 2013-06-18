@@ -20,7 +20,7 @@ class Controller.Tutorial extends Controller.Base
 		CreateFromDummy: 5
 		CreateSave: 6
 		CreatedAutomagic: 7
-		ModuleDelete: 8
+		ModuleDeleted: 8
 		
 		# Automagic/Previews
 		CreatePrecursors: 9
@@ -32,7 +32,7 @@ class Controller.Tutorial extends Controller.Base
 		Finished: 	[ 'Finished' ]
 		
 		Inspecting:	[ 'OverviewHover', 'OverviewSelect', 'OverviewClose', 'OverviewEnd' ]
-		Adding: 	[ 'CreateFromDummy', 'CreateSave', 'CreatedAutomagic', 'ModuleDelete' ]
+		Adding: 	[ 'CreateFromDummy', 'CreateSave', 'CreatedAutomagic', 'ModuleDeleted' ]
 		Automagic:	[ 'CreatePrecursors' ]
 		
 	#
@@ -146,7 +146,7 @@ class Controller.Tutorial extends Controller.Base
 			when Tutorial.Step.OverviewSelect
 				return [
 					'<p>Ah, it seems to be the <i>Cell Growth</i> module. It keeps track of the <i>population size</i>. The Cell Growth module is always required in the cell, because without it we can not simulate a population. </p>'
-					'<p>There is a lot of information here. We can see the <i>name</i> of the module, the <i>initial amount</i>, the metabolites used to calculate the <b>mu</b> and the required <i>infrastructure</i>. All modules have different properties and you can simply hover them to see those properties.</p>'
+					'<p>There is a lot of information here. Here you can see the <i>name</i> of the module, the <i>initial amount</i>, the metabolites used to calculate the <b>mu</b> and the required <i>infrastructure</i>. All modules have different properties and you can simply hover them to see those properties.</p>'
 					'<p class="alert alert-info"><b>Click on the module</b>, to edit the module.</p>'
 				]
 				
@@ -170,8 +170,8 @@ class Controller.Tutorial extends Controller.Base
 				lipidText.css('background', Helper.Mixable.hashColor 'lipid' )
 				
 				return [
-					'<p>For the cell to live, we will need some <i>infrastructure</i>. We have seen the infrastructure properties of the <i>Cell Growth</i> module. One of those items was ' + $( '<div></div>' ).append( lipidText ).html() + '. I still think some company is in order.</p>'
-					'<p>Look! We have a template on our palette. Time to find that loner a friend.</p>'
+					'<p>For the cell to live, it will need some <i>infrastructure</i>. We have seen the infrastructure properties of the <i>Cell Growth</i> module. One of those items was ' + $( '<div></div>' ).append( lipidText ).html() + '. I still think some company is in order.</p>'
+					'<p>Look! There is a template on the palette. Time to find that loner a friend.</p>'
 					'<p class="alert alert-info"><b>Click <span class="badge badge-inverse">Add Lipid</span></b> to start adding the lipid.</p>'
 				]
 				
@@ -183,10 +183,21 @@ class Controller.Tutorial extends Controller.Base
 				]
 				
 			when Tutorial.Step.CreatedAutomagic
-				return []
+				sintText = $("<span class='badge metabolites'>s</span>")
+				sintText.css('background', Helper.Mixable.hashColor 's' )
+				
+				return [
+					'<p>There. A friend for <i>Cell Growth</i>!</p>'
+					'<p>Whoah! Where did that ' + $( '<div></div>' ).append( sintText ).html() + ' come from? I will explain that in a moment, but right now I want you to get rid of it. We don' + "'" + 't need no extra friends.</p>'
+					'<p class="alert alert-info"><b>Delete</b> the module by selecting it - just click it, remember? - and then pressing the <span class="badge badge-inverse"><i class="icon-white icon-trash"></i></span> button.</p>'
+				]
 			
-			when Tutorial.Step.ModuleDelete
-				return []
+			when Tutorial.Step.ModuleDeleted
+				return [
+					'<p class="alert alert-success">A <b>module</b> can be removed from the cell simply by pressing the <span class="badge badge-inverse"><i class="icon-white icon-trash"></i></span> button. It is as easy as creating a module.</p>'
+					'<p>That is much better. Did you already figure out where that component came from?</p>'
+					'<p>Learn more about <b>Precursors and Previews</b>. Press the <span class="badge badge-inverse">Next <i class="icon-chevron-right icon-white"></i></span> button.</p>'
+				]
 				
 			when Tutorial.Step.CreatePrecursors
 				return []
@@ -248,6 +259,13 @@ class Controller.Tutorial extends Controller.Base
 	#
 	_LipidAddedTest: ( cell, module ) =>
 		if module instanceof Model.Lipid
+			@_incurEventNext()
+			
+	#
+	#
+	#
+	_SIntRemovedTest: ( cell, module ) =>
+		if module instanceof Model.Metabolite
 			@_incurEventNext()
 			
 	# Gets the next step
@@ -354,6 +372,9 @@ class Controller.Tutorial extends Controller.Base
 			when Tutorial.Step.CreateSave
 				@_bind( 'cell.module.added', @, @_LipidAddedTest )
 				return on
+			when Tutorial.Step.CreatedAutomagic
+				@_bind( 'cell.metabolite.removed', @, @_SIntRemovedTest )
+				return on
 			else 
 				return off
 		
@@ -378,6 +399,9 @@ class Controller.Tutorial extends Controller.Base
 				return on
 			when Tutorial.Step.CreateSave
 				@_unbind( 'cell.module.added', @, @_LipidAddedTest )
+				return on
+			when Tutorial.Step.CreatedAutomagic
+				@_unbind( 'cell.metabolite.removed', @, @_SIntRemovedTest )
 				return on
 			else 
 				return off
