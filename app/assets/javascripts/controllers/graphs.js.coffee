@@ -23,18 +23,27 @@ class Controller.Graphs extends Controller.Base
 	#
 	show: ( datasets, append = off, id = 'id'  ) ->
 		template = _.template("graph-<%= #{id} %>") 
-		for key, graph of @controllers() when graph instanceof Controller.Graph
+		for key, graph of @controllers() when graph instanceof Controller.Graph			
+			
+			# ( ( key, graph ) => 
+			# 	_( =>
 			unless datasets[ key ]?
 				@view.remove graph.kill().view
 				@removeChild key
+			# 	).defer()
+			# ) key, graph
 		
 		for key, dataset of datasets
-			unless @controller( key )?
-				id = template({ id: _.uniqueId(), key: key.replace(/#/g, '_') }) 
-				graph = new View.Graph( id, key, @view )
-				@addChild key, new Controller.Graph( @, graph )
-				@view.add graph, false
-			@controller( key ).show( dataset, append ) 
+			( ( key, dataset ) => 
+				_( =>
+					unless @controller( key )?
+						id = template({ id: _.uniqueId(), key: key.replace(/#/g, '_') }) 
+						graph = new View.Graph( id, key, @view )
+						@addChild key, new Controller.Graph( @, graph )
+						@view.add graph, false
+					@controller( key ).show( dataset, append )
+				).defer()
+			) key, dataset 
 
 		return this
 	
