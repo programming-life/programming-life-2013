@@ -88,7 +88,7 @@ class Controller.Graph extends Controller.Base
 		text = []
 		for dataset in @_datasets
 			index = _.sortedIndex dataset.xValues, xValue
-			unless index is dataset.length
+			unless index >= dataset.xValues.length
 				yData = dataset.yValues[index]
 				text.push yData
 
