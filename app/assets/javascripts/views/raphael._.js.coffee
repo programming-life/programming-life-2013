@@ -194,4 +194,15 @@ class View.RaphaelBase extends View.Collection
 	# @param callback [Function] The function to call
 	#
 	bindKeys: ( keys, context, callback ) ->
-		@_bindKeys( keys, @_contents, context, callback )
+		@unbindKeys( keys )
+		@_bindKeys( keys, context, callback )
+
+	# Unbind keys 
+	#
+	unbindKeys: ( keys ) ->
+		@_unbindKeys( keys )
+	
+	# Unbind all keys
+	#
+	unbindAllKeys: ( ) ->
+		@_unbindAllKeys()

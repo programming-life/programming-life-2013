@@ -36,6 +36,7 @@ class View.Undo extends Helper.Mixable
 	#
 	kill: ( ) ->
 		@_elem?.remove()
+		@unbindAllKeys()
 		return @
 
 	# Draws this view
@@ -245,4 +246,14 @@ class View.Undo extends Helper.Mixable
 	# @param callback [Function] The function to call
 	#
 	bindKeys: ( keys, context, callback ) ->
-		@_bindKeys( keys, @_elem, context, callback )
+		@_bindKeys( keys, context, callback )
+	
+	# Unbind keys 
+	#
+	unbindKeys: ( keys ) ->
+		@_unbindKeys( keys )
+	
+	# Unbind all keys
+	#
+	unbindAllKeys: ( ) ->
+		@_unbindAllKeys()
