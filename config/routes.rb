@@ -34,7 +34,7 @@ ProgrammingLife::Application.routes.draw do
 		end
 			
 		# SWITCH IT BABE TO GET MANIFEST
-		if false
+		if true
 			match "/gigabase.manifest" => offline
 		end
 	else

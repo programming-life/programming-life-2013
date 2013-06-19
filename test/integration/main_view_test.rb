@@ -29,7 +29,8 @@ class MainViewTest < ActionDispatch::IntegrationTest
 		end
 		assert displayed
 	end
-
+	
+=begin
 	#Click on module
 	#Check if edit popover showed up
 	test "open edit popover" do
@@ -61,6 +62,7 @@ class MainViewTest < ActionDispatch::IntegrationTest
 		end
 		assert displayed
 	end
+=end
 
 	#Click on Action History Pane
 	#Check if pane showed up

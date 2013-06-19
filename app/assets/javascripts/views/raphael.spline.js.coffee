@@ -91,15 +91,20 @@ class View.Spline extends View.RaphaelBase
 	#
 	_getPathString: ( origOffsetX = 0, origOffsetY = 0, destOffsetX = 0, destOffsetY = 0 ) ->
 	
-		[ op, dp ] = switch @_type
+		switch @_type
 			when Spline.Type.Processing
-				[ View.Module.Location.Exit, View.Module.Location.Entrance ]
+				if @orig.type is 'Metabolite'
+					op = View.Module.Location.Center
+					dp = View.Module.Location.Left
+				else if @dest.type is 'Metabolite'
+					op = View.Module.Location.Right
+					dp = View.Module.Location.Center
 			when Spline.Type.Synthesis
-				[ View.Module.Location.Center, View.Module.Location.Top ]
-			#when Spline.Type.Consume
-			#	'consume'
+				op = View.Module.Location.Center
+				dp = View.Module.Location.Top
 			else
-				[ View.Module.Location.Center, View.Module.Location.Center ]
+				op = View.Module.Location.Center
+				dp = View.Module.Location.Center
 
 		[origX, origY] = @orig.getPoint op
 		[destX, destY] = @dest.getPoint dp
@@ -114,8 +119,21 @@ class View.Spline extends View.RaphaelBase
 
 		x1 = origX + 2/3 * dx + 20
 		y1 = origY + 1/4 * dy
+		
 		x2 = destX - 2/3 * dx - 20 
 		y2 = destY - 1/4 * dy
+
+		if @orig.type is 'Metabolite'
+			x1 = origX + 1/3 * dx
+			y1 = origY + 1/3 * dy
+
+		else if @dest.type is 'Metabolite'
+			x2 = destX - 1/3 * dx 
+			y2 = destY - 1/3 * dy
+
+
+		#else 
+		
 
 		return "m#{origX},#{origY}C#{x1},#{y1} #{x2},#{y2} #{destX},#{destY}"
 

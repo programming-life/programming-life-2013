@@ -132,4 +132,6 @@ class Controller.Presentation extends Controller.Base
 	#
 	end: ( ) ->
 		console.log "Presentation ended"
+		@cursor.hide()
+		@cursor.remove()
 		@_unbindAllKeys()
