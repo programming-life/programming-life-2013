@@ -176,7 +176,7 @@ class Controller.Tutorial extends Controller.Base
 				return [ 
 					'<p>This is <strong>Gigabase</strong>. Your <i>virtual</i> cell.</p>'
 					'<p>It seems like this is your first time here. Let me guide you through the process of creating your first cell.</p>'
-					'<p class="alert alert-success">At any time you can cancel the tutorial by pressing the <span class="badge badge-inverse"><i class="icon-remove icon-white"></i> stop</span> button or the <span class="badge badge-inverse"><i class="icon-remove icon-white"></i></span> mark in the top right corner. To resume, simply press the <span class="badge badge-inverse"> <i class="icon-question-sign icon-white"></i></span>. You can also minimize the tutorial by pressing <span class="badge badge-inverse"><i class="icon-minus icon-white"></i></span>. Complete your task or press the <span class="badge badge-inverse"><i class="icon-question-sign icon-white"></i></span> to resume.</p>'
+					'<p class="alert alert-success">You can cancel the tutorial at any time by pressing the <span class="badge badge-inverse"><i class="icon-remove icon-white"></i> stop</span> button or the <span class="badge badge-inverse"><i class="icon-remove icon-white"></i></span> mark in the top right corner. To resume, simply press the <span class="badge badge-inverse"> <i class="icon-question-sign icon-white"></i></span>. You can also minimize the tutorial by pressing <span class="badge badge-inverse"><i class="icon-minus icon-white"></i></span>. Complete your task or press the <span class="badge badge-inverse"><i class="icon-question-sign icon-white"></i></span> to resume.</p>'
 					'<p>Let' + "'" + 's start! Press the <span class="badge badge-inverse">Next <i class="icon-chevron-right icon-white"></i></span> button.</p>'
 					'<p class="alert alert-danger">Because I want to start with a clean slate, I will <b>reset</b> the palette. If you have any pending changes, please <span class="badge badge-inverse"><i class="icon-upload icon-white"></i> Save</span> now.</p>'
 				]
@@ -185,7 +185,7 @@ class Controller.Tutorial extends Controller.Base
 				return [
 					'<p>There. A clean cell. Do you like what you are seeing?</p>'
 					'<p>During this tutorial I will teach you how to <i>add</i> modules, all about precursors and auto<i>magic</i> actions, about the <i>timemachine</i>, where to change the <i>settings</i>, how to change the <i>simulation</i> to <i>generate reports</i> and more!</p>'
-					'<p>But before all that, let me tell you all about you are seeing. Press the <span class="badge badge-inverse">Next <i class="icon-chevron-right icon-white"></i></span> button to learn how to <b>Inspect Modules</b></p>'
+					'<p>But before all that, let me tell you all about what you are seeing. Press the <span class="badge badge-inverse">Next <i class="icon-chevron-right icon-white"></i></span> button to learn how to <b>Inspect Modules</b></p>'
 				]
 			
 			when Tutorial.Step.OverviewHover
@@ -230,7 +230,7 @@ class Controller.Tutorial extends Controller.Base
 			when Tutorial.Step.CreateSave
 				return [
 					'<p class="alert alert-success">Clicking a <b>template module</b>, indicated by the transparent background and the dashed border, starts te creation process.</p>'
-					'<p>Marvelous! You started the create-a-module process, or as I like to call it friend-for-cellgrowth process. We could change all these values, but lets not. I will show you how to deal with that later.</p>'
+					'<p>Marvelous! You started the create-a-module process, or as I like to call it friend-for-cellgrowth process. We could change all these values, but let' + "'" + 's not do that. I will show you how to deal with that later.</p>'
 					'<p class="alert alert-info"><b>Save the module</b>, by clicking the <span class="badge badge-inverse"><i class=" icon-ok icon-white"></i> Create</span> button.</p>'
 				]
 				
@@ -331,7 +331,7 @@ class Controller.Tutorial extends Controller.Base
 				return [
 					'<p>I extended that pane I closed earlier. Look at your history!</p>'
 					'<p class="alert alert-success">The TimeMachine is available in the cell and its components. All your actions during one session are recorded and saved. It can be a handy tool to quickly try out different settings and to undo and redo certain actions.</p>'
-					'<p>This would be perfect to undo our latests changes. Let' + "'" + 's try that.</p>'
+					'<p>This would be perfect to undo our latest changes. Let' + "'" + 's try that.</p>'
 					'<p class="alert alert-info"><b>Undo Added Metabolite v</b>, by clicking <b>above</b> the <span class="badge badge-inverse">Added Metabolite</span> action in the history pane.</p>'
 				] 
 			
@@ -353,7 +353,7 @@ class Controller.Tutorial extends Controller.Base
 				return [
 					'<p><b>Splendid!</b> Do you see the new actions in that History list? Those are the properties you have just changed.</p>'
 					'<p class="alert alert-success">When you select a module, the <b>timemachine</b> for that module will be highlighted. This way, you can keep track of your changes.</p>'
-					'<p>You can also batch undo or redo actions. You are going to try that now by undoing our last three changes, all at once. I will check if you are undoing exactly those three actions, do don' + "'" + 't try to be a cool kid.</p>'
+					'<p>You can also batch undo or redo actions. You are going to try that now by undoing our last three changes, all at once. I will check if you are undoing exactly those three actions, so don' + "'" + 't try to be a cool kid.</p>'
 					'<p class="alert alert-info"><b>Undo the last three actions</b>, by clicking <b>above</b> the <span class="badge badge-inverse">Change ... from ... to ...</span> actions in the history pane.</p>'
 					
 				]
@@ -374,7 +374,7 @@ class Controller.Tutorial extends Controller.Base
 				return [
 					'<p class="alert alert-success">When your history cursor is not at the end of the list, and you invoke a new action, branching occurs. The action that held the cursor now has more options. It could resume the old action list or continue the new path.</p>'
 					'<p>Cool! The history list automatically purged the items below the cursor. Or did it? Something changed. The previous action now reads 1 alternative actions.</p>'
-					'<p class="alert">Branching can be usefull, when used correctly, but one can easily lose track of all the branches. Additionally, the history is not saved, so you might be better of saving a clone than to rely on branching.</p>'
+					'<p class="alert">Branching can be useful, when used correctly, but one can easily lose track of all the branches. Additionally, the history is not saved, so you might be better off saving a clone than to rely on branching.</p>'
 				]
 
 
