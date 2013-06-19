@@ -200,7 +200,7 @@ class View.DummyModule extends View.RaphaelBase
 		
 		@paper.setStart()
 		text = @paper.text( @x, @y, _.escape "Add #{@type}" )
-		$(text.node).addClass('module-text')
+		$(text.node).addClass('dummy-module-text')
 
 		return @paper.setFinish()
 		

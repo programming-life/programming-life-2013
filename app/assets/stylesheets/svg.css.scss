@@ -152,9 +152,22 @@ text, tspan {
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
 }
 
-.module-text {
+[class*='module-text'] {
 	font-size: 16px !important;
 	fill: #333;
+}
+
+.dummy-module-text {
+	opacity: 1;
+
+	-webkit-transition: opacity 0.3s ease-in-out;
+	   -moz-transition: opacity 0.3s ease-in-out;
+	     -o-transition: opacity 0.3s ease-in-out;
+	        transition: opacity 0.3s ease-in-out;
+
+	&.selected {
+		opacity: 0;
+	}
 }
 
 [class*='-substrate-text'], [class*='-substrate-text-shadow'] {
