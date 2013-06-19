@@ -4,10 +4,10 @@
 (exports ? this).Helper = {}
 (exports ? this).Mixin = {}
 (exports ? this).GIGABASE_VERSION = 
-	major: 1
-	minor: 7
+	major: 2
+	minor: 0
 	revision: 0
-	full: '1.7.0-pre'
+	full: '2.0.0'
 
 document.mvc = null
 
