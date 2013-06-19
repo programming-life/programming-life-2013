@@ -1,7 +1,7 @@
 // Place all the styles related to the graph here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
-.graph {
+.graph, .graph-report {
 
 	position: relative;
 	display: -moz-inline-stack;
@@ -32,4 +32,8 @@
 			font-size: 11px;
 		}
 	}
+}
+
+.graph-report {
+	margin-right: 0;
 }
