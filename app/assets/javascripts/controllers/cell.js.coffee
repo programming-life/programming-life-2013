@@ -60,12 +60,12 @@ class Controller.Cell extends Controller.Base
 		@_addDummyView( 'cellgrowth', Model.CellGrowth, 1 )
 		@_addDummyView( 'lipid', Model.Lipid, 1 )
 		@_addDummyView( 'dna', Model.DNA, 1 )
-		@_addDummyView( 'metabolite-outside', Model.Metabolite, -1, { placement: Model.Metabolite.Outside, type: Model.Metabolite.Substrate, amount: 0, supply: 1 } )
-		@_addDummyView( 'transporter-inward', Model.Transporter, -1, { direction: Model.Transporter.Inward, transported: 's'  } )
-		@_addDummyView( 'metabolism', Model.Metabolism, -1 )
-		@_addDummyView( 'metabolite-inside', Model.Metabolite, -1, { placement: Model.Metabolite.Inside, type: Model.Metabolite.Product, amount: 0, supply: 0 } )
-		@_addDummyView( 'protein', Model.Protein, -1 )
-		@_addDummyView( 'transporter-outward', Model.Transporter, -1, { direction: Model.Transporter.Outward, transported: 'p' } )
+		@_addDummyView( 'metabolite-outside', Model.Metabolite, 10, { placement: Model.Metabolite.Outside, type: Model.Metabolite.Substrate, amount: 0, supply: 1 } )
+		@_addDummyView( 'transporter-inward', Model.Transporter, 8, { direction: Model.Transporter.Inward, transported: 's'  } )
+		@_addDummyView( 'metabolism', Model.Metabolism, 5 )
+		@_addDummyView( 'metabolite-inside', Model.Metabolite, 7, { placement: Model.Metabolite.Inside, type: Model.Metabolite.Product, amount: 0, supply: 0 } )
+		@_addDummyView( 'protein', Model.Protein, 5 )
+		@_addDummyView( 'transporter-outward', Model.Transporter, 8, { direction: Model.Transporter.Outward, transported: 'p' } )
 		
 		return this
 

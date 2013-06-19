@@ -231,14 +231,16 @@ class View.Module extends View.RaphaelBase
 
 		@createSplines @model, splinepreview
 		@setPreview @_preview
-		
+
+		@_trigger( 'view.drawn', @, [] )
+		view.draw() for view in @_views
 		@_propertiesView?.setPosition()
+
 		@_contents.transform('S.1').animate Raphael.animation(
 			transform: 'S1'
-		, 900, 'elastic', => @_propertiesView?.setPosition()
-		)
+		, 900, 'elastic')
 		
-		@_trigger( 'view.drawn', @, [] )
+		
 
 	# Draws the contents (module)
 	#
