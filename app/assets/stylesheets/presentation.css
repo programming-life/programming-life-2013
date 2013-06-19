@@ -1,0 +1,9 @@
+div#cursor {
+	position: absolute;
+	background-image: url("/img/cursor.png");
+	top: 400px;
+	left: 500px;
+	width: 13px;
+	height: 15px;
+	z-index: 1000;
+}

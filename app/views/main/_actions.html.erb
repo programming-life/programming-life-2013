@@ -53,6 +53,12 @@
 			:title => "Generate a report"
 		%>
 		<div class="pull-right">
+		<%= f.button '<i class=" icon-film icon-white"></i>'.html_safe, 
+			:class => "btn btn-info", :value => 'present', :type => 'button', 
+			:data => { :action => 'present' }, 
+			:title => "Start the presentation"
+		%>
+
 		<%= f.button '<i class=" icon-question-sign	 icon-white"></i>'.html_safe, 
 			:class => "btn btn-info", :value => 'reset', :type => 'button', 
 			:data => { :action => 'help' }, 

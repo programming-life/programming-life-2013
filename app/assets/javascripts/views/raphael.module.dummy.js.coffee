@@ -214,4 +214,7 @@ class View.DummyModule extends View.RaphaelBase
 		hitbox = @paper.rect(rect.x, rect.y, rect.width, rect.height)
 		hitbox.node.setAttribute('class', 'module-hitbox hitdummy-' + @type.toLowerCase() )	
 
+		classname = "add_#{@model.constructor.name.toLowerCase()}"
+		$(hitbox.node).addClass classname
+
 		return hitbox

@@ -40,7 +40,6 @@ class Controller.Main extends Controller.Base
 		@addChild 'graphs', new Controller.Graphs( "#graphs" )
 		@addChild 'undo', new Controller.Undo( @timemachine )
 		@addChild 'tutorial', new Controller.Tutorial( this )
-		@addChild 'presentation', new Controller.Presentation( this )
 
 		# Child Views
 		@view.add @controller('cell').view
@@ -297,6 +296,17 @@ class Controller.Main extends Controller.Base
 			.done( success )
 			.fail( error )
 			.always( enable )
+	# On Presentation Button clicked
+	#
+	# @param target [jQuery.Elem] target element
+	# @param enable [Function] function to re-enable buttons
+	# @param succes [Function] function to run on success
+	# @param error [Function] function to run on error
+	# @todo action should be more dynamic for child controllers and views
+	#
+	_onPresent: ( target, enable, success, error ) ->
+		@view.resetActionButtonState()
+		@addChild 'presentation', new Controller.Presentation( this )
 			
 	# On Tutorial Button clicked
 	#
@@ -480,3 +490,4 @@ class Controller.Main extends Controller.Base
 	onUnload: () =>
 		locache.set( 'main.cell', @controller("cell").model.serialize() )
 		super()
+	
