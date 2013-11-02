@@ -2,7 +2,7 @@ Programming Life: Gigabase
 ================ 
 Gigabase: Synthetic Biology Cell Modeling Project
 
-GitHub Pages: http://derkje-j.github.io/programming-life/
+GitHub Pages: http://sleeplessbyte.github.io/programming-life
 
 Life/Live Application: http://life.jstfy.com/
 
