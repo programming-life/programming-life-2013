@@ -34,10 +34,10 @@ gems will then perfectly build. Don't forget you might need administrator rights
 ## Build Status
 
 ### develop 
-[![develop](https://travis-ci.org/Derkje-J/programming-life.png?branch=develop)](https://travis-ci.org/Derkje-J/programming-life)
+[![develop](https://travis-ci.org/SleeplessByte/programming-life.png?branch=develop)](https://travis-ci.org/SleeplessByte/programming-life)
 
 ### master
-[![master](https://travis-ci.org/Derkje-J/programming-life.png?branch=master)](https://travis-ci.org/Derkje-J/programming-life)
+[![master](https://travis-ci.org/SleeplessByte/programming-life.png?branch=master)](https://travis-ci.org/SleeplessByte/programming-life)
 
 ## Pull Requests
 After June 2013 the project will no longer have constraints so we could go any direction.
